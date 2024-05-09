@@ -1,39 +1,28 @@
 # Composite Keys and Signatures Internet-Draft
 
-NOTE: the name of this repo should be changed to "draft-xxxxx-pq-composite-sigs" to better reflect the contents.
+This is the working area for the individual Internet-Draft, "Composite Signatures For Use In Internet PKI".
 
-## Setting up a build environment
-
-There may be a way to do this in cygwin, but I cut losses and did it in ubuntu:
-
-    $ sudo apt-get install ruby-full
-    $ sudo gem install kramdown-rfc2629
-    $ sudo apt-get install xml2rfc
+* [Editor's Copy](https://lamps-wg.github.io/draft-composite-sigs/draft-ietf-lamps-pq-composite-sigs.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-pq-composite-sigs)
+* [Compare Editor's Copy to Individual Draft](https://lamps-wg.github.io/draft-composite-sigs/#go.draft-ietf-lamps-pq-composite-sigs.diff)
 
 
-## Using the makefile
 
-We have provided a makefile to build the draft in either pure TXT, or fancy HTML formats:
+## Contributing
 
-    $ make txt
-    or
-    $ make html
+We weclome contributions via pull requests, github issues, or emails to the authors.
 
-The default target will build both:
 
-    $ make
 
-## Building the document from markdown
+## Command Line Usage
 
-    // to build straight to an RFC-style .txt:
-    $ kdrfc draft-xxxxx-pq-composite-sigs-x509.mkd
+Formatted text and HTML versions of the draft can be built using `make`.
 
-    // to produce the intermediary .xml for use with other IETF tools:
-    $ kramdown-rfc2629 draft-xxxxx-pq-composite-sigs-x509.mkd > draft-xxxxx-pq-composite-sigs-x509.xml
+```sh
+$ make
+```
 
-    // to produce HTML (which has links in the ToC!) use this:
-    $ xml2rfc draft-xxxxx-pq-composite-certs-x509.xml --basename draft-xxxxx-pq-composite-certs-x509 --html
+Command line usage requires that you have the necessary software installed.  See
+[the instructions](https://github.com/martinthomson/i-d-template/blob/main/doc/SETUP.md).
 
-## Editing Etiquette
-
-When checking in changes to the document source (`.mkd`), please also check in the modified `.txt` for those who wish to review changes (diffs) in their browser.
