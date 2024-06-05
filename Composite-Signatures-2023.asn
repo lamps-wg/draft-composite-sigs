@@ -1,5 +1,5 @@
 
-   Composite-Signatures-2023
+     Composite-Signatures-2023
       { joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)
         algorithm(80) id-composite-signatures-2023 (TBDMOD) }
 
@@ -314,36 +314,8 @@ pk-Falon512-ECDSA-P256-SHA256 PUBLIC-KEY ::=
 
 sa-Falon512-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::= 
     sa-CompositeSignature{
-       id-Falon512-ECDSA-P256-SHA256, 
+       id-Falon512-ECDSA-P256-SHA256,
        pk-Falon512-ECDSA-P256-SHA256 } 
        
--- TODO: OID to be replaced by IANA
-id-Falcon512-ECDSA-brainpoolP256r1-SHA256 OBJECT IDENTIFIER ::= {     
-   joint-iso-itu-t(2) country(16) us(840) organization(1) 
-   entrust(114027) algorithm(80) composite(8) signature(1) 15 }
-
-pk-Falcon512-ECDSA-brainpoolP256r1-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-Falcon512-ECDSA-brainpoolP256r1-SHA256,
-  OCTET STRING, ECPoint}
-
-sa-Falcon512-ECDSA-brainpoolP256r1-SHA256 SIGNATURE-ALGORITHM ::= 
-    sa-CompositeSignature{
-       id-Falcon512-ECDSA-brainpoolP256r1-SHA256, 
-       pk-Falcon512-ECDSA-brainpoolP256r1-SHA256 } 
-       
--- TODO: OID to be replaced by IANA
-id-Falcon512-Ed25519-SHA512 OBJECT IDENTIFIER ::= {     
-   joint-iso-itu-t(2) country(16) us(840) organization(1) 
-   entrust(114027) algorithm(80) composite(8) signature(1) 16 }
-
-pk-Falcon512-Ed25519-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-Falcon512-Ed25519-SHA512,
-  OCTET STRING, ECPoint}
-
-sa-Falcon512-Ed25519-SHA512 SIGNATURE-ALGORITHM ::= 
-    sa-CompositeSignature{
-       id-Falcon512-Ed25519-SHA512, 
-       pk-Falcon512-Ed25519-SHA512 }                                      
-                     
-
+                                             
 END
