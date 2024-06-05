@@ -1,6 +1,6 @@
 ---
-title: Composite Signatures For Use In Internet PKI
-abbrev: PQ Composite Sigs
+title: Composite ML-DSA for use in Internet PKI
+abbrev: PQ Composite ML-DSA
 # <!-- EDNOTE: Edits the draft name -->
 docname: draft-ietf-lamps-pq-composite-sigs-latest
 
@@ -124,40 +124,64 @@ informative:
         ins: D. Stebila
         name: Douglas Stebila
     date: 2017
-
+BSI2021:
+    title: "Quantum-safe cryptography - fundamentals, current developments and recommendations"
+    target: https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf
+    author: 
+      - org: "Federal Office for Information Security (BSI)"
+    date: October 2021
+  ANSSI2024:
+    title: "Position Paper on Quantum Key Distribution"
+    target: https://cyber.gouv.fr/sites/default/files/document/Quantum_Key_Distribution_Position_Paper.pdf
+    author:
+      - org: "French Cybersecurity Agency (ANSSI)"
+      - org: "Federal Office for Information Security (BSI)"
+      - org: "Netherlands National Communications Security Agency (NLNCSA)"
+      - org: "Swedish National Communications Security Authority, Swedish Armed Forces"
 
 --- abstract
 
-The migration to post-quantum cryptography is unique in the history of modern digital cryptography in that neither the old outgoing nor the new incoming algorithms are fully trusted to protect data for the required data lifetimes. The outgoing algorithms, such as RSA and elliptic curve, may fall to quantum cryptanalysis, while the incoming post-quantum algorithms face uncertainty about both the underlying mathematics as well as hardware and software implementations that have not had sufficient maturing time to rule out classical cryptanalytic attacks and implementation bugs.
+This document defines Post-Quantum / Traditional composite Key Signaturem algorithms suitable for use within X.509, PKIX and CMS protocols. Composite algorithms are provided which combine ML-DSA with RSA, ECDSA, Ed25519, and Ed448. The provided set of composite algorithms should meet most X.509, PKIX, and CMS needs. 
 
-Cautious implementers may wish to layer cryptographic algorithms such that an attacker would need to break all of them in order to compromise the data being protected using either a Post-Quantum / Traditional Hybrid, Post-Quantum / Post-Quantum Hybrid, or combinations thereof. This document, and its companions, defines a specific instantiation of hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single key or signature such that they can be treated as a single atomic object at the protocol level.
 
-This document defines the structures CompositeSignaturePublicKey, CompositeSignaturePrivateKey and CompositeSignatureValue, which are sequences of the respective structure for each component algorithm.  Composite signature algorithm identifiers are specified in this document which represent the explicit combinations of the underlying component algorithms.
 
 <!-- End of Abstract -->
 
 
 --- middle
 
-# Changes in version -12
+# Changes in version -13
 
-* Fixed the ASN.1 module pk-CompositeSignature Information Object Class so it now compiles
-
-# Changes in version -11
-
-* Remove ambiguity and made it clear that all component signature MUST be verified
-* Added language to ensure that component keys MUST not be used in any other context
-* Changed the content of the OID artifact to the DER encoded OID
-* Reduced number of pre-hashing algorithm by removing SHA384 and SHAKE and replacing those with SHA512
-* Updated the prototype OIDs since the changes in this draft are not compatible with version -10
-* Fixed other nits
+* Shortened Abstract.
+* Added text to Introduction to justify where and why this mechanism would be used.
+* Resolved comments from Kris Kwiatkowski
+* Resolved Key Usage comments from Tim Hollebeek
+* Fixed up Algorithm names in Algorithm Deprecation section
+* Removed Falcon composites to not delay the release of this document.  Falcon (FN-DSA) composites can be added in 
+a separate document
+* Add a security consideration about Trust Anchors
+* Updated the included samples to conform to this draft
 
 
 # Introduction {#sec-intro}
 
 During the transition to post-quantum cryptography, there will be uncertainty as to the strength of cryptographic algorithms; we will no longer fully trust traditional cryptography such as RSA, Diffie-Hellman, DSA and their elliptic curve variants, but we will also not fully trust their post-quantum replacements until they have had sufficient scrutiny and time to discover and fix implementation bugs. Unlike previous cryptographic algorithm migrations, the choice of when to migrate and which algorithms to migrate to, is not so clear. Even after the migration period, it may be advantageous for an entity's cryptographic identity to be composed of multiple public-key algorithms.
 
-Cautious implementers may wish to combine cryptographic algorithms such that an attacker would need to break all of them in order to compromise the data being protected. Such mechanisms are referred to as Post-Quantum / Traditional Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
+Cautious implementers may wish to combine cryptographic algorithms such that an attacker would need to break all of them in order to compromise the data being protected. Such mechanisms are referred to as Post-Quantum / Traditional Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.  
+
+In particular, certain jurisdictions are recommending or requiring that PQC lattice schemes only be used within a PQ/T hybrid. As an example, we point to [BSI2021] which includes the following recommendation:
+
+"Therefore, quantum computer-resistant methods should
+not be used alone - at least in a transitional period - but
+only in hybrid mode, i.e. in combination with a classical
+method. For this purpose, protocols must be modified
+or supplemented accordingly. In addition, public key
+infrastructures, for example, must also be adapted"
+
+TODO:  Dive through Stravos?
+
+This specification represents the straightforward implementation of the hybrid solutions called for by European cyber security agencies.
+
 
 PQ/T Hybrid cryptography can, in general, provide solutions to two migration problems:
 
@@ -165,9 +189,11 @@ PQ/T Hybrid cryptography can, in general, provide solutions to two migration pro
 - Ease-of-migration: During the transition period, systems will require mechanisms that allow for staged migrations from fully classical to fully post-quantum-aware cryptography.
 - Safeguard against faulty algorithm implementations and compromised keys: Even for long known algorithms there is a non-negligible risk of severe implementation faults. Latest examples are the ROCA attack and ECDSA psychic signatures. Using more than one algorithms will mitigate these risks.
 
-This document defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature such that it can be treated as a single atomic algorithm at the protocol level. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite signature algorithms are provided based on ML-DSA, Falcon, RSA and ECDSA. Backwards compatibility is not directly covered in this document, but is the subject of {{sec-backwards-compat}}.
+This document defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature such that it can be treated as a single atomic algorithm at the protocol level. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite signature algorithms are provided based on ML-DSA, RSA and ECDSA. Backwards compatibility is not directly covered in this document, but is the subject of {{sec-backwards-compat}}.
 
 This document is intended for general applicability anywhere that digital signatures are used within PKIX and CMS structures.   For a more detailed use-case discussion for composite signatures, the reader is encouraged to look at {{I-D.vaira-pquip-pqc-use-cases}}
+
+This document attemps to bind the composite component keys together to achieve the weak non-separability property as defined in {{I-D.hale-pquip-hybrid-signature-spectrums}} using a label as defined in {{Bindel2017}}.
 
 ## Terminology {#sec-terminology}
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}}  {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
@@ -175,8 +201,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 The following terms are used in this document:
 
 ALGORITHM:
-          A standardized cryptographic primitive, as well as
-          any ASN.1 structures needed for encoding data and
+          A standardized cryptographic primitive, as well as 
+          any ASN.1 structures needed for encoding data and 
           metadata needed to use the algorithm. This document is
           primarily concerned with algorithms for producing digital
           signatures.
@@ -193,15 +219,15 @@ COMPONENT ALGORITHM:
             composite algorithm.
 
 COMPOSITE ALGORITHM:
-          An algorithm which is a sequence of two or more component
+          An algorithm which is a sequence of two component
             algorithms, as defined in {{sec-composite-structs}}.
 
 DER:
           Distinguished Encoding Rules as defined in [X.690].
 
 LEGACY:   For the purposes of this document, a legacy algorithm is
-          any cryptographic algorithm currently is use which is
-          not believe to be resistant to quantum cryptanalysis.
+          any cryptographic algorithm currently in use which is 
+          not believed to be resistant to quantum cryptanalysis.
 
 PKI:
           Public Key Infrastructure, as defined in [RFC5280].
@@ -219,10 +245,10 @@ SIGNATURE:
             about which algorithm.
 
 STRIPPING ATTACK:
-          An attack in which the attacker is able to downgrade the
+          An attack in which the attacker is able to downgrade the 
           cryptographic object to an attacker-chosen subset of
           original set of component algorithms in such a way that
-          it is not detectable by the receiver. For example,
+          it is not detectable by the receiver. For example, 
           substituting a composite public key or signature for a
           version with fewer components.
 
@@ -246,21 +272,21 @@ Here we define the signature mechanism in which a signature is a cryptographic p
    *  KeyGen() -> (pk, sk): A probabilistic key generation algorithm,
       which generates a public key pk and a secret key sk.
 
-   *  Sign(sk, Message) -> (signature): A signing algorithm which takes
+   *  Sign(sk, Message) -> (signature): A signing algorithm which takes 
       as input a secret key sk and a Message, and outputs a signature
 
    *  Verify(pk, Message, signature) -> true or false: A verification algorithm
       which takes as input a public key, a Message and signature and outputs true
-      if the signature and public key can be used to verify the message.  Thus it
-      proves the Message was signed with the secret key associated with the public
-      key and verifies the integrity of the Message.  If the signature and public
-      key cannot verify the Message, it returns false.
+      if the signature verifies correctly.  Thus it proves the Message was signed
+      with the secret key associated with the public key and verifies the integrity
+      of the Message.  If the signature and public key cannot verify the Message,
+      it returns false.   
 
-A composite signature allows two or more underlying signature algorithms to be combined into a single cryptographic signature operation and can be used for applications that require signatures.
+A composite signature allows two underlying signature algorithms to be combined into a single cryptographic signature operation and can be used for applications that require signatures.  
 
 ### Composite KeyGen
 
-The `KeyGen() -> (pk, sk)` of a composite signature algorithm will perform the `KeyGen()` of the respective component signature algorithms and it produces a composite public key `pk` as per {{sec-composite-pub-keys}} and a composite secret key `sk` is per {{sec-priv-key}}.  The component keys MUST be uniquely generated for each component key of a Composite and MUST NOT be used in any other keys or as a standalone key.
+The `KeyGen() -> (pk, sk)` of a composite signature algorithm will perform the `KeyGen()` of the respective component signature algorithms and it produces a composite public key `pk` as per {{sec-composite-pub-keys}} and a composite secret key `sk` is per {{sec-priv-key}}.  The component keys MUST be uniquely generated for each component key of a Composite and MUST NOT be used in any other keys or as a standalone key.  
 
 
 ### Composite Sign {#sec-comp-sig-gen}
@@ -272,46 +298,46 @@ The following process is used to generate composite signature values.
 ~~~
 Sign (sk, Message) -> (signature)
 Input:
-     K1, K2             Signing private keys for each component. See note below on
-                        composite inputs.
+     K1, K2             Signing private keys for each component. See note below on 
+                        composite inputs.  
 
-     A1, A2             Component signature algorithms. See note below on
+     A1, A2             Component signature algorithms. See note below on 
                         composite inputs.
 
      Message            The Message to be signed, an octet string
-
+     
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
-
+     
      OID                The Composite Signature String Algorithm Name converted
                         from ASCII to bytes.  See section on OID concatenation
-                        below.
+                        below.                 
 
 Output:
      signature          The composite signature, a CompositeSignatureValue
 
 Signature Generation Process:
-
+   
    1. Compute a Hash of the Message
-
+   
          M' = HASH(Message)
-
+         
    2. Generate the n component signatures independently,
       according to their algorithm specifications.
 
-         S1 := Sign( K1, A1, DER(OID) || M' )
+         S1 := Sign( K1, A1, DER(OID) || M' ) 
          S2 := Sign( K2, A2, DER(OID) || M' )
 
    3. Encode each component signature S1 and S2 into a BIT STRING
       according to its algorithm specification.
 
         signature ::= Sequence { S1, S2 }
-
+        
    4. Output signature
 ~~~
 {: #alg-composite-sign title="Composite Sign(sk, Message)"}
 
-Note on composite inputs: the method of providing the list of component keys and algorithms is flexible and beyond the scope of this pseudo-code.  When passed to the Composite Sign(sk, Message) API the sk is a CompositePrivateKey. It is possible to construct a CompositePrivateKey from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
+Note on composite inputs: the method of providing the list of component keys and algorithms is flexible and beyond the scope of this pseudo-code.  When passed to the Composite Sign(sk, Message) API the sk is a CompositePrivateKey. It is possible to construct a CompositePrivateKey from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.  
 
 Since recursive composite public keys are disallowed, no component signature may itself be a composite; ie the signature generation process MUST fail if one of the private keys K1 or K2 is a composite.
 
@@ -330,50 +356,50 @@ The following process is used to perform this verification.
 ~~~
 Composite Verify(pk, Message, signature)
 Input:
-     P1, P2             Public verification keys. See note below on
+     P1, P2             Public verification keys. See note below on 
                         composite inputs.
 
-     Message            Message whose signature is to be verified,
-                        an octet string
-
+     Message            Message whose signature is to be verified, 
+                        an octet string.
+     
      signature          CompositeSignatureValue containing the component
-                        signature values (S1 and S2) to be verified.
-
-     A1, A2             Component signature algorithms. See note
+                        signature values (S1 and S2) to be verified.            
+     
+     A1, A2             Component signature algorithms. See note 
                         below on composite inputs.
-
+                        
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
-
+     
      OID                The Composite Signature String Algorithm Name converted
                         from ASCII to bytes.  See section on OID concatenation
-                        below
+                        below                 
 
 Output:
-    Validity (bool)    "Valid signature" (true) if the composite
-                        signature is valid, "Invalid signature"
+    Validity (bool)    "Valid signature" (true) if the composite 
+                        signature is valid, "Invalid signature" 
                         (false) otherwise.
 
 Signature Verification Procedure::
    1. Check keys, signatures, and algorithms lists for consistency.
 
       If Error during Desequencing, or the sequences have
-      different numbers of elements, or any of the public keys
-      P1 or P2 and the algorithm identifiers A1 or A2 are
+      different numbers of elements, or any of the public keys 
+      P1 or P2 and the algorithm identifiers A1 or A2 are 
       composite then output "Invalid signature" and stop.
 
    2. Compute a Hash of the Message
-
-         M' = HASH(Message)
-
+   
+         M' = HASH(Message)  
+   
    3. Check each component signature individually, according to its
        algorithm specification.
        If any fail, then the entire signature validation fails.
-
+       
        if not verify( P1, DER(OID) || M', S1, A1 ) then
             output "Invalid signature"
        if not verify( P2, DER(OID) || M', S2, A2 ) then
-            output "Invalid signature"
+            output "Invalid signature"      
 
        if all succeeded, then
         output "Valid signature"
@@ -388,8 +414,8 @@ Since recursive composite public keys are disallowed, no component signature may
 
 As mentioned above, the OID input value for the Composite Signature Generation and verification process is the DER encoding of the OID represented in Hexidecimal bytes.   The following table shows the HEX encoding for each Signature AlgorithmID
 
-| Composite Signature AlgorithmID | DER Encoding to be prepended to each Message |
-| ----------- | ----------- | ----------- |  ----------- |
+| Composite Signature AlgorithmID | DER Encoding to be prepended to each Message | 
+| ----------- | ----------- | ----------- |  ----------- | 
 | id-MLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B50080101|
 | id-MLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B50080102|
 | id-MLDSA44-Ed25519-SHA512 |060B6086480186FA6B50080103|
@@ -403,23 +429,18 @@ As mentioned above, the OID input value for the Composite Signature Generation a
 | id-MLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008010B|
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008010C|
 | id-MLDSA87-Ed448-SHA512 |060B6086480186FA6B5008010D|
-| id-Falon512-ECDSA-P256-SHA256 |060B6086480186FA6B5008010E|
-| id-Falcon512-ECDSA-brainpoolP256r1-SHA256 |060B6086480186FA6B5008010F|
-| id-Falcon512-Ed25519-SHA512 |060B6086480186FA6B50080110|
 {: #tab-sig-alg-oids title="Composite Signature OID Concatenations"}
 
 ## PreHashing the Message {#sec-prehash}
 As noted in the composite signature generation process and composite signature verification process, the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
 
-1. For composites paired with RSA or ECDSA, the hashing algorithm SHA256 or SHA512 is used as part of the RSA or ECDSA signature algorithm and is therefore also used as the composite prehashing algorithm.
+1. For composites paired with RSA or ECDSA, the hashing algorithm SHA256 or SHA512 is used as part of the RSA or ECDSA signature algorithm and is therefore also used as the composite prehashing algorithm.   
 
 1. For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 y is 128 bits, MLDSA65 y is 192 bits and for MLDSA87 y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.
 
-1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.
+1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.  
 
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
-
-1. TODO:  For Falcon signing it is expected prehashing digest accomodations will be allowed.
 
 <!-- End of Composite Signature Algorithm section -->
 
@@ -449,9 +470,9 @@ In order for signatures to be composed of multiple algorithms, we define encodin
 
 The following ASN.1 Information Object Class is a template to be used in defining all composite Signature public key types.
 
-~~~ ASN.1
-pk-CompositeSignature {OBJECT IDENTIFIER:id,
-  FirstPublicKeyType,SecondPublicKeyType}
+~~~ ASN.1  
+pk-CompositeSignature {OBJECT IDENTIFIER:id, 
+  FirstPublicKeyType,SecondPublicKeyType} 
     PUBLIC-KEY ::= {
       IDENTIFIER id
       KEY SEQUENCE {
@@ -460,7 +481,7 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id,
       }
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
-    }
+    } 
 ~~~
 {: artwork-name="CompositeKeyObject-asn.1-structures"}
 
@@ -542,6 +563,7 @@ the post-quantum algorithms do not.
 
 If the keyUsage extension is present in a Certification Authority (CA) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:
 
+
 ~~~
 digitalSignature;
 nonRepudiation;
@@ -550,6 +572,7 @@ cRLSign.
 ~~~
 
 If the keyUsage extension is present in an End Entity (EE) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:
+
 
 ~~~
 digitalSignature; and
@@ -574,15 +597,15 @@ sa-CompositeSignature {
     }
 ~~~
 
-The following is an explanation how SIGNATURE-ALGORITHM elements are used
+The following is an explanation how SIGNATURE-ALGORITHM elements are used 
 to create Composite Signatures:
 
-| SIGNATURE-ALGORITHM element | Definition |
+| SIGNATURE-ALGORITHM element | Definition | 
 | ---------                  | ---------- |
-| IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm |
-| VALUE                       | The Sequence of BIT STRINGS for each component signature value |
-| PARAMS                      | Parameters are absent  |
-| PUBLIC-KEYS                 | The composite key required to produce the composite signature |
+| IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm | 
+| VALUE                       | The Sequence of BIT STRINGS for each component signature value | 
+| PARAMS                      | Parameters are absent  | 
+| PUBLIC-KEYS                 | The composite key required to produce the composite signature | 
 
 
 ## CompositeSignatureValue {#sec-compositeSignatureValue}
@@ -601,9 +624,9 @@ The choice of `SEQUENCE SIZE (2) OF BIT STRING`, rather than for example a singl
 
 # Algorithm Identifiers {#sec-alg-ids}
 
-This section defines the algorithm identifiers for explicit combinations.  For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.
+This section defines the algorithm identifiers for explicit combinations.  For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.   
 
-This section is not intended to be exhaustive and other authors may define others composite signature algorithms so long as they are compatible with the structures and processes defined in this and companion public and private key documents.
+This section is not intended to be exhaustive and other authors may define other composite signature algorithms so long as they are compatible with the structures and processes defined in this and companion public and private key documents.
 
 Some use-cases desire the flexibility for clients to use any combination of supported algorithms, while others desire the rigidity of explicitly-specified combinations of algorithms.
 
@@ -614,31 +637,28 @@ The OID referenced are TBD for prototyping only, and the following prefix is use
 
 replace &lt;CompSig&gt; with the String "2.16.840.1.114027.80.8.1"
 
-Therefore &lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
+Therefore &lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1 
 
 Signature public key types:
 
 | Composite Signature AlgorithmID | OID | First Algorithm | Second Algorithm | Pre-Hash |
-| ----------- | ----------- | ----------- |  ----------- |
+| ----------- | ----------- | ----------- |  ----------- | 
 | id-MLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.1 | MLDSA44  | SHA256WithRSAPSS| SHA256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.2 | MLDSA44  | SHA256WithRSAEncryption| SHA256 |
+| id-MLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.2 | MLDSA44  | SHA256WithRSAEncryption| SHA256 | 
 | id-MLDSA44-Ed25519-SHA512             | &lt;CompSig&gt;.3 | MLDSA44  | Ed25519| SHA512 |
 | id-MLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.4 | MLDSA44  | SHA256withECDSA | SHA256 |
 | id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | &lt;CompSig&gt;.5 | MLDSA44  | SHA256withECDSA| SHA256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.6 | MLDSA65 | SHA512WithRSAPSS |SHA512 |
+| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.6 | MLDSA65 | SHA512WithRSAPSS |SHA512 | 
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.7  | MLDSA65 | SHA512WithRSAEncryption |SHA512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.8  | MLDSA65 | SHA512withECDSA |SHA512 |
+| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.8  | MLDSA65 | SHA512withECDSA |SHA512 | 
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.9  | MLDSA65 | SHA512withECDSA |SHA512 |
-| id-MLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.10  | MLDSA65 | Ed25519 |SHA512 |
+| id-MLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.10  | MLDSA65 | Ed25519 |SHA512 | 
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.11  | MLDSA87 | SHA512withECDSA |SHA512|
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.12 | MLDSA87 | SHA512withECDSA | SHA512 |
 | id-MLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.13 | MLDSA87 | Ed448 |SHA512 |
-| id-Falon512-ECDSA-P256-SHA256             | &lt;CompSig&gt;.14  | Falcon512  | SHA256withECDSA | SHA256 |
-| id-Falcon512-ECDSA-brainpoolP256r1-SHA256  | &lt;CompSig&gt;.15  | Falcon512  | SHA256withECDSA |SHA256 |
-| id-Falcon512-Ed25519-SHA512            | &lt;CompSig&gt;.16 | Falcon512  | Ed25519| SHA512 |
 {: #tab-sig-algs title="Composite Signature Algorithms"}
 
-The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
+The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.   
 
 
 Full specifications for the referenced algorithms can be found as follows:
@@ -646,16 +666,15 @@ Full specifications for the referenced algorithms can be found as follows:
 * _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd]
 * _ECDSA_: [RFC5480]
 * _Ed25519 / Ed448_: [RFC8410]
-* _Falcon_: TBD
 * _RSAES-PKCS-v1_5_: [RFC8017]
 * _RSASSA-PSS_: [RFC8017]
 
 
-## Notes on id-MLDSA44-RSA2048-PSS-SHA256
+## Notes on id-MLDSA44-RSA2048-PSS-SHA256 
 
 Use of RSA-PSS [RFC8017] deserves a special explanation.
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44 
 
 As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
 
@@ -668,7 +687,7 @@ As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-S
 
 where:
 
-* `Mask Generation Function (mgf1)` is defined in [RFC8017]
+* `Mask Generation Function (mgf1)` is defined in [RFC8017] 
 * `SHA-256` is defined in [RFC6234].
 
 
@@ -687,7 +706,7 @@ As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS-S
 
 where:
 
-* `Mask Generation Function (mgf1)` is defined in [RFC8017]
+* `Mask Generation Function (mgf1)` is defined in [RFC8017] 
 * `SHA-512` is defined in [RFC6234].
 
 
@@ -701,7 +720,7 @@ where:
 <CODE STARTS>
 
 {::include Composite-Signatures-2023.asn}
-
+ 
 <CODE ENDS>
 
 ~~~
@@ -725,83 +744,67 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PSS-SHA256
   - References: This Document
-
+  
 -  id-MLDSA44-RSA2048-PKCS15-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PKCS15-SHA256
-  - References: This Document
-
+  - References: This Document  
+  
 -  id-MLDSA44-Ed25519-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-Ed25519-SHA512
   - References: This Document
-
+  
 -  id-MLDSA44-ECDSA-P256-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-ECDSA-P256-SHA256
-  - References: This Document
-
+  - References: This Document    
+  
 -  id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
   - References: This Document
-
+  
 -  id-MLDSA65-RSA3072-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PSS-SHA512
-  - References: This Document
-
+  - References: This Document  
+  
 -  id-MLDSA65-RSA3072-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PKCS15-SHA512
   - References: This Document
-
+  
 -  id-MLDSA65-ECDSA-P256-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-ECDSA-P256-SHA512
-  - References: This Document
-
+  - References: This Document  
+  
 -  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
-  - References: This Document
-
+  - References: This Document  
+  
 -  id-MLDSA65-Ed25519-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-Ed25519-SHA512
   - References: This Document
-
+  
 -  id-MLDSA87-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-ECDSA-P384-SHA512
-  - References: This Document
-
+  - References: This Document            
+  
 -  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
-  - References: This Document
-
+  - References: This Document  
+  
 -  id-MLDSA87-Ed448-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-Ed448-SHA512
-  - References: This Document
-
--  id-Falon512-ECDSA-P256-SHA256
-  - Decimal: IANA Assigned
-  - Description:  id-Falon512-ECDSA-P256-SHA256
-  - References: This Document
-
--  id-Falcon512-ECDSA-brainpoolP256r1-SHA256
-  - Decimal: IANA Assigned
-  - Description:  id-Falcon512-ECDSA-brainpoolP256r1-SHA256
-  - References: This Document
-
--  id-Falcon512-Ed25519-SHA512
-  - Decimal: IANA Assigned
-  - Description:  id-Falcon512-Ed25519-SHA512
-  - References: This Document
-
-
+  - References: This Document  
+  
 <!-- End of IANA Considerations section -->
 
 
@@ -813,7 +816,17 @@ Traditionally, a public key, certificate, or signature contains a single cryptog
 
 In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.
 
-Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled indpendently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA256` even after ECDH-P256 is deprecated.
+Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled indpendently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA512` even after ECDSA-P256 is deprecated.
+
+When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves. 
+
+Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:
+
+1. This specification assumes that all of the component keys within a composite key are freshly generated for the composite; ie a given public key MUST NOT appear as a component within a composite key and also within single-algorithm constructions. 
+
+2. This specification assumes that composite public keys will be bound in a structure that contains a signature over the public key (for example, an X.509 Certificate [RFC5280]), which is chained back to a trust anchor, and where that signature algorithm is at least as strong as the composite public key that it is protecting. 
+
+There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in [RFC5914]. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.
 
 
 <!-- End of Security Considerations section -->
@@ -844,7 +857,7 @@ Since composite algorithms are registered independently of their component algor
 
 ## FIPS certification {#sec-fips}
 
-One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
+One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not. 
 
 Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorith with zero security, and the overall composite should be considered full strength and thus FIPS-approved.
 
@@ -862,7 +875,7 @@ If backwards compatibility is required, then additional mechanisms will be neede
 
 We present the term "Parallel PKI" to refer to the setup where a PKI end entity possesses two or more distinct public keys or certificates for the same identity (name), but containing keys for different cryptographic algorithms. One could imagine a set of parallel PKIs where an existing PKI using legacy algorithms (RSA, ECC) is left operational during the post-quantum migration but is shadowed by one or more parallel PKIs using pure post quantum algorithms or composite algorithms (legacy and post-quantum).
 
-Equipped with a set of parallel public keys in this way, a client would have the flexibility to choose which public key(s) or certificate(s) to use in a given signature operation.
+Equipped with a set of parallel public keys in this way, a client would have the flexibility to choose which public key(s) or certificate(s) to use in a given signature operation. 
 
 For negotiated protocols, the client could choose which public key(s) or certificate(s) to use based on the negotiated algorithms, or could combine two of the public keys for example in a non-composite hybrid method such as {{I-D.becker-guthrie-noncomposite-hybrid-auth}} or {{I-D.guthrie-ipsecme-ikev2-hybrid-auth}}. Note that it is possible to use the signature algorithms defined in {{sec-alg-ids}} as a way to carry the multiple signature values generated by one of the non-composite public mechanism in protocols where it is easier to support the composite signature algorithms than to implement such a mechanism in the protocol itself. There is also nothing precluding a composite public key from being one of the components used within a non-composite authentication operation; this may lead to greater convenience in setting up parallel PKI hierarchies that need to service a range of clients implementing different styles of post-quantum migration strategies.
 
@@ -871,7 +884,7 @@ For non-negotiated protocols, the details for obtaining backwards compatibility 
 ### Hybrid Extensions (Keys and Signatures)
 The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications, but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most
 backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires
-all applications to be updated for correctly processing multiple algorithms together.
+all applications to be updated for correctly processing multiple algorithms together. 
 
 
 <!-- End of Implementation Considerations section -->
@@ -887,7 +900,7 @@ https://datatracker.ietf.org/ipr/3588/
 
 
 # Contributors and Acknowledgements
-This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past year in pursuit of this document:
+This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
 Scott Fluhrer (Cisco Systems),
 Daniel Van Geest (ISARA),
@@ -897,8 +910,10 @@ Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
 Serge Mister (Entrust),
 François Rousseau,
-Falko Strenzke and
-Felipe Ventura (Entrust)
+Falko Strenzke,
+Felipe Ventura (Entrust) and
+Alexander Ralien (Siemens)
+
 
 We are grateful to all, including any contributors who may have
 been inadvertently omitted from this list.
