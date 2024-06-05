@@ -713,6 +713,18 @@ where:
 
 <!-- End of Composite Signature Algorithm section -->
 
+# ASN.1 Module {#sec-asn1-module}
+
+~~~ asn.1
+
+<CODE STARTS>
+
+{::include Composite-Signatures-2023.asn}
+
+<CODE ENDS>
+
+~~~
+
 
 # IANA Considerations {#sec-iana}
 IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry [RFC7299] for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the fourteen Algorithms defined within.
@@ -870,7 +882,6 @@ The use of Composite Crypto provides the possibility to process multiple algorit
 The following IPR Disclosure relates to this draft:
 
 https://datatracker.ietf.org/ipr/3588/
-
 
 
 # Contributors and Acknowledgements
