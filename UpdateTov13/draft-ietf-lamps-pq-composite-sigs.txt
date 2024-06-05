@@ -8,7 +8,7 @@ Intended status: Standards Track                                 Entrust
 Expires: 7 December 2024                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
-                                                    Bunderdruckerei GmbH
+                                                    Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
                                                              5 June 2024
@@ -1961,7 +1961,7 @@ Authors' Addresses
 
 
    Jan Klaussner
-   Bunderdruckerei GmbH
+   Bundesdruckerei GmbH
    Kommandantenstr. 15
    10969 Berlin
    Germany
