@@ -1,8 +1,8 @@
 ---
 title: Composite ML-DSA for use in Internet PKI
 abbrev: PQ Composite ML-DSA
-# <!-- EDNOTE: Edits the draft name -->
 docname: draft-ietf-lamps-pq-composite-sigs-latest
+
 
 # <!-- stand_alone: true -->
 ipr: trust200902
@@ -18,51 +18,47 @@ pi:    # can use array (if all yes) or hash here
   symrefs: yes
 
 author:
-    -
-      ins: M. Ounsworth
-      name: Mike Ounsworth
-      org: Entrust Limited
-      abbrev: Entrust
-      street: 2500 Solandt Road – Suite 100
-      city: Ottawa, Ontario
-      country: Canada
-      code: K2K 3G5
-      email: mike.ounsworth@entrust.com
-
-    -
-      ins: J. Gray
-      name: John Gray
-      org: Entrust Limited
-      abbrev: Entrust
-      street: 2500 Solandt Road – Suite 100
-      city: Ottawa, Ontario
-      country: Canada
-      code: K2K 3G5
-      email: john.gray@entrust.com
-
-    -
-      ins: M. Pala
-      fullname: Massimiliano Pala
-      org: OpenCA Labs
-      city: New York City, New York
-      country: United States of America
-      email: director@openca.org
-
-    -
-      ins: J. Klaussner
-      name: Jan Klaussner
-      org: Bunderdruckerei GmbH
-      email: jan.klaussner@bdr.de
-      street: Kommandantenstr. 15
-      code: 10969
-      city: Berlin
-      country: Germany
-
-    -
-      ins: S. Fluhrer
-      name: Scott Fluhrer
-      org: Cisco Systems
-      email: sfluhrer@cisco.com
+  -
+    ins: M. Ounsworth
+    name: Mike Ounsworth
+    org: Entrust Limited
+    abbrev: Entrust
+    street: 2500 Solandt Road – Suite 100
+    city: Ottawa, Ontario
+    country: Canada
+    code: K2K 3G5
+    email: mike.ounsworth@entrust.com
+  -
+    ins: J. Gray
+    name: John Gray
+    org: Entrust Limited
+    abbrev: Entrust
+    street: 2500 Solandt Road – Suite 100
+    city: Ottawa, Ontario
+    country: Canada
+    code: K2K 3G5
+    email: john.gray@entrust.com
+  -
+    ins: M. Pala
+    name: Massimiliano Pala
+    org: OpenCA Labs
+    city: New York City, New York
+    country: United States of America
+    email: director@openca.org
+  -
+    ins: J. Klaussner
+    name: Jan Klaussner
+    org: Bunderdruckerei GmbH
+    email: jan.klaussner@bdr.de
+    street: Kommandantenstr. 15
+    code: 10969
+    city: Berlin
+    country: Germany
+  -
+    ins: S. Fluhrer
+    name: Scott Fluhrer
+    org: Cisco Systems
+    email: sfluhrer@cisco.com
 
 
 normative:
@@ -127,7 +123,7 @@ informative:
         ins: D. Stebila
         name: Douglas Stebila
     date: 2017
-BSI2021:
+  BSI2021:
     title: "Quantum-safe cryptography - fundamentals, current developments and recommendations"
     target: https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf
     author:
