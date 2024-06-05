@@ -48,7 +48,7 @@ author:
   -
     ins: J. Klaussner
     name: Jan Klaussner
-    org: Bunderdruckerei GmbH
+    org: Bundesdruckerei GmbH
     email: jan.klaussner@bdr.de
     street: Kommandantenstr. 15
     code: 10969
