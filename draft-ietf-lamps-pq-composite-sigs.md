@@ -306,10 +306,10 @@ Input:
                         composite inputs.
 
      Message            The Message to be signed, an octet string
-     
+
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
-     
+
      OID                The Composite Signature String Algorithm Name converted
                         from ASCII to bytes.  See section on OID concatenation
                         below.
@@ -318,11 +318,11 @@ Output:
      signature          The composite signature, a CompositeSignatureValue
 
 Signature Generation Process:
-   
+
    1. Compute a Hash of the Message
-   
+
          M' = HASH(Message)
-         
+
    2. Generate the n component signatures independently,
       according to their algorithm specifications.
 
@@ -333,7 +333,7 @@ Signature Generation Process:
       according to its algorithm specification.
 
         signature ::= Sequence { S1, S2 }
-        
+
    4. Output signature
 ~~~
 {: #alg-composite-sign title="Composite Sign(sk, Message)"}
@@ -364,8 +364,8 @@ Input:
                         an octet string.
 
      signature          CompositeSignatureValue containing the component
-                        signature values (S1 and S2) to be verified.            
-     
+                        signature values (S1 and S2) to be verified.
+
      A1, A2             Component signature algorithms. See note
                         below on composite inputs.
 
@@ -374,7 +374,7 @@ Input:
 
      OID                The Composite Signature String Algorithm Name converted
                         from ASCII to bytes.  See section on OID concatenation
-                        below                 
+                        below
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -442,7 +442,7 @@ As noted in the composite signature generation process and composite signature v
 1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.
 
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
-   
+
 <!-- End of Composite Signature Algorithm section -->
 
 
@@ -638,7 +638,7 @@ The OID referenced are TBD for prototyping only, and the following prefix is use
 
 replace &lt;CompSig&gt; with the String "2.16.840.1.114027.80.8.1"
 
-Therefore &lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1 
+Therefore &lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
 
 Signature public key types:
 
@@ -721,7 +721,7 @@ where:
 <CODE STARTS>
 
 {::include Composite-Signatures-2023.asn}
- 
+
 <CODE ENDS>
 
 ~~~
@@ -745,7 +745,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PSS-SHA256
   - References: This Document
-  
+
 -  id-MLDSA44-RSA2048-PKCS15-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PKCS15-SHA256
@@ -872,7 +872,7 @@ The term "backwards compatibility" is used here to mean something more specific;
 If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv2.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
 ### Hybrid Extensions (Keys and Signatures)
-The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications, but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together. 
+The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications, but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
 
 
 <!-- End of Implementation Considerations section -->
