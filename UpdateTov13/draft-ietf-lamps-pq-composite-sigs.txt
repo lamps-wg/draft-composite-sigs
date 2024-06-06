@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 7 December 2024                                         M. Pala
+Expires: 8 December 2024                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             5 June 2024
+                                                             6 June 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 December 2024.
+   This Internet-Draft will expire on 8 December 2024.
 
 Copyright Notice
 
@@ -58,7 +58,7 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Changes in version -13
+   1.  Changes since adoption by the lamps working group
    2.  Introduction
      2.1.  Terminology
      2.2.  Composite Design Philosophy
@@ -107,26 +107,18 @@ Table of Contents
      D.1.  Making contributions
    Authors' Addresses
 
-1.  Changes in version -13
+1.  Changes since adoption by the lamps working group
 
-   *  Shortened Abstract.
+   *  Added back in the version 13 changes which were dropped by mistake
+      in the initial -00 adopted version
 
-   *  Added text to Introduction to justify where and why this mechanism
-      would be used.
+   *  Added Scott Fluher as an author due to his valuable contributions
+      and participation in the draft writing process
 
-   *  Resolved comments from Kris Kwiatkowski
+   *  Removed the reference to Parallel PKI's in implementation
+      considerations as it isn't adding value to the discussion
 
-   *  Resolved Key Usage comments from Tim Hollebeek
-
-   *  Fixed up Algorithm names in Algorithm Deprecation section
-
-   *  Removed Falcon composites to not delay the release of this
-      document.  Falcon (FN-DSA) composites can be added in a separate
-      document
-
-   *  Add a security consideration about Trust Anchors
-
-   *  Updated the included samples to conform to this draft
+   *  Resolved comments from Kris Kwiatkowski regarding FIPS
 
 2.  Introduction
 
@@ -1856,7 +1848,7 @@ B.1.  FIPS certification
    validated or FIPS-approved should credit the FIPS-validated component
    algorithm with full security strength, the non-FIPS-validated
    component algorith with zero security, and the overall composite
-   should be considered full strength and thus FIPS-approved.
+   should be considered at least as strong and thus FIPS-approved.
 
    The authors wish to note that this gives composite algorithms great
    future utility both for future cryptographic migrations as well as
