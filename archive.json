@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-04T00:40:39.522854+00:00",
+  "timestamp": "2024-06-06T00:40:19.603490+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -49,6 +49,151 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOL5eEDM6LI9I2",
+      "title": "Carl Wallace's comments on composite signatures v13",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/1",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/147\r\n\r\nBelow are some comments, suggestions, and questions based on a brief review of draft-ounsworth-pq-composite-sigs-13.\r\n\r\nGeneral\r\n\r\nThe draft defines a set of 13 algorithms. Is LAMPS the right forum to vet algorithms? Generally, LAMPS deals with specs that describe how to use a given algorithm relative to PKIX and S/MIME artifacts, not algorithm specifications.\r\nIs the \"Internet PKI\" really the target? Is this kind of designation appropriate for what would appear to be a general-purpose algorithm specification?\r\nThe draft needs a thorough review to sharpen the fact that it now defines a set of 13 algorithms, not a framework for using composite key and signature combinations. Statements like \"should be regarded as a single key\" muddy the water. Even the term \"composite key\" is unhelpful. It's likely that most instances of the word \"composite\" could be written \"Composite ML-DSA.\" Given that this spec defines a means of generating and using keys and signatures, there's no need for all the \"drop-in replacement\" verbiage.\r\nOffhand, I think all of the relevant structures could use templates. Assuming this is correct, it may be worth including a section that notes ASN.1 decoders/encoders are not required.\r\nAll references to \"explicit composites\" should be reviewed and either deleted or amended.\r\nAbstract\r\n\r\nIs a \"X.509, PKIX, and CMS\" target appropriate for an algorithm specification? Is there some reason any of these 13 algorithms could not be used in a different context?\r\ns/Signaturem/Signature\r\nSections 2.3.1 - 2.3.3\r\n\r\nThese sections should include references to the relevant sections of each possible component algorithm. There is a list of algorithms in Section 5 (with a broken link for ML-DSA) but, given this is an algorithm specification, including more detail in the key generation, signature generation and signature verification sections would be appropriate and helpful.\r\ns/sketched/defined\r\nThere are two references to \"recursive composite public keys.\" These should be removed given they are not supported by definition.\r\nSection 2.3.1\r\n\r\ns/The KeyGen() -> (pk, sk) of a composite signature algorithm will perform the KeyGen() of the respective component signature algorithms / KeyGen() will perform the KeyGen() of the respective component signature algorithms\r\nIt's probably worth including pseudocode as done for Sign() and Verify()\r\nRewrite the last sentence to be Composite ML-DSA specific: The component keys MUST be uniquely generated for use in a Composite ML-DSA key.\r\nSection 2.3.2\r\n\r\nThe second and third steps could use some work. In step 2, S1 and S2 are raw signatures from a component algorithm. In step 3, they are BIT STRINGs containing the raw signatures. Additionally, it is unlikely the \"algorithm specifications\" address encoding as a BIT STRING. Suggest rewriting bullet 3 as below:\r\n\r\nEncode each component signature S1 and S2 as BIT STRINGs B1 and B2 then as a SEQUENCE\r\n\r\nsignature ::= Sequence { B1, B2 }\r\n\r\ns/A composite signature MUST produce/Sign() MUST produce\r\n\r\nSection 2.4\r\n\r\nDrop the word concatenation. No OIDs are being concatenated. There are other references to OID concatenation throughout the document that should be reviewed as well.\r\nSection 2.6\r\n\r\nDepending on the answer to the first question in General above, the following sentence may need to be removed or amended: \"If other combinations are needed, a separate specification should be submitted to the IETF LAMPS working group.\"\r\nThe statement that this \"also does not preclude future specification from extending these structures\" is false. The definitions are fixed at length 2. That someone could define a new specification with other lengths need not be commented on here. Suggest removing this sentence.\r\nSection 3\r\n\r\nReplace \"multiple algorithms\" with \"algorithm pairs\" or similar. Same comment applies throughout the draft.\r\nFWIW, I did not test compile the ASN.1 or work with the examples yet.\r\nGiven ECPoint is an alias for OCTET STRING do we need to ability to define types for each component, or can the object class be simplified to assert all component keys are simply OCTET STRINGs?\r\nSection 3.2\r\n\r\nThe reference to Table 3 is not altogether apt. The table lists signature algorithms. There should probably be a similar table for use in reconstituting SubjectPublicKeyInfo values (i.e., including curve name for parameters).\r\nSection 3.4\r\n\r\nWhy is this section necessary? The public key format defined by this specification is CompositeSignaturePublicKey. If someone wants to encode this in an OCTET STRING or BIT STRING that's their business.\r\nI would delete the entire section, but if the section remains, I would definitely delete the last sentence. The definitions provided call for DER encoding. Immediately following that with allowance for BER in the \u201cinterests of simplicity and avoiding compatibility issues\u201d is odd in that it provides for neither. If you want to support BER and DER, cite BER encoding. But why do that? Amongst other things, that would break ability to templatize the artifacts.\r\nSection 5\r\n\r\nRemove \"for explicit combinations\" from the first sentence.\r\nRemove the second paragraph given the list is exhaustive for this specification.\r\nRemove the third paragraph since only 13 algorithms are defined. There is no flexibility provided for in this specification to define other combinations.\r\nSecurity Considerations\r\n\r\nThis section should incorporate security considerations from component algorithms by reference.\r\nThe section still reflects the earlier versions before the scope was limited to focus on 13 algorithms. It could use some pruning. Maybe move some of the stripping discussion to the signature generation section.\r\nAll considerations are listed under the same heading. These should be broken up into new subsections (or the heading removed).\r\nSection B.2\r\n\r\nThis section (and subsections) should probably be deleted. At a minimum, they aren't really \"Implementation considerations\" for the 13 algorithms that are the subject of the draft.",
+      "createdAt": "2024-06-04T21:14:50Z",
+      "updatedAt": "2024-06-05T14:41:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "June 5th -  Lets all look at Carl's comments and discussion on June 19th.  ",
+          "createdAt": "2024-06-05T14:41:05Z",
+          "updatedAt": "2024-06-05T14:41:05Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOL5eEDM6LI9xE",
+      "title": "Address Kris comments about Section B.1 on FIPS #145",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/2",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/145\r\n\r\nAddress Kris's comments:\r\n\r\nZjQcmQRYFpfptBannerEnd\r\nIn the section \"B.1 FIPS certification\", the draft says:\r\n\r\n\"algorithm to be [...] considered FIPS-approved even when one of the component algorithms is not\"\r\nand then\r\n\"overall composite should be considered full strength and thus FIPS-approved\"\r\nI think, the \"full strength\" may be misleading. Also the term is not clearly defined. Hence, it could be understood as \"full strength of classical+PQ\" and that is opposite to what NIST FAQ [1] says. I.e. let say MLDSA is FIPS-approved in a future, and we create composite with MLDSA-44 + some on-ramp signature that claims level 5. Does it mean the strength of that construct should be considered FIPS-approved with security strength of equal to level 2 or 5?\r\n\r\nAs this draft is now about creating composite signatures with MLDSA, so do we need B.1? The discussion about FIPS-approved dual signature schemes sounds like a great discussion to have, but in a different place (and ideally on CMUF forum).\r\n\r\nMy suggestion would be to remove B.1 to avoid spreading potentially misleading information about important topic.\r\n\r\nAdditional nit:\r\n\r\nThe abstract says \"Composite algorithms are provided which combine ML-DSA with RSA, ECDSA, Ed25519, and Ed448.\". Shouldn't it say MLDSA only?\r\n--\r\nKris Kwiatkowski\r\nCryptography Dev\r\n\r\n\r\n--- Group discussed this and decide to change the following:\r\n\r\nchange:\r\noverall composite should be considered full strength and thus FIPS-approved\"\r\nto\r\noverall composite should be considered at least as strong and thus FIPS-approved\"\r\n\r\nuntil FIPS deprecates RSA or EC...",
+      "createdAt": "2024-06-04T21:16:55Z",
+      "updatedAt": "2024-06-04T21:25:55Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOL5eEDM6LI-F0",
+      "title": "Unreferenced section \"Parallel PKIs\"",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/3",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/143\r\n\r\nThe section [\"Parallel PKIs\"](https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/blob/final13copies/draft-ounsworth-pq-composite-sigs.md#parallel-pkis) in \"Implementation Considerations\" introduces a term that is not used throughout the document and therefore should be removed.\r\n\r\nTeam decided to remove the section on Parallel PKI's",
+      "createdAt": "2024-06-04T21:17:56Z",
+      "updatedAt": "2024-06-04T21:17:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOL5eEDM6LI-ad",
+      "title": "Add a \"SignedInfo Conventions\" section",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/4",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:   https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/136\r\n\r\nMake-like-picture from\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-lamps-cms-sphincs-plus-03#name-signed-data-conventions\r\n\r\nWe also need to add SMIME-CAPS to the ASN.1. See the draft-cms-sphincs-plus\r\n\r\nDoing this saves writing a separate draft of using this draft in CMS... Use link from Mike above SPHINCS template.",
+      "createdAt": "2024-06-04T21:19:04Z",
+      "updatedAt": "2024-06-05T14:40:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Action:  John to take a look at this (from what Mike did in Composite KEM), with the idea that maybe lamps will want us to put it in a separate document.   To present this section next meeting (June 19th).",
+          "createdAt": "2024-06-05T14:40:05Z",
+          "updatedAt": "2024-06-05T14:40:05Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOL5eEDM6LI_C2",
+      "title": "Resolve OID registration - Entrust assignment or IANA assignment",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/5",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/126\r\n\r\nRuss suggested Entrust could just assign the OIDs for composite sigs since we maintain an OID repository. Discuss this with the authors group and add to the next version -13?\r\n\r\nFrom Russ: \": If you are going to use the Entrust OID arc for the module assignment, why not assign it now.\"\r\n\r\nFor example, the module assignment could be:\r\nComposite-Signatures-2023\r\n{ joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)\r\nalgorithm(80) composite(8) id-composite-signatures-2023 (1) }\r\n\r\nToday we have:\r\nComposite-Signatures-2023\r\n{ joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)\r\nalgorithm(80) id-composite-signatures-2023 (TBDMOD) }\r\n\r\nAnd in Composite KEM we are using (for comparison):\r\n\r\nComposite-KEM-2023\r\n{iso(1) identified-organization(3) dod(6) internet(1)\r\nsecurity(5) mechanisms(5) pkix(7) id-mod(0)\r\nid-mod-composite-kems(TBDMOD) }\r\n\r\n\r\nMike and I discussed, we think having IANA assignment would make it more official and not look like it is only for Entrust.   The group decided that IANA assignment is the way to go, this will align with Composite KEM as well\r\n\r\n",
+      "createdAt": "2024-06-04T21:21:15Z",
+      "updatedAt": "2024-06-04T21:21:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOL5eEDM6LI_pD",
+      "title": "Should we consider compacting the CompositeSignaturePrivateKey Format like we did with the public key format?",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/6",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/121\r\n\r\nWe simplified the composite signature public key format from:\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2..MAX) OF SubjectPublicKeyInfo\r\nto\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\nWe haven't changed the CompositePrivateKeyFormat:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey\r\n\r\nOneAsymmetric Key from RFC 5958 is this:\r\n\r\nOneAsymmetricKey ::= SEQUENCE {\r\nversion Version,\r\nprivateKeyAlgorithm PrivateKeyAlgorithmIdentifier,\r\nprivateKey PrivateKey,\r\nattributes [0] Attributes OPTIONAL,\r\n...,\r\n[[2: publicKey [1] PublicKey OPTIONAL ]],\r\n...\r\n}\r\n\r\nPrivateKey ::= OCTET STRING\r\n-- Content varies based on type of key. The\r\n-- algorithm identifier dictates the format of\r\n-- the key.\r\n\r\nOneAsymmetricKey can carry the public key and has the algorithmIdentifier and version fields which are really redundant information. I think we could simply do this:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF PrivateKey\r\n\r\nwhich is effectively:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING\r\n\r\nIt would allow sending composite private keys in PKCS12, or in raw encrypted blobs, to be smaller.\r\n\r\n\r\nAs of May 8th, 2024 - We are leaning in making this compact change - after getting the v14 update published on the lamp-wg github.\r\n\r\nIt also has the benefit of making key consistency better defined as a static mapping of the algorithm details needs to be used to reonstruct the private key.",
+      "createdAt": "2024-06-04T21:23:19Z",
+      "updatedAt": "2024-06-05T14:32:54Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "June 5th - We will keep this one here, revisit after the final standards are released.",
+          "createdAt": "2024-06-05T14:32:52Z",
+          "updatedAt": "2024-06-05T14:32:52Z"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOL5eEDM6LJAQa",
+      "title": "Add a new section: explicitely list SPKI AlgIds",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/7",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
+      "createdAt": "2024-06-04T21:24:28Z",
+      "updatedAt": "2024-06-05T14:37:30Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "June 5th - Group would like to make the draft more clear in this regard, but not explode the draft.  Suggestion of a table or template section for RSA to make things more clear.    Action:  Jan to take a look at this for the next meeting (June 19th, 2024).",
+          "createdAt": "2024-06-05T14:37:29Z",
+          "updatedAt": "2024-06-05T14:37:29Z"
+        }
+      ]
+    }
+  ],
   "pulls": []
 }
