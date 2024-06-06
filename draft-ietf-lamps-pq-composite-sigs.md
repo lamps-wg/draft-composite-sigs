@@ -149,18 +149,12 @@ This document defines Post-Quantum / Traditional composite Key Signaturem algori
 
 --- middle
 
-# Changes in version -13
+# Changes since adoption by the lamps working group
 
-* Shortened Abstract.
-* Added text to Introduction to justify where and why this mechanism would be used.
-* Resolved comments from Kris Kwiatkowski
-* Resolved Key Usage comments from Tim Hollebeek
-* Fixed up Algorithm names in Algorithm Deprecation section
-* Removed Falcon composites to not delay the release of this document.  Falcon (FN-DSA) composites can be added in
-a separate document
-* Add a security consideration about Trust Anchors
-* Updated the included samples to conform to this draft
-
+* Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
+* Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
+* Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
+* Resolved comments from Kris Kwiatkowski regarding FIPS
 
 # Introduction {#sec-intro}
 
@@ -854,7 +848,7 @@ There are mechanisms within Internet PKI where trusted public keys do not appear
 
 One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
 
-Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorith with zero security, and the overall composite should be considered full strength and thus FIPS-approved.
+Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorith with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
 The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions; for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
 
