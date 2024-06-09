@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-06T00:40:19.603490+00:00",
+  "timestamp": "2024-06-09T00:45:17.205048+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -79,32 +79,48 @@
       "id": "I_kwDOL5eEDM6LI9xE",
       "title": "Address Kris comments about Section B.1 on FIPS #145",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/145\r\n\r\nAddress Kris's comments:\r\n\r\nZjQcmQRYFpfptBannerEnd\r\nIn the section \"B.1 FIPS certification\", the draft says:\r\n\r\n\"algorithm to be [...] considered FIPS-approved even when one of the component algorithms is not\"\r\nand then\r\n\"overall composite should be considered full strength and thus FIPS-approved\"\r\nI think, the \"full strength\" may be misleading. Also the term is not clearly defined. Hence, it could be understood as \"full strength of classical+PQ\" and that is opposite to what NIST FAQ [1] says. I.e. let say MLDSA is FIPS-approved in a future, and we create composite with MLDSA-44 + some on-ramp signature that claims level 5. Does it mean the strength of that construct should be considered FIPS-approved with security strength of equal to level 2 or 5?\r\n\r\nAs this draft is now about creating composite signatures with MLDSA, so do we need B.1? The discussion about FIPS-approved dual signature schemes sounds like a great discussion to have, but in a different place (and ideally on CMUF forum).\r\n\r\nMy suggestion would be to remove B.1 to avoid spreading potentially misleading information about important topic.\r\n\r\nAdditional nit:\r\n\r\nThe abstract says \"Composite algorithms are provided which combine ML-DSA with RSA, ECDSA, Ed25519, and Ed448.\". Shouldn't it say MLDSA only?\r\n--\r\nKris Kwiatkowski\r\nCryptography Dev\r\n\r\n\r\n--- Group discussed this and decide to change the following:\r\n\r\nchange:\r\noverall composite should be considered full strength and thus FIPS-approved\"\r\nto\r\noverall composite should be considered at least as strong and thus FIPS-approved\"\r\n\r\nuntil FIPS deprecates RSA or EC...",
       "createdAt": "2024-06-04T21:16:55Z",
-      "updatedAt": "2024-06-04T21:25:55Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-06-06T16:07:03Z",
+      "closedAt": "2024-06-06T16:07:03Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The comment was addressed and the issue has been resolved is -01 version",
+          "createdAt": "2024-06-06T16:07:03Z",
+          "updatedAt": "2024-06-06T16:07:03Z"
+        }
+      ]
     },
     {
       "number": 3,
       "id": "I_kwDOL5eEDM6LI-F0",
       "title": "Unreferenced section \"Parallel PKIs\"",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/143\r\n\r\nThe section [\"Parallel PKIs\"](https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/blob/final13copies/draft-ounsworth-pq-composite-sigs.md#parallel-pkis) in \"Implementation Considerations\" introduces a term that is not used throughout the document and therefore should be removed.\r\n\r\nTeam decided to remove the section on Parallel PKI's",
       "createdAt": "2024-06-04T21:17:56Z",
-      "updatedAt": "2024-06-04T21:17:56Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-06-06T16:06:02Z",
+      "closedAt": "2024-06-06T16:06:01Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This issue was resolve in version -01",
+          "createdAt": "2024-06-06T16:06:01Z",
+          "updatedAt": "2024-06-06T16:06:01Z"
+        }
+      ]
     },
     {
       "number": 4,
@@ -193,7 +209,99 @@
           "updatedAt": "2024-06-05T14:37:29Z"
         }
       ]
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOL5eEDM6LZ3vD",
+      "title": "ML-DSA public keys should be unwrapped BIT STRINGS with no ASN.1 typing",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/9",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See on-list discussion: https://mailarchive.ietf.org/arch/msg/spasm/oH68LMpwXtpvltK2PnQSCUO9s0k/\r\n\r\nI see that draft-ietf-lamps-dilithium-certificates-03 does this:\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~\r\n",
+      "createdAt": "2024-06-06T17:32:33Z",
+      "updatedAt": "2024-06-06T21:12:51Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Carl suggested:\r\n\r\n~~~\r\nOr this (also not yet test compiled) definition:\r\n\r\n     id-raw-key ::= SOME OBJECT IDENTIFIER\r\n   pk-CompositeSignature {OBJECT IDENTIFIER:id,\r\n     FirstPublicKeyType,SecondPublicKeyType }\r\n       PUBLIC-KEY ::= {\r\n         IDENTIFIER id\r\n         KEY SEQUENCE {\r\n           firstPublicKey BIT STRING (CONTAINING FirstPublicKeyType  | ENCODED BY id-raw-key),\r\n           secondPublicKey BIT STRING (CONTAINING SecondPublicKeyType | ENCODED BY id-raw-key)\r\n         }\r\n         PARAMS ARE absent\r\n         CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}\r\n       }\r\n\r\n~~~",
+          "createdAt": "2024-06-06T18:31:18Z",
+          "updatedAt": "2024-06-06T18:31:18Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Russ suggested:\r\n\r\n~~~\r\npk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::= {\r\n  IDENTIFIER id-MLDSA87-ECDSA-P384-SHA512\r\n  KEY SEQUENCE {key1 BIT STRING, key2 ECPoint}\r\n  PARAMS ARE absent\r\n  CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign} )\r\n~~~\r\n\r\nwith some text to explain that BIT STRING is unwrapped / raw.",
+          "createdAt": "2024-06-06T21:12:51Z",
+          "updatedAt": "2024-06-06T21:12:51Z"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOL5eEDM6LZ38A",
+      "title": "ASN.1 module still contains FN-DSA definitions",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/10",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Remove them.",
+      "createdAt": "2024-06-06T17:32:57Z",
+      "updatedAt": "2024-06-06T17:32:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOL5eEDM6LZ42X",
+      "title": "Should the pk-CompositeSignature ASN.1 constructor be unrolled for each type?",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/11",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We defined the pk-CompositeSignature information object class so that the rest of the ASN.1 module could be more compact, but it might be limiting optimization since this draft is now ML-DSA only. Perhaps we should remove this and and just directly define the PUBLIC-KEY structure for each public key type?\r\n\r\nSee, for example, the definition from draft-ietf-lamps-dilithium-certificates-03\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~",
+      "createdAt": "2024-06-06T17:35:24Z",
+      "updatedAt": "2024-06-06T17:35:24Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 8,
+      "id": "PR_kwDOL5eEDM5xs5E5",
+      "title": "Update tov13",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/8",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Added back the v13 changes\r\n- Fixed issues #2 and #3\r\n- Added changes since adoption section\r\n- Added Scott Fluher as an auther",
+      "createdAt": "2024-06-06T16:03:49Z",
+      "updatedAt": "2024-06-06T16:05:03Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "de8244a96beb9000d84c6979a2fcc913c4d32719",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "UpdateTov13",
+      "headRefOid": "ad27c830706d2d34ba4a92cefca15b440adda3f5",
+      "closedAt": "2024-06-06T16:05:02Z",
+      "mergedAt": "2024-06-06T16:05:02Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "b7f6a91cd28f8324904466b4e2911495ace19023"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
