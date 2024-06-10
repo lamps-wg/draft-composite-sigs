@@ -665,7 +665,7 @@ Full specifications for the referenced algorithms can be found as follows:
 
 Use of RSA-PSS [RFC8017] deserves a special explanation.
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA44
 
 As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
 
@@ -684,7 +684,7 @@ where:
 
 ## Notes on id-MLDSA65-RSA3072-PSS-SHA512
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA65.
 
 As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
 
