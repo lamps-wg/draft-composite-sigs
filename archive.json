@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-09T00:45:17.205048+00:00",
+  "timestamp": "2024-06-11T00:41:09.851313+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -300,6 +300,32 @@
       "mergeCommit": {
         "oid": "b7f6a91cd28f8324904466b4e2911495ace19023"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOL5eEDM5x9jYU",
+      "title": "Fix typos",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/12",
+      "state": "OPEN",
+      "author": "jiep",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-06-10T11:09:06Z",
+      "updatedAt": "2024-06-10T11:12:28Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "b7f6a91cd28f8324904466b4e2911495ace19023",
+      "headRepository": "jiep/draft-composite-sigs",
+      "headRefName": "patch-1",
+      "headRefOid": "43070ba61ceae7b528446d32a5113785157b696a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
