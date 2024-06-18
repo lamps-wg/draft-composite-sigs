@@ -703,6 +703,78 @@ where:
 
 <!-- End of Composite Signature Algorithm section -->
 
+
+# Use in CMS
+
+\[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.\]
+
+Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].  In this case, the SignerInfo [RFC5652] is used with the chosen composite signature Algorithm to securely transfer the content-encryption key from the originator to the recipient.
+
+## Underlying Components
+
+When a particular Composite Signature OID is supported in CMS, an implementation MUST support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
+
+DO WE NEED THIS?  :  An implementation MAY also support other Hash functions as long as the security of the Hash function is equal or greater to the hash function listed for the specified composite signature algorithm. 
+
+The following table lists the REQUIRED HASH algorithms to preserve security and performance characteristics of each composite algorithm.
+
+| Composite Signature AlgorithmID | Secure Hash |
+| ----------- | ----------- |
+| id-MLDSA44-RSA2048-PSS-SHA256      | SHA256 |
+| id-MLDSA44-RSA2048-PKCS15-SHA256    | SHA256 |
+| id-MLDSA44-Ed25519-SHA512             | SHA512 |
+| id-MLDSA44-ECDSA-P256-SHA256         | SHA256 |
+| id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | SHA256 |
+| id-MLDSA65-RSA3072-PSS-SHA512           | SHA512 |
+| id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512 |
+| id-MLDSA65-ECDSA-P256-SHA512            | SHA512 |
+| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512 |
+| id-MLDSA65-Ed25519-SHA512              | SHA512 |
+| id-MLDSA87-ECDSA-P384-SHA512            | SHA512|
+| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |  SHA512 |
+| id-MLDSA87-Ed448-SHA512              | SHA512 |
+{: #tab-cms-shas title="Composite Signature SHA Algorithms"}
+
+
+where:
+
+* SHA2 instantiations are defined in [FIPS180].
+
+Implementers MAY safely substitute stronger secure hash algorithms than those indicated; for example `id-sha384` and `id-sha512` MAY be safely used in place of `id-sha256`.
+
+
+## SignedData Conventions
+
+As specified in CMS [RFC5652], the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.
+
+When signed attributes are absent, the composite signature is computed over the content. When signed attributes are present, a hash is computed over the content using the same hash function that is used in the composite pre-hash, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
+
+   IF (signed attributes are absent)
+   THEN Composite_Sign(content)
+   ELSE message-digest attribute = Hash(content);
+        Composite_Sign(DER(SignedAttributes))
+When using Composite Signatures, the fields in the SignerInfo are used as follows:
+
+## Certificate Conventions
+
+The conventions specified in this section augment RFC 5280 [RFC5280].
+
+The willingness to accept a composite Signature Algorithm MAY be signaled by the use of the SMIMECapabilities Attribute as specified in Section 2.5.2. of [RFC8551] or the SMIMECapabilities certificate extension as specified in [RFC4262].
+
+The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of [RFC5280]. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:
+
+digitalSignature
+
+The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with the `digitalSignature` key usage.
+
+
+## SMIMECapabilities Attribute Conventions
+
+Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type [RFC5652], a compliant implementation MAY include the SMIMECapabilities attribute that announces support for the RSA-KEM Algorithm.
+
+The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per {{tab-cms-shas}} in the capabilityID field.
+
+
 # ASN.1 Module {#sec-asn1-module}
 
 ~~~ asn.1
