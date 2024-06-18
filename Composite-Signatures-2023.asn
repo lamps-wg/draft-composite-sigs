@@ -303,19 +303,4 @@ sa-MLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
        id-MLDSA87-Ed448-SHA512,
        pk-MLDSA87-Ed448-SHA512 }
        
--- TODO: OID to be replaced by IANA
-id-Falon512-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
-   joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 14 }
-
-pk-Falon512-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-Falon512-ECDSA-P256-SHA256,
-  OCTET STRING, ECPoint}
-
-sa-Falon512-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
-    sa-CompositeSignature{
-       id-Falon512-ECDSA-P256-SHA256,
-       pk-Falon512-ECDSA-P256-SHA256 }
-
-
 END
