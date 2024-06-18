@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 8 December 2024                                         M. Pala
+Expires: 20 December 2024                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             6 June 2024
+                                                            18 June 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 December 2024.
+   This Internet-Draft will expire on 20 December 2024.
 
 Copyright Notice
 
@@ -1203,21 +1203,6 @@ Signature Verification Procedure::
        sa-CompositeSignature{
           id-MLDSA87-Ed448-SHA512,
           pk-MLDSA87-Ed448-SHA512 }
-
-   -- TODO: OID to be replaced by IANA
-   id-Falon512-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
-      joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 14 }
-
-   pk-Falon512-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-Falon512-ECDSA-P256-SHA256,
-     OCTET STRING, ECPoint}
-
-   sa-Falon512-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
-       sa-CompositeSignature{
-          id-Falon512-ECDSA-P256-SHA256,
-          pk-Falon512-ECDSA-P256-SHA256 }
-
 
    END
 
