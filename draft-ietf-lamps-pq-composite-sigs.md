@@ -149,8 +149,13 @@ This document defines Post-Quantum / Traditional composite Key Signaturem algori
 
 --- middle
 
-# Changes since adoption by the lamps working group
+# Changes since the -01 version
+* Added a "Use in CMS" section
+* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
+* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
+* Fixed nits and other typos
 
+# Changes since adoption by the lamps working group
 * Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
 * Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
 * Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
@@ -585,6 +590,7 @@ sa-CompositeSignature {
         VALUE CompositeSignatureValue
         PARAMS ARE absent
         PUBLIC-KEYS { publicKeyType }
+        SMIME-CAPS { IDENTIFIED BY id }
     }
 ~~~
 
@@ -708,15 +714,13 @@ where:
 
 \[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.\]
 
-Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].  In this case, the SignerInfo [RFC5652] is used with the chosen composite signature Algorithm to securely transfer the content-encryption key from the originator to the recipient.
+Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].  
 
 ## Underlying Components
 
-When a particular Composite Signature OID is supported in CMS, an implementation MUST support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
+When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
 
-DO WE NEED THIS?  :  An implementation MAY also support other Hash functions as long as the security of the Hash function is equal or greater to the hash function listed for the specified composite signature algorithm. 
-
-The following table lists the REQUIRED HASH algorithms to preserve security and performance characteristics of each composite algorithm.
+The following table lists the MANDATORY HASH algorithms to preserve security and performance characteristics of each composite algorithm.
 
 | Composite Signature AlgorithmID | Secure Hash |
 | ----------- | ----------- |
@@ -735,13 +739,9 @@ The following table lists the REQUIRED HASH algorithms to preserve security and 
 | id-MLDSA87-Ed448-SHA512              | SHA512 |
 {: #tab-cms-shas title="Composite Signature SHA Algorithms"}
 
-
 where:
 
 * SHA2 instantiations are defined in [FIPS180].
-
-Implementers MAY safely substitute stronger secure hash algorithms than those indicated; for example `id-sha384` and `id-sha512` MAY be safely used in place of `id-sha256`.
-
 
 ## SignedData Conventions
 
@@ -749,11 +749,23 @@ As specified in CMS [RFC5652], the digital signature is produced from the messag
 
 When signed attributes are absent, the composite signature is computed over the content. When signed attributes are present, a hash is computed over the content using the same hash function that is used in the composite pre-hash, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
 
-   IF (signed attributes are absent)
+~~~
+IF (signed attributes are absent)
    THEN Composite_Sign(content)
-   ELSE message-digest attribute = Hash(content);
-        Composite_Sign(DER(SignedAttributes))
+ELSE message-digest attribute = Hash(content);
+   Composite_Sign(DER(SignedAttributes))
+~~~
+
 When using Composite Signatures, the fields in the SignerInfo are used as follows:
+
+digestAlgorithm:
+    The digestAlgorithm contains the one-way hash function used by the CMS signer.
+
+signatureAlgorithm:
+    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{tab-cms-shas}}
+
+signature:
+    The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.
 
 ## Certificate Conventions
 
@@ -763,9 +775,14 @@ The willingness to accept a composite Signature Algorithm MAY be signaled by the
 
 The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of [RFC5280]. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:
 
+~~~
 digitalSignature
+nonRepudiation
+keyCertSign
+cRLSign
+~~~
 
-The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with the `digitalSignature` key usage.
+The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign' key usages.
 
 
 ## SMIMECapabilities Attribute Conventions
