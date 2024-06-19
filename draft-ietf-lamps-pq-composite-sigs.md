@@ -714,7 +714,7 @@ where:
 
 \[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.\]
 
-Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].  
+Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
 
 ## Underlying Components
 
