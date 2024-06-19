@@ -108,6 +108,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
          VALUE CompositeSignatureValue
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType} 
+         SMIME-CAPS { IDENTIFIED BY id }
       }
 
 -- TODO: OID to be replaced by IANA
