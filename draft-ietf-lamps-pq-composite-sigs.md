@@ -318,7 +318,7 @@ Signature Generation Process:
 
          M' = HASH(Message)
 
-   2. Generate the n component signatures independently,
+   2. Generate the 2 component signatures independently,
       according to their algorithm specifications.
 
          S1 := Sign( K1, A1, DER(OID) || M' )
@@ -432,7 +432,7 @@ As noted in the composite signature generation process and composite signature v
 
 1. For composites paired with RSA or ECDSA, the hashing algorithm SHA256 or SHA512 is used as part of the RSA or ECDSA signature algorithm and is therefore also used as the composite prehashing algorithm.
 
-1. For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 y is 128 bits, MLDSA65 y is 192 bits and for MLDSA87 y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.
+1. For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 is 128 bits, MLDSA65 is 192 bits and for MLDSA87 is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.
 
 1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.
 
@@ -671,7 +671,7 @@ Full specifications for the referenced algorithms can be found as follows:
 
 Use of RSA-PSS [RFC8017] deserves a special explanation.
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA44
 
 As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
 
@@ -690,7 +690,7 @@ where:
 
 ## Notes on id-MLDSA65-RSA3072-PSS-SHA512
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA65.
 
 As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
 
