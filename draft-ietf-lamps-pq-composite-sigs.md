@@ -403,24 +403,28 @@ Since recursive composite public keys are disallowed, no component signature may
 
 ## OID Concatenation {#sec-oid-concat}
 
-As mentioned above, the OID input value for the Composite Signature Generation and verification process is the DER encoding of the OID represented in Hexidecimal bytes.   The following table shows the HEX encoding for each Signature AlgorithmID
+As mentioned above, the Context input value for the Composite Signature Generation and verification process is a hash value of the concatenated OIDs of the component algorithms used.
+Forming:
 
-| Composite Signature AlgorithmID | DER Encoding to be prepended to each Message |
-| ----------- | ----------- | ----------- |  ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B50080101|
-| id-MLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B50080102|
-| id-MLDSA44-Ed25519-SHA512 |060B6086480186FA6B50080103|
-| id-MLDSA44-ECDSA-P256-SHA256 |060B6086480186FA6B50080104|
-| id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 |060B6086480186FA6B50080105|
-| id-MLDSA65-RSA3072-PSS-SHA512 |060B6086480186FA6B50080106|
-| id-MLDSA65-RSA3072-PKCS15-SHA512 |060B6086480186FA6B50080107|
-| id-MLDSA65-ECDSA-P256-SHA512 |060B6086480186FA6B50080108|
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |060B6086480186FA6B50080109|
-| id-MLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008010A|
-| id-MLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008010B|
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008010C|
-| id-MLDSA87-Ed448-SHA512 |060B6086480186FA6B5008010D|
-{: #tab-sig-alg-oids title="Composite Signature OID Concatenations"}
+~~~
+1.  Form the component OID SEQUENCE:
+    SEQUENCE {
+      AlgorithmIdentifier ::= SEQUENCE {
+        {
+          <OID of component algorithm 1>
+        }
+      },
+      AlgorithmIdentifier ::= SEQUENCE {
+        {
+          <OID f component algorithm 2>
+        }
+      }
+    }
+2.  Encode SEQUENCE as DER string
+3.  Compute the hash value of the DER string using SHA256.
+~~~
+{: #alg-composite-context-forming title="Forming of Composite Signature context value"}
+
 
 ## PreHashing the Message {#sec-prehash}
 As noted in the composite signature generation process and composite signature verification process, the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
