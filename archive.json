@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-20T00:40:17.107399+00:00",
+  "timestamp": "2024-06-23T00:44:12.138561+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -287,6 +287,22 @@
       "updatedAt": "2024-06-06T17:35:24Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOL5eEDM6M6Mps",
+      "title": "SHA256withECDSA vs ECDSAwithSHA256",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/14",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I'm curious why in the \"Composite Signature Algorithms\" table, SHA256withECDSA for example is used instead of ECDSAwithSHA256? Isn't the latter more commonly used terminology?",
+      "createdAt": "2024-06-20T10:13:31Z",
+      "updatedAt": "2024-06-20T10:13:31Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -302,7 +318,7 @@
       "labels": [],
       "body": "- Added back the v13 changes\r\n- Fixed issues #2 and #3\r\n- Added changes since adoption section\r\n- Added Scott Fluher as an auther",
       "createdAt": "2024-06-06T16:03:49Z",
-      "updatedAt": "2024-06-06T16:05:03Z",
+      "updatedAt": "2024-06-20T03:19:17Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "de8244a96beb9000d84c6979a2fcc913c4d32719",
@@ -356,7 +372,7 @@
       "labels": [],
       "body": "Merge the changes for #4 into the main branch.   Reviewed and edits by the authors group.\r\n\r\nAdded a \"Use in CMS\" section\r\nRemoved a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)\r\nAdded SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module\r\nFixed nits and other typos",
       "createdAt": "2024-06-19T20:36:44Z",
-      "updatedAt": "2024-06-19T20:38:31Z",
+      "updatedAt": "2024-06-20T03:19:09Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "d59d73da181cf23f8ecce17f7daf8c5a0e310fc3",
