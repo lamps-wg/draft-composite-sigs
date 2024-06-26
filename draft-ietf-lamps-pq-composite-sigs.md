@@ -362,9 +362,10 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     OID                The Composite Signature String Algorithm Name converted
-                        from ASCII to bytes.  See section on OID concatenation
-                        below
+     Oid1, Oid2         OIDs of component signature algorithms
+
+     getDomId           Algorithm for computing the Composite Domain ID. See
+                        section on Composite Signature Domain ID below.
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -387,9 +388,9 @@ Signature Verification Procedure::
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
-       if not verify( P1, DER(OID) || M', S1, A1 ) then
+       if not verify( P1, getDomId(Oid1,Oid2) || M', S1, A1 ) then
             output "Invalid signature"
-       if not verify( P2, DER(OID) || M', S2, A2 ) then
+       if not verify( P2, getDomId(Oid1,Oid2) || M', S2, A2 ) then
             output "Invalid signature"
 
        if all succeeded, then
@@ -401,30 +402,40 @@ Note on composite inputs: the method of providing the list of component keys and
 
 Since recursive composite public keys are disallowed, no component signature may itself be a composite; ie the signature generation process MUST fail if one of the private keys K1 or K2 is a composite.
 
-## OID Concatenation {#sec-oid-concat}
+## Composite Signature Domain ID {#sec-oid-concat}
 
-As mentioned above, the Context input value for the Composite Signature Generation and verification process is a hash value of the concatenated OIDs of the component algorithms used.
-Forming:
+As mentioned above, the Composite Signature Domain ID for the Composite Signature Generation and Verification process is a hash value of the concatenated OIDs of the component algorithms.
+It is computed by forming a SEQUENCE of the algorithm identifiers, encoding it as DER string and hashing it:
 
 ~~~
+getDomId ( oid1, oid2 )
+Input:
+Oid1, Oid2      OID of component algorithm 1 & 2
+
+Procedure:
 1.  Form the component OID SEQUENCE:
     SEQUENCE {
       AlgorithmIdentifier ::= SEQUENCE {
         {
-          <OID of component algorithm 1>
+          <oid1>
         }
       },
       AlgorithmIdentifier ::= SEQUENCE {
         {
-          <OID f component algorithm 2>
+          <oid2>
         }
       }
     }
 2.  Encode SEQUENCE as DER string
 3.  Compute the hash value of the DER string using SHA256.
+    DomId = HASH( DERString )
+
+Output:
+DomId  SHA256 hash value
 ~~~
 {: #alg-composite-context-forming title="Forming of Composite Signature context value"}
 
+See section {{sec-alg-ids}} for valid combinations of component algorithm OIDs.
 
 ## PreHashing the Message {#sec-prehash}
 As noted in the composite signature generation process and composite signature verification process, the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
@@ -619,7 +630,7 @@ The choice of `SEQUENCE SIZE (2) OF BIT STRING`, rather than for example a singl
 
 # Algorithm Identifiers {#sec-alg-ids}
 
-This section defines the algorithm identifiers for explicit combinations.  For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.
+This section defines the algorithm identifiers for explicit combinations. For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.
 
 This section is not intended to be exhaustive and other authors may define other composite signature algorithms so long as they are compatible with the structures and processes defined in this and companion public and private key documents.
 
@@ -652,6 +663,13 @@ Signature public key types:
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.12 | MLDSA87 | SHA512withECDSA | SHA512 |
 | id-MLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.13 | MLDSA87 | Ed448 |SHA512 |
 {: #tab-sig-algs title="Composite Signature Algorithms"}
+
+| Component Signature Algorithm ID | OID | Specification |
+| ----------- | ----------- | ----------- |
+| id-MLDSA44 | 1.3.6.1.4.1.2.267.12.4.4 | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
+| id-MLDSA65 |  | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
+
+{: #tab-component-sig-algs title="Component Signature Algorithms for use in Composite Constructions"}
 
 The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
 
