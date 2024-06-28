@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 23 December 2024                                        M. Pala
+Expires: 30 December 2024                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            21 June 2024
+                                                            28 June 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 December 2024.
+   This Internet-Draft will expire on 30 December 2024.
 
 Copyright Notice
 
@@ -66,7 +66,7 @@ Table of Contents
        2.3.1.  Composite KeyGen
        2.3.2.  Composite Sign
        2.3.3.  Composite Verify
-     2.4.  OID Concatenation
+     2.4.  Composite Signature Domain ID
      2.5.  PreHashing the Message
      2.6.  Algorithm Selection Criteria
    3.  Composite Signature Structures
@@ -399,9 +399,10 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     OID                The Composite Signature String Algorithm Name converted
-                        from ASCII to bytes.  See section on OID concatenation
-                        below
+     Oid1, Oid2         OIDs of component signature algorithms
+
+     getDomId           Algorithm for computing the Composite Domain ID. See
+                        section on Composite Signature Domain ID below.
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -424,9 +425,9 @@ Signature Verification Procedure::
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
-       if not verify( P1, DER(OID) || M', S1, A1 ) then
+       if not verify( P1, getDomId(Oid1,Oid2) || M', S1, A1 ) then
             output "Invalid signature"
-       if not verify( P2, DER(OID) || M', S2, A2 ) then
+       if not verify( P2, getDomId(Oid1,Oid2) || M', S2, A2 ) then
             output "Invalid signature"
 
        if all succeeded, then
@@ -448,29 +449,43 @@ Signature Verification Procedure::
    signature may itself be a composite; ie the signature generation
    process MUST fail if one of the private keys K1 or K2 is a composite.
 
-2.4.  OID Concatenation
+2.4.  Composite Signature Domain ID
 
-   As mentioned above, the Context input value for the Composite
-   Signature Generation and verification process is a hash value of the
-   concatenated OIDs of the component algorithms used.  Forming:
+   As mentioned above, the Composite Signature Domain ID for the
+   Composite Signature Generation and Verification process is a hash
+   value of the concatenated OIDs of the component algorithms.  It is
+   computed by forming a SEQUENCE of the algorithm identifiers, encoding
+   it as DER string and hashing it:
 
+   getDomId ( oid1, oid2 )
+   Input:
+   Oid1, Oid2      OID of component algorithm 1 & 2
+
+   Procedure:
    1.  Form the component OID SEQUENCE:
        SEQUENCE {
          AlgorithmIdentifier ::= SEQUENCE {
            {
-             <OID of component algorithm 1>
+             <oid1>
            }
          },
          AlgorithmIdentifier ::= SEQUENCE {
            {
-             <OID f component algorithm 2>
+             <oid2>
            }
          }
        }
    2.  Encode SEQUENCE as DER string
    3.  Compute the hash value of the DER string using SHA256.
+       DomId = HASH( DERString )
+
+   Output:
+   DomId  SHA256 hash value
 
            Figure 3: Forming of Composite Signature context value
+
+   See section Section 5 for valid combinations of component algorithm
+   OIDs.
 
 2.5.  PreHashing the Message
 
@@ -802,6 +817,57 @@ Signature Verification Procedure::
 
                   Table 2: Composite Signature Algorithms
 
+   +=======================+========================+=======================================+
+   |Component Signature    |OID                     |Specification                          |
+   |Algorithm ID           |                        |                                       |
+   +=======================+========================+=======================================+
+   |id-ML-DSA-44           |1.3.6.1.4.1.2.267.12.4.4|_MLDSA_:                               |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-ML-DSA-65           |1.3.6.1.4.1.2.267.12.6.5|_MLDSA_:                               |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-ML-DSA-87           |1.3.6.1.4.1.2.267.12.8.7|_MLDSA_:                               |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-Ed25519             |1.3.101.112             |_Ed25519 / Ed448_: [RFC8410]           |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-Ed448               |iso(1) identified-      |_Ed25519 / Ed448_: [RFC8410]           |
+   |                       |organization(3)         |                                       |
+   |                       |thawte(101) id-         |                                       |
+   |                       |Ed448(113)              |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |ecdsa-with-SHA256      |iso(1) member-body(2)   |_ECDSA_: [RFC5758]                     |
+   |                       |us(840) ansi-           |                                       |
+   |                       |X9-62(10045)            |                                       |
+   |                       |signatures(4) ecdsa-    |                                       |
+   |                       |with-SHA2(3) 2          |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |ecdsa-with-SHA512      |iso(1) member-body(2)   |_ECDSA_: [RFC5758]                     |
+   |                       |us(840) ansi-           |                                       |
+   |                       |X9-62(10045)            |                                       |
+   |                       |signatures(4) ecdsa-    |                                       |
+   |                       |with-SHA2(3) 4          |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |sha256WithRSAEncryption|iso(1) member-body(2)   |_RSAES-PKCS-v1_5_: [RFC8017]           |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 11    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |sha512WithRSAEncryption|iso(1) member-body(2)   |_RSAES-PKCS-v1_5_: [RFC8017]           |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 13    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-RSASA-PSS           |iso(1) member-body(2)   |_RSASSA-PSS_: [RFC8017]                |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 10    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+
+        Table 3: Component Signature Algorithms for use in Composite
+                               Constructions
+
    The table above contains everything needed to implement the listed
    explicit composite algorithms.  See the ASN.1 module in section
    Section 6 for the explicit definitions of the above Composite
@@ -843,7 +909,7 @@ Signature Verification Procedure::
                   | Message Digest Algorithm | SHA-256 |
                   +--------------------------+---------+
 
-                     Table 3: RSA-PSS 2048 Parameters
+                     Table 4: RSA-PSS 2048 Parameters
 
    where:
 
@@ -871,7 +937,7 @@ Signature Verification Procedure::
                   | Message Digest Algorithm | SHA-512 |
                   +--------------------------+---------+
 
-                     Table 4: RSA-PSS 3072 Parameters
+                     Table 5: RSA-PSS 3072 Parameters
 
    where:
 

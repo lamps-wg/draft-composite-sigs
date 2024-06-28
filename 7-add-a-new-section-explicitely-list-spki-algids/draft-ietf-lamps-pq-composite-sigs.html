@@ -1037,7 +1037,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 23 December 2024</td>
+<td class="center">Expires 30 December 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1050,12 +1050,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-06-21" class="published">21 June 2024</time>
+<time datetime="2024-06-28" class="published">28 June 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-12-23">23 December 2024</time></dd>
+<dd class="expires"><time datetime="2024-12-30">30 December 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1105,7 +1105,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1161,7 +1161,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
-                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-oid-concatenation" class="internal xref">OID Concatenation</a></p>
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-composite-signature-domain-" class="internal xref">Composite Signature Domain ID</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.5">
                 <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-prehashing-the-message" class="internal xref">PreHashing the Message</a></p>
@@ -1542,9 +1542,10 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     OID                The Composite Signature String Algorithm Name converted
-                        from ASCII to bytes.  See section on OID concatenation
-                        below
+     Oid1, Oid2         OIDs of component signature algorithms
+
+     getDomId           Algorithm for computing the Composite Domain ID. See
+                        section on Composite Signature Domain ID below.
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -1567,9 +1568,9 @@ Signature Verification Procedure::
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
-       if not verify( P1, DER(OID) || M', S1, A1 ) then
+       if not verify( P1, getDomId(Oid1,Oid2) || M', S1, A1 ) then
             output "Invalid signature"
-       if not verify( P2, DER(OID) || M', S2, A2 ) then
+       if not verify( P2, getDomId(Oid1,Oid2) || M', S2, A2 ) then
             output "Invalid signature"
 
        if all succeeded, then
@@ -1588,36 +1589,46 @@ Signature Verification Procedure::
 </div>
 <div id="sec-oid-concat">
 <section id="section-2.4">
-        <h3 id="name-oid-concatenation">
-<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-oid-concatenation" class="section-name selfRef">OID Concatenation</a>
+        <h3 id="name-composite-signature-domain-">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-composite-signature-domain-" class="section-name selfRef">Composite Signature Domain ID</a>
         </h3>
-<p id="section-2.4-1">As mentioned above, the Context input value for the Composite Signature Generation and verification process is a hash value of the concatenated OIDs of the component algorithms used.
-Forming:<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-1">As mentioned above, the Composite Signature Domain ID for the Composite Signature Generation and Verification process is a hash value of the concatenated OIDs of the component algorithms.
+It is computed by forming a SEQUENCE of the algorithm identifiers, encoding it as DER string and hashing it:<a href="#section-2.4-1" class="pilcrow">¶</a></p>
 <span id="name-forming-of-composite-signat"></span><div id="alg-composite-context-forming">
 <figure id="figure-3">
           <div class="alignLeft art-text artwork" id="section-2.4-2.1">
 <pre>
+getDomId ( oid1, oid2 )
+Input:
+Oid1, Oid2      OID of component algorithm 1 &amp; 2
+
+Procedure:
 1.  Form the component OID SEQUENCE:
     SEQUENCE {
       AlgorithmIdentifier ::= SEQUENCE {
         {
-          &lt;OID of component algorithm 1&gt;
+          &lt;oid1&gt;
         }
       },
       AlgorithmIdentifier ::= SEQUENCE {
         {
-          &lt;OID f component algorithm 2&gt;
+          &lt;oid2&gt;
         }
       }
     }
 2.  Encode SEQUENCE as DER string
 3.  Compute the hash value of the DER string using SHA256.
+    DomId = HASH( DERString )
+
+Output:
+DomId  SHA256 hash value
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-forming-of-composite-signat" class="selfRef">Forming of Composite Signature context value</a>
           </figcaption></figure>
 </div>
+<p id="section-2.4-3">See section <a href="#sec-alg-ids" class="auto internal xref">Section 5</a> for valid combinations of component algorithm OIDs.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-prehash">
@@ -1867,7 +1878,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
       <h2 id="name-algorithm-identifiers">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-algorithm-identifiers" class="section-name selfRef">Algorithm Identifiers</a>
       </h2>
-<p id="section-5-1">This section defines the algorithm identifiers for explicit combinations.  For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">This section defines the algorithm identifiers for explicit combinations. For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">This section is not intended to be exhaustive and other authors may define other composite signature algorithms so long as they are compatible with the structures and processes defined in this and companion public and private key documents.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <p id="section-5-3">Some use-cases desire the flexibility for clients to use any combination of supported algorithms, while others desire the rigidity of explicitly-specified combinations of algorithms.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <p id="section-5-4">The following table summarizes the details for each explicit composite signature algorithms:<a href="#section-5-4" class="pilcrow">¶</a></p>
@@ -1985,23 +1996,105 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </tbody>
       </table>
 </div>
-<p id="section-5-10">The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section <a href="#sec-asn1-module" class="auto internal xref">Section 6</a> for the explicit definitions of the above Composite signature algorithms.<a href="#section-5-10" class="pilcrow">¶</a></p>
-<p id="section-5-11">Full specifications for the referenced algorithms can be found as follows:<a href="#section-5-11" class="pilcrow">¶</a></p>
+<span id="name-component-signature-algorit"></span><div id="tab-component-sig-algs">
+<table class="center" id="table-3">
+        <caption>
+<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#name-component-signature-algorit" class="selfRef">Component Signature Algorithms for use in Composite Constructions</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Component Signature Algorithm ID</th>
+            <th class="text-left" rowspan="1" colspan="1">OID</th>
+            <th class="text-left" rowspan="1" colspan="1">Specification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-44</td>
+            <td class="text-left" rowspan="1" colspan="1">1.3.6.1.4.1.2.267.12.4.4</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>MLDSA</em>: <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and [FIPS.204-ipd]</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
+            <td class="text-left" rowspan="1" colspan="1">1.3.6.1.4.1.2.267.12.6.5</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>MLDSA</em>: <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and [FIPS.204-ipd]</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
+            <td class="text-left" rowspan="1" colspan="1">1.3.6.1.4.1.2.267.12.8.7</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>MLDSA</em>: <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and [FIPS.204-ipd]</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-Ed25519</td>
+            <td class="text-left" rowspan="1" colspan="1">1.3.101.112</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>Ed25519 / Ed448</em>: <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) identified-organization(3) thawte(101) id-Ed448(113)</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>Ed25519 / Ed448</em>: <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>ECDSA</em>: [RFC5758]</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA512</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 4</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>ECDSA</em>: [RFC5758]</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">sha256WithRSAEncryption</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 11</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>RSAES-PKCS-v1_5</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">sha512WithRSAEncryption</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 13</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>RSAES-PKCS-v1_5</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS</td>
+            <td class="text-left" rowspan="1" colspan="1">iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 10</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <em>RSASSA-PSS</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>
+</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<p id="section-5-11">The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section <a href="#sec-asn1-module" class="auto internal xref">Section 6</a> for the explicit definitions of the above Composite signature algorithms.<a href="#section-5-11" class="pilcrow">¶</a></p>
+<p id="section-5-12">Full specifications for the referenced algorithms can be found as follows:<a href="#section-5-12" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-12.1">
-          <p id="section-5-12.1.1"><em>MLDSA</em>: <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and [FIPS.204-ipd]<a href="#section-5-12.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5-13.1">
+          <p id="section-5-13.1.1"><em>MLDSA</em>: <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and [FIPS.204-ipd]<a href="#section-5-13.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-12.2">
-          <p id="section-5-12.2.1"><em>ECDSA</em>: <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span><a href="#section-5-12.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-5-13.2">
+          <p id="section-5-13.2.1"><em>ECDSA</em>: <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span><a href="#section-5-13.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-12.3">
-          <p id="section-5-12.3.1"><em>Ed25519 / Ed448</em>: <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span><a href="#section-5-12.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-5-13.3">
+          <p id="section-5-13.3.1"><em>Ed25519 / Ed448</em>: <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span><a href="#section-5-13.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-12.4">
-          <p id="section-5-12.4.1"><em>RSAES-PKCS-v1_5</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-5-12.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-5-13.4">
+          <p id="section-5-13.4.1"><em>RSAES-PKCS-v1_5</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-5-13.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-12.5">
-          <p id="section-5-12.5.1"><em>RSASSA-PSS</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-5-12.5.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-5-13.5">
+          <p id="section-5-13.5.1"><em>RSASSA-PSS</em>: <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-5-13.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="notes-on-id-mldsa44-rsa2048-pss-sha256">
@@ -2013,9 +2106,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-5.1-2">The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44<a href="#section-5.1-2" class="pilcrow">¶</a></p>
 <p id="section-5.1-3">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
-<table class="center" id="table-3">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-rsa-pss-2048-parameters" class="selfRef">RSA-PSS 2048 Parameters</a>
           </caption>
 <thead>
@@ -2059,9 +2152,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-5.2-1">The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA-65.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
-<table class="center" id="table-4">
+<table class="center" id="table-5">
           <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-rsa-pss-3072-parameters" class="selfRef">RSA-PSS 3072 Parameters</a>
           </caption>
 <thead>
