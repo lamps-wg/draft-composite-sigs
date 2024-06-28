@@ -666,9 +666,16 @@ Signature public key types:
 
 | Component Signature Algorithm ID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| id-MLDSA44 | 1.3.6.1.4.1.2.267.12.4.4 | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
-| id-MLDSA65 |  | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
-
+| id-ML-DSA-44 | 1.3.6.1.4.1.2.267.12.4.4 | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
+| id-ML-DSA-65 | 1.3.6.1.4.1.2.267.12.6.5 | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
+| id-ML-DSA-87 | 1.3.6.1.4.1.2.267.12.8.7 | _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd] |
+| id-Ed25519 | 1.3.101.112 | _Ed25519 / Ed448_: [RFC8410] |
+| id-Ed448 | iso(1) identified-organization(3) thawte(101) id-Ed448(113) | _Ed25519 / Ed448_: [RFC8410] |
+| ecdsa-with-SHA256 | iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2 | _ECDSA_: [RFC5758] |
+| ecdsa-with-SHA512 | iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 4 | _ECDSA_: [RFC5758] |
+| sha256WithRSAEncryption | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 11 | _RSAES-PKCS-v1_5_: [RFC8017] |
+| sha512WithRSAEncryption | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 13 | _RSAES-PKCS-v1_5_: [RFC8017] |
+| id-RSASA-PSS | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 10 | _RSASSA-PSS_: [RFC8017] |
 {: #tab-component-sig-algs title="Component Signature Algorithms for use in Composite Constructions"}
 
 The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
