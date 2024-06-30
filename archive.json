@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-27T00:41:31.995130+00:00",
+  "timestamp": "2024-06-30T00:45:24.945536+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -205,7 +205,7 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
       "createdAt": "2024-06-04T21:24:28Z",
-      "updatedAt": "2024-06-05T14:37:30Z",
+      "updatedAt": "2024-06-28T15:48:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -214,6 +214,13 @@
           "body": "June 5th - Group would like to make the draft more clear in this regard, but not explode the draft.  Suggestion of a table or template section for RSA to make things more clear.    Action:  Jan to take a look at this for the next meeting (June 19th, 2024).",
           "createdAt": "2024-06-05T14:37:29Z",
           "updatedAt": "2024-06-05T14:37:29Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi @johngray-dev,  @ounsworth ,\r\nI tried to write these things together (https://github.com/lamps-wg/draft-composite-sigs/blob/7-add-a-new-section-explicitely-list-spki-algids/draft-ietf-lamps-pq-composite-sigs.md) and have a question: \r\n\r\nThe algorithm for compiling the component OIDs to the hash value is easy but nevertheless an algorithm with the possibility for errors.\r\nIf we want domain separation that way we definitely need to include the EC parameter OID in the algorithm, else NIST and brainpool curves would have the same hash. Additionally we should have a rational why we do not include the PreHash OID here. Or include this also.\r\n\r\nThis said, this whole thing only makes sense during the development phase, because we dont know the MLDSA OIDs yet. But once they are fixed, also our combination matrix is fixed with new and official CompSig OIDs. So just Hashing the CompSig OID would do the same job and is much easier to describe in the signature algorithm.\r\nI am afraid reviewers would reject the compilation algorithm for the same reason.\r\n\r\nSo the question is, do we want to go the whole way of flexibility and define the compilation algorithm (that I would gladly do and maybe reuse for the kofn algorithm) or do we go the shortcut.\r\n\r\nWhat do you think? Do I miss something here?",
+          "createdAt": "2024-06-28T15:48:25Z",
+          "updatedAt": "2024-06-28T15:48:25Z"
         }
       ]
     },
@@ -301,6 +308,22 @@
       "body": "I'm curious why in the \"Composite Signature Algorithms\" table, SHA256withECDSA for example is used instead of ECDSAwithSHA256? Isn't the latter more commonly used terminology?",
       "createdAt": "2024-06-20T10:13:31Z",
       "updatedAt": "2024-06-20T10:13:31Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOL5eEDM6N66ds",
+      "title": "PSS parameter spec tables should include the SALT length",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/15",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The suggested PSS parameter tables for id-MLDSA44-RSA2048-PSS-SHA256 and id-MLDSA65-RSA3072-PSS-SHA512 don't give any indication of the salt length to use.   \r\n\r\nIn my implementation we used 64-bytes for both, but RFC's 4055 and 8017 suggest the typical salt length as one that matches the hashing length.  This would indicate a \"typical\" salt length of 32 for id-MLDSA44-RSA2048-PSS-SHA256 and 64 id-MLDSA65-RSA3072-PSS-SHA512\r\n\r\nRFC 8017 section 9.1 says this:\r\n\r\nTypical salt lengths in octets are hLen (the length of the output\r\n       of the hash function Hash) and 0.  In both cases, the security of\r\n       RSASSA-PSS can be closely related to the hardness of inverting\r\n       RSAVP1. \r\n\r\nFrom Tim Holobeek:\r\n\r\nHello,\r\n\r\nOur engineering team has been looking at composite signatures, and found a potential ambiguity.  The draft uses OIDs for everything, with no parameters (good), but this begs the question of what the right parameters are for rsa-pss, in particular the salt length, which isn\u2019t included in the parameters table.\r\n\r\nThere\u2019s also the question of what the right answer is, which honestly I haven\u2019t had time to review.  They\u2019re saying that RFC 4055 suggests matching the length of the hash in its security considerations section, which sounds reasonable, but Openssl seems to be hard-coded to always use 64 bytes of salt.  Which sounds right to me for SHA512 but not necessarily SHA256.",
+      "createdAt": "2024-06-28T19:17:03Z",
+      "updatedAt": "2024-06-28T19:17:03Z",
       "closedAt": null,
       "comments": []
     }
