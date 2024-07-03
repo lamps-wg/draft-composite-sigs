@@ -154,6 +154,9 @@ This document defines Post-Quantum / Traditional composite Key Signaturem algori
 * Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
 * Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
 * Fixed nits and other typos
+* Added PSS parameter Salt Lengths
+* Changed the OID concatenation section to Domain Separators for clarity
+* Accepted some edits by José Ignacio Escribano
 
 # Changes since adoption by the lamps working group
 * Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
@@ -318,7 +321,7 @@ Signature Generation Process:
 
          M' = HASH(Message)
 
-   2. Generate the n component signatures independently,
+   2. Generate the 2 component signatures independently,
       according to their algorithm specifications.
 
          S1 := Sign( K1, A1, DER(OID) || M' )
@@ -406,12 +409,12 @@ Note on composite inputs: the method of providing the list of component keys and
 
 Since recursive composite public keys are disallowed, no component signature may itself be a composite; ie the signature generation process MUST fail if one of the private keys K1 or K2 is a composite.
 
-## OID Concatenation {#sec-oid-concat}
+## Domain Separators {#sec-oid-concat}
 
-As mentioned above, the OID input value for the Composite Signature Generation and verification process is the DER encoding of the OID represented in Hexidecimal bytes.   The following table shows the HEX encoding for each Signature AlgorithmID
+As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.
 
-| Composite Signature AlgorithmID | DER Encoding to be prepended to each Message |
-| ----------- | ----------- | ----------- |  ----------- |
+| Composite Signature AlgorithmID | Domain Separator (in Hex encoding)|
+| ----------- | ----------- |
 | id-MLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B50080101|
 | id-MLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B50080102|
 | id-MLDSA44-Ed25519-SHA512 |060B6086480186FA6B50080103|
@@ -425,7 +428,7 @@ As mentioned above, the OID input value for the Composite Signature Generation a
 | id-MLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008010B|
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008010C|
 | id-MLDSA87-Ed448-SHA512 |060B6086480186FA6B5008010D|
-{: #tab-sig-alg-oids title="Composite Signature OID Concatenations"}
+{: #tab-sig-alg-oids title="Composite Signature Domain Separators"}
 
 ## PreHashing the Message {#sec-prehash}
 As noted in the composite signature generation process and composite signature verification process, the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
@@ -680,6 +683,7 @@ As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-S
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256           |
 | Message Digest Algorithm   | SHA-256           |
+| Salt Length in bits        | 256               |
 {: #rsa-pss-params2048 title="RSA-PSS 2048 Parameters"}
 
 where:
@@ -699,6 +703,7 @@ As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS-S
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-512                |
 | Message Digest Algorithm   | SHA-512                |
+| Salt Length in bits        | 512                    |
 {: #rsa-pss-params3072 title="RSA-PSS 3072 Parameters"}
 
 where:
@@ -974,8 +979,9 @@ Richard Kisley (IBM),
 Serge Mister (Entrust),
 François Rousseau,
 Falko Strenzke,
-Felipe Ventura (Entrust) and
-Alexander Ralien (Siemens)
+Felipe Ventura (Entrust),
+Alexander Ralien (Siemens) and 
+José Ignacio Escribano
 
 
 We are grateful to all, including any contributors who may have been inadvertently omitted from this list.
