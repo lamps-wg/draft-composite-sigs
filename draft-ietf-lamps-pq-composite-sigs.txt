@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 21 December 2024                                        M. Pala
+Expires: 4 January 2025                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            19 June 2024
+                                                             3 July 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 December 2024.
+   This Internet-Draft will expire on 4 January 2025.
 
 Copyright Notice
 
@@ -67,7 +67,7 @@ Table of Contents
        3.3.1.  Composite KeyGen
        3.3.2.  Composite Sign
        3.3.3.  Composite Verify
-     3.4.  OID Concatenation
+     3.4.  Domain Separators
      3.5.  PreHashing the Message
      3.6.  Algorithm Selection Criteria
    4.  Composite Signature Structures
@@ -124,6 +124,13 @@ Table of Contents
       ASN.1 module
 
    *  Fixed nits and other typos
+
+   *  Added PSS parameter Salt Lengths
+
+   *  Changed the OID concatenation section to Domain Separators for
+      clarity
+
+   *  Accepted some edits by Jose Ignacio Escribano
 
 2.  Changes since adoption by the lamps working group
 
@@ -354,7 +361,7 @@ Signature Generation Process:
 
          M' = HASH(Message)
 
-   2. Generate the n component signatures independently,
+   2. Generate the 2 component signatures independently,
       according to their algorithm specifications.
 
          S1 := Sign( K1, A1, DER(OID) || M' )
@@ -466,16 +473,16 @@ Signature Verification Procedure::
    signature may itself be a composite; ie the signature generation
    process MUST fail if one of the private keys K1 or K2 is a composite.
 
-3.4.  OID Concatenation
+3.4.  Domain Separators
 
-   As mentioned above, the OID input value for the Composite Signature
-   Generation and verification process is the DER encoding of the OID
-   represented in Hexidecimal bytes.  The following table shows the HEX
-   encoding for each Signature AlgorithmID
+   As mentioned above, the OID input value is used as a domain separator
+   for the Composite Signature Generation and verification process and
+   is the DER encoding of the OID.  The following table shows the HEX
+   encoding for each Signature AlgorithmID.
 
    +=======================================+==========================+
-   |Composite Signature AlgorithmID        |DER Encoding to be        |
-   |                                       |prepended to each Message |
+   |Composite Signature AlgorithmID        |Domain Separator (in Hex  |
+   |                                       |encoding)                 |
    +=======================================+==========================+
    |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080101|
    +---------------------------------------+--------------------------+
@@ -504,7 +511,7 @@ Signature Verification Procedure::
    |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B5008010D|
    +---------------------------------------+--------------------------+
 
-             Table 1: Composite Signature OID Concatenations
+              Table 1: Composite Signature Domain Separators
 
 3.5.  PreHashing the Message
 
@@ -522,10 +529,10 @@ Signature Verification Procedure::
    2.  For ML-DSA signing a digest of the message is allowed as long as
        the hash function provides at least y bits of classical security
        strength against both collision and second preimage attacks.  For
-       MLDSA44 y is 128 bits, MLDSA65 y is 192 bits and for MLDSA87 y is
-       256 bits.  Therefore SHA256 is paired with RSA and ECDSA with
-       MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and
-       MLDSA87 to match the appropriate security strength.
+       MLDSA44 y is 128 bits, for MLDSA65 y is 192 bits and for MLDSA87
+       y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA
+       with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65
+       and MLDSA87 to match the appropriate security strength.
 
    3.  Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is
        used to pre-hash the message when Ed25519 is a component
@@ -877,6 +884,8 @@ Signature Verification Procedure::
                   +--------------------------+---------+
                   | Message Digest Algorithm | SHA-256 |
                   +--------------------------+---------+
+                  | Salt Length in bits      | 256     |
+                  +--------------------------+---------+
 
                      Table 4: RSA-PSS 2048 Parameters
 
@@ -904,6 +913,8 @@ Signature Verification Procedure::
                   | Mask Generation params   | SHA-512 |
                   +--------------------------+---------+
                   | Message Digest Algorithm | SHA-512 |
+                  +--------------------------+---------+
+                  | Salt Length in bits      | 512     |
                   +--------------------------+---------+
 
                      Table 5: RSA-PSS 3072 Parameters
@@ -2048,7 +2059,7 @@ Appendix D.  Contributors and Acknowledgements
    Daniel Van Geest (ISARA), Britta Hale, Tim Hollebeek (Digicert),
    Panos Kampanakis (Cisco Systems), Richard Kisley (IBM), Serge Mister
    (Entrust), Francois Rousseau, Falko Strenzke, Felipe Ventura
-   (Entrust) and Alexander Ralien (Siemens)
+   (Entrust), Alexander Ralien (Siemens) and Jose Ignacio Escribano
 
    We are grateful to all, including any contributors who may have been
    inadvertently omitted from this list.

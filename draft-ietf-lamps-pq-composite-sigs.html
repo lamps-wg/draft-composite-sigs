@@ -17,11 +17,11 @@
 
 
     " name="description">
-<meta content="xml2rfc 3.21.0" name="generator">
+<meta content="xml2rfc 3.22.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-lamps-pq-composite-sigs-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.21.0
+  xml2rfc 3.22.0
     Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
@@ -31,9 +31,8 @@
     platformdirs 4.2.2
     pycountry 22.3.5
     PyYAML 6.0.1
-    requests 2.31.0
+    requests 2.32.3
     setuptools 69.5.1
-    six 1.16.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-lamps-pq-composite-sigs.xml" rel="alternate" type="application/rfc+xml">
@@ -1033,11 +1032,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">PQ Composite ML-DSA</td>
-<td class="right">June 2024</td>
+<td class="right">July 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 21 December 2024</td>
+<td class="center">Expires 4 January 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1050,12 +1049,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-06-19" class="published">19 June 2024</time>
+<time datetime="2024-07-03" class="published">3 July 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-12-21">21 December 2024</time></dd>
+<dd class="expires"><time datetime="2025-01-04">4 January 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1105,7 +1104,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1164,7 +1163,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-oid-concatenation" class="internal xref">OID Concatenation</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-domain-separators" class="internal xref">Domain Separators</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
                 <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-prehashing-the-message" class="internal xref">PreHashing the Message</a></p>
@@ -1341,6 +1340,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
         <li class="normal" id="section-1-1.4">
           <p id="section-1-1.4.1">Fixed nits and other typos<a href="#section-1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-1.5">
+          <p id="section-1-1.5.1">Added PSS parameter Salt Lengths<a href="#section-1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-1.6">
+          <p id="section-1-1.6.1">Changed the OID concatenation section to Domain Separators for clarity<a href="#section-1-1.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-1.7">
+          <p id="section-1-1.7.1">Accepted some edits by Jose Ignacio Escribano<a href="#section-1-1.7.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1531,7 +1539,7 @@ Signature Generation Process:
 
          M' = HASH(Message)
 
-   2. Generate the n component signatures independently,
+   2. Generate the 2 component signatures independently,
       according to their algorithm specifications.
 
          S1 := Sign( K1, A1, DER(OID) || M' )
@@ -1629,20 +1637,20 @@ Signature Verification Procedure::
 </div>
 <div id="sec-oid-concat">
 <section id="section-3.4">
-        <h3 id="name-oid-concatenation">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-oid-concatenation" class="section-name selfRef">OID Concatenation</a>
+        <h3 id="name-domain-separators">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-domain-separators" class="section-name selfRef">Domain Separators</a>
         </h3>
-<p id="section-3.4-1">As mentioned above, the OID input value for the Composite Signature Generation and verification process is the DER encoding of the OID represented in Hexidecimal bytes.   The following table shows the HEX encoding for each Signature AlgorithmID<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<span id="name-composite-signature-oid-con"></span><div id="tab-sig-alg-oids">
+<p id="section-3.4-1">As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<span id="name-composite-signature-domain-"></span><div id="tab-sig-alg-oids">
 <table class="center" id="table-1">
           <caption>
 <a href="#table-1" class="selfRef">Table 1</a>:
-<a href="#name-composite-signature-oid-con" class="selfRef">Composite Signature OID Concatenations</a>
+<a href="#name-composite-signature-domain-" class="selfRef">Composite Signature Domain Separators</a>
           </caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Composite Signature AlgorithmID</th>
-              <th class="text-left" rowspan="1" colspan="1">DER Encoding to be prepended to each Message</th>
+              <th class="text-left" rowspan="1" colspan="1">Domain Separator (in Hex encoding)</th>
             </tr>
           </thead>
           <tbody>
@@ -1714,7 +1722,7 @@ Signature Verification Procedure::
             <p id="section-3.5-2.1.1">For composites paired with RSA or ECDSA, the hashing algorithm SHA256 or SHA512 is used as part of the RSA or ECDSA signature algorithm and is therefore also used as the composite prehashing algorithm.<a href="#section-3.5-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.2">
-            <p id="section-3.5-2.2.1">For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 y is 128 bits, MLDSA65 y is 192 bits and for MLDSA87 y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.<a href="#section-3.5-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-3.5-2.2.1">For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 y is 128 bits, for MLDSA65 y is 192 bits and for MLDSA87 y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.<a href="#section-3.5-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.3">
             <p id="section-3.5-2.3.1">Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.<a href="#section-3.5-2.3.1" class="pilcrow">¶</a></p>
@@ -2121,6 +2129,10 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
               <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
               <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
             </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+              <td class="text-left" rowspan="1" colspan="1">256</td>
+            </tr>
           </tbody>
         </table>
 </div>
@@ -2166,6 +2178,10 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
               <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+              <td class="text-left" rowspan="1" colspan="1">512</td>
             </tr>
           </tbody>
         </table>
@@ -3343,8 +3359,9 @@ Richard Kisley (IBM),
 Serge Mister (Entrust),
 Francois Rousseau,
 Falko Strenzke,
-Felipe Ventura (Entrust) and
-Alexander Ralien (Siemens)<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+Felipe Ventura (Entrust),
+Alexander Ralien (Siemens) and
+Jose Ignacio Escribano<a href="#appendix-D-2" class="pilcrow">¶</a></p>
 <p id="appendix-D-3">We are grateful to all, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-D-3" class="pilcrow">¶</a></p>
 <p id="appendix-D-4">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
    documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-D-4" class="pilcrow">¶</a></p>
