@@ -149,7 +149,9 @@ This document defines Post-Quantum / Traditional composite Key Signaturem algori
 
 --- middle
 
-# Changes since the -01 version
+# Document Changes
+
+## Changes since the -01 version
 * Added a "Use in CMS" section
 * Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
 * Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
@@ -158,7 +160,7 @@ This document defines Post-Quantum / Traditional composite Key Signaturem algori
 * Changed the OID concatenation section to Domain Separators for clarity
 * Accepted some edits by José Ignacio Escribano
 
-# Changes since adoption by the lamps working group
+## Changes since adoption by the lamps working group
 * Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
 * Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
 * Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
