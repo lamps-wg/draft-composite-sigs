@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 4 January 2025                                          M. Pala
+Expires: 5 January 2025                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             3 July 2024
+                                                             4 July 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2025.
+   This Internet-Draft will expire on 5 January 2025.
 
 Copyright Notice
 
@@ -58,47 +58,48 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Changes since the -01 version
-   2.  Changes since adoption by the lamps working group
-   3.  Introduction
-     3.1.  Terminology
-     3.2.  Composite Design Philosophy
-     3.3.  Composite Signatures
-       3.3.1.  Composite KeyGen
-       3.3.2.  Composite Sign
-       3.3.3.  Composite Verify
-     3.4.  Domain Separators
-     3.5.  PreHashing the Message
-     3.6.  Algorithm Selection Criteria
+   1.  Document Changes
+     1.1.  Changes since the -01 version
+     1.2.  Changes since adoption by the lamps working group
+   2.  Introduction
+     2.1.  Terminology
+     2.2.  Composite Design Philosophy
+     2.3.  Composite Signatures
+       2.3.1.  Composite KeyGen
+       2.3.2.  Composite Sign
+       2.3.3.  Composite Verify
+     2.4.  Domain Separators
+     2.5.  PreHashing the Message
+     2.6.  Algorithm Selection Criteria
+   3.  Composite Signature Structures
+     3.1.  pk-CompositeSignature
+     3.2.  CompositeSignaturePublicKey
+     3.3.  CompositeSignaturePrivateKey
+     3.4.  Encoding Rules
+     3.5.  Key Usage Bits
    4.  Composite Signature Structures
-     4.1.  pk-CompositeSignature
-     4.2.  CompositeSignaturePublicKey
-     4.3.  CompositeSignaturePrivateKey
-     4.4.  Encoding Rules
-     4.5.  Key Usage Bits
-   5.  Composite Signature Structures
-     5.1.  sa-CompositeSignature
-     5.2.  CompositeSignatureValue
-   6.  Algorithm Identifiers
-     6.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
-     6.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
-   7.  Use in CMS
-     7.1.  Underlying Components
-     7.2.  SignedData Conventions
-     7.3.  Certificate Conventions
-     7.4.  SMIMECapabilities Attribute Conventions
-   8.  ASN.1 Module
-   9.  IANA Considerations
-     9.1.  Object Identifier Allocations
-       9.1.1.  Module Registration - SMI Security for PKIX Module
+     4.1.  sa-CompositeSignature
+     4.2.  CompositeSignatureValue
+   5.  Algorithm Identifiers
+     5.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
+     5.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+   6.  Use in CMS
+     6.1.  Underlying Components
+     6.2.  SignedData Conventions
+     6.3.  Certificate Conventions
+     6.4.  SMIMECapabilities Attribute Conventions
+   7.  ASN.1 Module
+   8.  IANA Considerations
+     8.1.  Object Identifier Allocations
+       8.1.1.  Module Registration - SMI Security for PKIX Module
                Identifier
-       9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+       8.1.2.  Object Identifier Registrations - SMI Security for PKIX
                Algorithms
-   10. Security Considerations
-     10.1.  Policy for Deprecated and Acceptable Algorithms
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   9.  Security Considerations
+     9.1.  Policy for Deprecated and Acceptable Algorithms
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Appendix A.  Samples
      A.1.  Explicit Composite Signature Examples
        A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
@@ -113,7 +114,9 @@ Table of Contents
      D.1.  Making contributions
    Authors' Addresses
 
-1.  Changes since the -01 version
+1.  Document Changes
+
+1.1.  Changes since the -01 version
 
    *  Added a "Use in CMS" section
 
@@ -132,7 +135,7 @@ Table of Contents
 
    *  Accepted some edits by Jose Ignacio Escribano
 
-2.  Changes since adoption by the lamps working group
+1.2.  Changes since adoption by the lamps working group
 
    *  Added back in the version 13 changes which were dropped by mistake
       in the initial -00 adopted version
@@ -145,7 +148,7 @@ Table of Contents
 
    *  Resolved comments from Kris Kwiatkowski regarding FIPS
 
-3.  Introduction
+2.  Introduction
 
    During the transition to post-quantum cryptography, there will be
    uncertainty as to the strength of cryptographic algorithms; we will
@@ -221,7 +224,7 @@ Table of Contents
    [I-D.hale-pquip-hybrid-signature-spectrums] using a label as defined
    in [Bindel2017].
 
-3.1.  Terminology
+2.1.  Terminology
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -245,7 +248,7 @@ Table of Contents
    within a composite algorithm.
 
    COMPOSITE ALGORITHM: An algorithm which is a sequence of two
-   component algorithms, as defined in Section 4.
+   component algorithms, as defined in Section 3.
 
    DER: Distinguished Encoding Rules as defined in [X.690].
 
@@ -271,7 +274,7 @@ Table of Contents
    detectable by the receiver.  For example, substituting a composite
    public key or signature for a version with fewer components.
 
-3.2.  Composite Design Philosophy
+2.2.  Composite Design Philosophy
 
    [I-D.driscoll-pqt-hybrid-terminology] defines composites as:
 
@@ -294,7 +297,7 @@ Table of Contents
    without requiring any modification of the protocol to handle multiple
    keys.
 
-3.3.  Composite Signatures
+2.3.  Composite Signatures
 
    Here we define the signature mechanism in which a signature is a
    cryptographic primitive that consists of three algorithms:
@@ -317,21 +320,21 @@ Table of Contents
    be combined into a single cryptographic signature operation and can
    be used for applications that require signatures.
 
-3.3.1.  Composite KeyGen
+2.3.1.  Composite KeyGen
 
    The KeyGen() -> (pk, sk) of a composite signature algorithm will
    perform the KeyGen() of the respective component signature algorithms
-   and it produces a composite public key pk as per Section 4.2 and a
-   composite secret key sk is per Section 4.3.  The component keys MUST
+   and it produces a composite public key pk as per Section 3.2 and a
+   composite secret key sk is per Section 3.3.  The component keys MUST
    be uniquely generated for each component key of a Composite and MUST
    NOT be used in any other keys or as a standalone key.
 
-3.3.2.  Composite Sign
+2.3.2.  Composite Sign
 
    Generation of a composite signature involves applying each component
    algorithm's signature process to the input message according to its
    specification, and then placing each component signature value into
-   the CompositeSignatureValue structure defined in Section 5.1.
+   the CompositeSignatureValue structure defined in Section 4.1.
 
    The following process is used to generate composite signature values.
 
@@ -395,7 +398,7 @@ Signature Generation Process:
    CompositePublicKey, and they MUST be in the same order; ie in the
    output, S1 MUST correspond to K1, S2 to K2.
 
-3.3.3.  Composite Verify
+2.3.3.  Composite Verify
 
    Verification of a composite signature involves applying each
    component algorithm's verification process according to its
@@ -473,7 +476,7 @@ Signature Verification Procedure::
    signature may itself be a composite; ie the signature generation
    process MUST fail if one of the private keys K1 or K2 is a composite.
 
-3.4.  Domain Separators
+2.4.  Domain Separators
 
    As mentioned above, the OID input value is used as a domain separator
    for the Composite Signature Generation and verification process and
@@ -513,7 +516,7 @@ Signature Verification Procedure::
 
               Table 1: Composite Signature Domain Separators
 
-3.5.  PreHashing the Message
+2.5.  PreHashing the Message
 
    As noted in the composite signature generation process and composite
    signature verification process, the Message should be pre-hashed into
@@ -542,7 +545,7 @@ Signature Verification Procedure::
        of prehashing algorihtms, SHA512 was selected to pre-hash the
        message when Ed448 is a component algorithm.
 
-3.6.  Algorithm Selection Criteria
+2.6.  Algorithm Selection Criteria
 
    The composite algorithm combinations defined in this document were
    chosen according to the following guidelines:
@@ -572,7 +575,7 @@ Signature Verification Procedure::
    specification from extending these structures to define combinations
    with three or more components.
 
-4.  Composite Signature Structures
+3.  Composite Signature Structures
 
    In order for signatures to be composed of multiple algorithms, we
    define encodings consisting of a sequence of signature primitives
@@ -581,7 +584,7 @@ Signature Verification Procedure::
    found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS
    [RFC5652].
 
-4.1.  pk-CompositeSignature
+3.1.  pk-CompositeSignature
 
    The following ASN.1 Information Object Class is a template to be used
    in defining all composite Signature public key types.
@@ -606,9 +609,9 @@ Signature Verification Procedure::
      OCTET STRING, ECPoint}
 
    The full set of key types defined by this specification can be found
-   in the ASN.1 Module in Section 8.
+   in the ASN.1 Module in Section 7.
 
-4.2.  CompositeSignaturePublicKey
+3.2.  CompositeSignaturePublicKey
 
    Composite public key data is represented by the following structure:
 
@@ -616,11 +619,11 @@ Signature Verification Procedure::
 
    A composite key MUST contain two component public keys.  The order of
    the component keys is determined by the definition of the
-   corresponding algorithm identifier as defined in section Section 6.
+   corresponding algorithm identifier as defined in section Section 5.
 
    Some applications may need to reconstruct the SubjectPublicKeyInfo
    objects corresponding to each component public key.  Table 3 in
-   Section 6 provides the necessary mapping between composite and their
+   Section 5 provides the necessary mapping between composite and their
    component algorithms for doing this reconstruction.  This also
    motivates the design choice of SEQUENCE OF BIT STRING instead of
    SEQUENCE OF OCTET STRING; using BIT STRING allows for easier
@@ -629,12 +632,12 @@ Signature Verification Procedure::
 
    When the CompositeSignaturePublicKey must be provided in octet string
    or bit string format, the data structure is encoded as specified in
-   Section 4.4.
+   Section 3.4.
 
    Component keys of a CompositeSignaturePublicKey MUST NOT be used in
    any other type of key or as a standalone key.
 
-4.3.  CompositeSignaturePrivateKey
+3.3.  CompositeSignaturePrivateKey
 
    Usecases that require an interoperable encoding for composite private
    keys, such as when private keys are carried in PKCS #12 [RFC7292],
@@ -648,13 +651,13 @@ Signature Verification Procedure::
    The parameters field MUST be absent.
 
    The order of the component keys is the same as the order defined in
-   Section 4.2 for the components of CompositeSignaturePublicKey.
+   Section 3.2 for the components of CompositeSignaturePublicKey.
 
    When a CompositeSignaturePrivateKey is conveyed inside a
    OneAsymmetricKey structure (version 1 of which is also known as
    PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set
    to the corresponding composite algorithm identifier defined according
-   to Section 6, the privateKey field SHALL contain the
+   to Section 5, the privateKey field SHALL contain the
    CompositeSignaturePrivateKey, and the publicKey field MUST NOT be
    present.  Associated public key material MAY be present in the
    CompositeSignaturePrivateKey.
@@ -671,7 +674,7 @@ Signature Verification Procedure::
    Component keys of a CompositeSignaturePrivateKey MUST NOT be used in
    any other type of key or as a standalone key.
 
-4.4.  Encoding Rules
+3.4.  Encoding Rules
 
    Many protocol specifications will require that the composite public
    key and composite private key data structures be represented by an
@@ -694,7 +697,7 @@ Signature Verification Procedure::
    implementations that parse these structures MAY accept both BER and
    DER.
 
-4.5.  Key Usage Bits
+3.5.  Key Usage Bits
 
    For protocols such as X.509 [RFC5280] that specify key usage along
    with the public key, then the composite public key associated with a
@@ -722,9 +725,9 @@ Signature Verification Procedure::
    digitalSignature; and
    nonRepudiation;
 
-5.  Composite Signature Structures
+4.  Composite Signature Structures
 
-5.1.  sa-CompositeSignature
+4.1.  sa-CompositeSignature
 
    The ASN.1 algorithm object for a composite signature is:
 
@@ -759,7 +762,7 @@ Signature Verification Procedure::
 
                                   Table 2
 
-5.2.  CompositeSignatureValue
+4.2.  CompositeSignatureValue
 
    The output of the composite signature algorithm is the DER encoding
    of the following structure:
@@ -776,7 +779,7 @@ Signature Verification Procedure::
    values, is to gracefully handle variable-length signature values by
    taking advantage of ASN.1's built-in length fields.
 
-6.  Algorithm Identifiers
+5.  Algorithm Identifiers
 
    This section defines the algorithm identifiers for explicit
    combinations.  For simplicity and prototyping purposes, the signature
@@ -846,7 +849,7 @@ Signature Verification Procedure::
 
    The table above contains everything needed to implement the listed
    explicit composite algorithms.  See the ASN.1 module in section
-   Section 8 for the explicit definitions of the above Composite
+   Section 7 for the explicit definitions of the above Composite
    signature algorithms.
 
    Full specifications for the referenced algorithms can be found as
@@ -863,7 +866,7 @@ Signature Verification Procedure::
 
    *  _RSASSA-PSS_: [RFC8017]
 
-6.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
+5.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
 
    Use of RSA-PSS [RFC8017] deserves a special explanation.
 
@@ -895,7 +898,7 @@ Signature Verification Procedure::
 
    *  SHA-256 is defined in [RFC6234].
 
-6.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+5.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
 
    The RSA component keys MUST be generated at the 3072-bit security
    level in order to match with ML-DSA-65.
@@ -925,7 +928,7 @@ Signature Verification Procedure::
 
    *  SHA-512 is defined in [RFC6234].
 
-7.  Use in CMS
+6.  Use in CMS
 
    [EDNOTE: The convention in LAMPS is to specify algorithms and their
    CMS conventions in separate documents.  Here we have presented them
@@ -935,7 +938,7 @@ Signature Verification Procedure::
    Composite Signature algorithms MAY be employed for one or more
    recipients in the CMS signed-data content type [RFC5652].
 
-7.1.  Underlying Components
+6.1.  Underlying Components
 
    When a particular Composite Signature OID is supported in CMS, an
    implementation SHOULD support the corresponding Secure Hash algorithm
@@ -980,7 +983,7 @@ Signature Verification Procedure::
 
    *  SHA2 instantiations are defined in [FIPS180].
 
-7.2.  SignedData Conventions
+6.2.  SignedData Conventions
 
    As specified in CMS [RFC5652], the digital signature is produced from
    the message digest and the signer's private key.  The signature is
@@ -1015,7 +1018,7 @@ Signature Verification Procedure::
    from the composite signing operation of the specified
    signatureAlgorithm.
 
-7.3.  Certificate Conventions
+6.3.  Certificate Conventions
 
    The conventions specified in this section augment RFC 5280 [RFC5280].
 
@@ -1043,7 +1046,7 @@ Signature Verification Procedure::
    with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign'
    key usages.
 
-7.4.  SMIMECapabilities Attribute Conventions
+6.4.  SMIMECapabilities Attribute Conventions
 
    Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to
    announce a partial list of algorithms that an S/MIME implementation
@@ -1056,7 +1059,7 @@ Signature Verification Procedure::
    Algorithm MUST include the appropriate object identifier as per
    Table 6 in the capabilityID field.
 
-8.  ASN.1 Module
+7.  ASN.1 Module
 
    <CODE STARTS>
 
@@ -1370,19 +1373,19 @@ Signature Verification Procedure::
 
    <CODE ENDS>
 
-9.  IANA Considerations
+8.  IANA Considerations
 
    IANA is requested to allocate a value from the "SMI Security for PKIX
    Module Identifier" registry [RFC7299] for the included ASN.1 module,
    and allocate values from "SMI Security for PKIX Algorithms" to
    identify the fourteen Algorithms defined within.
 
-9.1.  Object Identifier Allocations
+8.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
    module and in Table 3.
 
-9.1.1.  Module Registration - SMI Security for PKIX Module Identifier
+8.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
    *  Decimal: IANA Assigned - *Replace TBDMOD*
 
@@ -1391,7 +1394,7 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+8.1.2.  Object Identifier Registrations - SMI Security for PKIX
         Algorithms
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
@@ -1498,9 +1501,9 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-10.  Security Considerations
+9.  Security Considerations
 
-10.1.  Policy for Deprecated and Acceptable Algorithms
+9.1.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
@@ -1553,9 +1556,9 @@ Signature Verification Procedure::
    in a way that is tamper-resistant and does not allow the component
    keys to be trusted independently.
 
-11.  References
+10.  References
 
-11.1.  Normative References
+10.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1641,7 +1644,7 @@ Signature Verification Procedure::
               Encoding Rules (CER) and Distinguished Encoding Rules
               (DER)", ISO/IEC 8825-1:2015, November 2015.
 
-11.2.  Informative References
+10.2.  Informative References
 
    [ANSSI2024]
               French Cybersecurity Agency (ANSSI), Federal Office for
