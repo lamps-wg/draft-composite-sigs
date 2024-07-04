@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-02T00:41:40.776832+00:00",
+  "timestamp": "2024-07-04T00:41:51.532066+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -201,11 +201,13 @@
       "state": "OPEN",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
       "createdAt": "2024-06-04T21:24:28Z",
-      "updatedAt": "2024-06-28T15:48:25Z",
+      "updatedAt": "2024-07-03T14:59:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -236,7 +238,7 @@
       "labels": [],
       "body": "See on-list discussion: https://mailarchive.ietf.org/arch/msg/spasm/oH68LMpwXtpvltK2PnQSCUO9s0k/\r\n\r\nI see that draft-ietf-lamps-dilithium-certificates-03 does this:\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~\r\n",
       "createdAt": "2024-06-06T17:32:33Z",
-      "updatedAt": "2024-06-06T21:12:51Z",
+      "updatedAt": "2024-07-03T15:00:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -252,6 +254,13 @@
           "body": "Russ suggested:\r\n\r\n~~~\r\npk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::= {\r\n  IDENTIFIER id-MLDSA87-ECDSA-P384-SHA512\r\n  KEY SEQUENCE {key1 BIT STRING, key2 ECPoint}\r\n  PARAMS ARE absent\r\n  CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign} )\r\n~~~\r\n\r\nwith some text to explain that BIT STRING is unwrapped / raw.",
           "createdAt": "2024-06-06T21:12:51Z",
           "updatedAt": "2024-06-06T21:12:51Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Duplicate of #11 ?",
+          "createdAt": "2024-07-03T15:00:14Z",
+          "updatedAt": "2024-07-03T15:00:14Z"
         }
       ]
     },
@@ -291,9 +300,24 @@
       "labels": [],
       "body": "We defined the pk-CompositeSignature information object class so that the rest of the ASN.1 module could be more compact, but it might be limiting optimization since this draft is now ML-DSA only. Perhaps we should remove this and and just directly define the PUBLIC-KEY structure for each public key type?\r\n\r\nSee, for example, the definition from draft-ietf-lamps-dilithium-certificates-03\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~",
       "createdAt": "2024-06-06T17:35:24Z",
-      "updatedAt": "2024-06-06T17:35:24Z",
+      "updatedAt": "2024-07-03T14:51:12Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group decided to look at this in more detail post IETF 120.",
+          "createdAt": "2024-07-03T14:48:21Z",
+          "updatedAt": "2024-07-03T14:48:21Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The optimization that I would like us to take advantage of is to more closely match the public key encoding from \r\n\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-lamps-dilithium-certificates-03#name-asn1-module\r\n\r\nWe should check the DER encoding of the Dilithium public key within a composite public key against the sample in the dilithium-certs draft. The question is whether the composite is adding an extra OCTET STRING tag which is not strictly necessary.",
+          "createdAt": "2024-07-03T14:51:10Z",
+          "updatedAt": "2024-07-03T14:51:10Z"
+        }
+      ]
     },
     {
       "number": 14,
@@ -303,29 +327,47 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "I'm curious why in the \"Composite Signature Algorithms\" table, SHA256withECDSA for example is used instead of ECDSAwithSHA256? Isn't the latter more commonly used terminology?",
       "createdAt": "2024-06-20T10:13:31Z",
-      "updatedAt": "2024-06-20T10:13:31Z",
+      "updatedAt": "2024-07-03T14:42:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In July 3rd, Jan said he would update the table.  ",
+          "createdAt": "2024-07-03T14:41:47Z",
+          "updatedAt": "2024-07-03T14:41:47Z"
+        }
+      ]
     },
     {
       "number": 15,
       "id": "I_kwDOL5eEDM6N66ds",
       "title": "PSS parameter spec tables should include the SALT length",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/15",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The suggested PSS parameter tables for id-MLDSA44-RSA2048-PSS-SHA256 and id-MLDSA65-RSA3072-PSS-SHA512 don't give any indication of the salt length to use.   \r\n\r\nIn my implementation we used 64-bytes for both, but RFC's 4055 and 8017 suggest the typical salt length as one that matches the hashing length.  This would indicate a \"typical\" salt length of 32 for id-MLDSA44-RSA2048-PSS-SHA256 and 64 id-MLDSA65-RSA3072-PSS-SHA512\r\n\r\nRFC 8017 section 9.1 says this:\r\n\r\nTypical salt lengths in octets are hLen (the length of the output\r\n       of the hash function Hash) and 0.  In both cases, the security of\r\n       RSASSA-PSS can be closely related to the hardness of inverting\r\n       RSAVP1. \r\n\r\nFrom Tim Holobeek:\r\n\r\nHello,\r\n\r\nOur engineering team has been looking at composite signatures, and found a potential ambiguity.  The draft uses OIDs for everything, with no parameters (good), but this begs the question of what the right parameters are for rsa-pss, in particular the salt length, which isn\u2019t included in the parameters table.\r\n\r\nThere\u2019s also the question of what the right answer is, which honestly I haven\u2019t had time to review.  They\u2019re saying that RFC 4055 suggests matching the length of the hash in its security considerations section, which sounds reasonable, but Openssl seems to be hard-coded to always use 64 bytes of salt.  Which sounds right to me for SHA512 but not necessarily SHA256.",
       "createdAt": "2024-06-28T19:17:03Z",
-      "updatedAt": "2024-06-28T19:17:03Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-03T20:45:54Z",
+      "closedAt": "2024-07-03T20:45:53Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the comments.   We added PSS salt parameters.   We used 256 bits for id-MLDSA44-RSA2048-PSS-SHA256 and 512 bits for  id-MLDSA65-RSA3072-PSS-SHA512\r\n\r\nhttps://github.com/lamps-wg/draft-composite-sigs/commit/5753715bfe3cf35b5f797b14d8584041459a3266",
+          "createdAt": "2024-07-03T20:45:53Z",
+          "updatedAt": "2024-07-03T20:45:53Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -362,25 +404,40 @@
       "id": "PR_kwDOL5eEDM5x9jYU",
       "title": "Fix typos",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/12",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "jiep",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-06-10T11:09:06Z",
-      "updatedAt": "2024-06-10T11:12:28Z",
+      "updatedAt": "2024-07-03T20:50:35Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "b7f6a91cd28f8324904466b4e2911495ace19023",
       "headRepository": "jiep/draft-composite-sigs",
       "headRefName": "patch-1",
       "headRefOid": "43070ba61ceae7b528446d32a5113785157b696a",
-      "closedAt": null,
+      "closedAt": "2024-07-03T20:50:03Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We merged your comments separately.   We changed the n to 2 as you suggested, we reworded the about the y bitstrength, and we looked up what NIST used in their documents and they used ML-DSA-44 (for example), so we will continue to use that one.    Thank you so much for your comments and suggestions.  We also added you to the acknowledgement section at the end of the document.  ",
+          "createdAt": "2024-07-03T20:49:46Z",
+          "updatedAt": "2024-07-03T20:49:46Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As mentioned above, we manually merged your comments and made some suggested wording changes.  ",
+          "createdAt": "2024-07-03T20:50:34Z",
+          "updatedAt": "2024-07-03T20:50:34Z"
+        }
+      ],
       "reviews": []
     },
     {
