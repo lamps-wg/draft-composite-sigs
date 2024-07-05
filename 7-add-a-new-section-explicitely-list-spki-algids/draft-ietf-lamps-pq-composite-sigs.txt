@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 30 December 2024                                        M. Pala
+Expires: 6 January 2025                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            28 June 2024
+                                                             5 July 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2024.
+   This Internet-Draft will expire on 6 January 2025.
 
 Copyright Notice
 
@@ -58,7 +58,9 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Changes since adoption by the lamps working group
+   1.  Document Changes
+     1.1.  Changes since the -01 version
+     1.2.  Changes since adoption by the lamps working group
    2.  Introduction
      2.1.  Terminology
      2.2.  Composite Design Philosophy
@@ -66,7 +68,7 @@ Table of Contents
        2.3.1.  Composite KeyGen
        2.3.2.  Composite Sign
        2.3.3.  Composite Verify
-     2.4.  Composite Signature Domain ID
+     2.4.  Domain Separators
      2.5.  PreHashing the Message
      2.6.  Algorithm Selection Criteria
    3.  Composite Signature Structures
@@ -81,18 +83,23 @@ Table of Contents
    5.  Algorithm Identifiers
      5.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
      5.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
-   6.  ASN.1 Module
-   7.  IANA Considerations
-     7.1.  Object Identifier Allocations
-       7.1.1.  Module Registration - SMI Security for PKIX Module
+   6.  Use in CMS
+     6.1.  Underlying Components
+     6.2.  SignedData Conventions
+     6.3.  Certificate Conventions
+     6.4.  SMIMECapabilities Attribute Conventions
+   7.  ASN.1 Module
+   8.  IANA Considerations
+     8.1.  Object Identifier Allocations
+       8.1.1.  Module Registration - SMI Security for PKIX Module
                Identifier
-       7.1.2.  Object Identifier Registrations - SMI Security for PKIX
+       8.1.2.  Object Identifier Registrations - SMI Security for PKIX
                Algorithms
-   8.  Security Considerations
-     8.1.  Policy for Deprecated and Acceptable Algorithms
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   9.  Security Considerations
+     9.1.  Policy for Deprecated and Acceptable Algorithms
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Appendix A.  Samples
      A.1.  Explicit Composite Signature Examples
        A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
@@ -107,7 +114,28 @@ Table of Contents
      D.1.  Making contributions
    Authors' Addresses
 
-1.  Changes since adoption by the lamps working group
+1.  Document Changes
+
+1.1.  Changes since the -01 version
+
+   *  Added a "Use in CMS" section
+
+   *  Removed a Falon reference from the ASN.1 document (which was a
+      typo in reference to Falcon)
+
+   *  Added SMIME-CAPS into the sa-CompositeSignature definition in the
+      ASN.1 module
+
+   *  Fixed nits and other typos
+
+   *  Added PSS parameter Salt Lengths
+
+   *  Changed the OID concatenation section to Domain Separators for
+      clarity
+
+   *  Accepted some edits by Jose Ignacio Escribano
+
+1.2.  Changes since adoption by the lamps working group
 
    *  Added back in the version 13 changes which were dropped by mistake
       in the initial -00 adopted version
@@ -336,7 +364,7 @@ Signature Generation Process:
 
          M' = HASH(Message)
 
-   2. Generate the n component signatures independently,
+   2. Generate the 2 component signatures independently,
       according to their algorithm specifications.
 
          S1 := Sign( K1, A1, DER(OID) || M' )
@@ -449,43 +477,45 @@ Signature Verification Procedure::
    signature may itself be a composite; ie the signature generation
    process MUST fail if one of the private keys K1 or K2 is a composite.
 
-2.4.  Composite Signature Domain ID
+2.4.  Domain Separators
 
-   As mentioned above, the Composite Signature Domain ID for the
-   Composite Signature Generation and Verification process is a hash
-   value of the concatenated OIDs of the component algorithms.  It is
-   computed by forming a SEQUENCE of the algorithm identifiers, encoding
-   it as DER string and hashing it:
+   As mentioned above, the OID input value is used as a domain separator
+   for the Composite Signature Generation and verification process and
+   is the DER encoding of the OID.  The following table shows the HEX
+   encoding for each Signature AlgorithmID.
 
-   getDomId ( oid1, oid2 )
-   Input:
-   Oid1, Oid2      OID of component algorithm 1 & 2
+   +=======================================+==========================+
+   |Composite Signature AlgorithmID        |Domain Separator (in Hex  |
+   |                                       |encoding)                 |
+   +=======================================+==========================+
+   |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080101|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-RSA2048-PKCS15-SHA256       |060B6086480186FA6B50080102|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-Ed25519-SHA512              |060B6086480186FA6B50080103|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080104|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080105|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B50080106|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B50080107|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B50080108|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B50080109|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-Ed25519-SHA512              |060B6086480186FA6B5008010A|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-ECDSA-P384-SHA512           |060B6086480186FA6B5008010B|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-ECDSA-brainpoolP384r1-SHA512|060B6086480186FA6B5008010C|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B5008010D|
+   +---------------------------------------+--------------------------+
 
-   Procedure:
-   1.  Form the component OID SEQUENCE:
-       SEQUENCE {
-         AlgorithmIdentifier ::= SEQUENCE {
-           {
-             <oid1>
-           }
-         },
-         AlgorithmIdentifier ::= SEQUENCE {
-           {
-             <oid2>
-           }
-         }
-       }
-   2.  Encode SEQUENCE as DER string
-   3.  Compute the hash value of the DER string using SHA256.
-       DomId = HASH( DERString )
-
-   Output:
-   DomId  SHA256 hash value
-
-           Figure 3: Forming of Composite Signature context value
-
-   See section Section 5 for valid combinations of component algorithm
-   OIDs.
+              Table 1: Composite Signature Domain Separators
 
 2.5.  PreHashing the Message
 
@@ -503,10 +533,10 @@ Signature Verification Procedure::
    2.  For ML-DSA signing a digest of the message is allowed as long as
        the hash function provides at least y bits of classical security
        strength against both collision and second preimage attacks.  For
-       MLDSA44 y is 128 bits, MLDSA65 y is 192 bits and for MLDSA87 y is
-       256 bits.  Therefore SHA256 is paired with RSA and ECDSA with
-       MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and
-       MLDSA87 to match the appropriate security strength.
+       MLDSA44 y is 128 bits, for MLDSA65 y is 192 bits and for MLDSA87
+       y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA
+       with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65
+       and MLDSA87 to match the appropriate security strength.
 
    3.  Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is
        used to pre-hash the message when Ed25519 is a component
@@ -580,7 +610,7 @@ Signature Verification Procedure::
      OCTET STRING, ECPoint}
 
    The full set of key types defined by this specification can be found
-   in the ASN.1 Module in Section 6.
+   in the ASN.1 Module in Section 7.
 
 3.2.  CompositeSignaturePublicKey
 
@@ -593,7 +623,7 @@ Signature Verification Procedure::
    corresponding algorithm identifier as defined in section Section 5.
 
    Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 2 in
+   objects corresponding to each component public key.  Table 3 in
    Section 5 provides the necessary mapping between composite and their
    component algorithms for doing this reconstruction.  This also
    motivates the design choice of SEQUENCE OF BIT STRING instead of
@@ -710,6 +740,7 @@ Signature Verification Procedure::
            VALUE CompositeSignatureValue
            PARAMS ARE absent
            PUBLIC-KEYS { publicKeyType }
+           SMIME-CAPS { IDENTIFIED BY id }
        }
 
    The following is an explanation how SIGNATURE-ALGORITHM elements are
@@ -730,7 +761,7 @@ Signature Verification Procedure::
     |                             | produce the composite signature   |
     +-----------------------------+-----------------------------------+
 
-                                  Table 1
+                                  Table 2
 
 4.2.  CompositeSignatureValue
 
@@ -815,7 +846,7 @@ Signature Verification Procedure::
    |id-MLDSA87-Ed448-SHA512      |<CompSig>.13|MLDSA87  |Ed448                  |SHA512|
    +-----------------------------+------------+---------+-----------------------+------+
 
-                  Table 2: Composite Signature Algorithms
+                  Table 3: Composite Signature Algorithms
 
    +=======================+========================+=======================================+
    |Component Signature    |OID                     |Specification                          |
@@ -865,12 +896,12 @@ Signature Verification Procedure::
    |                       |pkcs(1) pkcs-1(1) 10    |                                       |
    +-----------------------+------------------------+---------------------------------------+
 
-        Table 3: Component Signature Algorithms for use in Composite
+        Table 4: Component Signature Algorithms for use in Composite
                                Constructions
 
    The table above contains everything needed to implement the listed
    explicit composite algorithms.  See the ASN.1 module in section
-   Section 6 for the explicit definitions of the above Composite
+   Section 7 for the explicit definitions of the above Composite
    signature algorithms.
 
    Full specifications for the referenced algorithms can be found as
@@ -908,8 +939,10 @@ Signature Verification Procedure::
                   +--------------------------+---------+
                   | Message Digest Algorithm | SHA-256 |
                   +--------------------------+---------+
+                  | Salt Length in bits      | 256     |
+                  +--------------------------+---------+
 
-                     Table 4: RSA-PSS 2048 Parameters
+                     Table 5: RSA-PSS 2048 Parameters
 
    where:
 
@@ -936,8 +969,10 @@ Signature Verification Procedure::
                   +--------------------------+---------+
                   | Message Digest Algorithm | SHA-512 |
                   +--------------------------+---------+
+                  | Salt Length in bits      | 512     |
+                  +--------------------------+---------+
 
-                     Table 5: RSA-PSS 3072 Parameters
+                     Table 6: RSA-PSS 3072 Parameters
 
    where:
 
@@ -945,7 +980,138 @@ Signature Verification Procedure::
 
    *  SHA-512 is defined in [RFC6234].
 
-6.  ASN.1 Module
+6.  Use in CMS
+
+   [EDNOTE: The convention in LAMPS is to specify algorithms and their
+   CMS conventions in separate documents.  Here we have presented them
+   in the same document, but this section has been written so that it
+   can easily be moved to a standalone document.]
+
+   Composite Signature algorithms MAY be employed for one or more
+   recipients in the CMS signed-data content type [RFC5652].
+
+6.1.  Underlying Components
+
+   When a particular Composite Signature OID is supported in CMS, an
+   implementation SHOULD support the corresponding Secure Hash algorithm
+   identifier in Table 7 that was used as the pre-hash.
+
+   The following table lists the MANDATORY HASH algorithms to preserve
+   security and performance characteristics of each composite algorithm.
+
+         +=========================================+=============+
+         | Composite Signature AlgorithmID         | Secure Hash |
+         +=========================================+=============+
+         | id-MLDSA44-RSA2048-PSS-SHA256           | SHA256      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA44-RSA2048-PKCS15-SHA256        | SHA256      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA44-Ed25519-SHA512               | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA44-ECDSA-P256-SHA256            | SHA256      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | SHA256      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA3072-PSS-SHA512           | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-ECDSA-P256-SHA512            | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-Ed25519-SHA512               | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA87-ECDSA-P384-SHA512            | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA87-Ed448-SHA512                 | SHA512      |
+         +-----------------------------------------+-------------+
+
+                Table 7: Composite Signature SHA Algorithms
+
+   where:
+
+   *  SHA2 instantiations are defined in [FIPS180].
+
+6.2.  SignedData Conventions
+
+   As specified in CMS [RFC5652], the digital signature is produced from
+   the message digest and the signer's private key.  The signature is
+   computed over different values depending on whether signed attributes
+   are absent or present.
+
+   When signed attributes are absent, the composite signature is
+   computed over the content.  When signed attributes are present, a
+   hash is computed over the content using the same hash function that
+   is used in the composite pre-hash, and then a message-digest
+   attribute is constructed to contain the resulting hash value, and
+   then the result of DER encoding the set of signed attributes, which
+   MUST include a content-type attribute and a message-digest attribute,
+   and then the composite signature is computed over the DER-encoded
+   output.  In summary:
+
+   IF (signed attributes are absent)
+      THEN Composite_Sign(content)
+   ELSE message-digest attribute = Hash(content);
+      Composite_Sign(DER(SignedAttributes))
+
+   When using Composite Signatures, the fields in the SignerInfo are
+   used as follows:
+
+   digestAlgorithm: The digestAlgorithm contains the one-way hash
+   function used by the CMS signer.
+
+   signatureAlgorithm: The signatureAlgorithm MUST contain one of the
+   the Composite Signature algorithm identifiers as specified in Table 7
+
+   signature: The signature field contains the signature value resulting
+   from the composite signing operation of the specified
+   signatureAlgorithm.
+
+6.3.  Certificate Conventions
+
+   The conventions specified in this section augment RFC 5280 [RFC5280].
+
+   The willingness to accept a composite Signature Algorithm MAY be
+   signaled by the use of the SMIMECapabilities Attribute as specified
+   in Section 2.5.2. of [RFC8551] or the SMIMECapabilities certificate
+   extension as specified in [RFC4262].
+
+   The intended application for the public key MAY be indicated in the
+   key usage certificate extension as specified in Section 4.2.1.3 of
+   [RFC5280].  If the keyUsage extension is present in a certificate
+   that conveys a composite Signature public key, then the key usage
+   extension MUST contain only the following value:
+
+   digitalSignature
+   nonRepudiation
+   keyCertSign
+   cRLSign
+
+   The keyEncipherment and dataEncipherment values MUST NOT be present.
+   That is, a public key intended to be employed only with a composite
+   signature algorithm MUST NOT also be employed for data encryption.
+   This requirement does not carry any particular security
+   consideration; only the convention that signature keys be identified
+   with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign'
+   key usages.
+
+6.4.  SMIMECapabilities Attribute Conventions
+
+   Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to
+   announce a partial list of algorithms that an S/MIME implementation
+   can support.  When constructing a CMS signed-data content type
+   [RFC5652], a compliant implementation MAY include the
+   SMIMECapabilities attribute that announces support for the RSA-KEM
+   Algorithm.
+
+   The SMIMECapability SEQUENCE representing a composite signature
+   Algorithm MUST include the appropriate object identifier as per
+   Table 7 in the capabilityID field.
+
+7.  ASN.1 Module
 
    <CODE STARTS>
 
@@ -1059,6 +1225,7 @@ Signature Verification Procedure::
             VALUE CompositeSignatureValue
             PARAMS ARE absent
             PUBLIC-KEYS {publicKeyType}
+            SMIME-CAPS { IDENTIFIED BY id }
          }
 
    -- TODO: OID to be replaced by IANA
@@ -1254,38 +1421,23 @@ Signature Verification Procedure::
           id-MLDSA87-Ed448-SHA512,
           pk-MLDSA87-Ed448-SHA512 }
 
-   -- TODO: OID to be replaced by IANA
-   id-Falon512-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
-      joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 14 }
-
-   pk-Falon512-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-Falon512-ECDSA-P256-SHA256,
-     OCTET STRING, ECPoint}
-
-   sa-Falon512-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
-       sa-CompositeSignature{
-          id-Falon512-ECDSA-P256-SHA256,
-          pk-Falon512-ECDSA-P256-SHA256 }
-
-
    END
 
    <CODE ENDS>
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    IANA is requested to allocate a value from the "SMI Security for PKIX
    Module Identifier" registry [RFC7299] for the included ASN.1 module,
    and allocate values from "SMI Security for PKIX Algorithms" to
    identify the fourteen Algorithms defined within.
 
-7.1.  Object Identifier Allocations
+8.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
-   module and in Table 2.
+   module and in Table 3.
 
-7.1.1.  Module Registration - SMI Security for PKIX Module Identifier
+8.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
    *  Decimal: IANA Assigned - *Replace TBDMOD*
 
@@ -1294,7 +1446,7 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-7.1.2.  Object Identifier Registrations - SMI Security for PKIX
+8.1.2.  Object Identifier Registrations - SMI Security for PKIX
         Algorithms
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
@@ -1401,9 +1553,9 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-8.  Security Considerations
+9.  Security Considerations
 
-8.1.  Policy for Deprecated and Acceptable Algorithms
+9.1.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
@@ -1456,9 +1608,9 @@ Signature Verification Procedure::
    in a way that is tamper-resistant and does not allow the component
    keys to be trusted independently.
 
-9.  References
+10.  References
 
-9.1.  Normative References
+10.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1544,7 +1696,7 @@ Signature Verification Procedure::
               Encoding Rules (CER) and Distinguished Encoding Rules
               (DER)", ISO/IEC 8825-1:2015, November 2015.
 
-9.2.  Informative References
+10.2.  Informative References
 
    [ANSSI2024]
               French Cybersecurity Agency (ANSSI), Federal Office for
@@ -1962,7 +2114,7 @@ Appendix D.  Contributors and Acknowledgements
    Daniel Van Geest (ISARA), Britta Hale, Tim Hollebeek (Digicert),
    Panos Kampanakis (Cisco Systems), Richard Kisley (IBM), Serge Mister
    (Entrust), Francois Rousseau, Falko Strenzke, Felipe Ventura
-   (Entrust) and Alexander Ralien (Siemens)
+   (Entrust), Alexander Ralien (Siemens) and Jose Ignacio Escribano
 
    We are grateful to all, including any contributors who may have been
    inadvertently omitted from this list.
