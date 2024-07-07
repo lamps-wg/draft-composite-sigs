@@ -266,19 +266,21 @@ STRIPPING ATTACK:
 
 # Composite Signature Schemes
 
-{{I-D.driscoll-pqt-hybrid-terminology}} defines composites as:
+<!-- {{I-D.driscoll-pqt-hybrid-terminology}} defines composites as:
 
 >   *Composite Cryptographic Element*:  A cryptographic element that
 >      incorporates multiple component cryptographic elements of the same
->      type in a multi-algorithm scheme.
+>      type in a multi-algorithm scheme. -->
 
-Composite keys as defined here follow this definition and should be regarded as a single key that performs a single cryptographic operation such key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, and ciphertext can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts signature algorithms without requiring any modification of the protocol to handle multiple keys.
+The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
 
 <!-- End of Introduction section -->
 
-## Composite Signatures {#sec-sigs}
+<!-- ## Composite Signatures {#sec-sigs} -->
 
-Here we define the signature mechanism in which a signature is a cryptographic primitive that consists of three algorithms:
+## Cryptographic Primitives {#sec-sigs}
+
+Composite schemes are defined as cryptographic primitives that consists of three algorithms:
 
    *  KeyGen() -> (pk, sk): A probabilistic key generation algorithm,
       which generates a public key pk and a secret key sk.
@@ -287,7 +289,7 @@ Here we define the signature mechanism in which a signature is a cryptographic p
       as input a secret key sk and a Message, and outputs a signature
 
    *  Verify(pk, Message, signature) -> true or false: A verification algorithm
-      which takes as input a public key, a Message and signature and outputs true
+      which takes as input a public key, a Message, and a signature and outputs true
       if the signature verifies correctly.  Thus it proves the Message was signed
       with the secret key associated with the public key and verifies the integrity
       of the Message.  If the signature and public key cannot verify the Message,
@@ -295,10 +297,45 @@ Here we define the signature mechanism in which a signature is a cryptographic p
 
 A composite signature allows two underlying signature algorithms to be combined into a single cryptographic signature operation and can be used for applications that require signatures.
 
-### Composite KeyGen
+### Composite Key Generation
 
-The `KeyGen() -> (pk, sk)` of a composite signature algorithm will perform the `KeyGen()` of the respective component signature algorithms and it produces a composite public key `pk` as per {{sec-composite-pub-keys}} and a composite secret key `sk` is per {{sec-priv-key}}.  The component keys MUST be uniquely generated for each component key of a Composite and MUST NOT be used in any other keys or as a standalone key.
+To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms for the Composite keypair. The generated composite public key structure is described in {{sec-composite-pub-keys}}, while the generated composite secret key structure is defined in {{sec-priv-key}}.
 
+The following process is used to generate composite kepair values.
+
+~~~
+KeyGen() -> (pk, sk)
+Input:
+     sk_1, sk_2         Private keys for each component.
+
+     pk_1, pk_2         Public keys for each component.
+
+     A1, A2             Component signature algorithms.
+
+Output:
+     (pk, sk)           The composite keypair.
+
+KeyGen():
+
+  (pk_1, sk_1) <- A1.KeyGen()
+  (pk_2, sk_2) <- A2.KeyGen()
+
+  if NOT (pk_1, sk_1) or NOT (pk_2, sk_2):
+    // Component key generation failure
+    return NULL
+
+  (pk, sk) <- encode[(pk_1, sk_1), (pk_2, sk_2)]
+  if NOT (pk, sk):
+    // Encoding failure
+    return False
+
+  // Success
+  return (pk, sk)
+
+~~~
+{: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
+
+The component keys MUST be uniquely generated for each component key of a Composite and MUST NOT be used in any other keys or as a standalone key.
 
 ### Composite Sign {#sec-comp-sig-gen}
 
