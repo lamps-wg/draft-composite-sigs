@@ -183,7 +183,7 @@ The advent of quantum computing poses a significant threat to current cryptograp
 
 Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.
 
-Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
+Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.draft-driscoll-pqt-hybrid-terminology}}.
 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
 
@@ -195,7 +195,7 @@ The following terms are used in this document: -->
 
 {::boilerplate bcp14+}
 
-This document is consistent with the terminology defined in {{-draft-driscoll-pqt-hybrid-terminology}}. In addition, the following terminology is used throughout this document:
+This document is consistent with the terminology defined in {{I-D.draft-driscoll-pqt-hybrid-terminology}}. In addition, the following terminology is used throughout this document:
 
 ALGORITHM:
           A standardized cryptographic primitive, as well as
