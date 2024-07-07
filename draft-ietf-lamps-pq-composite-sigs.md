@@ -140,35 +140,18 @@ informative:
 
 --- abstract
 
-This document introduces a family of Composite signature schemes designed to enhance security by integrating multiple cryptographic elements such as public keys and signatures that integrate security properties from two different algorithms. These schemes effectively mitigate risks associated with the adoption of post-quantum cryptography. Composite schemes are fully compatible with existing X.509, PKIX, and CMS protocols, requiring no modifications in the number or type of messages. This document defines thirteen specific pairwise combinations that blend ML-DSA with traditional algorithms such as RSA, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet current security standards and regulatory requirements.
-
 <!-- This document defines a family of Composite signature schemes that use multiple component cryptographic elements to manage risks associated with the deployment of post-quantum cryptography. Composite schemes are suitable for use within X.509, PKIX and CMS protocols without changes. A set thirteen pairwise combinations are defined to address today's security and regulatory needs that combine ML-DSA with traditional algorithms (e.g., RSA, ECDSA, Ed25519, and Ed448). -->
+
+This document introduces a set of signature schemes designed to leverage pairs of cryptographic elements such as public keys and signatures to combine security properties from two different algorithms. These schemes effectively mitigate risks associated with the adoption of post-quantum cryptography and are fully compatible with existing X.509, PKIX, and CMS protocols, thus requiring no modifications in the number or type of messages. This document defines thirteen specific pairwise combinations that blend ML-DSA with traditional algorithms such as RSA, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements.
 
 <!-- End of Abstract -->
 
 
 --- middle
 
-# Document Changes
-
-## Changes since the -01 version
-* Added a "Use in CMS" section
-* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
-* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
-* Fixed nits and other typos
-* Added PSS parameter Salt Lengths
-* Changed the OID concatenation section to Domain Separators for clarity
-* Accepted some edits by José Ignacio Escribano
-
-## Changes since adoption by the lamps working group
-* Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
-* Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
-* Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
-* Resolved comments from Kris Kwiatkowski regarding FIPS
-
 # Introduction {#sec-intro}
 
-During the transition to post-quantum cryptography, there will be uncertainty as to the strength of cryptographic algorithms; we will no longer fully trust traditional cryptography such as RSA, Diffie-Hellman, DSA and their elliptic curve variants, but we will also not fully trust their post-quantum replacements until they have had sufficient scrutiny and time to discover and fix implementation bugs. Unlike previous cryptographic algorithm migrations, the choice of when to migrate and which algorithms to migrate to, is not so clear. Even after the migration period, it may be advantageous for an entity's cryptographic identity to be composed of multiple public-key algorithms.
+<!-- During the transition to post-quantum cryptography, there will be uncertainty as to the strength of cryptographic algorithms; we will no longer fully trust traditional cryptography such as RSA, Diffie-Hellman, DSA and their elliptic curve variants, but we will also not fully trust their post-quantum replacements until they have had sufficient scrutiny and time to discover and fix implementation bugs. Unlike previous cryptographic algorithm migrations, the choice of when to migrate and which algorithms to migrate to, is not so clear. Even after the migration period, it may be advantageous for an entity's cryptographic identity to be composed of multiple public-key algorithms.
 
 Cautious implementers may wish to combine cryptographic algorithms such that an attacker would need to break all of them in order to compromise the data being protected. Such mechanisms are referred to as Post-Quantum / Traditional Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
 
@@ -194,12 +177,25 @@ This document defines a specific instantiation of the PQ/T Hybrid paradigm calle
 
 This document is intended for general applicability anywhere that digital signatures are used within PKIX and CMS structures.   For a more detailed use-case discussion for composite signatures, the reader is encouraged to look at {{I-D.vaira-pquip-pqc-use-cases}}
 
-This document attemps to bind the composite component keys together to achieve the weak non-separability property as defined in {{I-D.hale-pquip-hybrid-signature-spectrums}} using a label as defined in {{Bindel2017}}.
+This document attemps to bind the composite component keys together to achieve the weak non-separability property as defined in {{I-D.hale-pquip-hybrid-signature-spectrums}} using a label as defined in {{Bindel2017}}. -->
 
-## Terminology {#sec-terminology}
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}}  {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
+The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.
 
-The following terms are used in this document:
+Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.
+
+Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
+
+Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
+
+## Conventions and Terminology {#sec-terminology}
+
+<!-- The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}}  {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
+
+The following terms are used in this document: -->
+
+{::boilerplate bcp14+}
+
+This document is consistent with the terminology defined in {{-draft-driscoll-pqt-hybrid-terminology}}. In addition, the following terminology is used throughout this document:
 
 ALGORITHM:
           A standardized cryptographic primitive, as well as
@@ -253,8 +249,22 @@ STRIPPING ATTACK:
           substituting a composite public key or signature for a
           version with fewer components.
 
+## Changes since the -01 version
+* Added a "Use in CMS" section
+* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
+* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
+* Fixed nits and other typos
+* Added PSS parameter Salt Lengths
+* Changed the OID concatenation section to Domain Separators for clarity
+* Accepted some edits by José Ignacio Escribano
 
-## Composite Design Philosophy
+## Changes since adoption by the lamps working group
+* Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
+* Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
+* Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
+* Resolved comments from Kris Kwiatkowski regarding FIPS
+
+# Composite Signature Schemes
 
 {{I-D.driscoll-pqt-hybrid-terminology}} defines composites as:
 
