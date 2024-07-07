@@ -339,7 +339,11 @@ The component keys MUST be uniquely generated for each component key of a Compos
 
 ### Composite Sign {#sec-comp-sig-gen}
 
-Generation of a composite signature involves applying each component algorithm's signature process to the input message according to its specification, and then placing each component signature value into the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+<!-- Generation of a composite signature involves applying each component algorithm's signature process to the input message according to its specification, and then placing each component signature value into the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}. -->
+
+In multi-algorithm environments, signatures require additional security properties such as non-separability and key binding to mitigate the possibility for new type of attacks that target the new multi-algorithms model. Composite signatures construct provide additional properties such as non-separability and key-binding. For more information, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
+
+To this end, the Composite signature generation starts with the pre-hashing the message to be signed together with key-binding data. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
 The following process is used to generate composite signature values.
 
