@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-04T00:41:51.532066+00:00",
+  "timestamp": "2024-07-07T00:46:04.531031+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -333,7 +333,7 @@
       "labels": [],
       "body": "I'm curious why in the \"Composite Signature Algorithms\" table, SHA256withECDSA for example is used instead of ECDSAwithSHA256? Isn't the latter more commonly used terminology?",
       "createdAt": "2024-06-20T10:13:31Z",
-      "updatedAt": "2024-07-03T14:42:24Z",
+      "updatedAt": "2024-07-05T21:03:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -342,6 +342,13 @@
           "body": "In July 3rd, Jan said he would update the table.  ",
           "createdAt": "2024-07-03T14:41:47Z",
           "updatedAt": "2024-07-03T14:41:47Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "updated the naming in the table in PR#16",
+          "createdAt": "2024-07-05T21:03:17Z",
+          "updatedAt": "2024-07-05T21:03:17Z"
         }
       ]
     },
@@ -465,6 +472,32 @@
       "mergeCommit": {
         "oid": "1c4f87224c9dc3c2850bd64d0e9f478635e659e6"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOL5eEDM50kQkB",
+      "title": "Add appendix with component algorithm references",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/16",
+      "state": "OPEN",
+      "author": "janklaussner",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* appendix with references of signature, curves and hashes\r\n* updated section 'Algorithm Identifiers' with reference to appendix and IDs of component algorithms\r\n* updated algorithm description for signature generation and verification to use Domain separator",
+      "createdAt": "2024-07-05T21:00:55Z",
+      "updatedAt": "2024-07-05T21:00:56Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "e89f78848179101641dbbe3d02447fde62831570",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "7-add-a-new-section-explicitely-list-spki-algids",
+      "headRefOid": "bc535a7842aff5cc0d2a3df3a76313d096d77e3b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
