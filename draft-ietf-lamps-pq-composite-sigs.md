@@ -140,9 +140,9 @@ informative:
 
 --- abstract
 
-This document defines Post-Quantum / Traditional composite Key Signaturem algorithms suitable for use within X.509, PKIX and CMS protocols. Composite algorithms are provided which combine ML-DSA with RSA, ECDSA, Ed25519, and Ed448. The provided set of composite algorithms should meet most X.509, PKIX, and CMS needs.
+This document introduces a family of Composite signature schemes designed to enhance security by integrating multiple cryptographic elements such as public keys and signatures that integrate security properties from two different algorithms. These schemes effectively mitigate risks associated with the adoption of post-quantum cryptography. Composite schemes are fully compatible with existing X.509, PKIX, and CMS protocols, requiring no modifications in the number or type of messages. This document defines thirteen specific pairwise combinations that blend ML-DSA with traditional algorithms such as RSA, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet current security standards and regulatory requirements.
 
-
+<!-- This document defines a family of Composite signature schemes that use multiple component cryptographic elements to manage risks associated with the deployment of post-quantum cryptography. Composite schemes are suitable for use within X.509, PKIX and CMS protocols without changes. A set thirteen pairwise combinations are defined to address today's security and regulatory needs that combine ML-DSA with traditional algorithms (e.g., RSA, ECDSA, Ed25519, and Ed448). -->
 
 <!-- End of Abstract -->
 
