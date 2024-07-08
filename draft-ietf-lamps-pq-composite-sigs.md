@@ -140,8 +140,6 @@ informative:
 
 --- abstract
 
-<!-- This document defines a family of Composite signature schemes that use multiple component cryptographic elements to manage risks associated with the deployment of post-quantum cryptography. Composite schemes are suitable for use within X.509, PKIX and CMS protocols without changes. A set thirteen pairwise combinations are defined to address today's security and regulatory needs that combine ML-DSA with traditional algorithms (e.g., RSA, ECDSA, Ed25519, and Ed448). -->
-
 This document introduces a set of signature schemes that use pairs of cryptographic elements such as public keys and signatures to combine their security properties. These schemes effectively mitigate risks associated with the adoption of post-quantum cryptography and are fully compatible with existing X.509, PKIX, and CMS data structures and protocols. This document defines thirteen specific pairwise combinations, namely ML-DSA Composite Schemes, that blend ML-DSA with traditional algorithms such as RSA, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements.
 
 <!-- End of Abstract -->
@@ -150,34 +148,6 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 --- middle
 
 # Introduction {#sec-intro}
-
-<!-- During the transition to post-quantum cryptography, there will be uncertainty as to the strength of cryptographic algorithms; we will no longer fully trust traditional cryptography such as RSA, Diffie-Hellman, DSA and their elliptic curve variants, but we will also not fully trust their post-quantum replacements until they have had sufficient scrutiny and time to discover and fix implementation bugs. Unlike previous cryptographic algorithm migrations, the choice of when to migrate and which algorithms to migrate to, is not so clear. Even after the migration period, it may be advantageous for an entity's cryptographic identity to be composed of multiple public-key algorithms.
-
-Cautious implementers may wish to combine cryptographic algorithms such that an attacker would need to break all of them in order to compromise the data being protected. Such mechanisms are referred to as Post-Quantum / Traditional Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
-
-In particular, certain jurisdictions are recommending or requiring that PQC lattice schemes only be used within a PQ/T hybrid. As an example, we point to [BSI2021] which includes the following recommendation:
-
-"Therefore, quantum computer-resistant methods should
-not be used alone - at least in a transitional period - but
-only in hybrid mode, i.e. in combination with a classical
-method. For this purpose, protocols must be modified
-or supplemented accordingly. In addition, public key
-infrastructures, for example, must also be adapted"
-
-This specification represents the straightforward implementation of the hybrid solutions called for by European cyber security agencies.
-
-
-PQ/T Hybrid cryptography can, in general, provide solutions to two migration problems:
-
-- Algorithm strength uncertainty: During the transition period, some post-quantum signature and encryption algorithms will not be fully trusted, while also the trust in legacy public key algorithms will start to erode.  A relying party may learn some time after deployment that a public key algorithm has become untrustworthy, but in the interim, they may not know which algorithm an adversary has compromised.
-- Ease-of-migration: During the transition period, systems will require mechanisms that allow for staged migrations from fully classical to fully post-quantum-aware cryptography.
-- Safeguard against faulty algorithm implementations and compromised keys: Even for long known algorithms there is a non-negligible risk of severe implementation faults. Latest examples are the ROCA attack and ECDSA psychic signatures. Using more than one algorithms will mitigate these risks.
-
-This document defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature such that it can be treated as a single atomic algorithm at the protocol level. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite signature algorithms are provided based on ML-DSA, RSA and ECDSA. Backwards compatibility is not directly covered in this document, but is the subject of {{sec-backwards-compat}}.
-
-This document is intended for general applicability anywhere that digital signatures are used within PKIX and CMS structures.   For a more detailed use-case discussion for composite signatures, the reader is encouraged to look at {{I-D.vaira-pquip-pqc-use-cases}}
-
-This document attemps to bind the composite component keys together to achieve the weak non-separability property as defined in {{I-D.hale-pquip-hybrid-signature-spectrums}} using a label as defined in {{Bindel2017}}. -->
 
 The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.
 
@@ -188,10 +158,6 @@ Cautious implementers may opt to combine cryptographic algorithms in such a way 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
 
 ## Conventions and Terminology {#sec-terminology}
-
-<!-- The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}}  {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
-
-The following terms are used in this document: -->
 
 {::boilerplate bcp14+}
 
@@ -264,21 +230,8 @@ STRIPPING ATTACK:
 * Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
 * Resolved comments from Kris Kwiatkowski regarding FIPS
 
-<!-- # Composite Signature Schemes
 
-!-- {{I-D.driscoll-pqt-hybrid-terminology}} defines composites as:
-
->   *Composite Cryptographic Element*:  A cryptographic element that
->      incorporates multiple component cryptographic elements of the same
->      type in a multi-algorithm scheme. --
-
-The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
-
-!-- End of Introduction section --
-
-## Composite Signatures {#sec-sigs} -->
-
-# Composite Signature Schemes Design Principles
+# Composite Signature Schemes
 
 The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
 
@@ -328,18 +281,6 @@ Composite schemes' signature generation process and composite signature verifica
 
 The output is then used as input for the Sign() and Verify() functions. 
 
-<!-- the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
-
-1. For composites paired with RSA or ECDSA, the hashing algorithm SHA256 or SHA512 is used as part of the RSA or ECDSA signature algorithm and is therefore also used as the composite prehashing algorithm.
-
-1. For ML-DSA signing a digest of the message is allowed as long as the hash function provides at least y bits of classical security strength against both collision and second preimage attacks.   For MLDSA44 y is 128 bits, for MLDSA65 y is 192 bits and for MLDSA87 y is 256 bits.  Therefore SHA256 is paired with RSA and ECDSA with MLDSA44 and SHA512 is paired with RSA and ECDSA with MLDSA65 and MLDSA87 to match the appropriate security strength.
-
-1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.
-
-1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm. -->
-
-<!-- End of Composite Signature Algorithm section -->
-
 # Cryptographic Primitives {#sec-sigs}
 
 ## Key Generation
@@ -386,8 +327,6 @@ Function KeyGen():
 The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other context, combinations, or by themselves (i.e., not only in X.509 certificates).
 
 ## Signature Generation {#sec-comp-sig-gen}
-
-<!-- Generation of a composite signature involves applying each component algorithm's signature process to the input message according to its specification, and then placing each component signature value into the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}. -->
 
 Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
@@ -444,11 +383,7 @@ Signature Generation Process:
 ~~~
 {: #alg-composite-sign title="Composite Sign(sk, Message)"}
 
-<!-- Note on composite inputs: the method of providing the list of component keys and algorithms is flexible and beyond the scope of this pseudo-code.  When passed to the `Sign(sk, Message)` API, the `sk` is a `CompositePrivateKey`. -->
-
 It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
-
-<!-- A composite signature MUST produce, and include in the output, a signature value for every component key in the corresponding CompositePublicKey, and they MUST be in the same order; ie in the output, S1 MUST correspond to K1, S2 to K2. -->
 
 ### Signature Verify {#sec-comp-sig-verify}
 
@@ -511,8 +446,6 @@ Signature Verification Procedure::
         output "Valid signature"
 ~~~
 {: #alg-composite-verify title="Composite Verify(pk, Message, signature)"}
-
-<!-- Note on composite inputs: the method of providing the list of component keys and algorithms is flexible and beyond the scope of this pseudo-code.  When passed to the Composite Verify(pk, Message, signature) API the pk is a CompositePublicKey. -->
 
 It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
