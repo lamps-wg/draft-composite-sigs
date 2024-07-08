@@ -326,7 +326,7 @@ The following table shows the HEX encoding for each Signature AlgorithmID.
 
 Composite schemes' signature generation process and composite signature verification process are designed to provide security properties meant to address specific issues related to the use multiple algorithms and they require the use of pre-hasing. In Composite schemes, the value of the DER encoding of the selected signature scheme is concatenated with the calculated Hash over the original message.
 
-The output is then used as input for the `Sign()` and `Verify()` functions. 
+The output is then used as input for the Sign() and Verify() functions. 
 
 <!-- the Message should be pre-hashed into M' with the digest algorithm specified in the composite signature algorithm identifier.  The choice of the digest algorithm was chosen with the following criteria:
 
@@ -515,22 +515,6 @@ Signature Verification Procedure::
 <!-- Note on composite inputs: the method of providing the list of component keys and algorithms is flexible and beyond the scope of this pseudo-code.  When passed to the Composite Verify(pk, Message, signature) API the pk is a CompositePublicKey. -->
 
 It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
-
-<!-- 
-## Algorithm Selection Criteria
-
-The composite algorithm combinations defined in this document were chosen according to the following guidelines:
-
-1. A single RSA combination is provided at a key size of 3072 bits, matched with NIST PQC Level 3 algorithms.
-1. Elliptic curve algorithms are provided with combinations on each of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748] curves. NIST PQC Levels 1 - 3 algorithms are matched with 256-bit curves, while NIST levels 4 - 5 are matched with 384-bit elliptic curves. This provides a balance between matching classical security levels of post-quantum and traditional algorithms, and also selecting elliptic curves which already have wide adoption.
-1. NIST level 1 candidates are provided, matched with 256-bit elliptic curves, intended for constrained use cases.
-
-If other combinations are needed, a separate specification should be submitted to the IETF LAMPS working group.  To ease implementation, these specifications are encouraged to follow the construction pattern of the algorithms specified in this document.
-
-The composite structures defined in this specification allow only for pairs of algorithms. This also does not preclude future specification from extending these structures to define combinations with three or more components.
- -->
-
-
 
 # Composite Signature Structures {#sec-composite-structs}
 
