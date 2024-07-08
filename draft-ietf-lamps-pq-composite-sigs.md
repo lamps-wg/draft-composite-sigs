@@ -147,6 +147,22 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 
 --- middle
 
+## Changes since the -01 version
+* Added a "Use in CMS" section
+* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
+* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
+* Fixed nits and other typos
+* Added PSS parameter Salt Lengths
+* Changed the OID concatenation section to Domain Separators for clarity
+* Accepted some edits by José Ignacio Escribano
+
+## Changes since adoption by the lamps working group
+* Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
+* Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
+* Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
+* Resolved comments from Kris Kwiatkowski regarding FIPS
+
+
 # Introduction {#sec-intro}
 
 The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.
@@ -215,22 +231,6 @@ STRIPPING ATTACK:
           substituting a composite public key or signature for a
           version with fewer components.
 
-## Changes since the -01 version
-* Added a "Use in CMS" section
-* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
-* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
-* Fixed nits and other typos
-* Added PSS parameter Salt Lengths
-* Changed the OID concatenation section to Domain Separators for clarity
-* Accepted some edits by José Ignacio Escribano
-
-## Changes since adoption by the lamps working group
-* Added back in the version 13 changes which were dropped by mistake in the initial -00 adopted version
-* Added Scott Fluher as an author due to his valuable contributions and participation in the draft writing process
-* Removed the reference to Parallel PKI's in implementation considerations as it isn't adding value to the discussion
-* Resolved comments from Kris Kwiatkowski regarding FIPS
-
-
 # Composite Signature Schemes
 
 The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
@@ -279,7 +279,7 @@ The following table shows the HEX encoding for each Signature AlgorithmID.
 
 Composite schemes' signature generation process and composite signature verification process are designed to provide security properties meant to address specific issues related to the use multiple algorithms and they require the use of pre-hasing. In Composite schemes, the value of the DER encoding of the selected signature scheme is concatenated with the calculated Hash over the original message.
 
-The output is then used as input for the Sign() and Verify() functions. 
+The output is then used as input for the Sign() and Verify() functions.
 
 # Cryptographic Primitives {#sec-sigs}
 
