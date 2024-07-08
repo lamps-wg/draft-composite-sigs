@@ -2,7 +2,7 @@
 
 This is the working area for the individual Internet-Draft, "Composite Signatures For Use In Internet PKI".
 
-* [Editor's Copy](https://lamps-wg.github.io/draft-composite-sigs/draft-ietf-lamps-pq-composite-sigs.html)
+* [Editor's Copy](https://lamps-wg.github.io/draft-composite-sigs/)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-sigs)
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-pq-composite-sigs)
 * [Compare Editor's Copy to Individual Draft](https://lamps-wg.github.io/draft-composite-sigs/#go.draft-ietf-lamps-pq-composite-sigs.diff)
