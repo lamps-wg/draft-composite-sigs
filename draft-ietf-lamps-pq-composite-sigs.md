@@ -235,7 +235,7 @@ STRIPPING ATTACK:
 
 # Composite Signatures Schemes
 
-The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
+The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
 
 Composite schemes are defined as cryptographic primitives that consists of three algorithms:
 
@@ -266,9 +266,9 @@ The output is then used as input for the Sign() and Verify() functions.
 
 To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms for the Composite keypair in no particular order. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
 
-The generated public key structure is described in {{sec-composite-pub-keys}}, while the corrsponding composite secret key structure is defined in {{sec-priv-key}}.
+The generated public key structure is described in {{sec-composite-pub-keys}}, while the corresponding composite secret key structure is defined in {{sec-priv-key}}.
 
-The following process is used to generate composite kepair values:
+The following process is used to generate composite keypair values:
 
 ~~~
 KeyGen() -> (pk, sk)
@@ -303,13 +303,13 @@ Function KeyGen():
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
 
-The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other context, combinations, or by themselves (i.e., not only in X.509 certificates).
+The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves (i.e., not only in X.509 certificates).
 
 ## Signature Generation {#sec-comp-sig-gen}
 
 Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
-Composite signature generation starts with the pre-hashing the message that is concatenated with the  to be signed together with key-binding data. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+Composite signature generation starts with pre-hashing the message that is concatenated with the Domain separator {{sec-oid-concat}}. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
@@ -329,7 +329,7 @@ Input:
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -337,7 +337,7 @@ Output:
 
 Signature Generation Process:
 
-   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite scheme) with the Hash of the Message
+   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message
 
          M' := Domain || HASH(Message)
 
@@ -390,7 +390,7 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -480,7 +480,7 @@ Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other ty
 
 ## CompositeSignaturePrivateKey {#sec-priv-key}
 
-Usecases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the following structure.
+Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the following structure.
 
 ~~~ ASN.1
 CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
@@ -906,7 +906,7 @@ Traditionally, a public key, certificate, or signature contains a single cryptog
 
 In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.
 
-Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled indpendently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA512` even after ECDSA-P256 is deprecated.
+Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA512` even after ECDSA-P256 is deprecated.
 
 When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.
 
@@ -962,17 +962,21 @@ This section provides references to the full specification of the algorithms use
 ## Explicit Composite Signature Examples {#appdx-expComposite-examples}
 
 ### MLDSA44-ECDSA-P256-SHA256 Public Key
-
+~~~
 {::include examples/MLDSA44-ECDSA-P256-SHA256.pub}
+~~~
 
 ### MLDSA44-ECDSA-P256 Private Key
 
+~~~
 {::include examples/MLDSA44-ECDSA-P256-SHA256.pvt}
-
+~~~
 
 ### MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
 
+~~~
 {::include examples/MLDSA44-ECDSA-P256-SHA256.crt}
+~~~
 
 # Implementation Considerations {#sec-imp-considers}
 
@@ -980,9 +984,9 @@ This section provides references to the full specification of the algorithms use
 
 One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
 
-Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorith with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
+Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
-The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions; for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
+The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
 
 
 ## Backwards Compatibility {#sec-backwards-compat}
@@ -992,7 +996,7 @@ The term "backwards compatibility" is used here to mean something more specific;
 If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv2.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
 ### Hybrid Extensions (Keys and Signatures)
-The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications, but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
+The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
 
 
 <!-- End of Implementation Considerations section -->
@@ -1009,7 +1013,7 @@ https://datatracker.ietf.org/ipr/3588/
 # Contributors and Acknowledgements
 This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
-Daniel Van Geest (ISARA),
+Daniel Van Geest (CryptoNext),
 Britta Hale,
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
@@ -1018,9 +1022,9 @@ Serge Mister (Entrust),
 François Rousseau,
 Falko Strenzke,
 Felipe Ventura (Entrust),
-Alexander Ralien (Siemens) and
-José Ignacio Escribano
-
+Alexander Ralien (Siemens),
+José Ignacio Escribano and
+Jan Oupický
 
 We are grateful to all, including any contributors who may have been inadvertently omitted from this list.
 
