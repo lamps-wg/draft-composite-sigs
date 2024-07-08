@@ -310,7 +310,7 @@ Input:
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
 
-     Domain             Domain separator value for binding signature to Composite OID. 
+     Domain             Domain separator value for binding signature to Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -371,7 +371,7 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     Domain             Domain separator value for binding signature to Composite OID. 
+     Domain             Domain separator value for binding signature to Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -661,7 +661,7 @@ Signature public key types:
 The table above contains everything needed to implement the listed explicit composite algorithms. See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
 
 
-Full specifications for the referenced algorithms can be found in {{appdx_components}}
+Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
 
 ## Notes on id-MLDSA44-RSA2048-PSS-SHA256
@@ -912,7 +912,7 @@ There are mechanisms within Internet PKI where trusted public keys do not appear
 
 --- back
 
-# Component Algorithm Reference {#appdx-components}
+# Component Algorithm Reference {#appdx_components}
 
 This section provides references to the full specification of the algorithms used in the composite constructions.
 
@@ -942,7 +942,7 @@ This section provides references to the full specification of the algorithms use
 | ----------- | ----------- | ----------- |
 | id-sha256 | joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3) nistAlgorithms(4) hashAlgs(2) 1 | [RFC6234] |
 | id-sha512 | joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3) nistAlgorithms(4) hashAlgs(2) 3 | [RFC6234] |
-{: #tab-component-curve-algs title="Hash algorithms used in Composite Constructions"}
+{: #tab-component-hash title="Hash algorithms used in Composite Constructions"}
 
 # Samples {#appdx-samples}
 
