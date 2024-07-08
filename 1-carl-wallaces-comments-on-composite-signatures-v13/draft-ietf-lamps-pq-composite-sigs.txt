@@ -67,14 +67,13 @@ Table of Contents
      1.1.  Changes since adoption by the lamps working group
    2.  Introduction
      2.1.  Conventions and Terminology
-   3.  Composite Signature Schemes
-     3.1.  Domain Separators
-     3.2.  Composite Schemes PreHashing
+   3.  Composite Signatures Schemes
+     3.1.  Composite Schemes PreHashing
    4.  Cryptographic Primitives
      4.1.  Key Generation
      4.2.  Signature Generation
        4.2.1.  Signature Verify
-   5.  Composite Signature Structures
+   5.  Composite Key Structures
      5.1.  pk-CompositeSignature
      5.2.  CompositeSignaturePublicKey
      5.3.  CompositeSignaturePrivateKey
@@ -84,8 +83,9 @@ Table of Contents
      6.1.  sa-CompositeSignature
      6.2.  CompositeSignatureValue
    7.  Algorithm Identifiers
-     7.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
-     7.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+     7.1.  Domain Separators
+     7.2.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
+     7.3.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
    8.  Use in CMS
      8.1.  Underlying Components
      8.2.  SignedData Conventions
@@ -99,23 +99,25 @@ Table of Contents
        10.1.2.  Object Identifier Registrations - SMI Security for
                PKIX Algorithms
    11. Security Considerations
-     11.1.  Algorithm Selection Criteria
-     11.2.  Policy for Deprecated and Acceptable Algorithms
+     11.1.  Public Key Algorithm Selection Criteria
+     11.2.  PreHashing Algorithm Selection Criteria
+     11.3.  Policy for Deprecated and Acceptable Algorithms
    12. References
      12.1.  Normative References
      12.2.  Informative References
-   Appendix A.  Samples
-     A.1.  Explicit Composite Signature Examples
-       A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
-       A.1.2.  MLDSA44-ECDSA-P256 Private Key
-       A.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
-   Appendix B.  Implementation Considerations
-     B.1.  FIPS certification
-     B.2.  Backwards Compatibility
-       B.2.1.  Hybrid Extensions (Keys and Signatures)
-   Appendix C.  Intellectual Property Considerations
-   Appendix D.  Contributors and Acknowledgements
-     D.1.  Making contributions
+   Appendix A.  Component Algorithm Reference
+   Appendix B.  Samples
+     B.1.  Explicit Composite Signature Examples
+       B.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
+       B.1.2.  MLDSA44-ECDSA-P256 Private Key
+       B.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+   Appendix C.  Implementation Considerations
+     C.1.  FIPS certification
+     C.2.  Backwards Compatibility
+       C.2.1.  Hybrid Extensions (Keys and Signatures)
+   Appendix D.  Intellectual Property Considerations
+   Appendix E.  Contributors and Acknowledgements
+     E.1.  Making contributions
    Authors' Addresses
 
 1.  Changes since the -01 version
@@ -136,6 +138,12 @@ Table of Contents
       clarity
 
    *  Accepted some edits by Jose Ignacio Escribano
+
+   *  Expanded description for KeyGen algorithm
+
+   *  Clarified the Subject Public Key Usage
+
+   *  Various editorial changes
 
 1.1.  Changes since adoption by the lamps working group
 
@@ -235,7 +243,7 @@ Table of Contents
    detectable by the receiver.  For example, substituting a composite
    public key or signature for a version with fewer components.
 
-3.  Composite Signature Schemes
+3.  Composite Signatures Schemes
 
    The engineering principle behind the definition of Composite schemes
    is to define a new family of algorithms that combines the use of
@@ -273,50 +281,7 @@ Table of Contents
    applications that use signatures without the need for changes in data
    structures or protocol messages.
 
-3.1.  Domain Separators
-
-   Composite signature schemes use the concept of Domain separator to
-   bind the value of the signature to the specific combination of
-   algorithms identified by the scheme's OID value.  Domain separators
-   are represented as the DER encoding of the signature's algorithm.
-
-   The following table shows the HEX encoding for each Signature
-   AlgorithmID.
-
-   +=======================================+==========================+
-   |Composite Signature AlgorithmID        |Domain Separator (in Hex  |
-   |                                       |encoding)                 |
-   +=======================================+==========================+
-   |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080101|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA44-RSA2048-PKCS15-SHA256       |060B6086480186FA6B50080102|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA44-Ed25519-SHA512              |060B6086480186FA6B50080103|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080104|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080105|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B50080106|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B50080107|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B50080108|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B50080109|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA65-Ed25519-SHA512              |060B6086480186FA6B5008010A|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA87-ECDSA-P384-SHA512           |060B6086480186FA6B5008010B|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA87-ECDSA-brainpoolP384r1-SHA512|060B6086480186FA6B5008010C|
-   +---------------------------------------+--------------------------+
-   |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B5008010D|
-   +---------------------------------------+--------------------------+
-
-              Table 1: Composite Signature Domain Separators
-
-3.2.  Composite Schemes PreHashing
+3.1.  Composite Schemes PreHashing
 
    Composite schemes' signature generation process and composite
    signature verification process are designed to provide security
@@ -416,9 +381,8 @@ Input:
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
 
-     OID                The Composite Signature String Algorithm Name converted
-                        from ASCII to bytes.  See section on OID concatenation
-                        below.
+     Domain             Domain separator value for binding signature to Composite OID.
+                        See section on Domain Separators below.
 
 Output:
      signature          The composite signature, a CompositeSignatureValue
@@ -427,7 +391,7 @@ Signature Generation Process:
 
    1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite scheme) with the Hash of the Message
 
-         M' := DER(OID) || HASH(Message)
+         M' := Domain || HASH(Message)
 
    2. Generate the 2 component signatures independently, by calculating the signature over M'
       according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
@@ -487,9 +451,8 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     OID                The Composite Signature String Algorithm Name converted
-                        from ASCII to bytes.  See section on OID concatenation
-                        below
+     Domain             Domain separator value for binding signature to Composite OID.
+                        See section on Domain Separators below.
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -506,7 +469,7 @@ Signature Verification Procedure::
 
    2. Compute a Hash of the Message
 
-         M' = DER(OID) || HASH(Message)
+         M' = Domain || HASH(Message)
 
    3. Check each component signature individually, according to its
        algorithm specification.
@@ -529,7 +492,7 @@ Signature Verification Procedure::
    conformant to this document so long as it produces the same output as
    the process sketched above.
 
-5.  Composite Signature Structures
+5.  Composite Key Structures
 
    In order for signatures to be composed of multiple algorithms, we
    define encodings consisting of a sequence of signature primitives
@@ -576,7 +539,7 @@ Signature Verification Procedure::
    corresponding algorithm identifier as defined in section Section 7.
 
    Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 3 in
+   objects corresponding to each component public key.  Table 2 in
    Section 7 provides the necessary mapping between composite and their
    component algorithms for doing this reconstruction.  This also
    motivates the design choice of SEQUENCE OF BIT STRING instead of
@@ -714,7 +677,7 @@ Signature Verification Procedure::
     |                             | produce the composite signature   |
     +-----------------------------+-----------------------------------+
 
-                                  Table 2
+                                  Table 1
 
 6.2.  CompositeSignatureValue
 
@@ -763,64 +726,101 @@ Signature Verification Procedure::
 
    Signature public key types:
 
-   +=============================+============+=========+=======================+======+
-   |Composite Signature          |OID         |First    |Second Algorithm       |Pre-  |
-   |AlgorithmID                  |            |Algorithm|                       |Hash  |
-   +=============================+============+=========+=======================+======+
-   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.1 |MLDSA44  |SHA256WithRSAPSS       |SHA256|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-                          |<CompSig>.2 |MLDSA44  |SHA256WithRSAEncryption|SHA256|
-   |MLDSA44-RSA2048-PKCS15-SHA256|            |         |                       |      |
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.3 |MLDSA44  |Ed25519                |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.4 |MLDSA44  |SHA256withECDSA        |SHA256|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA44-ECDSA-            |<CompSig>.5 |MLDSA44  |SHA256withECDSA        |SHA256|
-   |brainpoolP256r1-SHA256       |            |         |                       |      |
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.6 |MLDSA65  |SHA512WithRSAPSS       |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-                          |<CompSig>.7 |MLDSA65  |SHA512WithRSAEncryption|SHA512|
-   |MLDSA65-RSA3072-PKCS15-SHA512|            |         |                       |      |
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.8 |MLDSA65  |SHA512withECDSA        |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA65-ECDSA-            |<CompSig>.9 |MLDSA65  |SHA512withECDSA        |SHA512|
-   |brainpoolP256r1-SHA512       |            |         |                       |      |
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.10|MLDSA65  |Ed25519                |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.11|MLDSA87  |SHA512withECDSA        |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA87-ECDSA-            |<CompSig>.12|MLDSA87  |SHA512withECDSA        |SHA512|
-   |brainpoolP384r1-SHA512       |            |         |                       |      |
-   +-----------------------------+------------+---------+-----------------------+------+
-   |id-MLDSA87-Ed448-SHA512      |<CompSig>.13|MLDSA87  |Ed448                  |SHA512|
-   +-----------------------------+------------+---------+-----------------------+------+
+   +=============================+============+===========+=======================+======+
+   |Composite Signature          |OID         |First      |Second AlgorithmID     |Pre-  |
+   |AlgorithmID                  |            |AlgorithmID|                       |Hash  |
+   +=============================+============+===========+=======================+======+
+   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.1 |id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |                             |            |DSA-44     |sha256                 |sha256|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-                          |<CompSig>.2 |id-ML-     |sha256WithRSAEncryption|id-   |
+   |MLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44     |                       |sha256|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.3 |id-ML-     |id-Ed25519             |id-   |
+   |                             |            |DSA-44     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.4 |id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |                             |            |DSA-44     |secp256r1              |sha256|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA44-ECDSA-            |<CompSig>.5 |id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |brainpoolP256r1-SHA256       |            |DSA-44     |brainpoolP256r1        |sha256|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.6 |id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |                             |            |DSA-65     |sha512                 |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-                          |<CompSig>.7 |id-ML-     |sha512WithRSAEncryption|id-   |
+   |MLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.8 |id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |                             |            |DSA-65     |secp256r1              |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-ECDSA-            |<CompSig>.9 |id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |brainpoolP256r1-SHA512       |            |DSA-65     |brainpoolP256r1        |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.10|id-ML-     |id-Ed25519             |id-   |
+   |                             |            |DSA-65     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.11|id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |                             |            |DSA-87     |secp384r1              |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA87-ECDSA-            |<CompSig>.12|id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |brainpoolP384r1-SHA512       |            |DSA-87     |brainpoolP384r1        |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA87-Ed448-SHA512      |<CompSig>.13|id-ML-     |id-Ed448               |id-   |
+   |                             |            |DSA-87     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
 
-                  Table 3: Composite Signature Algorithms
+                  Table 2: Composite Signature Algorithms
 
    The table above contains everything needed to implement the listed
    explicit composite algorithms.  See the ASN.1 module in section
    Section 9 for the explicit definitions of the above Composite
    signature algorithms.
 
-   Full specifications for the referenced algorithms can be found as
-   follows:
+   Full specifications for the referenced algorithms can be found in
+   Appendix A.
 
-   *  _MLDSA_: [I-D.ietf-lamps-dilithium-certificates] and
-      [FIPS.204-ipd]
+7.1.  Domain Separators
 
-   *  _ECDSA_: [RFC5480]
+   As mentioned above, the OID input value is used as a domain separator
+   for the Composite Signature Generation and verification process and
+   is the DER encoding of the OID.  The following table shows the HEX
+   encoding for each Signature AlgorithmID.
 
-   *  _Ed25519 / Ed448_: [RFC8410]
+   +=======================================+==========================+
+   |Composite Signature AlgorithmID        |Domain Separator (in Hex  |
+   |                                       |encoding)                 |
+   +=======================================+==========================+
+   |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080101|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-RSA2048-PKCS15-SHA256       |060B6086480186FA6B50080102|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-Ed25519-SHA512              |060B6086480186FA6B50080103|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080104|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080105|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B50080106|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B50080107|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B50080108|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B50080109|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-Ed25519-SHA512              |060B6086480186FA6B5008010A|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-ECDSA-P384-SHA512           |060B6086480186FA6B5008010B|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-ECDSA-brainpoolP384r1-SHA512|060B6086480186FA6B5008010C|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B5008010D|
+   +---------------------------------------+--------------------------+
 
-   *  _RSAES-PKCS-v1_5_: [RFC8017]
+              Table 3: Composite Signature Domain Separators
 
-   *  _RSASSA-PSS_: [RFC8017]
-
-7.1.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
+7.2.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
 
    Use of RSA-PSS [RFC8017] deserves a special explanation.
 
@@ -852,7 +852,7 @@ Signature Verification Procedure::
 
    *  SHA-256 is defined in [RFC6234].
 
-7.2.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+7.3.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
 
    The RSA component keys MUST be generated at the 3072-bit security
    level in order to match with ML-DSA-65.
@@ -1337,7 +1337,7 @@ Signature Verification Procedure::
 10.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
-   module and in Table 3.
+   module and in Table 2.
 
 10.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
@@ -1457,7 +1457,7 @@ Signature Verification Procedure::
 
 11.  Security Considerations
 
-11.1.  Algorithm Selection Criteria
+11.1.  Public Key Algorithm Selection Criteria
 
    The composite algorithm combinations defined in this document were
    chosen according to the following guidelines:
@@ -1487,7 +1487,37 @@ Signature Verification Procedure::
    specification from extending these structures to define combinations
    with three or more components.
 
-11.2.  Policy for Deprecated and Acceptable Algorithms
+11.2.  PreHashing Algorithm Selection Criteria
+
+   As noted in the composite signature generation process and composite
+   signature verification process, the Message should be pre-hashed into
+   M' with the digest algorithm specified in the composite signature
+   algorithm identifier.  The selection of the digest algorithm was
+   chosen with the following criteria:
+
+   1.  For composites paired with RSA or ECDSA, the hashing algorithm
+       SHA256 or SHA512 is used as part of the RSA or ECDSA signature
+       algorithm and is therefore also used as the composite prehashing
+       algorithm.
+
+   2.  For ML-DSA signing a digest of the message is allowed as long as
+       the hash function provides at least y bits of classical security
+       strength against both collision and second preimage attacks.  For
+       ML-DSA-44 y is 128 bits, for ML-DSA-65 y is 192 bits and for ML-
+       DSA-87 y is 256 bits.  Therefore SHA256 is paired with RSA and
+       ECDSA with ML-DSA-44 and SHA512 is paired with RSA and ECDSA with
+       ML-DSA-65 and ML-DSA-87 to match the appropriate security
+       strength.
+
+   3.  Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is
+       used to pre-hash the message when Ed25519 is a component
+       algorithm.
+
+   4.  Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set
+       of prehashing algorihtms, SHA512 was selected to pre-hash the
+       message when Ed448 is a component algorithm.
+
+11.3.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
@@ -1584,6 +1614,12 @@ Signature Verification Procedure::
    [RFC5652]  Housley, R., "Cryptographic Message Syntax (CMS)", STD 70,
               RFC 5652, DOI 10.17487/RFC5652, September 2009,
               <https://www.rfc-editor.org/info/rfc5652>.
+
+   [RFC5758]  Dang, Q., Santesson, S., Moriarty, K., Brown, D., and T.
+              Polk, "Internet X.509 Public Key Infrastructure:
+              Additional Algorithms and Identifiers for DSA and ECDSA",
+              RFC 5758, DOI 10.17487/RFC5758, January 2010,
+              <https://www.rfc-editor.org/info/rfc5758>.
 
    [RFC5958]  Turner, S., "Asymmetric Key Packages", RFC 5958,
               DOI 10.17487/RFC5958, August 2010,
@@ -1753,11 +1789,118 @@ Signature Verification Procedure::
               Message Specification", RFC 8551, DOI 10.17487/RFC8551,
               April 2019, <https://www.rfc-editor.org/info/rfc8551>.
 
-Appendix A.  Samples
+Appendix A.  Component Algorithm Reference
 
-A.1.  Explicit Composite Signature Examples
+   This section provides references to the full specification of the
+   algorithms used in the composite constructions.
 
-A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
+   +=======================+========================+=======================================+
+   |Component Signature    |OID                     |Specification                          |
+   |Algorithm ID           |                        |                                       |
+   +=======================+========================+=======================================+
+   |id-ML-DSA-44           |1.3.6.1.4.1.2.267.12.4.4|_ML-DSA_:                              |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-ML-DSA-65           |1.3.6.1.4.1.2.267.12.6.5|_ML-DSA_:                              |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-ML-DSA-87           |1.3.6.1.4.1.2.267.12.8.7|_ML-DSA_:                              |
+   |                       |                        |[I-D.ietf-lamps-dilithium-certificates]|
+   |                       |                        |and [FIPS.204-ipd]                     |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-Ed25519             |iso(1) identified-      |_Ed25519 / Ed448_: [RFC8410]           |
+   |                       |organization(3)         |                                       |
+   |                       |thawte(101) 112         |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-Ed448               |iso(1) identified-      |_Ed25519 / Ed448_: [RFC8410]           |
+   |                       |organization(3)         |                                       |
+   |                       |thawte(101) id-         |                                       |
+   |                       |Ed448(113)              |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |ecdsa-with-SHA256      |iso(1) member-body(2)   |_ECDSA_: [RFC5758]                     |
+   |                       |us(840) ansi-           |                                       |
+   |                       |X9-62(10045)            |                                       |
+   |                       |signatures(4) ecdsa-    |                                       |
+   |                       |with-SHA2(3) 2          |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |ecdsa-with-SHA512      |iso(1) member-body(2)   |_ECDSA_: [RFC5758]                     |
+   |                       |us(840) ansi-           |                                       |
+   |                       |X9-62(10045)            |                                       |
+   |                       |signatures(4) ecdsa-    |                                       |
+   |                       |with-SHA2(3) 4          |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |sha256WithRSAEncryption|iso(1) member-body(2)   |_RSAES-PKCS-v1_5_: [RFC8017]           |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 11    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |sha512WithRSAEncryption|iso(1) member-body(2)   |_RSAES-PKCS-v1_5_: [RFC8017]           |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 13    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+   |id-RSASA-PSS           |iso(1) member-body(2)   |_RSASSA-PSS_: [RFC8017]                |
+   |                       |us(840) rsadsi(113549)  |                                       |
+   |                       |pkcs(1) pkcs-1(1) 10    |                                       |
+   +-----------------------+------------------------+---------------------------------------+
+
+         Table 7: Component Signature Algorithms used in Composite
+                               Constructions
+
+   +=================+=================================+===============+
+   | Elliptic        | OID                             | Specification |
+   | CurveID         |                                 |               |
+   +=================+=================================+===============+
+   | secp256r1       | iso(1) member-body(2)           | [RFC6090]     |
+   |                 | us(840) ansi-x962(10045)        |               |
+   |                 | curves(3) prime(1) 7            |               |
+   +-----------------+---------------------------------+---------------+
+   | secp384r1       | iso(1) identified-              | [RFC6090]     |
+   |                 | organization(3)                 |               |
+   |                 | certicom(132) curve(0) 34       |               |
+   +-----------------+---------------------------------+---------------+
+   | brainpoolP256r1 | iso(1) identified-              | [RFC5639]     |
+   |                 | organization(3)                 |               |
+   |                 | teletrust(36) algorithm(3)      |               |
+   |                 | signatureAlgorithm(3)           |               |
+   |                 | ecSign(2)                       |               |
+   |                 | ecStdCurvesAndGeneration(8)     |               |
+   |                 | ellipticCurve(1)                |               |
+   |                 | versionOne(1) 7                 |               |
+   +-----------------+---------------------------------+---------------+
+   | brainpoolP384r1 | iso(1) identified-              | [RFC5639]     |
+   |                 | organization(3)                 |               |
+   |                 | teletrust(36) algorithm(3)      |               |
+   |                 | signatureAlgorithm(3)           |               |
+   |                 | ecSign(2)                       |               |
+   |                 | ecStdCurvesAndGeneration(8)     |               |
+   |                 | ellipticCurve(1)                |               |
+   |                 | versionOne(1) 11                |               |
+   +-----------------+---------------------------------+---------------+
+
+          Table 8: Elliptic Curves used in Composite Constructions
+
+      +===========+=================================+===============+
+      | HashID    | OID                             | Specification |
+      +===========+=================================+===============+
+      | id-sha256 | joint-iso-itu-t(2) country(16)  | [RFC6234]     |
+      |           | us(840) organization(1)         |               |
+      |           | gov(101) csor(3)                |               |
+      |           | nistAlgorithms(4) hashAlgs(2) 1 |               |
+      +-----------+---------------------------------+---------------+
+      | id-sha512 | joint-iso-itu-t(2) country(16)  | [RFC6234]     |
+      |           | us(840) organization(1)         |               |
+      |           | gov(101) csor(3)                |               |
+      |           | nistAlgorithms(4) hashAlgs(2) 3 |               |
+      +-----------+---------------------------------+---------------+
+
+          Table 9: Hash algorithms used in Composite Constructions
+
+Appendix B.  Samples
+
+B.1.  Explicit Composite Signature Examples
+
+B.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
 
    -----BEGIN PUBLIC KEY-----
    MIIFgTANBgtghkgBhvprUAgBBAOCBW4AMIIFaQOCBSEAJaSzbEOXCT27FgXshv87
@@ -1791,7 +1934,7 @@ A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
    5QNCAAReie6V/SXhsV0+AAEPt/7UjJqzbrZU1ZHKBLCDbX1cv1Zkpy+SabE2Pfpd
    K7SzfBpZw0txE+bjIUT4j3zjgIDa -----END PUBLIC KEY-----
 
-A.1.2.  MLDSA44-ECDSA-P256 Private Key
+B.1.2.  MLDSA44-ECDSA-P256 Private Key
 
    -----BEGIN PRIVATE KEY----- MIIP6gIBADANBgtghkgBhvprUAgBBASCD9Qwgg/
    QMIIPNgIBADANBgsrBgEEAQKC CwwEBASCDyAlpLNsQ5cJPbsWBeyG/
@@ -1881,7 +2024,7 @@ A.1.2.  MLDSA44-ECDSA-P256 Private Key
    s262VNWRygSwg219XL9WZKcvkmmxNj36XSu0s3waWcNLcRPm4yFE+I9844CA2g==
    -----END PRIVATE KEY-----
 
-A.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+B.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
 
    -----BEGIN CERTIFICATE-----
    MIIP+TCCBhqgAwIBAgIUEsa5EwG0Ligbb3NMHEmsqr0IoKMwDQYLYIZIAYb6a1AI
@@ -1971,9 +2114,9 @@ A.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
    u9h+Hh3v0dLD71pyH3EidqMddgc0vjd7qF8CIQCNyqGxNNM4DuRCkDTWH+HdmGJ1
    F2ljUsBn8vo47P9JvA== -----END CERTIFICATE-----
 
-Appendix B.  Implementation Considerations
+Appendix C.  Implementation Considerations
 
-B.1.  FIPS certification
+C.1.  FIPS certification
 
    One of the primary design goals of this specification is for the
    overall composite algorithm to be able to be considered FIPS-approved
@@ -1992,7 +2135,7 @@ B.1.  FIPS certification
    algorithms which combine FIPS cryptography with cryptography from a
    different national standards body.
 
-B.2.  Backwards Compatibility
+C.2.  Backwards Compatibility
 
    The term "backwards compatibility" is used here to mean something
    more specific; that existing systems as they are deployed today can
@@ -2014,7 +2157,7 @@ B.2.  Backwards Compatibility
    design work because it can be implemented as a signature algorithm
    that fits into existing systems.
 
-B.2.1.  Hybrid Extensions (Keys and Signatures)
+C.2.1.  Hybrid Extensions (Keys and Signatures)
 
    The use of Composite Crypto provides the possibility to process
    multiple algorithms without changing the logic of applications, but
@@ -2028,13 +2171,13 @@ B.2.1.  Hybrid Extensions (Keys and Signatures)
    applications to be updated for correctly processing multiple
    algorithms together.
 
-Appendix C.  Intellectual Property Considerations
+Appendix D.  Intellectual Property Considerations
 
    The following IPR Disclosure relates to this draft:
 
    https://datatracker.ietf.org/ipr/3588/
 
-Appendix D.  Contributors and Acknowledgements
+Appendix E.  Contributors and Acknowledgements
 
    This document incorporates contributions and comments from a large
    group of experts.  The Editors would especially like to acknowledge
@@ -2056,7 +2199,7 @@ Appendix D.  Contributors and Acknowledgements
    "Copying always makes things easier and less error prone" -
    [RFC8411].
 
-D.1.  Making contributions
+E.1.  Making contributions
 
    Additional contributions to this draft are welcome.  Please see the
    working copy of this draft at, as well as open issues at:
@@ -2090,7 +2233,7 @@ Authors' Addresses
 
    Jan Klaussner
    Bundesdruckerei GmbH
-   Kommandantenstr. 15
+   Kommandantenstr. 18
    10969 Berlin
    Germany
    Email: jan.klaussner@bdr.de
