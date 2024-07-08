@@ -248,10 +248,10 @@ Table of Contents
    The engineering principle behind the definition of Composite schemes
    is to define a new family of algorithms that combines the use of
    cryptographic operations from two different ones: ML-DSA one and a
-   traditional one.The complexity of combining security properties from
-   the selected two algorithms is handled at the cryptographic library
-   or cryptographic module, thus no changes are expected at the
-   application or protocol level.  Composite schemes are fully
+   traditional one.  The complexity of combining security properties
+   from the selected two algorithms is handled at the cryptographic
+   library or cryptographic module, thus minimal changes are expected at
+   the application or protocol level.  Composite schemes are fully
    compatible with the X.509 model: composite public keys, composite
    private keys, and ciphertexts can be carried in existing data
    structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210],
@@ -306,10 +306,10 @@ Table of Contents
    parallel for better key generation performance.
 
    The generated public key structure is described in Section 5.2, while
-   the corrsponding composite secret key structure is defined in
+   the corresponding composite secret key structure is defined in
    Section 5.3.
 
-   The following process is used to generate composite kepair values:
+   The following process is used to generate composite keypair values:
 
    KeyGen() -> (pk, sk)
 
@@ -344,7 +344,7 @@ Table of Contents
 
    The key generation functions MUST be executed for both algorithms.
    Compliant parties MUST NOT use or import component keys that are used
-   in other context, combinations, or by themselves (i.e., not only in
+   in other contexts, combinations, or by themselves (i.e., not only in
    X.509 certificates).
 
 4.2.  Signature Generation
@@ -356,11 +356,11 @@ Table of Contents
    [I-D.hale-pquip-hybrid-signature-spectrums] and the use of labels as
    defined in [Bindel2017]
 
-   Composite signature generation starts with the pre-hashing the
-   message that is concatenated with the to be signed together with key-
-   binding data.  After that, the signature process for each component
-   algorithm is invoked and the values are then placed in the
-   CompositeSignatureValue structure defined in Section 6.1.
+   Composite signature generation starts with pre-hashing the message
+   that is concatenated with the Domain separator Section 7.1.  After
+   that, the signature process for each component algorithm is invoked
+   and the values are then placed in the CompositeSignatureValue
+   structure defined in Section 6.1.
 
    A composite signature's value MUST include two signature components
    and MUST be in the same order as the components from the
@@ -381,7 +381,7 @@ Input:
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -389,7 +389,7 @@ Output:
 
 Signature Generation Process:
 
-   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite scheme) with the Hash of the Message
+   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message
 
          M' := Domain || HASH(Message)
 
@@ -451,7 +451,7 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -556,9 +556,10 @@ Signature Verification Procedure::
 
 5.3.  CompositeSignaturePrivateKey
 
-   Usecases that require an interoperable encoding for composite private
-   keys, such as when private keys are carried in PKCS #12 [RFC7292],
-   CMP [RFC4210] or CRMF [RFC4211] MUST use the following structure.
+   Use cases that require an interoperable encoding for composite
+   private keys, such as when private keys are carried in PKCS #12
+   [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the following
+   structure.
 
    CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
 
@@ -1533,7 +1534,7 @@ Signature Verification Procedure::
    deprecated and non-deprecated algorithms.
 
    Since composite algorithms are registered independently of their
-   component algorithms, their deprecation can be handled indpendently
+   component algorithms, their deprecation can be handled independently
    from that of their component algorithms.  For example a cryptographic
    policy might continue to allow id-MLDSA65-ECDSA-P256-SHA512 even
    after ECDSA-P256 is deprecated.
@@ -1932,13 +1933,14 @@ B.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
    CxUIkgOk3C+cgUzTwsFU4iiix282ZBa8/nTUnH9r3IDJQJwdWtMCnByCc43UeVSh
    WV3isRF+ANl6lSevNj0uzGE07a5gPahctBWMmevh6qFcv5XucwNRe7en96o7CgK+
    5QNCAAReie6V/SXhsV0+AAEPt/7UjJqzbrZU1ZHKBLCDbX1cv1Zkpy+SabE2Pfpd
-   K7SzfBpZw0txE+bjIUT4j3zjgIDa -----END PUBLIC KEY-----
+   K7SzfBpZw0txE+bjIUT4j3zjgIDa
+   -----END PUBLIC KEY-----
 
 B.1.2.  MLDSA44-ECDSA-P256 Private Key
 
-   -----BEGIN PRIVATE KEY----- MIIP6gIBADANBgtghkgBhvprUAgBBASCD9Qwgg/
-   QMIIPNgIBADANBgsrBgEEAQKC CwwEBASCDyAlpLNsQ5cJPbsWBeyG/
-   zvYctOB4+ZgIkIfY5VSL88H1oyY3xD+KvF2
+   -----BEGIN PRIVATE KEY-----
+   MIIP6gIBADANBgtghkgBhvprUAgBBASCD9Qwgg/QMIIPNgIBADANBgsrBgEEAQKC
+   CwwEBASCDyAlpLNsQ5cJPbsWBeyG/zvYctOB4+ZgIkIfY5VSL88H1oyY3xD+KvF2
    4bnFPT7nM4+8rPjsCuuk2PyUr7vzEHf++3ovDEFUsHo88ez4zfzBeW+Aho6yC4Gf
    H8BFsgVYv0HmRUPUEmVhrJUKt8VwHbOVyak7a4JWl6MWpwxnRYqso1rCcWKWZKQC
    bZIQQhGIKaIyZQSVRSI4bdBAShuBaQPGkBwUDgM3QQgGbhHDSBqzLQk4MooWSUk0
@@ -2112,7 +2114,8 @@ B.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
    P1hehYqQl5+hqavvGjM3OExPVVuQl5vA2dzm6QYMECNOWV9jgsfV5/H3EhQiJTtx
    dpigxtff/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0dKzgDSAAwRQIgTgIe913r
    u9h+Hh3v0dLD71pyH3EidqMddgc0vjd7qF8CIQCNyqGxNNM4DuRCkDTWH+HdmGJ1
-   F2ljUsBn8vo47P9JvA== -----END CERTIFICATE-----
+   F2ljUsBn8vo47P9JvA==
+   -----END CERTIFICATE-----
 
 Appendix C.  Implementation Considerations
 
@@ -2126,12 +2129,12 @@ C.1.  FIPS certification
    algorithm where only one of the component algorithms has been FIPS-
    validated or FIPS-approved should credit the FIPS-validated component
    algorithm with full security strength, the non-FIPS-validated
-   component algorith with zero security, and the overall composite
+   component algorithm with zero security, and the overall composite
    should be considered at least as strong and thus FIPS-approved.
 
    The authors wish to note that this gives composite algorithms great
    future utility both for future cryptographic migrations as well as
-   bridging across jurisdictions; for example defining composite
+   bridging across jurisdictions, for example defining composite
    algorithms which combine FIPS cryptography with cryptography from a
    different national standards body.
 
@@ -2160,7 +2163,7 @@ C.2.  Backwards Compatibility
 C.2.1.  Hybrid Extensions (Keys and Signatures)
 
    The use of Composite Crypto provides the possibility to process
-   multiple algorithms without changing the logic of applications, but
+   multiple algorithms without changing the logic of applications but
    updating the cryptographic libraries: one-time change across the
    whole system.  However, when it is not possible to upgrade the crypto
    engines/libraries, it is possible to leverage X.509 extensions to
@@ -2186,10 +2189,11 @@ Appendix E.  Contributors and Acknowledgements
    electronic mail and VOIP traffic over the past few years in pursuit
    of this document:
 
-   Daniel Van Geest (ISARA), Britta Hale, Tim Hollebeek (Digicert),
+   Daniel Van Geest (CryptoNext), Britta Hale, Tim Hollebeek (Digicert),
    Panos Kampanakis (Cisco Systems), Richard Kisley (IBM), Serge Mister
    (Entrust), Francois Rousseau, Falko Strenzke, Felipe Ventura
-   (Entrust), Alexander Ralien (Siemens) and Jose Ignacio Escribano
+   (Entrust), Alexander Ralien (Siemens), Jose Ignacio Escribano and Jan
+   Oupicky
 
    We are grateful to all, including any contributors who may have been
    inadvertently omitted from this list.

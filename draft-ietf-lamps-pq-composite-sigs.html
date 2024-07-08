@@ -1466,7 +1466,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
       <h2 id="name-composite-signatures-scheme">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-composite-signatures-scheme" class="section-name selfRef">Composite Signatures Schemes</a>
       </h2>
-<p id="section-3-1">The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one.The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus no changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format [RFC5914].<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format [RFC5914].<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Composite schemes are defined as cryptographic primitives that consists of three algorithms:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-3.1">
@@ -1509,8 +1509,8 @@ it returns false.<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-key-generation" class="section-name selfRef">Key Generation</a>
         </h3>
 <p id="section-4.1-1">To generate a new keypair for Composite schemes, the <code>KeyGen() -&gt; (pk, sk)</code> function is used. The KeyGen() function calls the two key generation functions of the component algorithms for the Composite keypair in no particular order. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">The generated public key structure is described in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.2</a>, while the corrsponding composite secret key structure is defined in <a href="#sec-priv-key" class="auto internal xref">Section 5.3</a>.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3">The following process is used to generate composite kepair values:<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">The generated public key structure is described in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.2</a>, while the corresponding composite secret key structure is defined in <a href="#sec-priv-key" class="auto internal xref">Section 5.3</a>.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">The following process is used to generate composite keypair values:<a href="#section-4.1-3" class="pilcrow">¶</a></p>
 <span id="name-composite-keygenpk-sk"></span><div id="alg-composite-keygen">
 <figure id="figure-1">
           <div class="alignLeft art-text artwork" id="section-4.1-4.1">
@@ -1550,7 +1550,7 @@ Function KeyGen():
 <a href="#name-composite-keygenpk-sk" class="selfRef">Composite KeyGen(pk, sk)</a>
           </figcaption></figure>
 </div>
-<p id="section-4.1-5">The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other context, combinations, or by themselves (i.e., not only in X.509 certificates).<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<p id="section-4.1-5">The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves (i.e., not only in X.509 certificates).<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-comp-sig-gen">
@@ -1559,7 +1559,7 @@ Function KeyGen():
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-signature-generation" class="section-name selfRef">Signature Generation</a>
         </h3>
 <p id="section-4.2-1">Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to <span>[<a href="#I-D.hale-pquip-hybrid-signature-spectrums" class="cite xref">I-D.hale-pquip-hybrid-signature-spectrums</a>]</span> and the use of labels as defined in <span>[<a href="#Bindel2017" class="cite xref">Bindel2017</a>]</span><a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">Composite signature generation starts with the pre-hashing the message that is concatenated with the  to be signed together with key-binding data. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in <a href="#sec-composite-sig-structs" class="auto internal xref">Section 6.1</a>.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">Composite signature generation starts with pre-hashing the message that is concatenated with the Domain separator <a href="#sec-oid-concat" class="auto internal xref">Section 7.1</a>. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in <a href="#sec-composite-sig-structs" class="auto internal xref">Section 6.1</a>.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">The following process is used to generate composite signature values.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <span id="name-composite-signsk-message"></span><div id="alg-composite-sign">
@@ -1579,7 +1579,7 @@ Input:
      HASH               The Message Digest Algorithm used for pre-hashing.  See section
                         on pre-hashing below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -1587,7 +1587,7 @@ Output:
 
 Signature Generation Process:
 
-   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite scheme) with the Hash of the Message
+   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message
 
          M' := Domain || HASH(Message)
 
@@ -1644,7 +1644,7 @@ Input:
      HASH               The Message Digest Algorithm for pre-hashing.  See
                         section on pre-hashing the message below.
 
-     Domain             Domain separator value for binding signature to Composite OID.
+     Domain             Domain separator value for binding the signature to the Composite OID.
                         See section on Domain Separators below.
 
 Output:
@@ -1748,7 +1748,7 @@ CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
         <h3 id="name-compositesignatureprivateke">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-compositesignatureprivateke" class="section-name selfRef">CompositeSignaturePrivateKey</a>
         </h3>
-<p id="section-5.3-1">Usecases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span> MUST use the following structure.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-1">Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span> MUST use the following structure.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-2">
 <pre>
 CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
@@ -2911,7 +2911,7 @@ END
         </h3>
 <p id="section-11.3-1">Traditionally, a public key, certificate, or signature contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), then clients performing signatures or verifications should be updated to adhere to appropriate policies.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <p id="section-11.3-2">In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.<a href="#section-11.3-2" class="pilcrow">¶</a></p>
-<p id="section-11.3-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled indpendently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256-SHA512</code> even after ECDSA-P256 is deprecated.<a href="#section-11.3-3" class="pilcrow">¶</a></p>
+<p id="section-11.3-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256-SHA512</code> even after ECDSA-P256 is deprecated.<a href="#section-11.3-3" class="pilcrow">¶</a></p>
 <p id="section-11.3-4">When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.<a href="#section-11.3-4" class="pilcrow">¶</a></p>
 <p id="section-11.3-5">Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:<a href="#section-11.3-5" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-11.3-6">
@@ -3281,7 +3281,9 @@ END
           <h4 id="name-mldsa44-ecdsa-p256-sha256-p">
 <a href="#appendix-B.1.1" class="section-number selfRef">B.1.1. </a><a href="#name-mldsa44-ecdsa-p256-sha256-p" class="section-name selfRef">MLDSA44-ECDSA-P256-SHA256 Public Key</a>
           </h4>
-<p id="appendix-B.1.1-1">-----BEGIN PUBLIC KEY-----
+<div class="alignLeft art-text artwork" id="appendix-B.1.1-1">
+<pre>
+-----BEGIN PUBLIC KEY-----
 MIIFgTANBgtghkgBhvprUAgBBAOCBW4AMIIFaQOCBSEAJaSzbEOXCT27FgXshv87
 2HLTgePmYCJCH2OVUi/PB9YTyBXXnw+smoXT4w0pcq3WPs7qQXz6GKj7R0mFfTjp
 Rd6uH3hgdS5cbg+PwMWsRKigE6mWFpMwrliS8CfR2yYgjhRav7wGa4ja7RdmZoLz
@@ -3312,7 +3314,9 @@ CxUIkgOk3C+cgUzTwsFU4iiix282ZBa8/nTUnH9r3IDJQJwdWtMCnByCc43UeVSh
 WV3isRF+ANl6lSevNj0uzGE07a5gPahctBWMmevh6qFcv5XucwNRe7en96o7CgK+
 5QNCAAReie6V/SXhsV0+AAEPt/7UjJqzbrZU1ZHKBLCDbX1cv1Zkpy+SabE2Pfpd
 K7SzfBpZw0txE+bjIUT4j3zjgIDa
------END PUBLIC KEY-----<a href="#appendix-B.1.1-1" class="pilcrow">¶</a></p>
+-----END PUBLIC KEY-----
+</pre><a href="#appendix-B.1.1-1" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="mldsa44-ecdsa-p256-private-key">
@@ -3320,7 +3324,9 @@ K7SzfBpZw0txE+bjIUT4j3zjgIDa
           <h4 id="name-mldsa44-ecdsa-p256-private-">
 <a href="#appendix-B.1.2" class="section-number selfRef">B.1.2. </a><a href="#name-mldsa44-ecdsa-p256-private-" class="section-name selfRef">MLDSA44-ECDSA-P256 Private Key</a>
           </h4>
-<p id="appendix-B.1.2-1">-----BEGIN PRIVATE KEY-----
+<div class="alignLeft art-text artwork" id="appendix-B.1.2-1">
+<pre>
+-----BEGIN PRIVATE KEY-----
 MIIP6gIBADANBgtghkgBhvprUAgBBASCD9Qwgg/QMIIPNgIBADANBgsrBgEEAQKC
 CwwEBASCDyAlpLNsQ5cJPbsWBeyG/zvYctOB4+ZgIkIfY5VSL88H1oyY3xD+KvF2
 4bnFPT7nM4+8rPjsCuuk2PyUr7vzEHf++3ovDEFUsHo88ez4zfzBeW+Aho6yC4Gf
@@ -3406,7 +3412,9 @@ lSevNj0uzGE07a5gPahctBWMmevh6qFcv5XucwNRe7en96o7CgK+5TCBkwIBADAT
 BgcqhkjOPQIBBggqhkjOPQMBBwR5MHcCAQEEIGS03QxzabfR/cKWFDEkvue30guK
 RrdY2Lm6isBSMZfZoAoGCCqGSM49AwEHoUQDQgAEXonulf0l4bFdPgABD7f+1Iya
 s262VNWRygSwg219XL9WZKcvkmmxNj36XSu0s3waWcNLcRPm4yFE+I9844CA2g==
------END PRIVATE KEY-----<a href="#appendix-B.1.2-1" class="pilcrow">¶</a></p>
+-----END PRIVATE KEY-----
+</pre><a href="#appendix-B.1.2-1" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="mldsa44-ecdsa-p256-self-signed-x509-certificate">
@@ -3414,7 +3422,9 @@ s262VNWRygSwg219XL9WZKcvkmmxNj36XSu0s3waWcNLcRPm4yFE+I9844CA2g==
           <h4 id="name-mldsa44-ecdsa-p256-self-sig">
 <a href="#appendix-B.1.3" class="section-number selfRef">B.1.3. </a><a href="#name-mldsa44-ecdsa-p256-self-sig" class="section-name selfRef">MLDSA44-ECDSA-P256 Self-Signed X509 Certificate</a>
           </h4>
-<p id="appendix-B.1.3-1">-----BEGIN CERTIFICATE-----
+<div class="alignLeft art-text artwork" id="appendix-B.1.3-1">
+<pre>
+-----BEGIN CERTIFICATE-----
 MIIP+TCCBhqgAwIBAgIUEsa5EwG0Ligbb3NMHEmsqr0IoKMwDQYLYIZIAYb6a1AI
 AQQwEjEQMA4GA1UEAwwHb3FzdGVzdDAeFw0yNDAzMDEyMzE5MzFaFw0yNTAzMDEy
 MzE5MzFaMBIxEDAOBgNVBAMMB29xc3Rlc3QwggWBMA0GC2CGSAGG+mtQCAEEA4IF
@@ -3501,7 +3511,9 @@ P1hehYqQl5+hqavvGjM3OExPVVuQl5vA2dzm6QYMECNOWV9jgsfV5/H3EhQiJTtx
 dpigxtff/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0dKzgDSAAwRQIgTgIe913r
 u9h+Hh3v0dLD71pyH3EidqMddgc0vjd7qF8CIQCNyqGxNNM4DuRCkDTWH+HdmGJ1
 F2ljUsBn8vo47P9JvA==
------END CERTIFICATE-----<a href="#appendix-B.1.3-1" class="pilcrow">¶</a></p>
+-----END CERTIFICATE-----
+</pre><a href="#appendix-B.1.3-1" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
@@ -3519,8 +3531,8 @@ F2ljUsBn8vo47P9JvA==
 <a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-fips-certification" class="section-name selfRef">FIPS certification</a>
         </h3>
 <p id="appendix-C.1-1">One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.<a href="#appendix-C.1-1" class="pilcrow">¶</a></p>
-<p id="appendix-C.1-2">Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorith with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#appendix-C.1-2" class="pilcrow">¶</a></p>
-<p id="appendix-C.1-3">The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions; for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.<a href="#appendix-C.1-3" class="pilcrow">¶</a></p>
+<p id="appendix-C.1-2">Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#appendix-C.1-2" class="pilcrow">¶</a></p>
+<p id="appendix-C.1-3">The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.<a href="#appendix-C.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-backwards-compat">
@@ -3535,7 +3547,7 @@ F2ljUsBn8vo47P9JvA==
           <h4 id="name-hybrid-extensions-keys-and-">
 <a href="#appendix-C.2.1" class="section-number selfRef">C.2.1. </a><a href="#name-hybrid-extensions-keys-and-" class="section-name selfRef">Hybrid Extensions (Keys and Signatures)</a>
           </h4>
-<p id="appendix-C.2.1-1">The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications, but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.<a href="#appendix-C.2.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-C.2.1-1">The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.<a href="#appendix-C.2.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3557,7 +3569,7 @@ F2ljUsBn8vo47P9JvA==
 <a href="#appendix-E" class="section-number selfRef">Appendix E. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
       </h2>
 <p id="appendix-E-1">This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:<a href="#appendix-E-1" class="pilcrow">¶</a></p>
-<p id="appendix-E-2">Daniel Van Geest (ISARA),
+<p id="appendix-E-2">Daniel Van Geest (CryptoNext),
 Britta Hale,
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
@@ -3566,8 +3578,9 @@ Serge Mister (Entrust),
 Francois Rousseau,
 Falko Strenzke,
 Felipe Ventura (Entrust),
-Alexander Ralien (Siemens) and
-Jose Ignacio Escribano<a href="#appendix-E-2" class="pilcrow">¶</a></p>
+Alexander Ralien (Siemens),
+Jose Ignacio Escribano and
+Jan Oupicky<a href="#appendix-E-2" class="pilcrow">¶</a></p>
 <p id="appendix-E-3">We are grateful to all, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-E-3" class="pilcrow">¶</a></p>
 <p id="appendix-E-4">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
    documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-E-4" class="pilcrow">¶</a></p>
