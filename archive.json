@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-07T00:46:04.531031+00:00",
+  "timestamp": "2024-07-09T00:42:05.489007+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -55,15 +55,17 @@
       "id": "I_kwDOL5eEDM6LI9I2",
       "title": "Carl Wallace's comments on composite signatures v13",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "opencrypto"
+      ],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/147\r\n\r\nBelow are some comments, suggestions, and questions based on a brief review of draft-ounsworth-pq-composite-sigs-13.\r\n\r\nGeneral\r\n\r\nThe draft defines a set of 13 algorithms. Is LAMPS the right forum to vet algorithms? Generally, LAMPS deals with specs that describe how to use a given algorithm relative to PKIX and S/MIME artifacts, not algorithm specifications.\r\nIs the \"Internet PKI\" really the target? Is this kind of designation appropriate for what would appear to be a general-purpose algorithm specification?\r\nThe draft needs a thorough review to sharpen the fact that it now defines a set of 13 algorithms, not a framework for using composite key and signature combinations. Statements like \"should be regarded as a single key\" muddy the water. Even the term \"composite key\" is unhelpful. It's likely that most instances of the word \"composite\" could be written \"Composite ML-DSA.\" Given that this spec defines a means of generating and using keys and signatures, there's no need for all the \"drop-in replacement\" verbiage.\r\nOffhand, I think all of the relevant structures could use templates. Assuming this is correct, it may be worth including a section that notes ASN.1 decoders/encoders are not required.\r\nAll references to \"explicit composites\" should be reviewed and either deleted or amended.\r\nAbstract\r\n\r\nIs a \"X.509, PKIX, and CMS\" target appropriate for an algorithm specification? Is there some reason any of these 13 algorithms could not be used in a different context?\r\ns/Signaturem/Signature\r\nSections 2.3.1 - 2.3.3\r\n\r\nThese sections should include references to the relevant sections of each possible component algorithm. There is a list of algorithms in Section 5 (with a broken link for ML-DSA) but, given this is an algorithm specification, including more detail in the key generation, signature generation and signature verification sections would be appropriate and helpful.\r\ns/sketched/defined\r\nThere are two references to \"recursive composite public keys.\" These should be removed given they are not supported by definition.\r\nSection 2.3.1\r\n\r\ns/The KeyGen() -> (pk, sk) of a composite signature algorithm will perform the KeyGen() of the respective component signature algorithms / KeyGen() will perform the KeyGen() of the respective component signature algorithms\r\nIt's probably worth including pseudocode as done for Sign() and Verify()\r\nRewrite the last sentence to be Composite ML-DSA specific: The component keys MUST be uniquely generated for use in a Composite ML-DSA key.\r\nSection 2.3.2\r\n\r\nThe second and third steps could use some work. In step 2, S1 and S2 are raw signatures from a component algorithm. In step 3, they are BIT STRINGs containing the raw signatures. Additionally, it is unlikely the \"algorithm specifications\" address encoding as a BIT STRING. Suggest rewriting bullet 3 as below:\r\n\r\nEncode each component signature S1 and S2 as BIT STRINGs B1 and B2 then as a SEQUENCE\r\n\r\nsignature ::= Sequence { B1, B2 }\r\n\r\ns/A composite signature MUST produce/Sign() MUST produce\r\n\r\nSection 2.4\r\n\r\nDrop the word concatenation. No OIDs are being concatenated. There are other references to OID concatenation throughout the document that should be reviewed as well.\r\nSection 2.6\r\n\r\nDepending on the answer to the first question in General above, the following sentence may need to be removed or amended: \"If other combinations are needed, a separate specification should be submitted to the IETF LAMPS working group.\"\r\nThe statement that this \"also does not preclude future specification from extending these structures\" is false. The definitions are fixed at length 2. That someone could define a new specification with other lengths need not be commented on here. Suggest removing this sentence.\r\nSection 3\r\n\r\nReplace \"multiple algorithms\" with \"algorithm pairs\" or similar. Same comment applies throughout the draft.\r\nFWIW, I did not test compile the ASN.1 or work with the examples yet.\r\nGiven ECPoint is an alias for OCTET STRING do we need to ability to define types for each component, or can the object class be simplified to assert all component keys are simply OCTET STRINGs?\r\nSection 3.2\r\n\r\nThe reference to Table 3 is not altogether apt. The table lists signature algorithms. There should probably be a similar table for use in reconstituting SubjectPublicKeyInfo values (i.e., including curve name for parameters).\r\nSection 3.4\r\n\r\nWhy is this section necessary? The public key format defined by this specification is CompositeSignaturePublicKey. If someone wants to encode this in an OCTET STRING or BIT STRING that's their business.\r\nI would delete the entire section, but if the section remains, I would definitely delete the last sentence. The definitions provided call for DER encoding. Immediately following that with allowance for BER in the \u201cinterests of simplicity and avoiding compatibility issues\u201d is odd in that it provides for neither. If you want to support BER and DER, cite BER encoding. But why do that? Amongst other things, that would break ability to templatize the artifacts.\r\nSection 5\r\n\r\nRemove \"for explicit combinations\" from the first sentence.\r\nRemove the second paragraph given the list is exhaustive for this specification.\r\nRemove the third paragraph since only 13 algorithms are defined. There is no flexibility provided for in this specification to define other combinations.\r\nSecurity Considerations\r\n\r\nThis section should incorporate security considerations from component algorithms by reference.\r\nThe section still reflects the earlier versions before the scope was limited to focus on 13 algorithms. It could use some pruning. Maybe move some of the stripping discussion to the signature generation section.\r\nAll considerations are listed under the same heading. These should be broken up into new subsections (or the heading removed).\r\nSection B.2\r\n\r\nThis section (and subsections) should probably be deleted. At a minimum, they aren't really \"Implementation considerations\" for the 13 algorithms that are the subject of the draft.",
       "createdAt": "2024-06-04T21:14:50Z",
-      "updatedAt": "2024-06-05T14:41:06Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-08T16:54:59Z",
+      "closedAt": "2024-07-08T16:54:59Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -198,7 +200,7 @@
       "id": "I_kwDOL5eEDM6LJAQa",
       "title": "Add a new section: explicitely list SPKI AlgIds",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -207,8 +209,8 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
       "createdAt": "2024-06-04T21:24:28Z",
-      "updatedAt": "2024-07-03T14:59:54Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-08T15:43:38Z",
+      "closedAt": "2024-07-08T15:43:38Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -324,7 +326,7 @@
       "id": "I_kwDOL5eEDM6M6Mps",
       "title": "SHA256withECDSA vs ECDSAwithSHA256",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [
@@ -333,8 +335,8 @@
       "labels": [],
       "body": "I'm curious why in the \"Composite Signature Algorithms\" table, SHA256withECDSA for example is used instead of ECDSAwithSHA256? Isn't the latter more commonly used terminology?",
       "createdAt": "2024-06-20T10:13:31Z",
-      "updatedAt": "2024-07-05T21:03:18Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-08T17:08:16Z",
+      "closedAt": "2024-07-08T17:08:16Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -349,6 +351,13 @@
           "body": "updated the naming in the table in PR#16",
           "createdAt": "2024-07-05T21:03:17Z",
           "updatedAt": "2024-07-05T21:03:17Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Confirmed that Jan resolved this in #16 ",
+          "createdAt": "2024-07-08T17:08:16Z",
+          "updatedAt": "2024-07-08T17:08:16Z"
         }
       ]
     },
@@ -375,6 +384,38 @@
           "updatedAt": "2024-07-03T20:45:53Z"
         }
       ]
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOL5eEDM6OtEHB",
+      "title": "Synchronize sections and writing style of composite sigs and kems",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/17",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-07-07T19:05:13Z",
+      "updatedAt": "2024-07-07T19:05:13Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 19,
+      "id": "I_kwDOL5eEDM6O0h2y",
+      "title": "Should the DomSep be Hash( DER(OID) ) instead of DER(OID)",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/19",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The rationale for making it a hash is so that the domain separator Hex string is the same length, even if the OIDs end up being different lengths; for example if IANA decides to assign from multiple arcs, or if in the future (Falcon, new PQ sigs), we get OIDs from different arcs.\r\n\r\nOn the other hand, maybe it is ok for the domain separators to be different lengths, as long as they are pre-determined and not completely variable length (ie length is controllable by an attacker).",
+      "createdAt": "2024-07-08T17:05:06Z",
+      "updatedAt": "2024-07-08T17:05:48Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -480,24 +521,97 @@
       "id": "PR_kwDOL5eEDM50kQkB",
       "title": "Add appendix with component algorithm references",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/16",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "* appendix with references of signature, curves and hashes\r\n* updated section 'Algorithm Identifiers' with reference to appendix and IDs of component algorithms\r\n* updated algorithm description for signature generation and verification to use Domain separator",
       "createdAt": "2024-07-05T21:00:55Z",
-      "updatedAt": "2024-07-05T21:00:56Z",
+      "updatedAt": "2024-07-08T15:43:37Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "e89f78848179101641dbbe3d02447fde62831570",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids",
-      "headRefOid": "bc535a7842aff5cc0d2a3df3a76313d096d77e3b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "7d649b8eb7e445921aeea6633571e8420d2c4f2d",
+      "closedAt": "2024-07-08T15:43:37Z",
+      "mergedAt": "2024-07-08T15:43:37Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "4b8da2388ecca2b2930400f0df5462ad901156e2"
+      },
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think this is a good start, but since these are fixed values, I think we should actually provide HEX DER encoded AlgorithmIDs for each row, then there is absolutely no ambiguity.",
+          "createdAt": "2024-07-07T15:23:40Z",
+          "updatedAt": "2024-07-07T15:23:40Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Also, once we have this sorted out here, we will need to do the same in composite-kems: https://github.com/lamps-wg/draft-composite-kem/issues/20",
+          "createdAt": "2024-07-07T15:24:33Z",
+          "updatedAt": "2024-07-07T15:24:33Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think this is a good start, but since these are fixed values, I think we should actually provide HEX DER encoded AlgorithmIDs for each row, then there is absolutely no ambiguity.\r\n\r\nYou mean in the appendix? These values are not fed into the signature, they just help to identify the component algorithm used. Is your point that providing DER OID values instead of ASN.1 OIDs helps the implementer with this?",
+          "createdAt": "2024-07-08T07:52:50Z",
+          "updatedAt": "2024-07-08T07:52:50Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ounsworth  I don't understand why we would need to put hex encodings of the OIDS for the component signatures.  They are not used during the signature computation process.   We already hex encode the composite OIDs themselves which is a representation of the entire composite algorithm.  I think what Jan has here is fine.",
+          "createdAt": "2024-07-08T12:32:08Z",
+          "updatedAt": "2024-07-08T12:32:08Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6A911N",
+          "commit": {
+            "abbreviatedOid": "cdc6e20"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-08T15:32:26Z",
+          "updatedAt": "2024-07-08T15:32:26Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOL5eEDM50n1iX",
+      "title": "Addressing CW comments",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/18",
+      "state": "MERGED",
+      "author": "opencrypto",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addressing CW comments in the different sections.",
+      "createdAt": "2024-07-07T22:39:55Z",
+      "updatedAt": "2024-07-08T16:54:59Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "4b8da2388ecca2b2930400f0df5462ad901156e2",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "1-carl-wallaces-comments-on-composite-signatures-v13",
+      "headRefOid": "df9ef9eafbe77a8f4cc5f5787924d02fbba603ac",
+      "closedAt": "2024-07-08T16:54:59Z",
+      "mergedAt": "2024-07-08T16:54:59Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "ac890f5c4f5bd2561df3c53a97b312bce0327023"
+      },
       "comments": [],
       "reviews": []
     }
