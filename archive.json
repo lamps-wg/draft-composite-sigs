@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-09T00:42:05.489007+00:00",
+  "timestamp": "2024-07-11T00:42:50.176800+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -414,6 +414,38 @@
       "body": "The rationale for making it a hash is so that the domain separator Hex string is the same length, even if the OIDs end up being different lengths; for example if IANA decides to assign from multiple arcs, or if in the future (Falcon, new PQ sigs), we get OIDs from different arcs.\r\n\r\nOn the other hand, maybe it is ok for the domain separators to be different lengths, as long as they are pre-determined and not completely variable length (ie length is controllable by an attacker).",
       "createdAt": "2024-07-08T17:05:06Z",
       "updatedAt": "2024-07-08T17:05:48Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOL5eEDM6O80RT",
+      "title": "Read Carl's email",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/20",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See https://mailarchive.ietf.org/arch/msg/spasm/b7rvHiKnA80oZ-VqQY7LIoFdsu8/. The point below is the that using a template like this with an embedded ASN.1 definition causes compilers (or at least the compiler I use) to emit far more code than if the structure were factored out of the template definition. I\u2019ve not spent any time with composite-kem yet, but it looks like some of the comments I had relative to the composite-signatures draft would apply here too.",
+      "createdAt": "2024-07-09T13:56:32Z",
+      "updatedAt": "2024-07-09T13:56:32Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 21,
+      "id": "I_kwDOL5eEDM6O87nU",
+      "title": "Feedback from Piotr",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/21",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://mailarchive.ietf.org/arch/msg/spasm/69ApI6-0EjcaQrel70vAV1Avyho/",
+      "createdAt": "2024-07-09T14:09:54Z",
+      "updatedAt": "2024-07-09T14:09:54Z",
       "closedAt": null,
       "comments": []
     }
