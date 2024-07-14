@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-11T00:42:50.176800+00:00",
+  "timestamp": "2024-07-14T00:47:10.475575+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -446,6 +446,54 @@
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/69ApI6-0EjcaQrel70vAV1Avyho/",
       "createdAt": "2024-07-09T14:09:54Z",
       "updatedAt": "2024-07-09T14:09:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 22,
+      "id": "I_kwDOL5eEDM6PReke",
+      "title": "Match \"Algorithm selection criteria\" to actual selections",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/22",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently, the Security Consideration section \"Public Key Algorithm Selection Criteria\" says:\r\n\r\n> A single RSA combination is provided at a key size of 3072 bits, matched with NIST PQC Level 3 algorithms.\r\n\r\nBut that's not true because we actually have 4 RSA combinations at both Level 2 and Level 3.\r\n\r\n~~~\r\nid-MLDSA44-RSA2048-PSS-SHA256\r\nid-MLDSA44-RSA2048-PKCS15-SHA256\r\nid-MLDSA65-RSA3072-PSS-SHA512\r\nid-MLDSA65-RSA3072-PKCS15-SHA512\r\n~~~",
+      "createdAt": "2024-07-11T17:44:09Z",
+      "updatedAt": "2024-07-11T17:44:09Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 23,
+      "id": "I_kwDOL5eEDM6PUw0z",
+      "title": "An End User would like a composite with an RSA-4096 component algorithm",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/23",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "An end user wants us to add a 4096 bit composite combination:\r\n\r\nMy reading of the specs matches like this:\r\nhttps://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf\r\n\r\n112 bits of security   RSA 2048   \r\n128 bits of security   RSA 3072   ML-DSA-44\r\n192 bits of security   RSA 7680   ML-DSA-65\r\n256 bits of security RSA-15360  ML-DSA-87\r\n\r\nSo we can either switch the RSA-3072 ones to 4096 or add new composite combinations with RSA-4096\r\n",
+      "createdAt": "2024-07-12T03:38:38Z",
+      "updatedAt": "2024-07-12T04:06:13Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 24,
+      "id": "I_kwDOL5eEDM6PbIxz",
+      "title": "Make RSA 4096 combos",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/24",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We have been asked to add RSA-4096 combos for existing infrastructures where deployed software or policy requires 4096 bit keys.\r\n\r\nSuggestion is that since RSA 4096 is not much above 128 bit security (certainly not as much as AES-192 or SHA-384), we should pair it with the same cipher suites as the RSA-3072 combo. Or maybe even replace the 4096 combo?",
+      "createdAt": "2024-07-12T20:01:36Z",
+      "updatedAt": "2024-07-12T20:01:36Z",
       "closedAt": null,
       "comments": []
     }
