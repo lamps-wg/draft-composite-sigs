@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-14T00:47:10.475575+00:00",
+  "timestamp": "2024-07-16T00:42:49.965912+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -491,11 +491,19 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "We have been asked to add RSA-4096 combos for existing infrastructures where deployed software or policy requires 4096 bit keys.\r\n\r\nSuggestion is that since RSA 4096 is not much above 128 bit security (certainly not as much as AES-192 or SHA-384), we should pair it with the same cipher suites as the RSA-3072 combo. Or maybe even replace the 4096 combo?",
+      "body": "We have been asked to add RSA-4096 combos for existing infrastructures where deployed software or policy requires 4096 bit keys.\r\n\r\nSuggestion is that since RSA 4096 is not much above 128 bit security (certainly not as much as AES-192 or SHA-384), we should pair it with the same cipher suites as the RSA-3072 combo. Or maybe even replace the 3072 combo?",
       "createdAt": "2024-07-12T20:01:36Z",
-      "updatedAt": "2024-07-12T20:01:36Z",
+      "updatedAt": "2024-07-15T12:55:04Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ounsworth I would rather add combinations, and yes, the same as with RSA 3072.\r\n1. RSA 4096 is expensive when I think of our smart card products\r\n2. RSA 3072 is expected to be secure enough *at least* till 2030 by BSI\r\n3. not even RSA 1024 is cracked till now (80 bits security) so I expect it to last 10 more years... without CRQC of course",
+          "createdAt": "2024-07-15T07:49:30Z",
+          "updatedAt": "2024-07-15T07:49:30Z"
+        }
+      ]
     }
   ],
   "pulls": [
