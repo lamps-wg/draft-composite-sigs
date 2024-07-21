@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-18T00:42:02.935975+00:00",
+  "timestamp": "2024-07-21T00:46:50.970643+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -477,9 +477,17 @@
       "labels": [],
       "body": "An end user wants us to add a 4096 bit composite combination:\r\n\r\nMy reading of the specs matches like this:\r\nhttps://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf\r\n\r\n112 bits of security   RSA 2048   \r\n128 bits of security   RSA 3072   ML-DSA-44\r\n192 bits of security   RSA 7680   ML-DSA-65\r\n256 bits of security RSA-15360  ML-DSA-87\r\n\r\nSo we can either switch the RSA-3072 ones to 4096 or add new composite combinations with RSA-4096\r\n",
       "createdAt": "2024-07-12T03:38:38Z",
-      "updatedAt": "2024-07-12T04:06:13Z",
+      "updatedAt": "2024-07-19T08:04:48Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@johngray-dev : duplicate of #24 ?",
+          "createdAt": "2024-07-19T08:04:47Z",
+          "updatedAt": "2024-07-19T08:04:47Z"
+        }
+      ]
     },
     {
       "number": 24,
