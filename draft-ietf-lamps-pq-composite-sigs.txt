@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 9 January 2025                                          M. Pala
+Expires: 24 January 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             8 July 2024
+                                                            23 July 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2025.
+   This Internet-Draft will expire on 24 January 2025.
 
 Copyright Notice
 
@@ -1501,14 +1501,14 @@ Signature Verification Procedure::
        algorithm and is therefore also used as the composite prehashing
        algorithm.
 
-   2.  For ML-DSA signing a digest of the message is allowed as long as
-       the hash function provides at least y bits of classical security
-       strength against both collision and second preimage attacks.  For
-       ML-DSA-44 y is 128 bits, for ML-DSA-65 y is 192 bits and for ML-
-       DSA-87 y is 256 bits.  Therefore SHA256 is paired with RSA and
-       ECDSA with ML-DSA-44 and SHA512 is paired with RSA and ECDSA with
-       ML-DSA-65 and ML-DSA-87 to match the appropriate security
-       strength.
+   2.  For ML-DSA [[FIPS.204-ipd]] signing a digest of the message is
+       allowed as long as the hash function provides at least y bits of
+       classical security strength against both collision and second
+       preimage attacks.  For ML-DSA-44 y is 128 bits, for ML-DSA-65 y
+       is 192 bits and for ML-DSA-87 y is 256 bits.  Therefore SHA256 is
+       paired with RSA and ECDSA with ML-DSA-44 and SHA512 is paired
+       with RSA and ECDSA with ML-DSA-65 and ML-DSA-87 to match the
+       appropriate security strength.
 
    3.  Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is
        used to pre-hash the message when Ed25519 is a component
@@ -1574,6 +1574,12 @@ Signature Verification Procedure::
 12.  References
 
 12.1.  Normative References
+
+   [FIPS.204-ipd]
+              National Institute of Standards and Technology (NIST),
+              "Module-Lattice-Based Digital Signature Standard", August
+              2023, <https://nvlpubs.nist.gov/nistpubs/FIPS/
+              NIST.FIPS.204.ipd.pdf>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
