@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T00:46:50.970643+00:00",
+  "timestamp": "2024-07-23T00:43:09.224138+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -477,7 +477,7 @@
       "labels": [],
       "body": "An end user wants us to add a 4096 bit composite combination:\r\n\r\nMy reading of the specs matches like this:\r\nhttps://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf\r\n\r\n112 bits of security   RSA 2048   \r\n128 bits of security   RSA 3072   ML-DSA-44\r\n192 bits of security   RSA 7680   ML-DSA-65\r\n256 bits of security RSA-15360  ML-DSA-87\r\n\r\nSo we can either switch the RSA-3072 ones to 4096 or add new composite combinations with RSA-4096\r\n",
       "createdAt": "2024-07-12T03:38:38Z",
-      "updatedAt": "2024-07-19T08:04:48Z",
+      "updatedAt": "2024-07-21T14:42:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -486,6 +486,13 @@
           "body": "@johngray-dev : duplicate of #24 ?",
           "createdAt": "2024-07-19T08:04:47Z",
           "updatedAt": "2024-07-19T08:04:47Z"
+        },
+        {
+          "author": "opencrypto",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Shall this be handled with the IANA registry for the combinations?",
+          "createdAt": "2024-07-21T14:42:12Z",
+          "updatedAt": "2024-07-21T14:42:12Z"
         }
       ]
     },
@@ -550,6 +557,22 @@
           "updatedAt": "2024-07-17T13:59:56Z"
         }
       ]
+    },
+    {
+      "number": 26,
+      "id": "I_kwDOL5eEDM6QccME",
+      "title": "NIST is suggesting that both PQ L3 + L5 should be paired with P-384",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/26",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf",
+      "createdAt": "2024-07-22T17:19:47Z",
+      "updatedAt": "2024-07-22T17:19:47Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
