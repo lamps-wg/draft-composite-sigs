@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-25T00:42:48.469568+00:00",
+  "timestamp": "2024-07-28T00:47:26.868424+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -573,6 +573,30 @@
       "updatedAt": "2024-07-22T17:19:47Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 27,
+      "id": "I_kwDOL5eEDM6Q3fwk",
+      "title": "We should be clear about which non-separability level we acheive",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/27",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add a reference to draft-ietf-pquip-hybrid-signature-spectrums, and be clear (possibly with a full security consideration section) about which level this is achieving.",
+      "createdAt": "2024-07-25T16:17:18Z",
+      "updatedAt": "2024-07-25T16:29:29Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Potential text:\r\n\r\n>Inclusion of a composite signature algorithm OID inside a signed message achieved \u201cWeak Non-Separability\u201d, but that when you consider that within PKI, the verifier has the verification public key within a certificate, and that re-use of public keys between composite and non-composite certificates is forbidden, then all together this achieves \u201cStrong Non-Separability\u201d. We are in discussions with Dr. Hale about whether \u201cSimultaneous Verification\u201d can be achieved in this draft; the complexity is that most SV techniques require merging the two algorithms in such a way that you can\u2019t use, for example ECDSA from your existing codebase and ML-DSA from OpenQuantumSafe, but instead you have to write new code for the merged composite algorithm. This would also invalidate any existing FIPS / CC certifications of the existing traditional algorithm code, and being able to leverage existing certified code in the transition is a primary goal of composite.",
+          "createdAt": "2024-07-25T16:24:57Z",
+          "updatedAt": "2024-07-25T16:29:29Z"
+        }
+      ]
     }
   ],
   "pulls": [
