@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-28T00:47:26.868424+00:00",
+  "timestamp": "2024-07-30T00:43:06.013630+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -508,7 +508,7 @@
       "labels": [],
       "body": "We have been asked to add RSA-4096 combos for existing infrastructures where deployed software or policy requires 4096 bit keys.\r\n\r\nSuggestion is that since RSA 4096 is not much above 128 bit security (certainly not as much as AES-192 or SHA-384), we should pair it with the same cipher suites as the RSA-3072 combo. Or maybe even replace the 3072 combo?",
       "createdAt": "2024-07-12T20:01:36Z",
-      "updatedAt": "2024-07-15T12:55:04Z",
+      "updatedAt": "2024-07-29T14:39:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -517,6 +517,13 @@
           "body": "@ounsworth I would rather add combinations, and yes, the same as with RSA 3072.\r\n1. RSA 4096 is expensive when I think of our smart card products\r\n2. RSA 3072 is expected to be secure enough *at least* till 2030 by BSI\r\n3. not even RSA 1024 is cracked till now (80 bits security) so I expect it to last 10 more years... without CRQC of course",
           "createdAt": "2024-07-15T07:49:30Z",
           "updatedAt": "2024-07-15T07:49:30Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "**Should we drop the key size from the OID at all?**\r\n\r\nYes: Piotr, Scott\r\nNo: Tim, Sophie, Mike",
+          "createdAt": "2024-07-29T14:39:02Z",
+          "updatedAt": "2024-07-29T14:39:02Z"
         }
       ]
     },
