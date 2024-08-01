@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-30T00:43:06.013630+00:00",
+  "timestamp": "2024-08-01T00:48:02.844569+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -508,7 +508,7 @@
       "labels": [],
       "body": "We have been asked to add RSA-4096 combos for existing infrastructures where deployed software or policy requires 4096 bit keys.\r\n\r\nSuggestion is that since RSA 4096 is not much above 128 bit security (certainly not as much as AES-192 or SHA-384), we should pair it with the same cipher suites as the RSA-3072 combo. Or maybe even replace the 3072 combo?",
       "createdAt": "2024-07-12T20:01:36Z",
-      "updatedAt": "2024-07-29T14:39:03Z",
+      "updatedAt": "2024-07-31T14:18:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -524,6 +524,13 @@
           "body": "**Should we drop the key size from the OID at all?**\r\n\r\nYes: Piotr, Scott\r\nNo: Tim, Sophie, Mike",
           "createdAt": "2024-07-29T14:39:02Z",
           "updatedAt": "2024-07-29T14:39:02Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group decided to add two new RSA 4096 combinations... one for PKCS 1.5, and PSS...  ",
+          "createdAt": "2024-07-31T14:18:00Z",
+          "updatedAt": "2024-07-31T14:18:00Z"
         }
       ]
     },
