@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-04T00:47:23.539347+00:00",
+  "timestamp": "2024-08-06T00:43:10.608424+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -240,7 +240,7 @@
       "labels": [],
       "body": "See on-list discussion: https://mailarchive.ietf.org/arch/msg/spasm/oH68LMpwXtpvltK2PnQSCUO9s0k/\r\n\r\nI see that draft-ietf-lamps-dilithium-certificates-03 does this:\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~\r\n",
       "createdAt": "2024-06-06T17:32:33Z",
-      "updatedAt": "2024-07-03T15:00:15Z",
+      "updatedAt": "2024-08-05T10:13:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -263,6 +263,13 @@
           "body": "Duplicate of #11 ?",
           "createdAt": "2024-07-03T15:00:14Z",
           "updatedAt": "2024-07-03T15:00:14Z"
+        },
+        {
+          "author": "carl-wallace",
+          "authorAssociation": "NONE",
+          "body": "The suggestion attributed to me on June 6th is obsolete. There was a later suggestion that eliminates the embedded SEQUENCE, which causes bloat in code generated using these ASN.1 definitions. See: https://mailarchive.ietf.org/arch/msg/spasm/b7rvHiKnA80oZ-VqQY7LIoFdsu8/. \r\n\r\nNote, the reason for the suggestion of id-raw-key was your use of CONTAINING in the definition. You can't use CONTAINING with data not describing using ASN.1, so this isn't a case where you can use prose as with Russ' suggestions (there is no CONTAINING clause in SubjectPublicKeyInfo).",
+          "createdAt": "2024-08-05T10:13:11Z",
+          "updatedAt": "2024-08-05T10:13:11Z"
         }
       ]
     },
