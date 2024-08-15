@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-13T00:44:24.788335+00:00",
+  "timestamp": "2024-08-15T00:42:07.248370+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -183,7 +183,7 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/121\r\n\r\nWe simplified the composite signature public key format from:\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2..MAX) OF SubjectPublicKeyInfo\r\nto\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\nWe haven't changed the CompositePrivateKeyFormat:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey\r\n\r\nOneAsymmetric Key from RFC 5958 is this:\r\n\r\nOneAsymmetricKey ::= SEQUENCE {\r\nversion Version,\r\nprivateKeyAlgorithm PrivateKeyAlgorithmIdentifier,\r\nprivateKey PrivateKey,\r\nattributes [0] Attributes OPTIONAL,\r\n...,\r\n[[2: publicKey [1] PublicKey OPTIONAL ]],\r\n...\r\n}\r\n\r\nPrivateKey ::= OCTET STRING\r\n-- Content varies based on type of key. The\r\n-- algorithm identifier dictates the format of\r\n-- the key.\r\n\r\nOneAsymmetricKey can carry the public key and has the algorithmIdentifier and version fields which are really redundant information. I think we could simply do this:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF PrivateKey\r\n\r\nwhich is effectively:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING\r\n\r\nIt would allow sending composite private keys in PKCS12, or in raw encrypted blobs, to be smaller.\r\n\r\n\r\nAs of May 8th, 2024 - We are leaning in making this compact change - after getting the v14 update published on the lamp-wg github.\r\n\r\nIt also has the benefit of making key consistency better defined as a static mapping of the algorithm details needs to be used to reonstruct the private key.",
       "createdAt": "2024-06-04T21:23:19Z",
-      "updatedAt": "2024-06-05T14:32:54Z",
+      "updatedAt": "2024-08-14T14:19:44Z",
       "closedAt": null,
       "comments": [
         {
@@ -192,6 +192,20 @@
           "body": "June 5th - We will keep this one here, revisit after the final standards are released.",
           "createdAt": "2024-06-05T14:32:52Z",
           "updatedAt": "2024-06-05T14:32:52Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "From Piotr:\r\n\r\nHi All\r\n\r\nI strongly support this change and point out that it is consistent with the current wording of Section 5.3, which indicates that CompositeSignaturePrivateKey is a component of the OneAsymmetricKey structure, not the OneAsymmetricKey structure itself. See:\r\n\r\n> When a CompositeSignaturePrivateKey is conveyed inside a\r\n\r\n> OneAsymmetricKey structure (version 1 of which is also known as\r\n\r\n> PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set\r\n\r\n> to the corresponding composite algorithm identifier defined according\r\n\r\n> to Section 7, the privateKey field SHALL contain the\r\n\r\n> CompositeSignaturePrivateKey, and the publicKey field MUST NOT be\r\n\r\n> present.\r\n\r\nAlso discussed this related issue for libOQS:   https://github.com/open-quantum-safe/oqs-provider/issues/466",
+          "createdAt": "2024-08-14T14:18:00Z",
+          "updatedAt": "2024-08-14T14:18:00Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "August 14th, 2024:   The authors group has agreed to do this work:  ",
+          "createdAt": "2024-08-14T14:19:42Z",
+          "updatedAt": "2024-08-14T14:19:42Z"
         }
       ]
     },
@@ -618,6 +632,70 @@
           "updatedAt": "2024-07-25T16:29:29Z"
         }
       ]
+    },
+    {
+      "number": 28,
+      "id": "I_kwDOL5eEDM6S31IC",
+      "title": "Update draft to support Official ML-DSA standard",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/28",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The new FIPS 204 standard for ML-DSA was released.   We need to update the draft pointing to this draft:\r\nhttps://csrc.nist.gov/pubs/fips/204/ipd\r\n",
+      "createdAt": "2024-08-13T19:53:01Z",
+      "updatedAt": "2024-08-13T19:53:01Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 29,
+      "id": "I_kwDOL5eEDM6S_K_3",
+      "title": "List security strength of each composite",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/29",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From the LAMPS mail list:\r\n\r\nHi Piotr,\r\n\r\n> \u201cIn addition, it might be appropriate to add a column, for example, in Table 6 (or even better, in a new table in Section 11.1) indicating the \"overall\" Security strength, which would take into account the weakest element.\u201d\r\n\r\nWhile I agree that this will be useful to a reader, I think that coming up with a single \u201coverall security strength\u201d for a composite will be difficult. For example, are you considering before or after your adversary has a CRQC? Perhaps the best we could do is to have two columns for \u201cClassical security\u201d and \u201cPQ Security\u201d and list different numbers in each column. Is this worth doing? \r\n",
+      "createdAt": "2024-08-14T14:34:54Z",
+      "updatedAt": "2024-08-14T14:34:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 30,
+      "id": "I_kwDOL5eEDM6S_uSS",
+      "title": "Simplify HW implementation",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/30",
+      "state": "OPEN",
+      "author": "mojtaba-bisheh",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently, the IETF defines \u201cid-MLDSA87-ECDSA-P384-SHA512,\u201d which restricts the input message to SHA-512 for the hybrid signature of MLDSA and NISTP384. However, including the SHA-384 option would reduce hardware complexities and align with both ECC and PQC standards.\r\n\r\nThe inclusion of \u201cid-MLDSA87-ECDSA-P384-SHA384\u201d would be compatible with existing standards and provide greater flexibility for implementations. FIPS 186-5 permits the use of both SHA-384 and SHA-512 for ECDSA P384. Additionally, FIPS 204 does not limit pre-hashed mode to SHA-512, stating: \"Algorithm 4 shows the DER encodings of the OIDs for SHA-256, SHA-512, and SHAKE128. However, it may be used with other hash functions or XOFs.\"\r\n\r\nFor example, one of the use cases of SHA384 in hardware implementation is [Caliptra](https://github.com/chipsalliance/caliptra-rtl), that exclusively uses SHA-384 for ECDSA P384. \r\n\r\nThe inclusion of \u201cid-MLDSA87-ECDSA-P384-SHA384\u201d would align with existing standards, provide more flexibility for implementations, and help enhance compatibility and facilitate broader deployment of PQC.",
+      "createdAt": "2024-08-14T15:27:10Z",
+      "updatedAt": "2024-08-14T15:58:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 31,
+      "id": "I_kwDOL5eEDM6TA-t0",
+      "title": "List overall strength estimates for each composite",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/31",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See: https://mailarchive.ietf.org/arch/msg/spasm/s0wPyhHpaxKsSKMwLBypagm4iL0/",
+      "createdAt": "2024-08-14T18:10:26Z",
+      "updatedAt": "2024-08-14T18:10:26Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
