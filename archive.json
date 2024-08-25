@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-22T00:44:34.632922+00:00",
+  "timestamp": "2024-08-25T00:48:39.526894+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -712,6 +712,61 @@
       "updatedAt": "2024-08-16T17:29:47Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 33,
+      "id": "I_kwDOL5eEDM6T5Pjf",
+      "title": "Burt's feedback: context string in domain separator?",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/33",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator also include an optional context string, similar to the domain separator NIST has defined for the recently published FIPS 204/205 [1]?  The context string would provide a way to \u201cseparate uses of the protocol between different protocols \u2026 and between different uses within the same protocol\u201d (Sec. 8.3 of [2]).  \r\n\r\n> Similarly, if an underlying signature algorithm supports a context string, what value should be given to the context string when the algorithm is used with the composite construction?  If the composite construction is updated to include an optional context string in the domain separator, should the context strings for the underlying algorithm and for the overall construction be the same?  Or should the context string for the underlying algorithm instead somehow indicate the \u201cuse\u201d of the underlying algorithm is \u201cfor signing a composite signature hash value\u201d?\r\n\r\n[2] S. Josefsson, I. Liusvaara.  Edwards-Curve Digital Signature Algorithm (EdDSA).  RFC 8032, January 2017",
+      "createdAt": "2024-08-22T16:29:29Z",
+      "updatedAt": "2024-08-22T16:31:56Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Good suggestion. I support having the composite .Sign() accept a context string, and passing it through to underlying component primitives that support a context string (ie ML-DSA).",
+          "createdAt": "2024-08-22T16:31:55Z",
+          "updatedAt": "2024-08-22T16:31:55Z"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "I_kwDOL5eEDM6T5RGI",
+      "title": "Burt's feedback: should we define pre-hashed modes for composite?",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/34",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator include an initial byte that identifies the type of domain separator, again similar to NIST\u2019s definition?  For instance, the value 1 could indicate that the message is pre-hashed as currently proposed in draft-ietf-lamps-pq-composite-sigs.  A different value could support another option:  the message is not pre-hashed, but instead is prepended with a domain separator, and then passed to the two signature algorithms.  That option would avoid the need for an additional hashing operation to be specified.  (The domain separator could still include an OID for the combination of the two signature algorithms in order to separate different combinations of algorithms.)\r\n\r\n> If an underlying signature algorithm supports pure and pre-hash modes, which mode should be used with the composite signature construction?  Presumably pure mode when the composite construction includes pre-hashing, because the message will already have been hashed by the time it reaches the underlying signature algorithm, but this should be stated explicitly.\r\n\r\n> In addition to pre-hashing as currently proposed, should there be an option for including a randomizer and/or the signers\u2019 public keys in the input to the pre-hash operation, in addition to the message?  As Joe Harvey observed in comments to NIST earlier this year [3], without such an option, pre-hashing introduces a dependency on collision resistance, whereas the security of the underlying signature algorithm may be based on other security assumptions (e.g., target collision resistance, second preimage resistance).   Moreover, a collision, if found, could potentially be used against multiple users, whereas the underlying signature algorithm may have been designed to provide security in the multi-user model.  (This is not an argument for reducing the size of the hash function output by using randomization, but rather for considering that the use of pre-hashing may change the security assumptions compared to the underlying algorithm, and providing the protocol designer a way to revert to the original assumptions.)\r\n",
+      "createdAt": "2024-08-22T16:32:57Z",
+      "updatedAt": "2024-08-22T16:40:26Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fair point, currently the composite draft presents a pure-sign mode, and uses ML-DSA in its pure-sign mode. But with NIST deciding to support both pure and pre-hash modes of ML-DSA, we should probably do that same for composite-ML-DSA.\r\n\r\nThis represents a fairly large amount of design work since all the points raised by Burt, plus probably more, are in-scope.",
+          "createdAt": "2024-08-22T16:37:51Z",
+          "updatedAt": "2024-08-22T16:37:51Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think the point about prefix byte does not apply: since we are already hashing in the OID, and we would presumably define different OIDs for pure and pre-hashed modes, I think that anything you would want to capture in the prefix byte is already captured in the OID.",
+          "createdAt": "2024-08-22T16:40:25Z",
+          "updatedAt": "2024-08-22T16:40:25Z"
+        }
+      ]
     }
   ],
   "pulls": [
