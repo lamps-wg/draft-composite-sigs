@@ -1,6 +1,6 @@
 ---
-title: Composite Signatures For Use In Internet PKI
-abbrev: PQ Composite Sigs
+title: Composite ML-DSA For Use In Internet PKI
+abbrev: Composite ML-DSA
 # <!-- EDNOTE: Edits the draft name -->
 docname: draft-ietf-lamps-pq-composite-sigs-latest
 
@@ -86,6 +86,12 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  FIPS.204:
+    title: "Module-Lattice-Based Digital Signature Standard"
+    date: August 13, 2024
+    author:
+      org: "National Institute of Standards and Technology (NIST)"
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
 
 
 # <!-- EDNOTE: full syntax for this defined here: https://github.com/cabo/kramdown-rfc2629 -->
@@ -643,7 +649,7 @@ The table above contains everything needed to implement the listed explicit comp
 
 Full specifications for the referenced algorithms can be found as follows:
 
-* _MLDSA_: {{I-D.ietf-lamps-dilithium-certificates}} and [FIPS.204-ipd]
+* _MLDSA_: [FIPS.204]
 * _ECDSA_: [RFC5480]
 * _Ed25519 / Ed448_: [RFC8410]
 * _Falcon_: TBD
