@@ -351,8 +351,10 @@ Signature Generation Process:
    2. Generate the 2 component signatures independently, by calculating the signature over M'
       according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
 
-         S1 := Sign( K1, A1, M' )
-         S2 := Sign( K2, A2, M' )
+         S1 := ML-DSA.Sign( K1, A1, M', ctx="" )
+         S2 := TradSign( K2, A2, M' )
+
+Since Composite ML-DSA incorporates the domain separator into a pre-hash, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is the empty string.
 
    3. Encode each component signature S1 and S2 into a BIT STRING
       according to its algorithm specification.
