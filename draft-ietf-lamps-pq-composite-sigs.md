@@ -9,7 +9,7 @@ wg: LAMPS
 kw: Internet-Draft
 cat: std
 
-coding: us-ascii
+coding: utf-8
 pi:    # can use array (if all yes) or hash here
   toc: yes
   sortrefs:   # defaults to yes
