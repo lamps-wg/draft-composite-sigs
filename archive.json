@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-08-29T00:45:16.771121+00:00",
+  "timestamp": "2024-09-01T00:55:01.983124+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -701,16 +701,24 @@
       "id": "I_kwDOL5eEDM6TA-t0",
       "title": "List overall strength estimates for each composite",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/31",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "See: https://mailarchive.ietf.org/arch/msg/spasm/s0wPyhHpaxKsSKMwLBypagm4iL0/",
       "createdAt": "2024-08-14T18:10:26Z",
-      "updatedAt": "2024-08-14T18:10:26Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-08-29T19:34:32Z",
+      "closedAt": "2024-08-29T19:34:32Z",
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Duplicate of #29 ",
+          "createdAt": "2024-08-29T19:34:32Z",
+          "updatedAt": "2024-08-29T19:34:32Z"
+        }
+      ]
     },
     {
       "number": 32,
@@ -795,7 +803,63 @@
       "labels": [],
       "body": "ML-DSA has a 'context string' as an input; the idea is to allow the capability to bind a signature to a specific context.\r\n\r\nShould we specify that, when we implement ML-DSA within a composite signature, that we have a nonempty context?\r\n\r\nIf the verifier will never accept a signature signed by a specific ML-DSA key except as part of a composite signature, we don't gain anything.  However, it might be a helpful 'belt-and-suspenders' if some application would happen to reuse the ML-DSA public key.\r\n\r\nIf we do have a nonempty context string, what should it be:\r\n- Should it be the OID for the composite (so that the signature can be used only as a part of that specific combination)\r\n- Should it be the hash of the composite public key (so that we're safe even if some fool changes the other components)\r\n\r\nThoughts?",
       "createdAt": "2024-08-28T14:51:26Z",
-      "updatedAt": "2024-08-28T14:51:26Z",
+      "updatedAt": "2024-08-29T20:23:32Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Discussion between John, Felipe, and myself. \r\nDecision is to change one sentence is the draft:\r\n\r\nOLD:\r\n```\r\n2. Generate the 2 component signatures independently, by calculating the signature over M'\r\n      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.\r\n\r\n         S1 := Sign( K1, A1, M' )\r\n         S2 := Sign( K2, A2, M' )\r\n```\r\n\r\nNEW:\r\n```\r\n2. Generate the 2 component signatures independently, by calculating the signature over M'\r\n      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.\r\n\r\n         S1 := ML-DSA.Sign( K1, A1, M', ctx=\"\" )\r\n         S2 := TradSign( K2, A2, M' )\r\n\r\nSince Composite ML-DSA incorporates the domain separator into a pre-hash, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is left empty.\r\n```",
+          "createdAt": "2024-08-29T20:23:31Z",
+          "updatedAt": "2024-08-29T20:23:31Z"
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOL5eEDM6UvNow",
+      "title": "Update to final FIPS 204",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/36",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-08-29T19:35:12Z",
+      "updatedAt": "2024-08-29T19:35:12Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 37,
+      "id": "I_kwDOL5eEDM6Uvw1y",
+      "title": "Version Composite OIDs for use with standard ML-DSA version",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/37",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update the Composite Signature OIDS to the following:\r\n\r\n2.16.840.1.114027.80.8.1.21   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA44-RSA2048-PSS-SHA256    060B6086480186FA6B50080115\r\n2.16.840.1.114027.80.8.1.22   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA44-RSA2048-PKCS15-SHA256 060B6086480186FA6B50080116\r\n2.16.840.1.114027.80.8.1.23   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA44-Ed25519-SHA512        060B6086480186FA6B50080117 \r\n2.16.840.1.114027.80.8.1.24   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA44-ECDSA-P256-SHA256     060B6086480186FA6B50080118\r\n2.16.840.1.114027.80.8.1.25   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 060B6086480186FA6B50080119\r\n2.16.840.1.114027.80.8.1.26   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA65-RSA3072-PSS-SHA512 060B6086480186FA6B5008011A\r\n2.16.840.1.114027.80.8.1.27   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA65-RSA3072-PKCS15-SHA512 060B6086480186FA6B5008011B\r\n2.16.840.1.114027.80.8.1.28   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA65-ECDSA-P256-SHA512 060B6086480186FA6B5008011C\r\n2.16.840.1.114027.80.8.1.29   entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 060B6086480186FA6B5008011D\r\n2.16.840.1.114027.80.8.1.30  entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA65-Ed25519-SHA512 060B6086480186FA6B5008011E\r\n2.16.840.1.114027.80.8.1.31  entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA87-ECDSA-P384-SHA512 060B6086480186FA6B5008011F\r\n2.16.840.1.114027.80.8.1.32  entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 060B6086480186FA6B50080120\r\n2.16.840.1.114027.80.8.1.33  entrust-Algorithm-ExplicitComposite-Signature.id-MLDSA87-Ed448-SHA512 060B6086480186FA6B50080121",
+      "createdAt": "2024-08-29T20:48:06Z",
+      "updatedAt": "2024-08-29T20:48:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 39,
+      "id": "I_kwDOL5eEDM6U2FII",
+      "title": "Clarifying Composite Signature Specifications for Consistent Implementation",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/39",
+      "state": "OPEN",
+      "author": "mojtaba-bisheh",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I am seeking clarification on the input message for the composite signature specification to ensure consistent understanding and implementation. Given that ML-DSA operates in two modes\u2014pure and pre-hash\u2014and there are various prefixes/OIDs for the pre-hashed mode, this clarification is crucial. \r\nThere is also one more hashing operation within the ECC boundary that should not be mistaken for what the composite signature needs in `M' := Domain || HASH(Message)` step.\r\n\r\nThere are two options here:\r\n\r\nOne option is to move hybrid domain concatenation into HASH operation (similar to ML-DSA scheme),i.e., `M' := HASH(Domain || Message)`. In this case, there is one other HASH operation for both ECC and pre-hash ML-DSA:\r\nfor ECC: `HASH(M') = HASH(HASH(Hybrid_Domain || Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || HASH(Hybrid_Domain || Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(HASH(Hybrid_Domain || Message))`\r\nThis back-to-back hashing operation for ECC and pre-hash MLDSA makes no sense, so you can remove the hash operation and just append message with an OID that reduces the complexity of the computation too.\r\n\r\nSecond option is keeping the current condition as:\r\nfor ECC: `HASH(M') = HASH(Hybrid_Domain || HASH(Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || Hybrid_Domain || HASH(Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(Hybrid_Domain || HASH(Message))`\r\n\r\nFurthermore, Including test vectors and examples in the specification would promote uniform implementation across the industry.",
+      "createdAt": "2024-08-30T13:11:46Z",
+      "updatedAt": "2024-08-30T20:50:46Z",
       "closedAt": null,
       "comments": []
     }
@@ -994,6 +1058,32 @@
       "mergeCommit": {
         "oid": "ac890f5c4f5bd2561df3c53a97b312bce0327023"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 38,
+      "id": "PR_kwDOL5eEDM5545xm",
+      "title": "Added context string consideration",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/38",
+      "state": "OPEN",
+      "author": "feventura",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Added context string consideration, as defined in #35.",
+      "createdAt": "2024-08-29T20:50:57Z",
+      "updatedAt": "2024-08-30T12:46:30Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "32d88d9e083ab25bbbe61a8febae922ae9509824",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "issue-35",
+      "headRefOid": "2c81704578bd45d89caecaa36fe2fe6679f62cf6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
