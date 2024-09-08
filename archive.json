@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-05T00:46:07.979975+00:00",
+  "timestamp": "2024-09-08T00:51:30.595605+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -860,6 +860,22 @@
       "body": "I am seeking clarification on the input message for the composite signature specification to ensure consistent understanding and implementation. Given that ML-DSA operates in two modes\u2014pure and pre-hash\u2014and there are various prefixes/OIDs for the pre-hashed mode, this clarification is crucial. \r\nThere is also one more hashing operation within the ECC boundary that should not be mistaken for what the composite signature needs in `M' := Domain || HASH(Message)` step.\r\n\r\nThere are two options here:\r\n\r\nOne option is to move hybrid domain concatenation into HASH operation (similar to ML-DSA scheme),i.e., `M' := HASH(Domain || Message)`. In this case, there is one other HASH operation for both ECC and pre-hash ML-DSA:\r\nfor ECC: `HASH(M') = HASH(HASH(Hybrid_Domain || Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || HASH(Hybrid_Domain || Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(HASH(Hybrid_Domain || Message))`\r\nThis back-to-back hashing operation for ECC and pre-hash MLDSA makes no sense, so you can remove the hash operation and just append message with an OID that reduces the complexity of the computation too.\r\n\r\nSecond option is keeping the current condition as:\r\nfor ECC: `HASH(M') = HASH(Hybrid_Domain || HASH(Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || Hybrid_Domain || HASH(Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(Hybrid_Domain || HASH(Message))`\r\n\r\nFurthermore, Including test vectors and examples in the specification would promote uniform implementation across the industry.",
       "createdAt": "2024-08-30T13:11:46Z",
       "updatedAt": "2024-08-30T20:50:46Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 40,
+      "id": "I_kwDOL5eEDM6VuoU4",
+      "title": "Adding an Applicability Statement to the draft",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/40",
+      "state": "OPEN",
+      "author": "yoavnir",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "When the composite sigs draft was adopted, the WG concluded that this was a useful technology, but only useful in certain places. I suggest adding an \"Applicability Statement\" to the draft, calling out those places where the technology is applicable.  \r\n\r\nAs I understand it, the biggest justification for composite signatures is that we don't entirely trust either the classic or the PQ algorithms, the classic because maybe the attacker has a CRQC, and the PQ algorithm because it's too new.  So people are hesitant to deploy pure PQ certificates, because if the PQ algorithm turns out to be broken, replacing all the certificates would take a long time and be very difficult or expensive.  This is more or less relevant to different use cases.\r\n\r\nI don't now have proposed text, but just off the top of my head:\r\n* The web - The web is moving to relatively short-term certificates. ACME is part of it. So if it's possible to replace all the web certificates in a few months, is it important to have >1 signatures in a certificate?  Perhaps this is something that we should consult with the CA/BF about.\r\n* Intranets - Corporate networks use certificates for a lot of internal communications. This includes internal web, email protocols, and all kinds of other proprietary protocols. But those are relatively well-controlled. There are people with the authority to decide to replace all the certificates with other single-algorithm certificates. So if an algorithm is broken, they could replace it relatively quickly.\r\n* VPNs or SD-WANs - This is similar to intranet, with the difference that these are often products that are sometimes in service for many years and may have issues with replacing hardware or updating software.\r\n* Internal and client communications between clusters of computers, such as distributed databases or distributed \"software-defined\" storage. Those sometimes have certificates that are quite long-term. On occasion such clusters grow by adding new nodes to existing clusters, resulting in a mix of old and new servers, and even old and new software.  \r\n* Infrastructure - That's a big one for composite signatures, because sometimes infrastructure devices (from smart meters to water or electric grid control) can be installed for decades. We all believe it should be possible to update them with new software and algorithms, but the reality is that a lot of them don't. ",
+      "createdAt": "2024-09-07T19:14:21Z",
+      "updatedAt": "2024-09-07T19:14:21Z",
       "closedAt": null,
       "comments": []
     }
