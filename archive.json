@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-08T00:51:30.595605+00:00",
+  "timestamp": "2024-09-10T00:46:55.246811+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -820,15 +820,15 @@
       "id": "I_kwDOL5eEDM6UvNow",
       "title": "Update to final FIPS 204",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/36",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-08-29T19:35:12Z",
-      "updatedAt": "2024-08-29T19:35:12Z",
-      "closedAt": null,
+      "updatedAt": "2024-09-08T19:30:44Z",
+      "closedAt": "2024-09-08T19:30:44Z",
       "comments": []
     },
     {
@@ -875,9 +875,17 @@
       "labels": [],
       "body": "When the composite sigs draft was adopted, the WG concluded that this was a useful technology, but only useful in certain places. I suggest adding an \"Applicability Statement\" to the draft, calling out those places where the technology is applicable.  \r\n\r\nAs I understand it, the biggest justification for composite signatures is that we don't entirely trust either the classic or the PQ algorithms, the classic because maybe the attacker has a CRQC, and the PQ algorithm because it's too new.  So people are hesitant to deploy pure PQ certificates, because if the PQ algorithm turns out to be broken, replacing all the certificates would take a long time and be very difficult or expensive.  This is more or less relevant to different use cases.\r\n\r\nI don't now have proposed text, but just off the top of my head:\r\n* The web - The web is moving to relatively short-term certificates. ACME is part of it. So if it's possible to replace all the web certificates in a few months, is it important to have >1 signatures in a certificate?  Perhaps this is something that we should consult with the CA/BF about.\r\n* Intranets - Corporate networks use certificates for a lot of internal communications. This includes internal web, email protocols, and all kinds of other proprietary protocols. But those are relatively well-controlled. There are people with the authority to decide to replace all the certificates with other single-algorithm certificates. So if an algorithm is broken, they could replace it relatively quickly.\r\n* VPNs or SD-WANs - This is similar to intranet, with the difference that these are often products that are sometimes in service for many years and may have issues with replacing hardware or updating software.\r\n* Internal and client communications between clusters of computers, such as distributed databases or distributed \"software-defined\" storage. Those sometimes have certificates that are quite long-term. On occasion such clusters grow by adding new nodes to existing clusters, resulting in a mix of old and new servers, and even old and new software.  \r\n* Infrastructure - That's a big one for composite signatures, because sometimes infrastructure devices (from smart meters to water or electric grid control) can be installed for decades. We all believe it should be possible to update them with new software and algorithms, but the reality is that a lot of them don't. ",
       "createdAt": "2024-09-07T19:14:21Z",
-      "updatedAt": "2024-09-07T19:14:21Z",
+      "updatedAt": "2024-09-08T19:31:22Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Are they suitable for the Web?  Are they suitable for intranets?  For VPNs and SD-WANs?  For storage area networks? For cluster communications such as distributed storage systems?  For infrastructure?\r\n\r\nI think yes to all of the above; composite-ML-DSA has exactly the same applicability as regular ML-DSA is. I believe (and Entrust recommends to our customers) that this is useful literally everywhere; that the hybrid is a small price to pay for some extra comfort with these new crypto algorithms. Let me flip the question around: perhaps it's easier to list the place that composites are not appropriate? The only one that comes to mind are highly bandwidth / CPU constrained use cases where your tolerance on ML-DSA is so tight that you can't even tolerate X25519 on top. \r\n\r\n\r\nThe draft already contains this text, which I think is fairly clear:\r\n\r\n> Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids [I-D.driscoll-pqt-hybrid-terminology].\r\n> Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].\r\n\r\nBut I'll go ahead and add the following sentence to the draft.\r\n\r\n\"Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.\"\r\n",
+          "createdAt": "2024-09-08T19:22:42Z",
+          "updatedAt": "2024-09-08T19:23:00Z"
+        }
+      ]
     }
   ],
   "pulls": [
