@@ -372,7 +372,7 @@ Signature Generation Process:
 
 It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
-### Signature Verify {#sec-comp-sig-verify}
+## Signature Verify {#sec-comp-sig-verify}
 
 Verification of a composite signature involves reconstructing the M' message first by concatenating the Domain separator (i.e., the DER encoding of the used Composite scheme's OID) with the Hash of the original message and then applying each component algorithm's verification process to the new message M'.
 
