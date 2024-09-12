@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-10T00:46:55.246811+00:00",
+  "timestamp": "2024-09-12T00:46:35.426977+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -214,7 +214,7 @@
       "id": "I_kwDOL5eEDM6LJAQa",
       "title": "Add a new section: explicitely list SPKI AlgIds",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/7",
-      "state": "CLOSED",
+      "state": "OPEN",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -223,8 +223,8 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
       "createdAt": "2024-06-04T21:24:28Z",
-      "updatedAt": "2024-07-08T15:43:38Z",
-      "closedAt": "2024-07-08T15:43:38Z",
+      "updatedAt": "2024-09-11T14:36:39Z",
+      "closedAt": null,
       "comments": [
         {
           "author": "johngray-dev",
@@ -239,6 +239,13 @@
           "body": "Hi @johngray-dev,  @ounsworth ,\r\nI tried to write these things together (https://github.com/lamps-wg/draft-composite-sigs/blob/7-add-a-new-section-explicitely-list-spki-algids/draft-ietf-lamps-pq-composite-sigs.md) and have a question: \r\n\r\nThe algorithm for compiling the component OIDs to the hash value is easy but nevertheless an algorithm with the possibility for errors.\r\nIf we want domain separation that way we definitely need to include the EC parameter OID in the algorithm, else NIST and brainpool curves would have the same hash. Additionally we should have a rational why we do not include the PreHash OID here. Or include this also.\r\n\r\nThis said, this whole thing only makes sense during the development phase, because we dont know the MLDSA OIDs yet. But once they are fixed, also our combination matrix is fixed with new and official CompSig OIDs. So just Hashing the CompSig OID would do the same job and is much easier to describe in the signature algorithm.\r\nI am afraid reviewers would reject the compilation algorithm for the same reason.\r\n\r\nSo the question is, do we want to go the whole way of flexibility and define the compilation algorithm (that I would gladly do and maybe reuse for the kofn algorithm) or do we go the shortcut.\r\n\r\nWhat do you think? Do I miss something here?",
           "createdAt": "2024-06-28T15:48:25Z",
           "updatedAt": "2024-06-28T15:48:25Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Re-opening issue because the SPKI part of the issue has not been completed yet. ",
+          "createdAt": "2024-09-11T14:36:38Z",
+          "updatedAt": "2024-09-11T14:36:38Z"
         }
       ]
     },
@@ -427,16 +434,24 @@
       "id": "I_kwDOL5eEDM6O0h2y",
       "title": "Should the DomSep be Hash( DER(OID) ) instead of DER(OID)",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/19",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The rationale for making it a hash is so that the domain separator Hex string is the same length, even if the OIDs end up being different lengths; for example if IANA decides to assign from multiple arcs, or if in the future (Falcon, new PQ sigs), we get OIDs from different arcs.\r\n\r\nOn the other hand, maybe it is ok for the domain separators to be different lengths, as long as they are pre-determined and not completely variable length (ie length is controllable by an attacker).",
       "createdAt": "2024-07-08T17:05:06Z",
-      "updatedAt": "2024-07-08T17:05:48Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-09-11T14:34:04Z",
+      "closedAt": "2024-09-11T14:34:04Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Authors group agreed we will keep it as a DER (OID) instead of a HASH (DER(OID)).",
+          "createdAt": "2024-09-11T14:34:04Z",
+          "updatedAt": "2024-09-11T14:34:04Z"
+        }
+      ]
     },
     {
       "number": 20,
@@ -601,11 +616,13 @@
       "state": "OPEN",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf",
       "createdAt": "2024-07-22T17:19:47Z",
-      "updatedAt": "2024-07-22T17:19:47Z",
+      "updatedAt": "2024-09-11T14:14:23Z",
       "closedAt": null,
       "comments": []
     },
@@ -875,7 +892,7 @@
       "labels": [],
       "body": "When the composite sigs draft was adopted, the WG concluded that this was a useful technology, but only useful in certain places. I suggest adding an \"Applicability Statement\" to the draft, calling out those places where the technology is applicable.  \r\n\r\nAs I understand it, the biggest justification for composite signatures is that we don't entirely trust either the classic or the PQ algorithms, the classic because maybe the attacker has a CRQC, and the PQ algorithm because it's too new.  So people are hesitant to deploy pure PQ certificates, because if the PQ algorithm turns out to be broken, replacing all the certificates would take a long time and be very difficult or expensive.  This is more or less relevant to different use cases.\r\n\r\nI don't now have proposed text, but just off the top of my head:\r\n* The web - The web is moving to relatively short-term certificates. ACME is part of it. So if it's possible to replace all the web certificates in a few months, is it important to have >1 signatures in a certificate?  Perhaps this is something that we should consult with the CA/BF about.\r\n* Intranets - Corporate networks use certificates for a lot of internal communications. This includes internal web, email protocols, and all kinds of other proprietary protocols. But those are relatively well-controlled. There are people with the authority to decide to replace all the certificates with other single-algorithm certificates. So if an algorithm is broken, they could replace it relatively quickly.\r\n* VPNs or SD-WANs - This is similar to intranet, with the difference that these are often products that are sometimes in service for many years and may have issues with replacing hardware or updating software.\r\n* Internal and client communications between clusters of computers, such as distributed databases or distributed \"software-defined\" storage. Those sometimes have certificates that are quite long-term. On occasion such clusters grow by adding new nodes to existing clusters, resulting in a mix of old and new servers, and even old and new software.  \r\n* Infrastructure - That's a big one for composite signatures, because sometimes infrastructure devices (from smart meters to water or electric grid control) can be installed for decades. We all believe it should be possible to update them with new software and algorithms, but the reality is that a lot of them don't. ",
       "createdAt": "2024-09-07T19:14:21Z",
-      "updatedAt": "2024-09-08T19:31:22Z",
+      "updatedAt": "2024-09-11T14:29:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -884,8 +901,31 @@
           "body": "> Are they suitable for the Web?  Are they suitable for intranets?  For VPNs and SD-WANs?  For storage area networks? For cluster communications such as distributed storage systems?  For infrastructure?\r\n\r\nI think yes to all of the above; composite-ML-DSA has exactly the same applicability as regular ML-DSA is. I believe (and Entrust recommends to our customers) that this is useful literally everywhere; that the hybrid is a small price to pay for some extra comfort with these new crypto algorithms. Let me flip the question around: perhaps it's easier to list the place that composites are not appropriate? The only one that comes to mind are highly bandwidth / CPU constrained use cases where your tolerance on ML-DSA is so tight that you can't even tolerate X25519 on top. \r\n\r\n\r\nThe draft already contains this text, which I think is fairly clear:\r\n\r\n> Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids [I-D.driscoll-pqt-hybrid-terminology].\r\n> Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].\r\n\r\nBut I'll go ahead and add the following sentence to the draft.\r\n\r\n\"Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.\"\r\n",
           "createdAt": "2024-09-08T19:22:42Z",
           "updatedAt": "2024-09-08T19:23:00Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The authors agree with the blanked statement Mike is suggesting.  On September 11th we decided to mention this at IETF 121.\r\n",
+          "createdAt": "2024-09-11T14:29:27Z",
+          "updatedAt": "2024-09-11T14:29:27Z"
         }
       ]
+    },
+    {
+      "number": 42,
+      "id": "I_kwDOL5eEDM6WNcSA",
+      "title": "We should also expose a context string / domain separator as external input to the composite-sign",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/42",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See discussion here:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/YFW4hVCZAQiVge2Z1kzAlIcM4U8/\r\n\r\nThe idea is that you may want to bind the actually application context, like \"MS Firmware Sign\" in addition to the composite sig OID. This \r\n\r\nIf we make this change, the composite sign would become:\r\n\r\n```\r\nM' := Domain || Ctx || HASH(Message)\r\n```\r\n\r\nor possibly\r\n\r\n```\r\nM' := Domain || HASH(Ctx || Message)\r\n```\r\n\r\nwhere `Ctx` is external input to the composite Sign(), and defaults to the empty string.\r\n\r\nMy concern with doing things outside the HASH is that this is the pre-hash for RSA / ECDSA, so a very long context string could overflow the RSA / ECDSA \"block\" -- therefore I think any kind of variable-length Ctx needs to be inside the hash.",
+      "createdAt": "2024-09-11T15:44:12Z",
+      "updatedAt": "2024-09-11T15:49:45Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1104,6 +1144,32 @@
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "issue-35",
       "headRefOid": "2c81704578bd45d89caecaa36fe2fe6679f62cf6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 41,
+      "id": "PR_kwDOL5eEDM57K0KL",
+      "title": "Update version to use ML-DSA standard version",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/41",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Upped the version of the OIDs and domain separators.\r\nCloses #37 ",
+      "createdAt": "2024-09-11T14:10:02Z",
+      "updatedAt": "2024-09-11T14:10:02Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "0c5ced7b63a14467cb501eb415cdcb5b7cdc90b4",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mldsa-standardized",
+      "headRefOid": "1fa995acb090cbe7fc4a7d020fc5257591e7fd50",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
