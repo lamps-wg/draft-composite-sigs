@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-12T00:46:35.426977+00:00",
+  "timestamp": "2024-09-15T00:53:21.337602+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -923,7 +923,38 @@
       "labels": [],
       "body": "See discussion here:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/YFW4hVCZAQiVge2Z1kzAlIcM4U8/\r\n\r\nThe idea is that you may want to bind the actually application context, like \"MS Firmware Sign\" in addition to the composite sig OID. This \r\n\r\nIf we make this change, the composite sign would become:\r\n\r\n```\r\nM' := Domain || Ctx || HASH(Message)\r\n```\r\n\r\nor possibly\r\n\r\n```\r\nM' := Domain || HASH(Ctx || Message)\r\n```\r\n\r\nwhere `Ctx` is external input to the composite Sign(), and defaults to the empty string.\r\n\r\nMy concern with doing things outside the HASH is that this is the pre-hash for RSA / ECDSA, so a very long context string could overflow the RSA / ECDSA \"block\" -- therefore I think any kind of variable-length Ctx needs to be inside the hash.",
       "createdAt": "2024-09-11T15:44:12Z",
-      "updatedAt": "2024-09-11T15:49:45Z",
+      "updatedAt": "2024-09-12T20:09:20Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In the meeting today, we discussed two versions. I don't think we reached consensus about which was better.\r\n\r\nVersion 1:\r\n```\r\nSign (sk, Message, ctx) -> (signature)\r\n\r\n\r\nSignature Generation Process:\r\n\r\n   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message\r\n\r\n         M' := Domain || HASH(ctx || Message)\r\n\r\n   2. Generate the 2 component signatures independently, by calculating the signature over M'\r\n      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.\r\n\r\n         S1 := ML-DSA.Sign( K1, A1, M', ctx=\"\" )\r\n         S2 := Trad.Sign( K2, A2, M' )\r\n```\r\n\t \r\nVersion 2:\t \r\n```\r\nSign (sk, Message, ctx) -> (signature)\r\n\r\n\r\nSignature Generation Process:\r\n\r\n   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message\r\n\r\n         M' := Domain || HASH(Message)\r\n\r\n   2. Generate the 2 component signatures independently, by calculating the signature over M'\r\n      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.\r\n\r\n         S1 := ML-DSA.Sign( K1, A1, M', ctx )\r\n         S2 := Trad.Sign( K2, A2, HASH(ctx || M') )\r\n```",
+          "createdAt": "2024-09-12T20:08:29Z",
+          "updatedAt": "2024-09-12T20:08:29Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "We did agree that since FIPS 204 defines the API to be:\r\n>ML-DSA.Sign(\ud835\udc60\ud835\udc58, \ud835\udc40, \ud835\udc50\ud835\udc61\ud835\udc65)\r\n\r\nour Composite-ML-DSA should at least have the same API.",
+          "createdAt": "2024-09-12T20:09:19Z",
+          "updatedAt": "2024-09-12T20:09:19Z"
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "id": "I_kwDOL5eEDM6WfqiO",
+      "title": "Max suggests dropping SEQUENCE OF wrapper",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/43",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi Max,\r\n\r\nIf I understand your proposal, you are suggesting that\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\nCompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\n\r\nBecomes\r\n\r\nCompositeSignaturePublicKey ::= BIT STRING\r\nCompositeSignatureValue ::= BIT STRING\r\n\r\nAn then you need to specify that for id-MLDSA44-RSA2048-PSS-SHA256 the first X bits are the ML-DSA-44 public key / signature, and the remaining Y bits are the RSA-2048.\r\n\r\n\r\nThe original reason for an ASN.1 wrapper was to gracefully handle algorithms with variable-length publickeys, signatures, or ciphertexts, which I believe there were some of in NIST Round 1. This is no longer a concern with FIPS 203 / 204, so we could now remove it. However, I think it will be a fair amount of editorial work (we will need to accurately list out the bit position to split at for each composite alg), and it is asking all existing composite implementations to change, then will require a lot of interop testing. Is this change really worth it?\r\n\r\nIf you feel strongly about this, then perhaps you could prepare the change to the document on a side-branch, and we could bring it to the LAMPS mailing list?\r\n",
+      "createdAt": "2024-09-13T13:40:28Z",
+      "updatedAt": "2024-09-13T13:40:28Z",
       "closedAt": null,
       "comments": []
     }
