@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-17T00:38:50.097953+00:00",
+  "timestamp": "2024-09-19T00:47:53.906968+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -622,9 +622,17 @@
       "labels": [],
       "body": "https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf",
       "createdAt": "2024-07-22T17:19:47Z",
-      "updatedAt": "2024-09-11T14:14:23Z",
+      "updatedAt": "2024-09-17T16:00:30Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The ML-DSA + ECC pairings to use are this:\r\n\r\n```\r\nML-DSA-44+NIST-P-256 \r\nML-DSA-65+NIST-P-384 \r\nML-DSA-65+brainpoolP256r1 \r\nML-DSA-87+NIST-P-384 \r\nML-DSA-87+brainpoolP384r1\r\n```",
+          "createdAt": "2024-09-17T16:00:29Z",
+          "updatedAt": "2024-09-17T16:00:29Z"
+        }
+      ]
     },
     {
       "number": 27,
@@ -955,6 +963,38 @@
       "body": "Hi Max,\r\n\r\nIf I understand your proposal, you are suggesting that\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\nCompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\n\r\nBecomes\r\n\r\nCompositeSignaturePublicKey ::= BIT STRING\r\nCompositeSignatureValue ::= BIT STRING\r\n\r\nAn then you need to specify that for id-MLDSA44-RSA2048-PSS-SHA256 the first X bits are the ML-DSA-44 public key / signature, and the remaining Y bits are the RSA-2048.\r\n\r\n\r\nThe original reason for an ASN.1 wrapper was to gracefully handle algorithms with variable-length publickeys, signatures, or ciphertexts, which I believe there were some of in NIST Round 1. This is no longer a concern with FIPS 203 / 204, so we could now remove it. However, I think it will be a fair amount of editorial work (we will need to accurately list out the bit position to split at for each composite alg), and it is asking all existing composite implementations to change, then will require a lot of interop testing. Is this change really worth it?\r\n\r\nIf you feel strongly about this, then perhaps you could prepare the change to the document on a side-branch, and we could bring it to the LAMPS mailing list?\r\n",
       "createdAt": "2024-09-13T13:40:28Z",
       "updatedAt": "2024-09-13T13:40:28Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 44,
+      "id": "I_kwDOL5eEDM6W5C8r",
+      "title": "Description of \"PUBLIC-KEY\" is wrong",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/44",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Laurent Pion points out that a signature is produced by a private key, not a public key.\r\n\r\n> Chapter 6.1, table 1\r\n> Don\u2019t know if it\u2019s my wrong understanding or a little mistake, PUBLIC-KEYS, is it the composite (private) key required to produce the signature or the public key to verify it?\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/S5CyDKP4xngRmHNdlmHozXrpLzw/\r\n",
+      "createdAt": "2024-09-17T16:01:51Z",
+      "updatedAt": "2024-09-17T16:03:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 45,
+      "id": "I_kwDOL5eEDM6XFAn8",
+      "title": "Clarify that we are using pure ML-DSA, not HashML-DSA",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/45",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We should add text in a few places\r\nWe should add this in the section where we define the signature process, and we should also mention it in the appendix about FIPS certification of a composite implementation.\r\n\r\n(Credit for this ticket: Jeff Andersen)",
+      "createdAt": "2024-09-18T20:33:42Z",
+      "updatedAt": "2024-09-18T20:33:42Z",
       "closedAt": null,
       "comments": []
     }
