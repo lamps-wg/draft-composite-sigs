@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-22T00:53:24.724439+00:00",
+  "timestamp": "2024-09-24T00:49:53.437452+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1009,6 +1009,22 @@
       "body": "We should add text in a few places\r\nWe should add this in the section where we define the signature process, and we should also mention it in the appendix about FIPS certification of a composite implementation.\r\n\r\n(Credit for this ticket: Jeff Andersen)",
       "createdAt": "2024-09-18T20:33:42Z",
       "updatedAt": "2024-09-18T20:33:42Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 46,
+      "id": "I_kwDOL5eEDM6XmDo5",
+      "title": "Adjust Security Consideration on stripping attacks",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/46",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In response to comments from Falko:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/-wg0a8xuhrosRdZlzvQpYD1r0vE/\r\n\r\nOLD\r\n> When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature.\r\n\r\nNEW\r\n\r\n> Hybrid signature primitives that are susceptible to stripping attacks violate existential universal forgery by virtue of the fact that the signer produced (\\sigma, M) where \\sigma = {\\sigma_mldsa, \\sigma_trad}, and thus the ability to produce from this valid pairs (\\sigma_mldsa, M) or (\\sigma_trad, M) would constitute existential forgery attacks under the definition of EUF. This could be turned into practical attacks in a number of ways, such as a \u201csignature mis-attribution attack\u201d where the attacker makes a message appear to be signed by a certificate containing the public key {RSA} when in fact it was signed by the public key {ML-DSA, RSA} which happens to share the RSA public key but may in fact belong to a completely different entity. On top of this, a stripping attack isolates the two algorithms, which could lead to still further message forgery attacks against the weaker of the two algorithms.\r\n\r\n(I don\u2019t have the I-D text in front of me right now, so I\u2019ll probably need to adjust it a bit to fit with the section\u2019s flow.)\r\n",
+      "createdAt": "2024-09-23T18:18:26Z",
+      "updatedAt": "2024-09-23T18:18:26Z",
       "closedAt": null,
       "comments": []
     }
