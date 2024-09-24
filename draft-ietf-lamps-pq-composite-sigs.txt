@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 15 March 2025                                           M. Pala
+Expires: 28 March 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       11 September 2024
+                                                       24 September 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 March 2025.
+   This Internet-Draft will expire on 28 March 2025.
 
 Copyright Notice
 
@@ -149,16 +149,8 @@ Table of Contents
 
 1.1.  Changes since adoption by the lamps working group
 
-   *  Added back in the version 13 changes which were dropped by mistake
-      in the initial -00 adopted version
-
-   *  Added Scott Fluher as an author due to his valuable contributions
-      and participation in the draft writing process
-
-   *  Removed the reference to Parallel PKI's in implementation
-      considerations as it isn't adding value to the discussion
-
-   *  Resolved comments from Kris Kwiatkowski regarding FIPS
+   *  Changed prototype version OIDs so that standard ML-DSA may be used
+      with composite instead of the initial public draft version
 
 2.  Introduction
 
@@ -729,7 +721,7 @@ Signature Verification Procedure::
 
    replace <CompSig> with the String "2.16.840.1.114027.80.8.1"
 
-   Therefore <CompSig>.1 is equal to 2.16.840.1.114027.80.8.1.1
+   Therefore <CompSig>.21 is equal to 2.16.840.1.114027.80.8.1.21
 
    Signature public key types:
 
@@ -737,43 +729,43 @@ Signature Verification Procedure::
    |Composite Signature          |OID         |First      |Second AlgorithmID     |Pre-  |
    |AlgorithmID                  |            |AlgorithmID|                       |Hash  |
    +=============================+============+===========+=======================+======+
-   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.1 |id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.21|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                             |            |DSA-44     |sha256                 |sha256|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-                          |<CompSig>.2 |id-ML-     |sha256WithRSAEncryption|id-   |
+   |id-                          |<CompSig>.22|id-ML-     |sha256WithRSAEncryption|id-   |
    |MLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44     |                       |sha256|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.3 |id-ML-     |id-Ed25519             |id-   |
+   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.23|id-ML-     |id-Ed25519             |id-   |
    |                             |            |DSA-44     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.4 |id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.24|id-ML-     |ecdsa-with-SHA256 with |id-   |
    |                             |            |DSA-44     |secp256r1              |sha256|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA44-ECDSA-            |<CompSig>.5 |id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |id-MLDSA44-ECDSA-            |<CompSig>.25|id-ML-     |ecdsa-with-SHA256 with |id-   |
    |brainpoolP256r1-SHA256       |            |DSA-44     |brainpoolP256r1        |sha256|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.6 |id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.26|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                             |            |DSA-65     |sha512                 |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-                          |<CompSig>.7 |id-ML-     |sha512WithRSAEncryption|id-   |
+   |id-                          |<CompSig>.27|id-ML-     |sha512WithRSAEncryption|id-   |
    |MLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.8 |id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.28|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |                             |            |DSA-65     |secp256r1              |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA65-ECDSA-            |<CompSig>.9 |id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |id-MLDSA65-ECDSA-            |<CompSig>.29|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |brainpoolP256r1-SHA512       |            |DSA-65     |brainpoolP256r1        |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.10|id-ML-     |id-Ed25519             |id-   |
+   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.30|id-ML-     |id-Ed25519             |id-   |
    |                             |            |DSA-65     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.11|id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.31|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |                             |            |DSA-87     |secp384r1              |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA87-ECDSA-            |<CompSig>.12|id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |id-MLDSA87-ECDSA-            |<CompSig>.32|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |brainpoolP384r1-SHA512       |            |DSA-87     |brainpoolP384r1        |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA87-Ed448-SHA512      |<CompSig>.13|id-ML-     |id-Ed448               |id-   |
+   |id-MLDSA87-Ed448-SHA512      |<CompSig>.33|id-ML-     |id-Ed448               |id-   |
    |                             |            |DSA-87     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
 
@@ -798,31 +790,31 @@ Signature Verification Procedure::
    |Composite Signature AlgorithmID        |Domain Separator (in Hex  |
    |                                       |encoding)                 |
    +=======================================+==========================+
-   |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080101|
+   |id-MLDSA44-RSA2048-PSS-SHA256          |060B6086480186FA6B50080115|
    +---------------------------------------+--------------------------+
-   |id-MLDSA44-RSA2048-PKCS15-SHA256       |060B6086480186FA6B50080102|
+   |id-MLDSA44-RSA2048-PKCS15-SHA256       |060B6086480186FA6B50080116|
    +---------------------------------------+--------------------------+
-   |id-MLDSA44-Ed25519-SHA512              |060B6086480186FA6B50080103|
+   |id-MLDSA44-Ed25519-SHA512              |060B6086480186FA6B50080117|
    +---------------------------------------+--------------------------+
-   |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080104|
+   |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080118|
    +---------------------------------------+--------------------------+
-   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080105|
+   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080119|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B50080106|
+   |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B5008011A|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B50080107|
+   |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B5008011B|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B50080108|
+   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B5008011C|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B50080109|
+   |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B5008011D|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-Ed25519-SHA512              |060B6086480186FA6B5008010A|
+   |id-MLDSA65-Ed25519-SHA512              |060B6086480186FA6B5008011E|
    +---------------------------------------+--------------------------+
-   |id-MLDSA87-ECDSA-P384-SHA512           |060B6086480186FA6B5008010B|
+   |id-MLDSA87-ECDSA-P384-SHA512           |060B6086480186FA6B5008011F|
    +---------------------------------------+--------------------------+
-   |id-MLDSA87-ECDSA-brainpoolP384r1-SHA512|060B6086480186FA6B5008010C|
+   |id-MLDSA87-ECDSA-brainpoolP384r1-SHA512|060B6086480186FA6B50080120|
    +---------------------------------------+--------------------------+
-   |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B5008010D|
+   |id-MLDSA87-Ed448-SHA512                |060B6086480186FA6B50080121|
    +---------------------------------------+--------------------------+
 
               Table 3: Composite Signature Domain Separators
