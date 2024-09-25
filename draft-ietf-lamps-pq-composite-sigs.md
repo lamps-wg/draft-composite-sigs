@@ -443,11 +443,16 @@ EcCompositeSignaturePublicKey ::= SEQUENCE {
         firstPublicKey BIT STRING (ENCODED BY id-raw-key),
         secondPublicKey BIT STRING (CONTAINING ECPoint)
       }	
+
+EdCompositeSignaturePublicKey ::= SEQUENCE {
+        firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+      }
 ~~~
 
 `id-raw-key` is defined by this document.
 
-This structure is intentionally generic in the first public key slot since ML-DSA, as defined in {{I-D.ietf-lamps-dilithium-certificates}}, does not define any ASN.1 public key structures. For use with this document, the `firstPublicKey` MUST be the BIT STRING representation of an ML-DSA key as specified in {{I-D.ietf-lamps-dilithium-certificates}}. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm.
+This structure is intentionally generic in the first public key slot since ML-DSA, as defined in {{I-D.ietf-lamps-dilithium-certificates}}, does not define any ASN.1 public key structures. For use with this document, the `firstPublicKey` MUST be the BIT STRING representation of an ML-DSA key as specified in {{I-D.ietf-lamps-dilithium-certificates}}. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm. The public key for Edwards curve DSA component is also encoded as a raw key.
 
 The following ASN.1 Information Object Class is defined to then allow for compact definitions of each composite algorithm.
 
@@ -818,7 +823,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 -  id-raw-key
   - Decimal: IANA Assigned
   - Description: Designates a public key BIT STRING with no ASN.1 structure.
-  References: This Document
+  - References: This Document
 
 -  id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned

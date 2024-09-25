@@ -48,6 +48,8 @@ IMPORTS
 der OBJECT IDENTIFIER ::=
   {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
 
+
+-- Just for testing, to be assigned by IANA
 id-raw-key OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
    entrust(114027) algorithm(80) composite(8) raw(999) 1 }
@@ -82,7 +84,12 @@ RsaCompositeSignaturePublicKey ::= SEQUENCE {
 EcCompositeSignaturePublicKey ::= SEQUENCE {
         firstPublicKey BIT STRING (ENCODED BY id-raw-key),
         secondPublicKey BIT STRING (CONTAINING ECPoint)
-      }	  
+      }
+
+EdCompositeSignaturePublicKey ::= SEQUENCE {
+        firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+      }
 
 -- Composite Signature Value is just a sequence of OCTET STRINGS
 
@@ -154,7 +161,7 @@ id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
 
 pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512,
-  EcCompositeSignaturePublicKey}
+  EdCompositeSignaturePublicKey}
 
 sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -259,7 +266,7 @@ id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
 
 pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,
-  EcCompositeSignaturePublicKey}
+  EdCompositeSignaturePublicKey}
 
 sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -304,7 +311,7 @@ id-MLDSA87-Ed448-SHA512 OBJECT IDENTIFIER ::= {
 
 pk-MLDSA87-Ed448-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-Ed448-SHA512,
-  EcCompositeSignaturePublicKey}
+  EdCompositeSignaturePublicKey}
 
 sa-MLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
