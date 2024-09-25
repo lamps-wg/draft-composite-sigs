@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 28 March 2025                                           M. Pala
+Expires: 29 March 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       24 September 2024
+                                                       25 September 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 March 2025.
+   This Internet-Draft will expire on 29 March 2025.
 
 Copyright Notice
 
@@ -493,6 +493,11 @@ Signature Verification Procedure::
            secondPublicKey BIT STRING (CONTAINING ECPoint)
          }
 
+   EdCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING id-raw-key)
+         }
+
    id-raw-key is defined by this document.
 
    This structure is intentionally generic in the first public key slot
@@ -504,6 +509,8 @@ Signature Verification Procedure::
    STRING rather than OCTET STRING so that these keys can be trivially
    transcoded into a SubjectPublicKeyInfo as necessary, for example when
    a crypto library requires this for invoking the component algorithm.
+   The public key for Edwards curve DSA component is also encoded as a
+   raw key.
 
    The following ASN.1 Information Object Class is defined to then allow
    for compact definitions of each composite algorithm.
@@ -1066,6 +1073,8 @@ Signature Verification Procedure::
    der OBJECT IDENTIFIER ::=
      {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
 
+
+   -- Just for testing, to be assigned by IANA
    id-raw-key OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
       entrust(114027) algorithm(80) composite(8) raw(999) 1 }
@@ -1100,6 +1109,11 @@ Signature Verification Procedure::
    EcCompositeSignaturePublicKey ::= SEQUENCE {
            firstPublicKey BIT STRING (ENCODED BY id-raw-key),
            secondPublicKey BIT STRING (CONTAINING ECPoint)
+         }
+
+   EdCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING id-raw-key)
          }
 
    -- Composite Signature Value is just a sequence of OCTET STRINGS
@@ -1172,7 +1186,7 @@ Signature Verification Procedure::
 
    pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512,
-     EcCompositeSignaturePublicKey}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1277,7 +1291,7 @@ Signature Verification Procedure::
 
    pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,
-     EcCompositeSignaturePublicKey}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1322,7 +1336,7 @@ Signature Verification Procedure::
 
    pk-MLDSA87-Ed448-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-Ed448-SHA512,
-     EcCompositeSignaturePublicKey}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1362,7 +1376,9 @@ Signature Verification Procedure::
    *  Decimal: IANA Assigned
 
    *  Description: Designates a public key BIT STRING with no ASN.1
-      structure.  References: This Document
+      structure.
+
+   *  References: This Document
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
 
