@@ -714,7 +714,7 @@ As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS-S
 | Mask Generation params     | SHA-512                |
 | Message Digest Algorithm   | SHA-512                |
 | Salt Length in bits        | 512                    |
-{: #rsa-pss-params3072 title="RSA-PSS 4096 Parameters"}
+{: #rsa-pss-params4096 title="RSA-PSS 4096 Parameters"}
 
 where:
 
