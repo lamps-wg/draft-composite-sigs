@@ -228,6 +228,34 @@ sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
        id-MLDSA65-RSA3072-PKCS15-SHA512,
        pk-MLDSA65-RSA3072-PKCS15-SHA512 }
 
+-- TODO: OID to be replaced by IANA
+id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 34 }
+
+pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512,
+  RsaCompositeSignaturePublicKey}
+
+sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA65-RSA4096-PSS-SHA512,
+       pk-MLDSA65-RSA4096-PSS-SHA512 }
+
+
+-- TODO: OID to be replaced by IANA
+id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 35 }
+
+pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512,
+  RsaCompositeSignaturePublicKey}
+
+sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA65-RSA4096-PKCS15-SHA512,
+       pk-MLDSA65-RSA4096-PKCS15-SHA512 }
 
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
