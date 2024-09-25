@@ -88,7 +88,7 @@ EcCompositeSignaturePublicKey ::= SEQUENCE {
 
 EdCompositeSignaturePublicKey ::= SEQUENCE {
         firstPublicKey BIT STRING (ENCODED BY id-raw-key),
-        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+        secondPublicKey BIT STRING (ENCODED BY id-raw-key)
       }
 
 -- Composite Signature Value is just a sequence of OCTET STRINGS
