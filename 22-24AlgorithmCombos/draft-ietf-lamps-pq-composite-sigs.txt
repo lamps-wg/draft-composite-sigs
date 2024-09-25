@@ -88,6 +88,7 @@ Table of Contents
      7.1.  Domain Separators
      7.2.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
      7.3.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+     7.4.  Notes on id-MLDSA65-RSA4096-PSS-SHA512
    8.  Use in CMS
      8.1.  Underlying Components
      8.2.  SignedData Conventions
@@ -750,6 +751,12 @@ Signature Verification Procedure::
    |id-                          |<CompSig>.27|id-ML-     |sha512WithRSAEncryption|id-   |
    |MLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-RSA4096-PSS-SHA512|<CompSig>.34|id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |                             |            |DSA-65     |sha512                 |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-                          |<CompSig>.35|id-ML-     |sha512WithRSAEncryption|id-   |
+   |MLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
    |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.28|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |                             |            |DSA-65     |secp256r1              |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
@@ -803,6 +810,10 @@ Signature Verification Procedure::
    |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B5008011A|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B5008011B|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA4096-PSS-SHA512          |060B6086480186FA6B50080122|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA4096-PKCS15-SHA512       |060B6086480186FA6B50080123|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B5008011C|
    +---------------------------------------+--------------------------+
@@ -881,6 +892,36 @@ Signature Verification Procedure::
 
    *  SHA-512 is defined in [RFC6234].
 
+7.4.  Notes on id-MLDSA65-RSA4096-PSS-SHA512
+
+   The RSA component keys MUST be generated at the 4096-bit security
+   level in order to match with ML-DSA-65.
+
+   As with the other composite signature algorithms, when id-
+   MLDSA65-RSA4096-PSS-SHA512 is used in an AlgorithmIdentifier, the
+   parameters MUST be absent. id-MLDSA65-RSA4096-PSS-SHA512 SHALL
+   instantiate RSA-PSS with the following parameters:
+
+                  +==========================+=========+
+                  | RSA-PSS Parameter        | Value   |
+                  +==========================+=========+
+                  | Mask Generation Function | mgf1    |
+                  +--------------------------+---------+
+                  | Mask Generation params   | SHA-512 |
+                  +--------------------------+---------+
+                  | Message Digest Algorithm | SHA-512 |
+                  +--------------------------+---------+
+                  | Salt Length in bits      | 512     |
+                  +--------------------------+---------+
+
+                     Table 6: RSA-PSS 4096 Parameters
+
+   where:
+
+   *  Mask Generation Function (mgf1) is defined in [RFC8017]
+
+   *  SHA-512 is defined in [RFC6234].
+
 8.  Use in CMS
 
    [EDNOTE: The convention in LAMPS is to specify algorithms and their
@@ -895,7 +936,7 @@ Signature Verification Procedure::
 
    When a particular Composite Signature OID is supported in CMS, an
    implementation SHOULD support the corresponding Secure Hash algorithm
-   identifier in Table 6 that was used as the pre-hash.
+   identifier in Table 7 that was used as the pre-hash.
 
    The following table lists the MANDATORY HASH algorithms to preserve
    security and performance characteristics of each composite algorithm.
@@ -917,6 +958,10 @@ Signature Verification Procedure::
          +-----------------------------------------+-------------+
          | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512      |
          +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA4096-PSS-SHA512           | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA4096-PKCS15-SHA512        | SHA512      |
+         +-----------------------------------------+-------------+
          | id-MLDSA65-ECDSA-P256-SHA512            | SHA512      |
          +-----------------------------------------+-------------+
          | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512      |
@@ -930,7 +975,7 @@ Signature Verification Procedure::
          | id-MLDSA87-Ed448-SHA512                 | SHA512      |
          +-----------------------------------------+-------------+
 
-                Table 6: Composite Signature SHA Algorithms
+                Table 7: Composite Signature SHA Algorithms
 
    where:
 
@@ -965,7 +1010,7 @@ Signature Verification Procedure::
    function used by the CMS signer.
 
    signatureAlgorithm: The signatureAlgorithm MUST contain one of the
-   the Composite Signature algorithm identifiers as specified in Table 6
+   the Composite Signature algorithm identifiers as specified in Table 7
 
    signature: The signature field contains the signature value resulting
    from the composite signing operation of the specified
@@ -1010,7 +1055,7 @@ Signature Verification Procedure::
 
    The SMIMECapability SEQUENCE representing a composite signature
    Algorithm MUST include the appropriate object identifier as per
-   Table 6 in the capabilityID field.
+   Table 7 in the capabilityID field.
 
 9.  ASN.1 Module
 
@@ -1445,6 +1490,22 @@ Signature Verification Procedure::
    *  Decimal: IANA Assigned
 
    *  Description: id-MLDSA65-RSA3072-PKCS15-SHA512
+
+   *  References: This Document
+
+   *  id-MLDSA65-RSA4096-PSS-SHA512
+
+   *  Decimal: IANA Assigned
+
+   *  Description: id-MLDSA65-RSA4096-PSS-SHA512
+
+   *  References: This Document
+
+   *  id-MLDSA65-RSA4096-PKCS15-SHA512
+
+   *  Decimal: IANA Assigned
+
+   *  Description: id-MLDSA65-RSA4096-PKCS15-SHA512
 
    *  References: This Document
 
@@ -1890,7 +1951,7 @@ Appendix A.  Component Algorithm Reference
    |                       |pkcs(1) pkcs-1(1) 10    |                                       |
    +-----------------------+------------------------+---------------------------------------+
 
-         Table 7: Component Signature Algorithms used in Composite
+         Table 8: Component Signature Algorithms used in Composite
                                Constructions
 
    +=================+=================================+===============+
@@ -1924,7 +1985,7 @@ Appendix A.  Component Algorithm Reference
    |                 | versionOne(1) 11                |               |
    +-----------------+---------------------------------+---------------+
 
-          Table 8: Elliptic Curves used in Composite Constructions
+          Table 9: Elliptic Curves used in Composite Constructions
 
       +===========+=================================+===============+
       | HashID    | OID                             | Specification |
@@ -1940,7 +2001,7 @@ Appendix A.  Component Algorithm Reference
       |           | nistAlgorithms(4) hashAlgs(2) 3 |               |
       +-----------+---------------------------------+---------------+
 
-          Table 9: Hash algorithms used in Composite Constructions
+         Table 10: Hash algorithms used in Composite Constructions
 
 Appendix B.  Samples
 

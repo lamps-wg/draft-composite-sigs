@@ -1214,6 +1214,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
                 <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-notes-on-id-mldsa65-rsa3072" class="internal xref">Notes on id-MLDSA65-RSA3072-PSS-SHA512</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-notes-on-id-mldsa65-rsa4096" class="internal xref">Notes on id-MLDSA65-RSA4096-PSS-SHA512</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
@@ -1955,6 +1958,20 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
           </tr>
           <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.34</td>
+            <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
+            <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha512</td>
+            <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.35</td>
+            <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
+            <td class="text-left" rowspan="1" colspan="1">sha512WithRSAEncryption</td>
+            <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
+          </tr>
+          <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P256-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.28</td>
             <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
@@ -2047,6 +2064,14 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008011B</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B50080122</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B50080123</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P256-SHA512</td>
@@ -2178,6 +2203,56 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </ul>
 </section>
 </div>
+<div id="notes-on-id-mldsa65-rsa4096-pss-sha512">
+<section id="section-7.4">
+        <h3 id="name-notes-on-id-mldsa65-rsa4096">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-notes-on-id-mldsa65-rsa4096" class="section-name selfRef">Notes on id-MLDSA65-RSA4096-PSS-SHA512</a>
+        </h3>
+<p id="section-7.4-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<p id="section-7.4-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.4-2" class="pilcrow">¶</a></p>
+<span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
+<table class="center" id="table-6">
+          <caption>
+<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#name-rsa-pss-4096-parameters" class="selfRef">RSA-PSS 4096 Parameters</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
+              <td class="text-left" rowspan="1" colspan="1">mgf1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+              <td class="text-left" rowspan="1" colspan="1">512</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<p id="section-7.4-4">where:<a href="#section-7.4-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.4-5.1">
+            <p id="section-7.4-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.4-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.4-5.2">
+            <p id="section-7.4-5.2.1"><code>SHA-512</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.4-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
 </section>
 </div>
 <div id="use-in-cms">
@@ -2192,12 +2267,12 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         <h3 id="name-underlying-components">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-underlying-components" class="section-name selfRef">Underlying Components</a>
         </h3>
-<p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 6</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 7</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1-2">The following table lists the MANDATORY HASH algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <span id="name-composite-signature-sha-alg"></span><div id="tab-cms-shas">
-<table class="center" id="table-6">
+<table class="center" id="table-7">
           <caption>
-<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#table-7" class="selfRef">Table 7</a>:
 <a href="#name-composite-signature-sha-alg" class="selfRef">Composite Signature SHA Algorithms</a>
           </caption>
 <thead>
@@ -2233,6 +2308,14 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA512</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA512</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
@@ -2289,7 +2372,7 @@ ELSE message-digest attribute = Hash(content);
 <p id="section-8.2-5">digestAlgorithm:
     The digestAlgorithm contains the one-way hash function used by the CMS signer.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.2-6">signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 6</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
+    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 7</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.2-7">signature:
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
 </section>
@@ -2319,7 +2402,7 @@ cRLSign
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
         </h3>
 <p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute that announces support for the RSA-KEM Algorithm.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 6</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 7</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2810,76 +2893,100 @@ END
               <p id="section-10.1.2-1.28.1">References: This Document<a href="#section-10.1.2-1.28.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.29">
-              <p id="section-10.1.2-1.29.1">id-MLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.29.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.29.1">id-MLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.29.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.30">
               <p id="section-10.1.2-1.30.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.30.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.31">
-              <p id="section-10.1.2-1.31.1">Description:  id-MLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.31.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.31.1">Description:  id-MLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.31.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.32">
               <p id="section-10.1.2-1.32.1">References: This Document<a href="#section-10.1.2-1.32.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.33">
-              <p id="section-10.1.2-1.33.1">id-MLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.33.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.33.1">id-MLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.33.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.34">
               <p id="section-10.1.2-1.34.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.34.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.35">
-              <p id="section-10.1.2-1.35.1">Description:  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.35.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.35.1">Description:  id-MLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.35.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.36">
               <p id="section-10.1.2-1.36.1">References: This Document<a href="#section-10.1.2-1.36.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.37">
-              <p id="section-10.1.2-1.37.1">id-MLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.37.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.37.1">id-MLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.37.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.38">
               <p id="section-10.1.2-1.38.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.38.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.39">
-              <p id="section-10.1.2-1.39.1">Description:  id-MLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.39.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.39.1">Description:  id-MLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.39.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.40">
               <p id="section-10.1.2-1.40.1">References: This Document<a href="#section-10.1.2-1.40.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.41">
-              <p id="section-10.1.2-1.41.1">id-MLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.41.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.41.1">id-MLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.41.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.42">
               <p id="section-10.1.2-1.42.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.42.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.43">
-              <p id="section-10.1.2-1.43.1">Description:  id-MLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.43.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.43.1">Description:  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.43.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.44">
               <p id="section-10.1.2-1.44.1">References: This Document<a href="#section-10.1.2-1.44.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.45">
-              <p id="section-10.1.2-1.45.1">id-MLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.45.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.45.1">id-MLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.45.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.46">
               <p id="section-10.1.2-1.46.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.46.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.47">
-              <p id="section-10.1.2-1.47.1">Description:  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.47.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.47.1">Description:  id-MLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.47.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.48">
               <p id="section-10.1.2-1.48.1">References: This Document<a href="#section-10.1.2-1.48.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.49">
-              <p id="section-10.1.2-1.49.1">id-MLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.49.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.49.1">id-MLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.49.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.50">
               <p id="section-10.1.2-1.50.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.50.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.51">
-              <p id="section-10.1.2-1.51.1">Description:  id-MLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.51.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.51.1">Description:  id-MLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.51.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-10.1.2-1.52">
               <p id="section-10.1.2-1.52.1">References: This Document<a href="#section-10.1.2-1.52.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.53">
+              <p id="section-10.1.2-1.53.1">id-MLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.53.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.54">
+              <p id="section-10.1.2-1.54.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.54.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.55">
+              <p id="section-10.1.2-1.55.1">Description:  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.55.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.56">
+              <p id="section-10.1.2-1.56.1">References: This Document<a href="#section-10.1.2-1.56.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.57">
+              <p id="section-10.1.2-1.57.1">id-MLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.57.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.58">
+              <p id="section-10.1.2-1.58.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.58.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.59">
+              <p id="section-10.1.2-1.59.1">Description:  id-MLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.59.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-10.1.2-1.60">
+              <p id="section-10.1.2-1.60.1">References: This Document<a href="#section-10.1.2-1.60.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -3143,9 +3250,9 @@ END
       </h2>
 <p id="appendix-A-1">This section provides references to the full specification of the algorithms used in the composite constructions.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <span id="name-component-signature-algorit"></span><div id="tab-component-sig-algs">
-<table class="center" id="table-7">
+<table class="center" id="table-8">
         <caption>
-<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#table-8" class="selfRef">Table 8</a>:
 <a href="#name-component-signature-algorit" class="selfRef">Component Signature Algorithms used in Composite Constructions</a>
         </caption>
 <thead>
@@ -3227,9 +3334,9 @@ END
       </table>
 </div>
 <span id="name-elliptic-curves-used-in-com"></span><div id="tab-component-curve-algs">
-<table class="center" id="table-8">
+<table class="center" id="table-9">
         <caption>
-<a href="#table-8" class="selfRef">Table 8</a>:
+<a href="#table-9" class="selfRef">Table 9</a>:
 <a href="#name-elliptic-curves-used-in-com" class="selfRef">Elliptic Curves used in Composite Constructions</a>
         </caption>
 <thead>
@@ -3272,9 +3379,9 @@ END
       </table>
 </div>
 <span id="name-hash-algorithms-used-in-com"></span><div id="tab-component-hash">
-<table class="center" id="table-9">
+<table class="center" id="table-10">
         <caption>
-<a href="#table-9" class="selfRef">Table 9</a>:
+<a href="#table-10" class="selfRef">Table 10</a>:
 <a href="#name-hash-algorithms-used-in-com" class="selfRef">Hash algorithms used in Composite Constructions</a>
         </caption>
 <thead>
