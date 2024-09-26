@@ -65,8 +65,7 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Changes since the -01 version
-     1.1.  Changes since adoption by the lamps working group
+   1.  Changes in -03
    2.  Introduction
      2.1.  Conventions and Terminology
    3.  Composite Signatures Schemes
@@ -88,6 +87,7 @@ Table of Contents
      7.1.  Domain Separators
      7.2.  Notes on id-MLDSA44-RSA2048-PSS-SHA256
      7.3.  Notes on id-MLDSA65-RSA3072-PSS-SHA512
+     7.4.  Notes on id-MLDSA65-RSA4096-PSS-SHA512
    8.  Use in CMS
      8.1.  Underlying Components
      8.2.  SignedData Conventions
@@ -122,35 +122,15 @@ Table of Contents
      E.1.  Making contributions
    Authors' Addresses
 
-1.  Changes since the -01 version
+1.  Changes in -03
 
-   *  Added a "Use in CMS" section
+   *  ASN.1 Module changes:
 
-   *  Removed a Falon reference from the ASN.1 document (which was a
-      typo in reference to Falcon)
+      -  Renamed the module from Composite-Signatures-2023 -> Composite-
+         MLDSA-2024
 
-   *  Added SMIME-CAPS into the sa-CompositeSignature definition in the
-      ASN.1 module
-
-   *  Fixed nits and other typos
-
-   *  Added PSS parameter Salt Lengths
-
-   *  Changed the OID concatenation section to Domain Separators for
-      clarity
-
-   *  Accepted some edits by José Ignacio Escribano
-
-   *  Expanded description for KeyGen algorithm
-
-   *  Clarified the Subject Public Key Usage
-
-   *  Various editorial changes
-
-1.1.  Changes since adoption by the lamps working group
-
-   *  Changed prototype version OIDs so that standard ML-DSA may be used
-      with composite instead of the initial public draft version
+      -  Simplified the ASN.1 module to make it more compiler-friendly
+         (thanks Carl!) -- should not affect wire encodings.
 
 2.  Introduction
 
@@ -501,27 +481,55 @@ Signature Verification Procedure::
 
 5.1.  pk-CompositeSignature
 
-   The following ASN.1 Information Object Class is a template to be used
-   in defining all composite Signature public key types.
+   The following ASN.1 structures represent a composite public key
+   combined with an RSA and Elliptic Curve public key, respectively.
 
-   pk-CompositeSignature {OBJECT IDENTIFIER:id,
-     FirstPublicKeyType,SecondPublicKeyType}
+   RsaCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING RSAPublicKey)
+         }
+
+   EcCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING ECPoint)
+         }
+
+   EdCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING id-raw-key)
+         }
+
+   id-raw-key is defined by this document.
+
+   This structure is intentionally generic in the first public key slot
+   since ML-DSA, as defined in [I-D.ietf-lamps-dilithium-certificates],
+   does not define any ASN.1 public key structures.  For use with this
+   document, the firstPublicKey MUST be the BIT STRING representation of
+   an ML-DSA key as specified in
+   [I-D.ietf-lamps-dilithium-certificates].  Note that here we used BIT
+   STRING rather than OCTET STRING so that these keys can be trivially
+   transcoded into a SubjectPublicKeyInfo as necessary, for example when
+   a crypto library requires this for invoking the component algorithm.
+   The public key for Edwards curve DSA component is also encoded as a
+   raw key.
+
+   The following ASN.1 Information Object Class is defined to then allow
+   for compact definitions of each composite algorithm.
+
+   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
        PUBLIC-KEY ::= {
          IDENTIFIER id
-         KEY SEQUENCE {
-           firstPublicKey BIT STRING (CONTAINING FirstPublicKeyType),
-           secondPublicKey BIT STRING (CONTAINING SecondPublicKeyType)
-         }
+         KEY PublicKeyType
          PARAMS ARE absent
          CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
        }
 
-   As an example, the public key type pk-MLDSA65-ECDSA-P256-SHA256 is
+   As an example, the public key type pk-MLDSA44-ECDSA-P256-SHA256 is
    defined as:
 
-   pk-MLDSA65-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA256,
-     OCTET STRING, ECPoint}
+   pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
+     EcCompositeSignaturePublicKey}
 
    The full set of key types defined by this specification can be found
    in the ASN.1 Module in Section 9.
@@ -599,7 +607,8 @@ Signature Verification Procedure::
    When an octet string is required, the DER encoding of the composite
    data structure SHALL be used directly.
 
-   CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+   CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
+                                   CompositeSignaturePublicKey ENCODED BY der)
 
    When a bit string is required, the octets of the DER encoded
    composite data structure SHALL be used as the bits of the bit string,
@@ -607,7 +616,8 @@ Signature Verification Procedure::
    bit, and so on, ending with the least significant bit of the last
    octet becoming the last bit of the bit string.
 
-   CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+   CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
+                                   CompositeSignaturePublicKey ENCODED BY der)
 
    In the interests of simplicity and avoiding compatibility issues,
    implementations that parse these structures MAY accept both BER and
@@ -647,16 +657,14 @@ Signature Verification Procedure::
 
    The ASN.1 algorithm object for a composite signature is:
 
-   sa-CompositeSignature {
-     OBJECT IDENTIFIER:id,
-       PUBLIC-KEY:publicKeyType }
-       SIGNATURE-ALGORITHM ::= {
-           IDENTIFIER id
-           VALUE CompositeSignatureValue
-           PARAMS ARE absent
-           PUBLIC-KEYS { publicKeyType }
-           SMIME-CAPS { IDENTIFIED BY id }
-       }
+   sa-CompositeSignature{OBJECT IDENTIFIER:id,
+      PUBLIC-KEY:publicKeyType }
+         SIGNATURE-ALGORITHM ::=  {
+            IDENTIFIER id
+            VALUE CompositeSignatureValue
+            PARAMS ARE absent
+            PUBLIC-KEYS {publicKeyType}
+         }
 
    The following is an explanation how SIGNATURE-ALGORITHM elements are
    used to create Composite Signatures:
@@ -747,6 +755,12 @@ Signature Verification Procedure::
    |id-                          |<CompSig>.27|id-ML-     |sha512WithRSAEncryption|id-   |
    |MLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
+   |id-MLDSA65-RSA4096-PSS-SHA512|<CompSig>.34|id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |                             |            |DSA-65     |sha512                 |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
+   |id-                          |<CompSig>.35|id-ML-     |sha512WithRSAEncryption|id-   |
+   |MLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65     |                       |sha512|
+   +-----------------------------+------------+-----------+-----------------------+------+
    |id-MLDSA65-ECDSA-P384-SHA512 |<CompSig>.28|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |                             |            |DSA-65     |secp384r1              |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
@@ -798,6 +812,10 @@ Signature Verification Procedure::
    |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B5008011A|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B5008011B|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA4096-PSS-SHA512          |060B6086480186FA6B50080122|
+   +---------------------------------------+--------------------------+
+   |id-MLDSA65-RSA4096-PKCS15-SHA512       |060B6086480186FA6B50080123|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-ECDSA-P384-SHA512           |060B6086480186FA6B5008011C|
    +---------------------------------------+--------------------------+
@@ -876,6 +894,36 @@ Signature Verification Procedure::
 
    *  SHA-512 is defined in [RFC6234].
 
+7.4.  Notes on id-MLDSA65-RSA4096-PSS-SHA512
+
+   The RSA component keys MUST be generated at the 4096-bit security
+   level in order to match with ML-DSA-65.
+
+   As with the other composite signature algorithms, when id-
+   MLDSA65-RSA4096-PSS-SHA512 is used in an AlgorithmIdentifier, the
+   parameters MUST be absent. id-MLDSA65-RSA4096-PSS-SHA512 SHALL
+   instantiate RSA-PSS with the following parameters:
+
+                  +==========================+=========+
+                  | RSA-PSS Parameter        | Value   |
+                  +==========================+=========+
+                  | Mask Generation Function | mgf1    |
+                  +--------------------------+---------+
+                  | Mask Generation params   | SHA-512 |
+                  +--------------------------+---------+
+                  | Message Digest Algorithm | SHA-512 |
+                  +--------------------------+---------+
+                  | Salt Length in bits      | 512     |
+                  +--------------------------+---------+
+
+                     Table 6: RSA-PSS 4096 Parameters
+
+   where:
+
+   *  Mask Generation Function (mgf1) is defined in [RFC8017]
+
+   *  SHA-512 is defined in [RFC6234].
+
 8.  Use in CMS
 
    [EDNOTE: The convention in LAMPS is to specify algorithms and their
@@ -890,7 +938,7 @@ Signature Verification Procedure::
 
    When a particular Composite Signature OID is supported in CMS, an
    implementation SHOULD support the corresponding Secure Hash algorithm
-   identifier in Table 6 that was used as the pre-hash.
+   identifier in Table 7 that was used as the pre-hash.
 
    The following table lists the MANDATORY HASH algorithms to preserve
    security and performance characteristics of each composite algorithm.
@@ -910,6 +958,10 @@ Signature Verification Procedure::
          +-----------------------------------------+-------------+
          | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512      |
          +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA4096-PSS-SHA512           | SHA512      |
+         +-----------------------------------------+-------------+
+         | id-MLDSA65-RSA4096-PKCS15-SHA512        | SHA512      |
+         +-----------------------------------------+-------------+
          | id-MLDSA65-ECDSA-P384-SHA512            | SHA512      |
          +-----------------------------------------+-------------+
          | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512      |
@@ -923,7 +975,7 @@ Signature Verification Procedure::
          | id-MLDSA87-Ed448-SHA512                 | SHA512      |
          +-----------------------------------------+-------------+
 
-                Table 6: Composite Signature SHA Algorithms
+                Table 7: Composite Signature SHA Algorithms
 
    where:
 
@@ -958,7 +1010,7 @@ Signature Verification Procedure::
    function used by the CMS signer.
 
    signatureAlgorithm: The signatureAlgorithm MUST contain one of the
-   the Composite Signature algorithm identifiers as specified in Table 6
+   the Composite Signature algorithm identifiers as specified in Table 7
 
    signature: The signature field contains the signature value resulting
    from the composite signing operation of the specified
@@ -1003,16 +1055,17 @@ Signature Verification Procedure::
 
    The SMIMECapability SEQUENCE representing a composite signature
    Algorithm MUST include the appropriate object identifier as per
-   Table 6 in the capabilityID field.
+   Table 7 in the capabilityID field.
 
 9.  ASN.1 Module
 
    <CODE STARTS>
 
+   Composite-MLDSA-2024
+     { iso(1) identified-organization(3) dod(6) internet(1)
+           security(5) mechanisms(5) pkix(7) id-mod(0)
+           id-mod-composite-mldsa(TBDMOD) }
 
-      Composite-Signatures-2023
-         { joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)
-           algorithm(80) id-composite-signatures-2023 (TBDMOD) }
 
    DEFINITIONS IMPLICIT TAGS ::= BEGIN
 
@@ -1059,6 +1112,10 @@ Signature Verification Procedure::
      {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
 
 
+   -- Just for testing, to be assigned by IANA
+   id-raw-key OBJECT IDENTIFIER ::= {
+      joint-iso-itu-t(2) country(16) us(840) organization(1)
+      entrust(114027) algorithm(80) composite(8) raw(999) 1 }
 
 
    --
@@ -1082,15 +1139,30 @@ Signature Verification Procedure::
 
    CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 
+   RsaCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING RSAPublicKey)
+         }
+
+   EcCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (CONTAINING ECPoint)
+         }
+
+   EdCompositeSignaturePublicKey ::= SEQUENCE {
+           firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+           secondPublicKey BIT STRING (ENCODED BY id-raw-key)
+         }
+
    -- Composite Signature Value is just a sequence of OCTET STRINGS
 
-   --   CompositeSignaturePair{FirstSignatureValue, SecondSignatureValue}  ::=
+   --   CompositeSignaturePair{FirstSignatureValue, SecondSignatureValue} ::=
    --     SEQUENCE {
    --      signaturevalue1 FirstSignatureValue,
    --      signaturevalue2 SecondSignatureValue }
 
-      -- An Explicit Compsite Signature is a set of Signatures which
-      -- are composed of OCTET STRINGS
+   -- An Explicit Compsite Signature is a set of Signatures which
+   -- are composed of OCTET STRINGS
    --   ExplicitCompositeSignatureValue ::= CompositeSignaturePair {
    --       OCTET STRING,OCTET STRING}
 
@@ -1099,18 +1171,13 @@ Signature Verification Procedure::
    -- Information Object Classes
    --
 
-   pk-CompositeSignature {OBJECT IDENTIFIER:id,
-     FirstPublicKeyType,SecondPublicKeyType}
+   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
        PUBLIC-KEY ::= {
          IDENTIFIER id
-         KEY SEQUENCE {
-           firstPublicKey BIT STRING (CONTAINING FirstPublicKeyType),
-           secondPublicKey BIT STRING (CONTAINING SecondPublicKeyType)
-         }
+         KEY PublicKeyType
          PARAMS ARE absent
          CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
        }
-
 
    sa-CompositeSignature{OBJECT IDENTIFIER:id,
       PUBLIC-KEY:publicKeyType }
@@ -1124,11 +1191,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 1 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 21 }
 
    pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256,
-     OCTET STRING, RSAPublicKey}
+     RsaCompositeSignaturePublicKey}
 
    sa-MLDSA44-RSA2048-PSS-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1138,11 +1205,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 2 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 22 }
 
    pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256,
-     OCTET STRING, RSAPublicKey}
+     RsaCompositeSignaturePublicKey}
 
    sa-MLDSA44-RSA2048-PKCS15-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1153,11 +1220,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 3 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 23 }
 
    pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512,
-     OCTET STRING, ECPoint}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1168,11 +1235,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 4 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 24 }
 
    pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
    sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1183,11 +1250,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 5 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 25 }
 
    pk-MLDSA44-ECDSA-brainpoolP256r1-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-ECDSA-brainpoolP256r1-SHA256,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
    sa-MLDSA44-ECDSA-brainpoolP256r1-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1198,11 +1265,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 6 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 26 }
 
    pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512,
-     OCTET STRING, RSAPublicKey}
+     RsaCompositeSignaturePublicKey}
 
    sa-MLDSA65-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1213,26 +1280,54 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 7 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 27 }
 
    pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512,
-     OCTET STRING, RSAPublicKey}
+     RsaCompositeSignaturePublicKey}
 
    sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
           id-MLDSA65-RSA3072-PKCS15-SHA512,
           pk-MLDSA65-RSA3072-PKCS15-SHA512 }
 
+   -- TODO: OID to be replaced by IANA
+   id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
+      joint-iso-itu-t(2) country(16) us(840) organization(1)
+      entrust(114027) algorithm(80) composite(8) signature(1) 34 }
+
+   pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512,
+     RsaCompositeSignaturePublicKey}
+
+   sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+       sa-CompositeSignature{
+          id-MLDSA65-RSA4096-PSS-SHA512,
+          pk-MLDSA65-RSA4096-PSS-SHA512 }
+
+
+   -- TODO: OID to be replaced by IANA
+   id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
+      joint-iso-itu-t(2) country(16) us(840) organization(1)
+      entrust(114027) algorithm(80) composite(8) signature(1) 35 }
+
+   pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512,
+     RsaCompositeSignaturePublicKey}
+
+   sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
+       sa-CompositeSignature{
+          id-MLDSA65-RSA4096-PKCS15-SHA512,
+          pk-MLDSA65-RSA4096-PKCS15-SHA512 }
 
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 8 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 28 }
 
    pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
    sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1243,26 +1338,26 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 9 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 29 }
 
-   pk-id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
+   pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
-   sa-id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
+   sa-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
           id-MLDSA65-ECDSA-brainpoolP256r1-SHA512,
-          pk-id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 }
+          pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 }
 
 
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 10 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 30 }
 
    pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,
-     OCTET STRING, ECPoint}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1273,11 +1368,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 11 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 31 }
 
    pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
    sa-MLDSA87-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1288,11 +1383,11 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 12 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 32 }
 
    pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512,
-     OCTET STRING, ECPoint}
+     EcCompositeSignaturePublicKey}
 
    sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1303,59 +1398,16 @@ Signature Verification Procedure::
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-Ed448-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 13 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 33 }
 
    pk-MLDSA87-Ed448-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-Ed448-SHA512,
-     OCTET STRING, ECPoint}
+     EdCompositeSignaturePublicKey}
 
    sa-MLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
           id-MLDSA87-Ed448-SHA512,
           pk-MLDSA87-Ed448-SHA512 }
-
-   -- TODO: OID to be replaced by IANA
-   id-Falon512-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
-      joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 14 }
-
-   pk-Falon512-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-Falon512-ECDSA-P256-SHA256,
-     OCTET STRING, ECPoint}
-
-   sa-Falon512-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
-       sa-CompositeSignature{
-          id-Falon512-ECDSA-P256-SHA256,
-          pk-Falon512-ECDSA-P256-SHA256 }
-
-   -- TODO: OID to be replaced by IANA
-   id-Falcon512-ECDSA-brainpoolP256r1-SHA256 OBJECT IDENTIFIER ::= {
-      joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 15 }
-
-   pk-Falcon512-ECDSA-brainpoolP256r1-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-Falcon512-ECDSA-brainpoolP256r1-SHA256,
-     OCTET STRING, ECPoint}
-
-   sa-Falcon512-ECDSA-brainpoolP256r1-SHA256 SIGNATURE-ALGORITHM ::=
-       sa-CompositeSignature{
-          id-Falcon512-ECDSA-brainpoolP256r1-SHA256,
-          pk-Falcon512-ECDSA-brainpoolP256r1-SHA256 }
-
-   -- TODO: OID to be replaced by IANA
-   id-Falcon512-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
-      joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 16 }
-
-   pk-Falcon512-Ed25519-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-Falcon512-Ed25519-SHA512,
-     OCTET STRING, ECPoint}
-
-   sa-Falcon512-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
-       sa-CompositeSignature{
-          id-Falcon512-Ed25519-SHA512,
-          pk-Falcon512-Ed25519-SHA512 }
-
 
    END
 
@@ -1384,6 +1436,15 @@ Signature Verification Procedure::
 
 10.1.2.  Object Identifier Registrations - SMI Security for PKIX
          Algorithms
+
+   *  id-raw-key
+
+   *  Decimal: IANA Assigned
+
+   *  Description: Designates a public key BIT STRING with no ASN.1
+      structure.
+
+   *  References: This Document
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
 
@@ -1430,6 +1491,22 @@ Signature Verification Procedure::
    *  Decimal: IANA Assigned
 
    *  Description: id-MLDSA65-RSA3072-PKCS15-SHA512
+
+   *  References: This Document
+
+   *  id-MLDSA65-RSA4096-PSS-SHA512
+
+   *  Decimal: IANA Assigned
+
+   *  Description: id-MLDSA65-RSA4096-PSS-SHA512
+
+   *  References: This Document
+
+   *  id-MLDSA65-RSA4096-PKCS15-SHA512
+
+   *  Decimal: IANA Assigned
+
+   *  Description: id-MLDSA65-RSA4096-PKCS15-SHA512
 
    *  References: This Document
 
@@ -1488,8 +1565,8 @@ Signature Verification Procedure::
    The composite algorithm combinations defined in this document were
    chosen according to the following guidelines:
 
-   1.  A single RSA combination is provided at a key size of 3072 bits,
-       matched with NIST PQC Level 3 algorithms.
+   1.  RSA combinations are provided at a key size of 2048, 3072, and
+       4096 bits matched with NIST PQC Level 2 and 3 algorithms.
 
    2.  Elliptic curve algorithms are provided with combinations on each
        of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748]
@@ -1749,11 +1826,10 @@ Signature Verification Procedure::
    [I-D.ietf-lamps-dilithium-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
               Westerbaan, "Internet X.509 Public Key Infrastructure:
-              Algorithm Identifiers for Dilithium", Work in Progress,
+              Algorithm Identifiers for ML-DSA", Work in Progress,
               Internet-Draft, draft-ietf-lamps-dilithium-certificates-
-              01, 6 February 2023,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-lamps-
-              dilithium-certificates-01>.
+              04, 22 July 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-lamps-dilithium-certificates-04>.
 
    [I-D.massimo-lamps-pq-sig-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
@@ -1874,7 +1950,7 @@ Appendix A.  Component Algorithm Reference
    |                       |pkcs(1) pkcs-1(1) 10    |                                       |
    +-----------------------+------------------------+---------------------------------------+
 
-         Table 7: Component Signature Algorithms used in Composite
+         Table 8: Component Signature Algorithms used in Composite
                                Constructions
 
    +=================+=================================+===============+
@@ -1908,7 +1984,7 @@ Appendix A.  Component Algorithm Reference
    |                 | versionOne(1) 11                |               |
    +-----------------+---------------------------------+---------------+
 
-          Table 8: Elliptic Curves used in Composite Constructions
+          Table 9: Elliptic Curves used in Composite Constructions
 
       +===========+=================================+===============+
       | HashID    | OID                             | Specification |
@@ -1924,7 +2000,7 @@ Appendix A.  Component Algorithm Reference
       |           | nistAlgorithms(4) hashAlgs(2) 3 |               |
       +-----------+---------------------------------+---------------+
 
-          Table 9: Hash algorithms used in Composite Constructions
+         Table 10: Hash algorithms used in Composite Constructions
 
 Appendix B.  Samples
 
