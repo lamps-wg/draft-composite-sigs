@@ -619,10 +619,9 @@ Signature public key types:
 | id-MLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.22 | id-ML-DSA-44  | sha256WithRSAEncryption | id-sha256 |
 | id-MLDSA44-Ed25519-SHA512             | &lt;CompSig&gt;.23 | id-ML-DSA-44  | id-Ed25519 | id-sha512 |
 | id-MLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.24 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | id-sha256 |
-| id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | &lt;CompSig&gt;.25 | id-ML-DSA-44  | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha256 |
 | id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.26 | id-ML-DSA-65 | id-RSASA-PSS with id-sha512 | id-sha512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.27  | id-ML-DSA-65 | sha512WithRSAEncryption | id-sha512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.28  | id-ML-DSA-65 | ecdsa-with-SHA512 with secp256r1 | id-sha512 |
+| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.28  | id-ML-DSA-65 | ecdsa-with-SHA512 with secp384r1 | id-sha512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.29  | id-ML-DSA-65 | ecdsa-with-SHA512 with brainpoolP256r1 | id-sha512 |
 | id-MLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 | id-sha512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.31  | id-ML-DSA-87 | ecdsa-with-SHA512 with secp384r1 | id-sha512|
@@ -645,10 +644,9 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B50080116|
 | id-MLDSA44-Ed25519-SHA512 |060B6086480186FA6B50080117|
 | id-MLDSA44-ECDSA-P256-SHA256 |060B6086480186FA6B50080118|
-| id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 |060B6086480186FA6B50080119|
 | id-MLDSA65-RSA3072-PSS-SHA512 |060B6086480186FA6B5008011A|
 | id-MLDSA65-RSA3072-PKCS15-SHA512 |060B6086480186FA6B5008011B|
-| id-MLDSA65-ECDSA-P256-SHA512 |060B6086480186FA6B5008011C|
+| id-MLDSA65-ECDSA-P384-SHA512 |060B6086480186FA6B5008011C|
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |060B6086480186FA6B5008011D|
 | id-MLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008011E|
 | id-MLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008011F|
@@ -720,10 +718,9 @@ The following table lists the MANDATORY HASH algorithms to preserve security and
 | id-MLDSA44-RSA2048-PKCS15-SHA256    | SHA256 |
 | id-MLDSA44-Ed25519-SHA512             | SHA512 |
 | id-MLDSA44-ECDSA-P256-SHA256         | SHA256 |
-| id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | SHA256 |
 | id-MLDSA65-RSA3072-PSS-SHA512           | SHA512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | SHA512 |
+| id-MLDSA65-ECDSA-P384-SHA512            | SHA512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512 |
 | id-MLDSA65-Ed25519-SHA512              | SHA512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | SHA512|
@@ -830,11 +827,6 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA44-ECDSA-P256-SHA256
   - References: This Document
 
--  id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
-  - Decimal: IANA Assigned
-  - Description:  id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
-  - References: This Document
-
 -  id-MLDSA65-RSA3072-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PSS-SHA512
@@ -845,9 +837,9 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA65-RSA3072-PKCS15-SHA512
   - References: This Document
 
--  id-MLDSA65-ECDSA-P256-SHA512
+-  id-MLDSA65-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-ECDSA-P256-SHA512
+  - Description:  id-MLDSA65-ECDSA-P384-SHA512
   - References: This Document
 
 -  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
@@ -877,16 +869,15 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 <!-- End of IANA Considerations section -->
 
-
 # Security Considerations
+
 
 ## Public Key Algorithm Selection Criteria
 
 The composite algorithm combinations defined in this document were chosen according to the following guidelines:
 
 1. A single RSA combination is provided at a key size of 3072 bits, matched with NIST PQC Level 3 algorithms.
-1. Elliptic curve algorithms are provided with combinations on each of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748] curves. NIST PQC Levels 1 - 3 algorithms are matched with 256-bit curves, while NIST levels 4 - 5 are matched with 384-bit elliptic curves. This provides a balance between matching classical security levels of post-quantum and traditional algorithms, and also selecting elliptic curves which already have wide adoption.
-1. NIST level 1 candidates are provided, matched with 256-bit elliptic curves, intended for constrained use cases.
+1. Elliptic curve algorithms are provided with combinations on each of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748] curves. NIST PQC level 1 candidates are provided, matched with 256-bit elliptic curves, intended for constrained use cases. NIST levels 3 algorithms are matched with NIST 384-bit, brainpool 256-bit and and Ed25519 curves, while NIST level 5 are matched with 384-bit elliptic curves. This provides a balance between matching classical security levels of post-quantum and traditional algorithms, and also selecting elliptic curves which already have wide adoption.
 
 If other combinations are needed, a separate specification should be submitted to the IETF LAMPS working group.  To ease implementation, these specifications are encouraged to follow the construction pattern of the algorithms specified in this document.
 
@@ -952,7 +943,7 @@ This section provides references to the full specification of the algorithms use
 | ----------- | ----------- | ----------- |
 | secp256r1 | iso(1) member-body(2) us(840) ansi-x962(10045) curves(3) prime(1) 7 | [RFC6090] |
 | secp384r1 | iso(1) identified-organization(3) certicom(132) curve(0) 34 | [RFC6090] |
-|  brainpoolP256r1 | iso(1) identified-organization(3) teletrust(36) algorithm(3) signatureAlgorithm(3) ecSign(2) ecStdCurvesAndGeneration(8) ellipticCurve(1) versionOne(1) 7 | [RFC5639] |
+| brainpoolP256r1 | iso(1) identified-organization(3) teletrust(36) algorithm(3) signatureAlgorithm(3) ecSign(2) ecStdCurvesAndGeneration(8) ellipticCurve(1) versionOne(1) 7 | [RFC5639] |
 | brainpoolP384r1 | iso(1) identified-organization(3) teletrust(36) algorithm(3) signatureAlgorithm(3) ecSign(2) ecStdCurvesAndGeneration(8) ellipticCurve(1) versionOne(1) 11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
 
