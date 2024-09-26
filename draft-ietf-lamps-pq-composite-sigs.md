@@ -110,7 +110,7 @@ informative:
   I-D.draft-driscoll-pqt-hybrid-terminology-01:
   I-D.draft-vaira-pquip-pqc-use-cases-00:
   I-D.draft-massimo-lamps-pq-sig-certificates-00:
-  I-D.draft-ietf-lamps-dilithium-certificates-01:
+  I-D.draft-ietf-lamps-dilithium-certificates-04:
   Bindel2017:
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
@@ -153,20 +153,12 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 
 --- middle
 
-# Changes since the -01 version
-* Added a "Use in CMS" section
-* Removed a Falon reference from the ASN.1 document (which was a typo in reference to Falcon)
-* Added SMIME-CAPS into the sa-CompositeSignature definition in the ASN.1 module
-* Fixed nits and other typos
-* Added PSS parameter Salt Lengths
-* Changed the OID concatenation section to Domain Separators for clarity
-* Accepted some edits by José Ignacio Escribano
-* Expanded description for KeyGen algorithm
-* Clarified the Subject Public Key Usage
-* Various editorial changes
 
-## Changes since adoption by the lamps working group
-* Changed prototype version OIDs so that standard ML-DSA may be used with composite instead of the initial public draft version
+## Changes in -03
+
+* ASN.1 Module changes:
+  * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
+  * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
 
 # Introduction {#sec-intro}
 
@@ -439,29 +431,47 @@ In order for signatures to be composed of multiple algorithms, we define encodin
 
 ## pk-CompositeSignature
 
-The following ASN.1 Information Object Class is a template to be used in defining all composite Signature public key types.
+The following ASN.1 structures represent a composite public key combined with an RSA and Elliptic Curve public key, respectively.
 
 ~~~ ASN.1
-pk-CompositeSignature {OBJECT IDENTIFIER:id,
-  FirstPublicKeyType,SecondPublicKeyType}
+RsaCompositeSignaturePublicKey ::= SEQUENCE {
+        firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+        secondPublicKey BIT STRING (CONTAINING RSAPublicKey)
+      }	
+
+EcCompositeSignaturePublicKey ::= SEQUENCE {
+        firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+        secondPublicKey BIT STRING (CONTAINING ECPoint)
+      }	
+
+EdCompositeSignaturePublicKey ::= SEQUENCE {
+        firstPublicKey BIT STRING (ENCODED BY id-raw-key),
+        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+      }
+~~~
+
+`id-raw-key` is defined by this document.
+
+This structure is intentionally generic in the first public key slot since ML-DSA, as defined in {{I-D.ietf-lamps-dilithium-certificates}}, does not define any ASN.1 public key structures. For use with this document, the `firstPublicKey` MUST be the BIT STRING representation of an ML-DSA key as specified in {{I-D.ietf-lamps-dilithium-certificates}}. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm. The public key for Edwards curve DSA component is also encoded as a raw key.
+
+The following ASN.1 Information Object Class is defined to then allow for compact definitions of each composite algorithm.
+
+~~~ ASN.1
+pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY SEQUENCE {
-        firstPublicKey BIT STRING (CONTAINING FirstPublicKeyType),
-        secondPublicKey BIT STRING (CONTAINING SecondPublicKeyType)
-      }
+      KEY PublicKeyType
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
     }
 ~~~
-{: artwork-name="CompositeKeyObject-asn.1-structures"}
 
-As an example, the public key type `pk-MLDSA65-ECDSA-P256-SHA256` is defined as:
+As an example, the public key type `pk-MLDSA44-ECDSA-P256-SHA256` is defined as:
 
 ~~~
-pk-MLDSA65-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA256,
-  OCTET STRING, ECPoint}
+pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
+  EcCompositeSignaturePublicKey}
 ~~~
 
 The full set of key types defined by this specification can be found in the ASN.1 Module in {{sec-asn1-module}}.
@@ -512,13 +522,15 @@ Many protocol specifications will require that the composite public key and comp
 When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
+                                CompositeSignaturePublicKey ENCODED BY der)
 ~~~
 
 When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
+                                CompositeSignaturePublicKey ENCODED BY der)
 ~~~
 
 In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.
@@ -557,16 +569,14 @@ nonRepudiation;
 The ASN.1 algorithm object for a composite signature is:
 
 ~~~ asn.1
-sa-CompositeSignature {
-  OBJECT IDENTIFIER:id,
-    PUBLIC-KEY:publicKeyType }
-    SIGNATURE-ALGORITHM ::= {
-        IDENTIFIER id
-        VALUE CompositeSignatureValue
-        PARAMS ARE absent
-        PUBLIC-KEYS { publicKeyType }
-        SMIME-CAPS { IDENTIFIED BY id }
-    }
+sa-CompositeSignature{OBJECT IDENTIFIER:id,
+   PUBLIC-KEY:publicKeyType }
+      SIGNATURE-ALGORITHM ::=  {
+         IDENTIFIER id
+         VALUE CompositeSignatureValue
+         PARAMS ARE absent
+         PUBLIC-KEYS {publicKeyType}
+      }
 ~~~
 
 The following is an explanation how SIGNATURE-ALGORITHM elements are used
@@ -621,6 +631,8 @@ Signature public key types:
 | id-MLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.24 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | id-sha256 |
 | id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.26 | id-ML-DSA-65 | id-RSASA-PSS with id-sha512 | id-sha512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.27  | id-ML-DSA-65 | sha512WithRSAEncryption | id-sha512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.34 | id-ML-DSA-65 | id-RSASA-PSS with id-sha512 | id-sha512 |
+| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.35  | id-ML-DSA-65 | sha512WithRSAEncryption | id-sha512 |
 | id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.28  | id-ML-DSA-65 | ecdsa-with-SHA512 with secp384r1 | id-sha512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.29  | id-ML-DSA-65 | ecdsa-with-SHA512 with brainpoolP256r1 | id-sha512 |
 | id-MLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 | id-sha512 |
@@ -646,6 +658,8 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA44-ECDSA-P256-SHA256 |060B6086480186FA6B50080118|
 | id-MLDSA65-RSA3072-PSS-SHA512 |060B6086480186FA6B5008011A|
 | id-MLDSA65-RSA3072-PKCS15-SHA512 |060B6086480186FA6B5008011B|
+| id-MLDSA65-RSA4096-PSS-SHA512 |060B6086480186FA6B50080122|
+| id-MLDSA65-RSA4096-PKCS15-SHA512 |060B6086480186FA6B50080123|
 | id-MLDSA65-ECDSA-P384-SHA512 |060B6086480186FA6B5008011C|
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |060B6086480186FA6B5008011D|
 | id-MLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008011E|
@@ -696,6 +710,24 @@ where:
 * `Mask Generation Function (mgf1)` is defined in [RFC8017]
 * `SHA-512` is defined in [RFC6234].
 
+## Notes on id-MLDSA65-RSA4096-PSS-SHA512
+
+The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
+
+As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
+
+| RSA-PSS Parameter          | Value                      |
+| -------------------------- | -------------------------- |
+| Mask Generation Function   | mgf1 |
+| Mask Generation params     | SHA-512                |
+| Message Digest Algorithm   | SHA-512                |
+| Salt Length in bits        | 512                    |
+{: #rsa-pss-params4096 title="RSA-PSS 4096 Parameters"}
+
+where:
+
+* `Mask Generation Function (mgf1)` is defined in [RFC8017]
+* `SHA-512` is defined in [RFC6234].
 
 <!-- End of Composite Signature Algorithm section -->
 
@@ -720,6 +752,8 @@ The following table lists the MANDATORY HASH algorithms to preserve security and
 | id-MLDSA44-ECDSA-P256-SHA256         | SHA256 |
 | id-MLDSA65-RSA3072-PSS-SHA512           | SHA512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | SHA512 |
+| id-MLDSA65-RSA4096-PKCS15-SHA512        | SHA512 |
 | id-MLDSA65-ECDSA-P384-SHA512            | SHA512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512 |
 | id-MLDSA65-Ed25519-SHA512              | SHA512 |
@@ -787,7 +821,7 @@ The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST i
 
 <CODE STARTS>
 
-{::include Composite-Signatures-2023.asn}
+{::include Composite-MLDSA-2024.asn}
 
 <CODE ENDS>
 
@@ -806,6 +840,11 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 -  References: This Document
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
+
+-  id-raw-key
+  - Decimal: IANA Assigned
+  - Description: Designates a public key BIT STRING with no ASN.1 structure.
+  - References: This Document
 
 -  id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
@@ -835,6 +874,16 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 -  id-MLDSA65-RSA3072-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PKCS15-SHA512
+  - References: This Document
+
+-  id-MLDSA65-RSA4096-PSS-SHA512
+  - Decimal: IANA Assigned
+  - Description:  id-MLDSA65-RSA4096-PSS-SHA512
+  - References: This Document
+
+-  id-MLDSA65-RSA4096-PKCS15-SHA512
+  - Decimal: IANA Assigned
+  - Description:  id-MLDSA65-RSA4096-PKCS15-SHA512
   - References: This Document
 
 -  id-MLDSA65-ECDSA-P384-SHA512
@@ -876,7 +925,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 The composite algorithm combinations defined in this document were chosen according to the following guidelines:
 
-1. A single RSA combination is provided at a key size of 3072 bits, matched with NIST PQC Level 3 algorithms.
+1. RSA combinations are provided at a key size of 2048, 3072, and 4096 bits matched with NIST PQC Level 2 and 3 algorithms.
 1. Elliptic curve algorithms are provided with combinations on each of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748] curves. NIST PQC level 1 candidates are provided, matched with 256-bit elliptic curves, intended for constrained use cases. NIST levels 3 algorithms are matched with NIST 384-bit, brainpool 256-bit and and Ed25519 curves, while NIST level 5 are matched with 384-bit elliptic curves. This provides a balance between matching classical security levels of post-quantum and traditional algorithms, and also selecting elliptic curves which already have wide adoption.
 
 If other combinations are needed, a separate specification should be submitted to the IETF LAMPS working group.  To ease implementation, these specifications are encouraged to follow the construction pattern of the algorithms specified in this document.
