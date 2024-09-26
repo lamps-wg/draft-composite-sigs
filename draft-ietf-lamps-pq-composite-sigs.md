@@ -102,7 +102,7 @@ informative:
   RFC8446:
   RFC8551:
   RFC8017:
-  I-D.draft-hale-pquip-hybrid-signature-spectrums-01:
+  I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
   I-D.draft-ounsworth-pq-composite-kem-01:
   I-D.draft-becker-guthrie-noncomposite-hybrid-auth-00:
   I-D.draft-guthrie-ipsecme-ikev2-hybrid-auth-00:
@@ -304,7 +304,7 @@ The key generation functions MUST be executed for both algorithms. Compliant par
 
 ## Signature Generation {#sec-comp-sig-gen}
 
-Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
+Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.ietf-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
 Composite signature generation starts with pre-hashing the message that is concatenated with the Domain separator {{sec-oid-concat}}. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
