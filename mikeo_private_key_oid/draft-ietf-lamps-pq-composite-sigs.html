@@ -1036,7 +1036,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 31 March 2025</td>
+<td class="center">Expires 1 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1049,12 +1049,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-27" class="published">27 September 2024</time>
+<time datetime="2024-09-28" class="published">28 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-31">31 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-01">1 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1104,7 +1104,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1731,7 +1731,7 @@ CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
 <p id="section-5.3-3">Each element is a <code>OneAsymmetricKey</code>` <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span> object for a component private key.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">The parameters field MUST be absent.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <p id="section-5.3-5">The order of the component keys is the same as the order defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.2</a> for the components of CompositeSignaturePublicKey.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3-6">Often, a <code>CompositePrivateKey</code> will be carried within a carrier format such as PKCS#8 which is itself a <code>OneAsymmetricKey</code> structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then a situation arises where we have <code>CompositeKEMPrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey</code> inside another <code>OneAsymmetricKey</code>. On the outer <code>OneAsymmetricKey</code>, the <code>privateKeyAlgorithm</code> field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a>, the privateKey field SHALL contain the CompositeKEMPrivateKey, and the publicKey field MUST NOT be present. The <code>publicKey</code> field of the component <code>OneAsymmetricKey</code>s remain OPTIONAL. The <code>AlgorithmID</code>s to place into the component <code>OneAsymmetricKey</code>s is ambiguous; since <code>OneAsymmetricKey.PrivateKeyAlgorithmIdentifier.AlgorithmID</code> is not optional, parsers MUST place something here and producers MAY either duplicate the composite AlgorithmID into beth components, or MAY place the AlgoritmID of the component algorithm, parsers SHOULD ignore the component private key <code>AlgorithmID</code>s and assume that the private keys are in the same order as specified in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a>.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">Often, a <code>CompositePrivateKey</code> will be carried within a carrier format such as PKCS#8 which is itself a <code>OneAsymmetricKey</code> structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then a situation arises where we have <code>CompositeKEMPrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey</code> inside another <code>OneAsymmetricKey</code>. On the outer <code>OneAsymmetricKey</code>, the <code>privateKeyAlgorithm</code> field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a>, the <code>privateKey</code> field SHALL contain the <code>CompositeKEMPrivateKey</code>, and the <code>publicKey</code> field MUST NOT be present. The <code>publicKey</code> field of the component <code>OneAsymmetricKey</code>s remain OPTIONAL. Which <code>AlgorithmID</code>s to place into the component <code>OneAsymmetricKey</code>s is ambiguous; since <code>OneAsymmetricKey.PrivateKeyAlgorithmIdentifier.AlgorithmID</code> is not optional, producers MUST place something here and MAY either duplicate the composite AlgorithmID into both components, or MAY place the AlgorithmID of the component algorithm. Parsers SHOULD ignore the component private key <code>AlgorithmID</code>s and assume that the private keys are in the same order as specified in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a>.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
 <p id="section-5.3-7">In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.<a href="#section-5.3-7" class="pilcrow">¶</a></p>
 <p id="section-5.3-8">Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.<a href="#section-5.3-8" class="pilcrow">¶</a></p>
 </section>

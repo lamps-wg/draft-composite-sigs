@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 31 March 2025                                           M. Pala
+Expires: 1 April 2025                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       27 September 2024
+                                                       28 September 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 March 2025.
+   This Internet-Draft will expire on 1 April 2025.
 
 Copyright Notice
 
@@ -587,12 +587,12 @@ Signature Verification Procedure::
    Section 7, the privateKey field SHALL contain the
    CompositeKEMPrivateKey, and the publicKey field MUST NOT be present.
    The publicKey field of the component OneAsymmetricKeys remain
-   OPTIONAL.  The AlgorithmIDs to place into the component
+   OPTIONAL.  Which AlgorithmIDs to place into the component
    OneAsymmetricKeys is ambiguous; since
    OneAsymmetricKey.PrivateKeyAlgorithmIdentifier.AlgorithmID is not
-   optional, parsers MUST place something here and producers MAY either
-   duplicate the composite AlgorithmID into beth components, or MAY
-   place the AlgoritmID of the component algorithm, parsers SHOULD
+   optional, producers MUST place something here and MAY either
+   duplicate the composite AlgorithmID into both components, or MAY
+   place the AlgorithmID of the component algorithm.  Parsers SHOULD
    ignore the component private key AlgorithmIDs and assume that the
    private keys are in the same order as specified in Table 2.
 
