@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-26T00:49:14.378436+00:00",
+  "timestamp": "2024-09-29T00:54:18.311594+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -703,7 +703,7 @@
       "labels": [],
       "body": "https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf",
       "createdAt": "2024-07-22T17:19:47Z",
-      "updatedAt": "2024-09-25T15:17:13Z",
+      "updatedAt": "2024-09-26T07:24:35Z",
       "closedAt": null,
       "comments": [
         {
@@ -733,6 +733,13 @@
           "body": "We will define two new RSA 4096 combinations as well",
           "createdAt": "2024-09-25T15:17:11Z",
           "updatedAt": "2024-09-25T15:17:11Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@johngray-dev , do we still need edwards curves?",
+          "createdAt": "2024-09-26T07:24:34Z",
+          "updatedAt": "2024-09-26T07:24:34Z"
         }
       ]
     },
@@ -875,7 +882,7 @@
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator also include an optional context string, similar to the domain separator NIST has defined for the recently published FIPS 204/205 [1]?  The context string would provide a way to \u201cseparate uses of the protocol between different protocols \u2026 and between different uses within the same protocol\u201d (Sec. 8.3 of [2]).  \r\n\r\n> Similarly, if an underlying signature algorithm supports a context string, what value should be given to the context string when the algorithm is used with the composite construction?  If the composite construction is updated to include an optional context string in the domain separator, should the context strings for the underlying algorithm and for the overall construction be the same?  Or should the context string for the underlying algorithm instead somehow indicate the \u201cuse\u201d of the underlying algorithm is \u201cfor signing a composite signature hash value\u201d?\r\n\r\n[2] S. Josefsson, I. Liusvaara.  Edwards-Curve Digital Signature Algorithm (EdDSA).  RFC 8032, January 2017",
       "createdAt": "2024-08-22T16:29:29Z",
-      "updatedAt": "2024-08-22T16:31:56Z",
+      "updatedAt": "2024-09-26T12:03:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -884,6 +891,13 @@
           "body": "Good suggestion. I support having the composite .Sign() accept a context string, and passing it through to underlying component primitives that support a context string (ie ML-DSA).",
           "createdAt": "2024-08-22T16:31:55Z",
           "updatedAt": "2024-08-22T16:31:55Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Duplicate of #42\r\n",
+          "createdAt": "2024-09-26T12:03:17Z",
+          "updatedAt": "2024-09-26T12:03:28Z"
         }
       ]
     },
@@ -899,7 +913,7 @@
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator include an initial byte that identifies the type of domain separator, again similar to NIST\u2019s definition?  For instance, the value 1 could indicate that the message is pre-hashed as currently proposed in draft-ietf-lamps-pq-composite-sigs.  A different value could support another option:  the message is not pre-hashed, but instead is prepended with a domain separator, and then passed to the two signature algorithms.  That option would avoid the need for an additional hashing operation to be specified.  (The domain separator could still include an OID for the combination of the two signature algorithms in order to separate different combinations of algorithms.)\r\n\r\n> If an underlying signature algorithm supports pure and pre-hash modes, which mode should be used with the composite signature construction?  Presumably pure mode when the composite construction includes pre-hashing, because the message will already have been hashed by the time it reaches the underlying signature algorithm, but this should be stated explicitly.\r\n\r\n> In addition to pre-hashing as currently proposed, should there be an option for including a randomizer and/or the signers\u2019 public keys in the input to the pre-hash operation, in addition to the message?  As Joe Harvey observed in comments to NIST earlier this year [3], without such an option, pre-hashing introduces a dependency on collision resistance, whereas the security of the underlying signature algorithm may be based on other security assumptions (e.g., target collision resistance, second preimage resistance).   Moreover, a collision, if found, could potentially be used against multiple users, whereas the underlying signature algorithm may have been designed to provide security in the multi-user model.  (This is not an argument for reducing the size of the hash function output by using randomization, but rather for considering that the use of pre-hashing may change the security assumptions compared to the underlying algorithm, and providing the protocol designer a way to revert to the original assumptions.)\r\n",
       "createdAt": "2024-08-22T16:32:57Z",
-      "updatedAt": "2024-08-22T16:40:26Z",
+      "updatedAt": "2024-09-27T14:09:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -915,6 +929,13 @@
           "body": "I think the point about prefix byte does not apply: since we are already hashing in the OID, and we would presumably define different OIDs for pure and pre-hashed modes, I think that anything you would want to capture in the prefix byte is already captured in the OID.",
           "createdAt": "2024-08-22T16:40:25Z",
           "updatedAt": "2024-08-22T16:40:25Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "As to the title question:\r\n\r\n> should we define pre-hashed modes for composite?\r\n\r\nMy vote is No.",
+          "createdAt": "2024-09-27T14:09:50Z",
+          "updatedAt": "2024-09-27T14:09:50Z"
         }
       ]
     },
@@ -930,7 +951,7 @@
       "labels": [],
       "body": "ML-DSA has a 'context string' as an input; the idea is to allow the capability to bind a signature to a specific context.\r\n\r\nShould we specify that, when we implement ML-DSA within a composite signature, that we have a nonempty context?\r\n\r\nIf the verifier will never accept a signature signed by a specific ML-DSA key except as part of a composite signature, we don't gain anything.  However, it might be a helpful 'belt-and-suspenders' if some application would happen to reuse the ML-DSA public key.\r\n\r\nIf we do have a nonempty context string, what should it be:\r\n- Should it be the OID for the composite (so that the signature can be used only as a part of that specific combination)\r\n- Should it be the hash of the composite public key (so that we're safe even if some fool changes the other components)\r\n\r\nThoughts?",
       "createdAt": "2024-08-28T14:51:26Z",
-      "updatedAt": "2024-09-19T10:03:52Z",
+      "updatedAt": "2024-09-26T12:10:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -953,6 +974,20 @@
           "body": "> Since Composite ML-DSA incorporates the domain separator into a pre-hash, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is left empty.\r\n\r\nI don't agree to that: The way the domain separator is specified, it doesn't prevent signature stripping attacks, but it transforms a signature stripping attack for the message M to one for the message M'. This clearly implies an existential signature forgery, a fundamental weakening of the protocol. If using the context parameter (additionally or as a replacement for the current combiner) we achieve a profound\u207a means of preventing signature stripping attacks at least for those signature schemes that do offer a context parameter \u2013 namely EdDSA and all the new PQC schemes.\r\n\r\n\u207a profound in the sense of not introducing existential signature forgeries",
           "createdAt": "2024-09-19T10:03:51Z",
           "updatedAt": "2024-09-19T10:03:51Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We discussed this in https://github.com/lamps-wg/draft-composite-sigs/issues/42#issuecomment-2374284632\r\nWe will pass the context down to ML-DSA.",
+          "createdAt": "2024-09-26T12:08:54Z",
+          "updatedAt": "2024-09-26T12:08:54Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Duplicate of #42\r\n",
+          "createdAt": "2024-09-26T12:09:21Z",
+          "updatedAt": "2024-09-26T12:10:03Z"
         }
       ]
     },
@@ -1047,7 +1082,7 @@
       "labels": [],
       "body": "See discussion here:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/YFW4hVCZAQiVge2Z1kzAlIcM4U8/\r\n\r\nThe idea is that you may want to bind the actually application context, like \"MS Firmware Sign\" in addition to the composite sig OID. This \r\n\r\nIf we make this change, the composite sign would become:\r\n\r\n```\r\nM' := Domain || Ctx || HASH(Message)\r\n```\r\n\r\nor possibly\r\n\r\n```\r\nM' := Domain || HASH(Ctx || Message)\r\n```\r\n\r\nwhere `Ctx` is external input to the composite Sign(), and defaults to the empty string.\r\n\r\nMy concern with doing things outside the HASH is that this is the pre-hash for RSA / ECDSA, so a very long context string could overflow the RSA / ECDSA \"block\" -- therefore I think any kind of variable-length Ctx needs to be inside the hash.",
       "createdAt": "2024-09-11T15:44:12Z",
-      "updatedAt": "2024-09-25T14:38:19Z",
+      "updatedAt": "2024-09-26T14:52:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -1070,6 +1105,20 @@
           "body": "Composite author's meeting, we decided to do this:\r\n\r\n```\r\nSignature Generation Process:\r\n\r\n   0. IF |ctx| > 255:\r\n      fail\r\n\r\n   1. Compute the new Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the Hash of the Message\r\n\r\n         M' := Domain || HASH(IntegerToBytes(|ctx|, 1) || ctx || Message)\r\n\t \r\n\t where IntegerToBytes(x, alpha) is defined in [FIPS204].\r\n\r\n   2. Generate the 2 component signatures independently, by calculating the signature over M'\r\n      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.\r\n\r\n         S1 := ML-DSA.Sign( K1, A1, M', ctx )\r\n         S2 := Trad.Sign( K2, A2, M' )\r\n\t \r\nNote that the `M'` construction here mirrors exactly the analogous construction within ML-DSA Algorithm 2 [FIPS204].\r\n```\r\n\r\nNote: we need to update Felipe's PR: https://github.com/lamps-wg/draft-composite-sigs/pull/38/files",
           "createdAt": "2024-09-25T14:38:18Z",
           "updatedAt": "2024-09-25T14:38:18Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In https://github.com/lamps-wg/draft-composite-sigs/issues/35#issuecomment-2360558887 Falko pointed out that EdDSA also uses context. Shall we pass it to his algo also ?",
+          "createdAt": "2024-09-26T12:25:53Z",
+          "updatedAt": "2024-09-26T12:25:53Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I was just looking at the ML-DSA draft, and they define the pre-hash as this:\r\n\ud835\udc40 \u2190 BytesToBits(IntegerToBytes(1, 1) \u2225 IntegerToBytes(|\ud835\udc50\ud835\udc61\ud835\udc65|, 1) \u2225 \ud835\udc50\ud835\udc61\ud835\udc65 \u2225 OID \u2225 PH\r\n\r\nWhere OID is equivalent to our Domain, and PH is H (Message)\r\n\r\nSo to align better with what is in pre-hash format of NIST ML-DSA, why don't we re-order to the following:\r\n\r\nM' := Domain || HASH(IntegerToBytes(|ctx|, 1) || ctx || Message)\r\nM' := IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\nThe part that is missing is what Max had pointed out. (BytesToBits(IntegerToBytes(1, 1) )     \r\n\r\nSo I think it makes sense to align to:\r\n\r\nM' :=  BytesToBits(IntegerToBytes(1, 1) ||  IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\n\r\nThis would also align with Bert Kaliski's \"Modes of Operation\" presentation at ICMC.  For example, they are advocating the \"MTL\" mode using something like this:\r\n\r\nM' :=  BytesToBits(IntegerToBytes(129, 1) ||  IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\nSo we could request a different integer value to indicate composite signing, or just use 1 to indicate it is essentially a standard ML-DSA pre-hash\r\n\r\n",
+          "createdAt": "2024-09-26T14:52:18Z",
+          "updatedAt": "2024-09-26T14:52:18Z"
         }
       ]
     },
@@ -1196,6 +1245,22 @@
           "updatedAt": "2024-09-25T15:03:29Z"
         }
       ]
+    },
+    {
+      "number": 55,
+      "id": "I_kwDOL5eEDM6YFUOQ",
+      "title": "PrivateKey section is not explicit about which AlgID OIDs to place in the component OneAsymmetricKeys",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/55",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Relates to #6.\r\n\r\nIf we decide to do the private key compression, then this issue will become moot.",
+      "createdAt": "2024-09-26T21:05:28Z",
+      "updatedAt": "2024-09-26T21:05:28Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1407,7 +1472,7 @@
       "labels": [],
       "body": "Added context string consideration, as defined in #35.",
       "createdAt": "2024-08-29T20:50:57Z",
-      "updatedAt": "2024-09-25T14:38:48Z",
+      "updatedAt": "2024-09-26T12:15:18Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "32d88d9e083ab25bbbe61a8febae922ae9509824",
@@ -1477,7 +1542,7 @@
       "labels": [],
       "body": " Closes #9",
       "createdAt": "2024-09-24T21:44:18Z",
-      "updatedAt": "2024-09-25T18:56:42Z",
+      "updatedAt": "2024-09-26T14:56:23Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "66252f92269a84a03b02c3f00b70911a4698ca70",
@@ -1584,6 +1649,118 @@
           "updatedAt": "2024-09-25T19:18:13Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 52,
+      "id": "PR_kwDOL5eEDM58wVhl",
+      "title": "Update ML-DSA and ECC combinations",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/52",
+      "state": "OPEN",
+      "author": "janklaussner",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- remove ML-DSA-44 brainpool-256 combination\r\n- changed ML-DSA-65 NIST combination from 256 to 384\r\n- updated combinations rational",
+      "createdAt": "2024-09-26T08:00:48Z",
+      "updatedAt": "2024-09-26T18:47:21Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "26-nist-is-suggesting-that-both-pq-l3-+-l5-should-be-paired-with-p-384",
+      "headRefOid": "6950d8e5ae0449c618aaec838d2dce19a5363c84",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@janklaussner  I think you missed updated the ASN.1 module in the file `Composite-MLDSA-2024.asn`.\r\nUPDATE: I have added a commit to this PR that changes the ASN.1 module. Please review for mistakes.",
+          "createdAt": "2024-09-26T18:43:32Z",
+          "updatedAt": "2024-09-26T18:47:21Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 53,
+      "id": "PR_kwDOL5eEDM581cUa",
+      "title": "Removing security consideration section Public Key Algorithm Selectio\u2026",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/53",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\u2026n Criteria because it no longer aligns.",
+      "createdAt": "2024-09-26T18:41:37Z",
+      "updatedAt": "2024-09-26T18:41:37Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_selection_criteria",
+      "headRefOid": "5006b22378e9168f47f07e0829b7896ce927956d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 54,
+      "id": "PR_kwDOL5eEDM581oI0",
+      "title": "Added a security consideration about key reuse",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/54",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #49 \r\nCloses #46\r\n\r\nRelated to, but does not fully address #27 ",
+      "createdAt": "2024-09-26T19:11:34Z",
+      "updatedAt": "2024-09-26T19:13:52Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_key_reuse",
+      "headRefOid": "bffeb1101550c6f2b9350591ecce24b1750db1d4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 56,
+      "id": "PR_kwDOL5eEDM587uXQ",
+      "title": "Clarified AlgIDs for component private keys.",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/56",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #55",
+      "createdAt": "2024-09-27T14:51:44Z",
+      "updatedAt": "2024-09-28T15:18:41Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_private_key_oid",
+      "headRefOid": "34e828882f1c2f8345eeba542cabf7418a27c1e1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
