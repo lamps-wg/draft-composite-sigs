@@ -953,13 +953,11 @@ As noted in the composite signature generation process and composite signature v
 
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
 
-### Non-separability {#sec-cons-non-separability}
+### Non-separability and EUF-CMA {#sec-cons-non-separability}
 
-TODO: need a discussion of stripping attacks and non-separability {{I-D.ietf-pquip-hybrid-signature-spectrums}}. Then we need a discussion of the signature combiner, the level of non-separability that it provides, and the fact that it fails to provide EUF-CMA. Some starter text:
+The signature combiner defined in this document achieves both Weak Non-Separability and Strong Non-Separability as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}. Consider a composite signature, message pair `(\sigma, M)` which is actually `((\sigma1, \sigma2), M)`. Weak Non-Separability is trivially obtained since evidence of the hybrid is left behind since the pair `(\sigma1, M)` will not verify under the first component key, but rather only `(\sigma2, Domain || M)` which binds the domain separator of the composite algorithm that was used. By the same logic, Strong Non-Separability, and therefore Existential Existential Unforgeability under Chosen Message Attack (EUF-CMA) for the composite signature algorithm as a whole, is obtained for all but one message: `Domain || M` which will validate under the component algorithms. Strong Non-Separability and EUF-CMA is restored if we consider policy mechanisms enforced by the verifier. Within protocols that use X.509 certificates, the certificate will dictate that the signature is associated with a composite public key, and so barring key reuse (discussed in {{sec-cons-key-reuse}}), this provides the necessary binding for both Strong Non-Separabality and EUF-CMA security.
 
-The hybrid signature combiner used in this document attempts to provide non-separability by binding a domain separator value that is unique to the composite algorithm into the message being signed, however this fails to achieve Existential Unforgeability under Chosen Message Attack (EUF-CMA) because the domain-separated value itself appears as a valid message signed by the component alg.
 
-TODO: finish me!
 
 ### Key Reuse {#sec-cons-key-reuse}
 
