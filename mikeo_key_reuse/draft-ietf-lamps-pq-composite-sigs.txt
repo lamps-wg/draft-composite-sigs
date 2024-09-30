@@ -1647,17 +1647,19 @@ Signature Verification Procedure::
    evidence of the hybrid is left behind since the pair (\sigma1, M)
    will not verify under the first component key, but rather only
    (\sigma2, Domain || M) which binds the domain separator of the
-   composite algorithm that was used.  By the same logic, Strong Non-
-   Separability, and therefore Existential Existential Unforgeability
-   under Chosen Message Attack (EUF-CMA) for the composite signature
-   algorithm as a whole, is obtained for all but one message: Domain ||
-   M which will validate under the component algorithms.  Strong Non-
-   Separability and EUF-CMA is restored if we consider policy mechanisms
-   enforced by the verifier.  Within protocols that use X.509
-   certificates, the certificate will dictate that the signature is
-   associated with a composite public key, and so barring key reuse
-   (discussed in Section 11.2.2), this provides the necessary binding
-   for both Strong Non-Separabality and EUF-CMA security.
+   composite algorithm that was used.
+
+   Existential Unforgeability under a Chosen Message Attack (EUF-CMA)
+   for the composite signature algorithm as a whole, is conditioned on
+   the algorithm identifier being per specification used as defined,
+   namely that Domain || M is the expected format that the verification
+   algorithm will check to validate under the component algorithms.
+   Thus there is a policy mechanism enforced by the verifier.  Within
+   protocols that use X.509 certificates, the certificate will dictate
+   that the signature is associated with a composite public key, and so
+   barring key reuse (discussed in Section 11.2.2), this provides the
+   necessary binding for both Weak Non-Separabality and EUF-CMA
+   security.
 
 11.2.2.  Key Reuse
 
@@ -1665,23 +1667,24 @@ Signature Verification Procedure::
    always generate fresh key material for each purpose, for example when
    renewing a certificate, or obtaining both a TLS and S/MIME
    certificate for the same device, however in practice key reuse in
-   such scenarios is often not catestrophic to security and therefore
-   often tolerated.  With composite keys we have a much stricter
-   security requirement.  However this reasoning does not hold in the PQ
-   / Tradational hybrid setting.
+   such scenarios is not always catastrophic to security and therefore
+   often tolerated, despite cross-protocol attacks having been shown.
+   (citation needed here)
 
    Within the broader context of PQ / Traditional hybrids, we need to
    consider new attack surfaces that arise due to the hybrid
-   constructions and did not exist in sigle-algorithm contexts.  One of
+   constructions and did not exist in single-algorithm contexts.  One of
    these is key reuse where the component keys within a hybrid are also
    used by themselves within a single-algorithm context.  For example,
-   it might be tempting for an operator to take already-deployed RSA
-   keys and add an ML-DSA key to them to form a hybrid.  Within a hybrid
-   signature context this leads to a class of attacks referred to as
-   "stripping attacks" discussed in Section 11.2.1.  Despite the non-
-   separability properties offered by the composite signature combiner,
-   it is still RECOMMENDED to avoid key reuse as this further
-   strengthens the non-separability properties.
+   it might be tempting for an operator to take an already-deployed RSA
+   key pair and combine it with an ML-DSA key pair to form a hybrid key
+   pair for use in a hybrid algorithm.  Within a hybrid signature
+   context this leads to a class of attacks referred to as "stripping
+   attacks" discussed in Section 11.2.1 and may also open up risks from
+   further cross-protocol attacks.  Despite the weak non-separability
+   property offered by the composite signature combiner, it is still
+   RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
+   cases could introduce EUF-CMA vulnerabilities.
 
    In adition, there is a further implication to key reuse regarding
    certificate revocation.  Upon receiving a new certificate enrollment
@@ -1690,12 +1693,11 @@ Signature Verification Procedure::
    a CA will perform this check by using the public key hash.
    Therefore, even if both components of a composite have been
    previously revoked, the CA may only check the hash of the combined
-   composite key and not find the revocations.  Therefore, even though
-   the risk of key reuse is lower for composite KEMs compared with
-   composite signatures, it is still RECOMMENDED to avoid key reuse and
-   always generate fresh component keys for a new composite.  It is also
-   RECOMMENDED that CAs performang revocation checks on a composite key
-   should also check both component keys indpedently.
+   composite key and not find the revocations.  Therefore, it is
+   RECOMMENDED to avoid key reuse and always generate fresh component
+   keys for a new composite.  It is also RECOMMENDED that CAs performing
+   revocation checks on a composite key should also check both component
+   keys independently.
 
 11.3.  Policy for Deprecated and Acceptable Algorithms
 
