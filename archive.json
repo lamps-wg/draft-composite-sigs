@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-29T00:54:18.311594+00:00",
+  "timestamp": "2024-10-01T00:55:02.054519+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -913,7 +913,7 @@
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator include an initial byte that identifies the type of domain separator, again similar to NIST\u2019s definition?  For instance, the value 1 could indicate that the message is pre-hashed as currently proposed in draft-ietf-lamps-pq-composite-sigs.  A different value could support another option:  the message is not pre-hashed, but instead is prepended with a domain separator, and then passed to the two signature algorithms.  That option would avoid the need for an additional hashing operation to be specified.  (The domain separator could still include an OID for the combination of the two signature algorithms in order to separate different combinations of algorithms.)\r\n\r\n> If an underlying signature algorithm supports pure and pre-hash modes, which mode should be used with the composite signature construction?  Presumably pure mode when the composite construction includes pre-hashing, because the message will already have been hashed by the time it reaches the underlying signature algorithm, but this should be stated explicitly.\r\n\r\n> In addition to pre-hashing as currently proposed, should there be an option for including a randomizer and/or the signers\u2019 public keys in the input to the pre-hash operation, in addition to the message?  As Joe Harvey observed in comments to NIST earlier this year [3], without such an option, pre-hashing introduces a dependency on collision resistance, whereas the security of the underlying signature algorithm may be based on other security assumptions (e.g., target collision resistance, second preimage resistance).   Moreover, a collision, if found, could potentially be used against multiple users, whereas the underlying signature algorithm may have been designed to provide security in the multi-user model.  (This is not an argument for reducing the size of the hash function output by using randomization, but rather for considering that the use of pre-hashing may change the security assumptions compared to the underlying algorithm, and providing the protocol designer a way to revert to the original assumptions.)\r\n",
       "createdAt": "2024-08-22T16:32:57Z",
-      "updatedAt": "2024-09-27T14:09:52Z",
+      "updatedAt": "2024-09-30T12:30:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -936,6 +936,13 @@
           "body": "As to the title question:\r\n\r\n> should we define pre-hashed modes for composite?\r\n\r\nMy vote is No.",
           "createdAt": "2024-09-27T14:09:50Z",
           "updatedAt": "2024-09-27T14:09:50Z"
+        },
+        {
+          "author": "PiotrPopis",
+          "authorAssociation": "NONE",
+          "body": "Initially I was in favor of defining pre-hash in [composite-sign] but now I also agree with Mike that we should not define pre-hash mode in composite sign. This would only increase the number of possibilities, which is not in line with the idea of \u200b\u200binteroperability and increases the implementation effort.\r\n\r\nThe current version of [composite-sign] uses the term \"pre-hash\" in several places, which is confusing in the context of FIPS 204. I therefore suggest that in [composite-sign] the wording \"internal-layer hash\" be used instead of \"pre-hash\". @ounsworth: if there is agreement to change the wording, I will prepare a specific proposal.\r\n\r\nRegardless of the decision to change or keep the \"pre-hash\" language, I suggest adding the following text at the end of Section 3.1:\r\n(precisely: very similar wording, taking into account the location of ctx, i.e. consistent with the entire content of the new Section 3.1)\r\n(...)\r\nIt should be noted that in the case of ML-DSA the calculated Hash over the original message is an \"internal-layer Hash\" and is different from the HASHML-DSA version specified in FIPS 204. This means that according to this specification the signature over the concatenated: selected signature scheme and calculated Hash over the original message is implemented in the case of the PQ algorithm using the PURE version of ML-DSA.\r\n\r\n",
+          "createdAt": "2024-09-30T12:30:09Z",
+          "updatedAt": "2024-09-30T12:30:09Z"
         }
       ]
     },
@@ -1723,19 +1730,248 @@
       "labels": [],
       "body": "Closes #49 \r\nCloses #46\r\n\r\nRelated to, but does not fully address #27 ",
       "createdAt": "2024-09-26T19:11:34Z",
-      "updatedAt": "2024-09-26T19:13:52Z",
+      "updatedAt": "2024-09-30T21:50:17Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_key_reuse",
-      "headRefOid": "bffeb1101550c6f2b9350591ecce24b1750db1d4",
+      "headRefOid": "de589b77f7a8139e157f0ebe4a5bec9bfa2fb597",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Closes #27 ",
+          "createdAt": "2024-09-30T15:54:22Z",
+          "updatedAt": "2024-09-30T15:54:22Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6LW7Xf",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T16:21:44Z",
+          "updatedAt": "2024-09-30T16:21:44Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "The draft does not provide SNS though. I recommend the following change:\r\n\r\nThe signature combiner defined in this document achieves both Weak Non-Separability and Strong Non-Separability as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}. Consider a composite signature, message pair `(\\sigma, M)` which is actually `((\\sigma1, \\sigma2), M)`. Weak Non-Separability is trivially obtained since evidence of the hybrid is left behind since the pair `(\\sigma1, M)` will not verify under the first component key, but rather only `(\\sigma2, Domain || M)` which binds the domain separator of the composite algorithm that was used. \r\n\r\nExistential Unforgeability under a Chosen Message Attack (EUF-CMA) for the composite signature algorithm as a whole, is conditioned on the algorithm identifier being per specification used as defined, namely that `Domain || M` is the expected format that the verification algorithm will check to validate under the component algorithms. Thus there is a policy mechanism enforced by the verifier. Within protocols that use X.509 certificates, the certificate will dictate that the signature is associated with a composite public key, and so barring key reuse (discussed in {{sec-cons-key-reuse}}), this provides the necessary binding for both Weak Non-Separabality and EUF-CMA security.",
+              "createdAt": "2024-09-30T16:21:44Z",
+              "updatedAt": "2024-09-30T16:21:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LW9lc",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T16:26:22Z",
+          "updatedAt": "2024-09-30T16:26:22Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Typo: catastrophic \r\n\r\nRecommended edit: When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown.  (suggested citation here)",
+              "createdAt": "2024-09-30T16:26:22Z",
+              "updatedAt": "2024-09-30T16:26:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LW-G-",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T16:27:28Z",
+          "updatedAt": "2024-09-30T16:27:28Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "Also recommended to remove the following:\r\n\r\nWith composite keys we have a much stricter security requirement. However this reasoning does not hold in the PQ / Tradational hybrid setting.",
+              "createdAt": "2024-09-30T16:27:28Z",
+              "updatedAt": "2024-09-30T16:27:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LXAVJ",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T16:32:18Z",
+          "updatedAt": "2024-09-30T16:32:18Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Typo: sigle-algorithm -> single-algorithm\r\n\r\nRecommended edit: \r\nFor example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as \"stripping attacks\" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.  ",
+              "createdAt": "2024-09-30T16:32:18Z",
+              "updatedAt": "2024-09-30T16:32:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LXBJQ",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "br-hale",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T16:34:07Z",
+          "updatedAt": "2024-09-30T16:34:07Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "Recommended edit to remove clause (and fix typos):\r\n\r\nTherefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.",
+              "createdAt": "2024-09-30T16:34:07Z",
+              "updatedAt": "2024-09-30T16:34:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LYrHR",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T20:26:15Z",
+          "updatedAt": "2024-09-30T20:26:15Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "Could you please explain why this draft doesn't provide SNS? That was the whole reason we added the domain separator. Is it not true that it provides \"SNS except for the one pair (\\sigma1, Domain || M) ?",
+              "createdAt": "2024-09-30T20:26:15Z",
+              "updatedAt": "2024-09-30T20:26:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LYrZC",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T20:26:57Z",
+          "updatedAt": "2024-09-30T20:26:57Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "I grabbed your updated paragraph.",
+              "createdAt": "2024-09-30T20:26:57Z",
+              "updatedAt": "2024-09-30T20:26:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LYr1q",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T20:28:08Z",
+          "updatedAt": "2024-09-30T20:28:08Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "I grabbed your updated paragraph.\r\n\r\nDo you have a citation in mind? Some fishing around on Google Scholar, this looks close, but probably not an exact hit for this sentence:\r\n\r\nhttps://www.usenix.org/conference/usenixsecurity19/presentation/muller",
+              "createdAt": "2024-09-30T20:28:08Z",
+              "updatedAt": "2024-09-30T20:28:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LYs0O",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T20:30:36Z",
+          "updatedAt": "2024-09-30T20:30:37Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "Thanks.",
+              "createdAt": "2024-09-30T20:30:37Z",
+              "updatedAt": "2024-09-30T20:30:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LYtQL",
+          "commit": {
+            "abbreviatedOid": "53cd54a"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T20:31:42Z",
+          "updatedAt": "2024-09-30T20:31:42Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "Thanks.",
+              "createdAt": "2024-09-30T20:31:42Z",
+              "updatedAt": "2024-09-30T20:31:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6LZPjR",
+          "commit": {
+            "abbreviatedOid": "de589b7"
+          },
+          "author": "dconnolly",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-30T21:50:17Z",
+          "updatedAt": "2024-09-30T21:50:17Z",
+          "comments": [
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\nWithin the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid signature construction. Within a hybrid signature context this leads to a class of attacks referred to as \"stripping attacks\" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.\r\n```",
+              "createdAt": "2024-09-30T21:50:17Z",
+              "updatedAt": "2024-09-30T21:50:17Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 56,
