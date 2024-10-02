@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 29 March 2025                                           M. Pala
+Expires: 5 April 2025                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       25 September 2024
+                                                          2 October 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 March 2025.
+   This Internet-Draft will expire on 5 April 2025.
 
 Copyright Notice
 
@@ -749,9 +749,6 @@ Signature Verification Procedure::
    |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.24|id-ML-     |ecdsa-with-SHA256 with |id-   |
    |                             |            |DSA-44     |secp256r1              |sha256|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA44-ECDSA-            |<CompSig>.25|id-ML-     |ecdsa-with-SHA256 with |id-   |
-   |brainpoolP256r1-SHA256       |            |DSA-44     |brainpoolP256r1        |sha256|
-   +-----------------------------+------------+-----------+-----------------------+------+
    |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.26|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                             |            |DSA-65     |sha512                 |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
@@ -764,8 +761,8 @@ Signature Verification Procedure::
    |id-                          |<CompSig>.35|id-ML-     |sha512WithRSAEncryption|id-   |
    |MLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
-   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.28|id-ML-     |ecdsa-with-SHA512 with |id-   |
-   |                             |            |DSA-65     |secp256r1              |sha512|
+   |id-MLDSA65-ECDSA-P384-SHA512 |<CompSig>.28|id-ML-     |ecdsa-with-SHA512 with |id-   |
+   |                             |            |DSA-65     |secp384r1              |sha512|
    +-----------------------------+------------+-----------+-----------------------+------+
    |id-MLDSA65-ECDSA-            |<CompSig>.29|id-ML-     |ecdsa-with-SHA512 with |id-   |
    |brainpoolP256r1-SHA512       |            |DSA-65     |brainpoolP256r1        |sha512|
@@ -812,8 +809,6 @@ Signature Verification Procedure::
    +---------------------------------------+--------------------------+
    |id-MLDSA44-ECDSA-P256-SHA256           |060B6086480186FA6B50080118|
    +---------------------------------------+--------------------------+
-   |id-MLDSA44-ECDSA-brainpoolP256r1-SHA256|060B6086480186FA6B50080119|
-   +---------------------------------------+--------------------------+
    |id-MLDSA65-RSA3072-PSS-SHA512          |060B6086480186FA6B5008011A|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-RSA3072-PKCS15-SHA512       |060B6086480186FA6B5008011B|
@@ -822,7 +817,7 @@ Signature Verification Procedure::
    +---------------------------------------+--------------------------+
    |id-MLDSA65-RSA4096-PKCS15-SHA512       |060B6086480186FA6B50080123|
    +---------------------------------------+--------------------------+
-   |id-MLDSA65-ECDSA-P256-SHA512           |060B6086480186FA6B5008011C|
+   |id-MLDSA65-ECDSA-P384-SHA512           |060B6086480186FA6B5008011C|
    +---------------------------------------+--------------------------+
    |id-MLDSA65-ECDSA-brainpoolP256r1-SHA512|060B6086480186FA6B5008011D|
    +---------------------------------------+--------------------------+
@@ -959,8 +954,6 @@ Signature Verification Procedure::
          +-----------------------------------------+-------------+
          | id-MLDSA44-ECDSA-P256-SHA256            | SHA256      |
          +-----------------------------------------+-------------+
-         | id-MLDSA44-ECDSA-brainpoolP256r1-SHA256 | SHA256      |
-         +-----------------------------------------+-------------+
          | id-MLDSA65-RSA3072-PSS-SHA512           | SHA512      |
          +-----------------------------------------+-------------+
          | id-MLDSA65-RSA3072-PKCS15-SHA512        | SHA512      |
@@ -969,7 +962,7 @@ Signature Verification Procedure::
          +-----------------------------------------+-------------+
          | id-MLDSA65-RSA4096-PKCS15-SHA512        | SHA512      |
          +-----------------------------------------+-------------+
-         | id-MLDSA65-ECDSA-P256-SHA512            | SHA512      |
+         | id-MLDSA65-ECDSA-P384-SHA512            | SHA512      |
          +-----------------------------------------+-------------+
          | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512      |
          +-----------------------------------------+-------------+
@@ -1328,18 +1321,18 @@ Signature Verification Procedure::
           pk-MLDSA65-RSA4096-PKCS15-SHA512 }
 
    -- TODO: OID to be replaced by IANA
-   id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
+   id-MLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
       entrust(114027) algorithm(80) composite(8) signature(1) 28 }
 
-   pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512,
+   pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512,
      EcCompositeSignaturePublicKey}
 
    sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
-          id-MLDSA65-ECDSA-P256-SHA512,
-          pk-MLDSA65-ECDSA-P256-SHA512 }
+          id-MLDSA65-ECDSA-P384-SHA512,
+          pk-MLDSA65-ECDSA-P384-SHA512 }
 
 
    -- TODO: OID to be replaced by IANA
@@ -1485,14 +1478,6 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-   *  id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
-
-   *  Decimal: IANA Assigned
-
-   *  Description: id-MLDSA44-ECDSA-brainpoolP256r1-SHA256
-
-   *  References: This Document
-
    *  id-MLDSA65-RSA3072-PSS-SHA512
 
    *  Decimal: IANA Assigned
@@ -1525,11 +1510,11 @@ Signature Verification Procedure::
 
    *  References: This Document
 
-   *  id-MLDSA65-ECDSA-P256-SHA512
+   *  id-MLDSA65-ECDSA-P384-SHA512
 
    *  Decimal: IANA Assigned
 
-   *  Description: id-MLDSA65-ECDSA-P256-SHA512
+   *  Description: id-MLDSA65-ECDSA-P384-SHA512
 
    *  References: This Document
 
@@ -1585,15 +1570,14 @@ Signature Verification Procedure::
 
    2.  Elliptic curve algorithms are provided with combinations on each
        of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748]
-       curves.  NIST PQC Levels 1 - 3 algorithms are matched with
-       256-bit curves, while NIST levels 4 - 5 are matched with 384-bit
-       elliptic curves.  This provides a balance between matching
-       classical security levels of post-quantum and traditional
-       algorithms, and also selecting elliptic curves which already have
-       wide adoption.
-
-   3.  NIST level 1 candidates are provided, matched with 256-bit
-       elliptic curves, intended for constrained use cases.
+       curves.  NIST PQC level 1 candidates are provided, matched with
+       256-bit elliptic curves, intended for constrained use cases.
+       NIST levels 3 algorithms are matched with NIST 384-bit, brainpool
+       256-bit and and Ed25519 curves, while NIST level 5 are matched
+       with 384-bit elliptic curves.  This provides a balance between
+       matching classical security levels of post-quantum and
+       traditional algorithms, and also selecting elliptic curves which
+       already have wide adoption.
 
    If other combinations are needed, a separate specification should be
    submitted to the IETF LAMPS working group.  To ease implementation,
