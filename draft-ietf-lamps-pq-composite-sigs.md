@@ -102,7 +102,7 @@ informative:
   RFC8446:
   RFC8551:
   RFC8017:
-  I-D.draft-hale-pquip-hybrid-signature-spectrums-01:
+  I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
   I-D.draft-ounsworth-pq-composite-kem-01:
   I-D.draft-becker-guthrie-noncomposite-hybrid-auth-00:
   I-D.draft-guthrie-ipsecme-ikev2-hybrid-auth-00:
@@ -304,7 +304,7 @@ The key generation functions MUST be executed for both algorithms. Compliant par
 
 ## Signature Generation {#sec-comp-sig-gen}
 
-Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
+Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.ietf-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
 Composite signature generation starts with pre-hashing the message that is concatenated with the Domain separator {{sec-oid-concat}}. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
@@ -943,6 +943,22 @@ As noted in the composite signature generation process and composite signature v
 1. Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is used to pre-hash the message when Ed25519 is a component algorithm.
 
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
+
+### Non-separability and EUF-CMA {#sec-cons-non-separability}
+
+The signature combiner defined in this document achieves both Weak Non-Separability and Strong Non-Separability as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}. Consider a composite signature, message pair `(\sigma, M)` which is actually `((\sigma1, \sigma2), M)`. Weak Non-Separability is trivially obtained since evidence of the hybrid is left behind since the pair `(\sigma1, M)` will not verify under the first component key, but rather only `(\sigma2, Domain || M)` which binds the domain separator of the composite algorithm that was used.
+
+Existential Unforgeability under a Chosen Message Attack (EUF-CMA) for the composite signature algorithm as a whole, is conditioned on the algorithm identifier being per specification used as defined, namely that `Domain || M` is the expected format that the verification algorithm will check to validate under the component algorithms. Thus there is a policy mechanism enforced by the verifier. Within protocols that use X.509 certificates, the certificate will dictate that the signature is associated with a composite public key, and so barring key reuse (discussed in {{sec-cons-key-reuse}}), this provides the necessary binding for both Weak Non-Separabality and EUF-CMA security.
+
+
+
+### Key Reuse {#sec-cons-key-reuse}
+
+When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)
+
+Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.
+
+In adition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.
 
 
 ## Policy for Deprecated and Acceptable Algorithms
