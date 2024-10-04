@@ -351,7 +351,7 @@ Signature Generation Process:
 
    1. If ctx > 255:
         fail
-   
+
    2. Compute the Message format M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of ctx, the value ctx and the M
 
          M' := Domain || len(ctx) || ctx || M
