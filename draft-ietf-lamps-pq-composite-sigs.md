@@ -459,7 +459,7 @@ The following process is used to generate composite signature values.
 
 ### HASHComposite-ML-DSA-Sign signature mode:
 
-In the pre-hash mode the Domain separator {{sec-oid-concat}} is concatendated with the length of the context in byte, the context, an additional DER encoded value that represents the Hash and finally the Hash of the message. 
+In the pre-hash mode the Domain separator {{sec-oid-concat}} is concatendated with the length of the context in byte, the context, an additional DER encoded value that represents the Hash and finally the Hash of the message.
 
 ~~~
 HashComposite-ML-DSA-Sign (sk, M, ctx, PH) -> (signature)
