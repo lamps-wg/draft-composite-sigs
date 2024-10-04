@@ -376,7 +376,7 @@ Since Composite ML-DSA incorporates the domain separator, which serves theh same
 
         return signature
 ~~~
-{: #alg-composite-sign title="Composite-ML-DSA-Sign(sk, M, ctx)"}
+{: # title="Composite-ML-DSA-Sign(sk, M, ctx)"}
 
 It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
@@ -515,7 +515,7 @@ Since HashComposite ML-DSA incorporates the domain separator, which serves theh 
 
         return signature
 ~~~
-{: #alg-composite-sign title="HashComposite-ML-DSA-Sign(sk, M, ctx, PH)"}
+{: #alg-hash-composite-sign title="HashComposite-ML-DSA-Sign(sk, M, ctx, PH)"}
 
 It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
@@ -590,7 +590,7 @@ Signature Verification Procedure::
        if all succeeded, then
         output "Valid signature"
 ~~~
-{: #alg-composite-verify title="Hash-Composite-ML-DSA-Verify(pk, M, signature, ctx, PH)"}
+{: #alg-hash-composite-verify title="Hash-Composite-ML-DSA-Verify(pk, M, signature, ctx, PH)"}
 
 It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
