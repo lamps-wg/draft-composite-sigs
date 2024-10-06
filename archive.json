@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-03T00:49:59.972591+00:00",
+  "timestamp": "2024-10-06T00:53:57.028322+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1486,13 +1486,13 @@
       "labels": [],
       "body": "Added context string consideration, as defined in #35.",
       "createdAt": "2024-08-29T20:50:57Z",
-      "updatedAt": "2024-10-02T06:13:39Z",
+      "updatedAt": "2024-10-04T22:50:30Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "32d88d9e083ab25bbbe61a8febae922ae9509824",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "issue-35",
-      "headRefOid": "ec2fc46b5c9f7d58e4491e09faf4a67508ca9fb7",
+      "headRefOid": "6351668a8d9cd1acea2e814915a25ed0ee862462",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
