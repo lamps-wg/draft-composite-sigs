@@ -1002,6 +1002,65 @@ This section provides references to the full specification of the algorithms use
 | id-sha512 | joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3) nistAlgorithms(4) hashAlgs(2) 3 | [RFC6234] |
 {: #tab-component-hash title="Hash algorithms used in Composite Constructions"}
 
+# Subject Public Key Info
+
+In order to ease implementing Composite Signatures this section specifies the Subject Public Key Info for each component algorithm referenced in composite constructions. They are also provided as copy and paste DER format to avoid any ambiguity.
+
+## ML-DSA-44
+
+SPKI & Signature Algorithm Identifier:
+
+SEQUENCE {
+  OBJECT IDENTIFIER id-ML-DSA-44 (1 3 6 1 4 1 2 267 12 6 4)
+  }
+  
+
+30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
+
+## RSA PSS 3072 & 4096
+
+SPKI & Signature Algorithm Identifier:
+
+signatureAlgorithm AlgorithmIdentifier SEQUENCE {
+  algorithm OBJECT_IDENTIFIER rsaPSS(1.2.840.113549.1.1.10)
+  parameters ANY SEQUENCE {
+    [0] SEQUENCE {
+        OBJECT_IDENTIFIER sha-512(2.16.840.1.101.3.4.2.3)
+        NULL
+    [1] SEQUENCE {
+        OBJECT_IDENTIFIER pkcs1-MGF(1.2.840.113549.1.1.8)
+        SEQUENCE {
+          OBJECT_IDENTIFIER sha-512(2.16.840.1.101.3.4.2.3)
+          NULL
+		  }
+		}
+    [2] INTEGER (64)
+    }
+  }
+
+30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
+
+## EC Brainpool-256
+
+SPKI Algorithm Identifier:
+
+algorithm AlgorithmIdentifier SEQUENCE {
+  algorithm OBJECT_IDENTIFIER ecPublicKey (1.2.840.10045.2.1)
+  parameters ANY OBJECT_IDENTIFIER brainpoolP256r1(1.3.36.3.3.2.8.1.1.7)
+  }
+  
+30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
+
+Signature Algorithm Identifier:
+
+signatureAlgorithm AlgorithmIdentifier SEQUENCE {
+  algorithm OBJECT_IDENTIFIER ecdsaWithSHA256(1.2.840.10045.4.3.2)
+  }
+  
+30 0A 06 08 2A 86 48 CE 3D 04 03 02
+
+## ...
+
 # Samples {#appdx-samples}
 
 ## Explicit Composite Signature Examples {#appdx-expComposite-examples}
