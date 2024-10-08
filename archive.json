@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-06T00:53:57.028322+00:00",
+  "timestamp": "2024-10-08T00:49:45.322573+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1486,13 +1486,13 @@
       "labels": [],
       "body": "Added context string consideration, as defined in #35.",
       "createdAt": "2024-08-29T20:50:57Z",
-      "updatedAt": "2024-10-04T22:50:30Z",
+      "updatedAt": "2024-10-06T09:21:19Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "32d88d9e083ab25bbbe61a8febae922ae9509824",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "issue-35",
-      "headRefOid": "6351668a8d9cd1acea2e814915a25ed0ee862462",
+      "headRefOid": "561e6d791854c05ff9d054e2de36830c5f2fb8c0",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -1506,7 +1506,34 @@
           "updatedAt": "2024-09-25T14:38:47Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6MGYXR",
+          "commit": {
+            "abbreviatedOid": "6351668"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2024-10-06T08:40:28Z",
+          "updatedAt": "2024-10-06T09:21:19Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "Where does this IF statement come from? I don't see an equivalent in FIPS 204 in either Algorithm 2 or Algorithm 7. I appreciate the attempt at error-handling, but I'm not sure that this notation really works because FIPS 204 talks about returning an error or \"\u22a5\", but does not talk about returning NULL. I will replace this with an English sentence about error handling.",
+              "createdAt": "2024-10-06T08:40:28Z",
+              "updatedAt": "2024-10-06T09:21:19Z"
+            },
+            {
+              "originalPosition": 173,
+              "body": "Which \"section on pre-hashing the message\" is this referring to? I don't see one.",
+              "createdAt": "2024-10-06T09:18:32Z",
+              "updatedAt": "2024-10-06T09:21:19Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 41,
