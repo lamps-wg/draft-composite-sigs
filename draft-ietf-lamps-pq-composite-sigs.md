@@ -482,7 +482,7 @@ In the pre-hash mode the Domain separator {{sec-oid-concat}} is concatendated wi
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
 
 Explicit Input:
-     sk                 Composite private key conisting of signing private keys for each component.
+     sk                 Composite private key consisting of signing private keys for each component.
 
      M                  The Message to be signed, an octet string
 
@@ -511,11 +511,18 @@ Output:
 
 Signature Generation Process:
 
-   1. Compute the Message format M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of the context, the Context, the HashOID and the Hash of the Message.
+   1. If |ctx| > 255:
+        return error
+
+   2. Compute the Message format M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of the context, the Context, the HashOID and the Hash of the Message.
 
          M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
 
-   2. Generate the 2 component signatures independently, by calculating the signature over M'
+   3. Separate the private key into componet keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
+
+         (sk1, sk2) := Unmarshal(sk)
+
+   4. Generate the 2 component signatures independently, by calculating the signature over M'
       according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
 
          s1 := ML-DSA.Sign( sk1, M', ctx ="" )
@@ -523,12 +530,12 @@ Signature Generation Process:
 
       Since HashComposite ML-DSA incorporates the domain separator, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is the empty string.
 
-   3. Encode each component signature S1 and S2 into a BIT STRING
+   5. Encode each component signature S1 and S2 into a BIT STRING
       according to its algorithm specification.
 
           signature := Sequence { s1, s2 }
 
-   4. Output signature
+   6. Output signature
 
         return signature
 ~~~
@@ -551,7 +558,7 @@ The following process is used to perform this verification.
 HashComposite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
 Explicit Inputs:
-     pk                 Composite public key conisting of verification public keys for each component.
+     pk                 Composite public key consisting of verification public keys for each component.
 
      M                  Message whose signature is to be verified,
                         an octet string.
@@ -791,7 +798,7 @@ This section is not intended to be exhaustive and other authors may define other
 
 Some use-cases desire the flexibility for clients to use any combination of supported algorithms, while others desire the rigidity of explicitly-specified combinations of algorithms.
 
-The following table summarizes the details for each explicit composite signature algorithms:
+The following tables summarizes the details for each explicit composite signature algorithms:
 
 
 The OID referenced are TBD for prototyping only, and the following prefix is used for each:
