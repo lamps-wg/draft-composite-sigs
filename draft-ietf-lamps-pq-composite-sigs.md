@@ -442,7 +442,7 @@ Signature Verification Procedure:
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
-       if not ML-DSA.Verify( pk1, M', s1, ctx="") then
+       if not ML-DSA.Verify( pk1, M', s1, ctx=Domain) then
             output "Invalid signature"
 
        if not Trad.Verify( pk2, M', s2) then
@@ -608,7 +608,7 @@ Signature Verification Procedure::
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
-       if not ML-DSA.Verify( pk1, M', s1 ) then
+       if not ML-DSA.Verify( pk1, M', s1, ctx=Domain ) then
             output "Invalid signature"
 
        if not Trad.Verify( pk2, M', s2 ) then
@@ -1004,7 +1004,7 @@ where:
 
 * SHA2 instantiations are defined in [FIPS180].
 
-Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.   
+Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.
 
 ## SignedData Conventions
 
