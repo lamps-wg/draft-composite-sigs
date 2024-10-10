@@ -860,7 +860,7 @@ HashML-DSA Signature public key types:
 | id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.51  | id-ML-DSA-87 | ecdsa-with-SHA512 with secp384r1 | id-sha512|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.52 | id-ML-DSA-87 | ecdsa-with-SHA512 with brainpoolP384r1 | id-sha512 |
 | id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.53 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
-{: #tab-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
+{: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
 The table above contains everything needed to implement the listed hash ML-DSA composite signature algorithms.  The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of HashML-DSA.Sign in section {{sec-comp-sig-gen-prehash}}.  This hash value is also used as the pre-hash of the Second algorithm if needed.  See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
 
@@ -904,7 +904,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B50080133|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B50080134|
 | id-HashMLDSA87-Ed448-SHA512 |060B6086480186FA6B50080135|
-{: #tab-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
+{: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
 
 ## Notes on id-MLDSA44-RSA2048-PSS-SHA256
