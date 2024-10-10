@@ -160,6 +160,7 @@ This document introduces a set of signature schemes that use pairs of cryptograp
   * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
   * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
   * Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions
+  * Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
   * Updated the OID table for new Pre-Hash OIDs and added them to the IANA section
   * Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.
   * Other typos
@@ -360,10 +361,10 @@ Signature Generation Process:
    4. Generate the 2 component signatures independently, by calculating the signature over M'
       according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
 
-         s1 := ML-DSA.Sign( sk1, M', Context="" )
+         s1 := ML-DSA.Sign( sk1, M', ctx=Domain )
          s2 := Trad.Sign( sk2, M' )
 
-      Since Composite ML-DSA incorporates the domain separator, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is the empty string.
+      The Domain is used as the context separator for the ML-DSA.Sign component.
 
       If either ML-DSA.Sign() or Trad.Sign() return an error, then this process must return an error.
 
@@ -466,7 +467,7 @@ A composite signature's value MUST include two signature components and MUST be 
 
 The following process is used to generate composite signature values.
 
-### HASHComposite-ML-DSA-Sign signature mode 
+### HashComposite-ML-DSA-Sign signature mode
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
@@ -519,10 +520,10 @@ Signature Generation Process:
    4. Generate the 2 component signatures independently, by calculating the signature over M'
       according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
 
-         s1 := ML-DSA.Sign( sk1, M', ctx ="" )
+         s1 := ML-DSA.Sign( sk1, M', ctx=Domain )
          s2 := Trad.Sign( sk2, M' )
 
-      Since HashComposite ML-DSA incorporates the domain separator, which serves theh same purpose as the ML-DSA context string, the ML-DSA context string is the empty string.
+     The Domain is used as the context separator for the ML-DSA.Sign component.
 
    5. Encode each component signature S1 and S2 into a BIT STRING
       according to its algorithm specification.
