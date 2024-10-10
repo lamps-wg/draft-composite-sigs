@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-08T00:49:45.322573+00:00",
+  "timestamp": "2024-10-10T00:49:33.527921+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -179,11 +179,13 @@
       "state": "OPEN",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "johngray-dev"
+      ],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/121\r\n\r\nWe simplified the composite signature public key format from:\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2..MAX) OF SubjectPublicKeyInfo\r\nto\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\nWe haven't changed the CompositePrivateKeyFormat:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey\r\n\r\nOneAsymmetric Key from RFC 5958 is this:\r\n\r\nOneAsymmetricKey ::= SEQUENCE {\r\nversion Version,\r\nprivateKeyAlgorithm PrivateKeyAlgorithmIdentifier,\r\nprivateKey PrivateKey,\r\nattributes [0] Attributes OPTIONAL,\r\n...,\r\n[[2: publicKey [1] PublicKey OPTIONAL ]],\r\n...\r\n}\r\n\r\nPrivateKey ::= OCTET STRING\r\n-- Content varies based on type of key. The\r\n-- algorithm identifier dictates the format of\r\n-- the key.\r\n\r\nOneAsymmetricKey can carry the public key and has the algorithmIdentifier and version fields which are really redundant information. I think we could simply do this:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF PrivateKey\r\n\r\nwhich is effectively:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING\r\n\r\nIt would allow sending composite private keys in PKCS12, or in raw encrypted blobs, to be smaller.\r\n\r\n\r\nAs of May 8th, 2024 - We are leaning in making this compact change - after getting the v14 update published on the lamp-wg github.\r\n\r\nIt also has the benefit of making key consistency better defined as a static mapping of the algorithm details needs to be used to reonstruct the private key.",
       "createdAt": "2024-06-04T21:23:19Z",
-      "updatedAt": "2024-09-25T22:02:58Z",
+      "updatedAt": "2024-10-09T14:53:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -1186,11 +1188,13 @@
       "state": "OPEN",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "johngray-dev"
+      ],
       "labels": [],
       "body": "We should add text in a few places\r\nWe should add this in the section where we define the signature process, and we should also mention it in the appendix about FIPS certification of a composite implementation.\r\n\r\n(Credit for this ticket: Jeff Andersen)",
       "createdAt": "2024-09-18T20:33:42Z",
-      "updatedAt": "2024-09-18T20:33:42Z",
+      "updatedAt": "2024-10-09T15:00:44Z",
       "closedAt": null,
       "comments": []
     },
@@ -1202,11 +1206,13 @@
       "state": "OPEN",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "ounsworth"
+      ],
       "labels": [],
       "body": "In response to comments from Falko:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/-wg0a8xuhrosRdZlzvQpYD1r0vE/\r\n\r\nOLD\r\n> When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature.\r\n\r\nNEW\r\n\r\n> Hybrid signature primitives that are susceptible to stripping attacks violate existential universal forgery by virtue of the fact that the signer produced (\\sigma, M) where \\sigma = {\\sigma_mldsa, \\sigma_trad}, and thus the ability to produce from this valid pairs (\\sigma_mldsa, M) or (\\sigma_trad, M) would constitute existential forgery attacks under the definition of EUF. This could be turned into practical attacks in a number of ways, such as a \u201csignature mis-attribution attack\u201d where the attacker makes a message appear to be signed by a certificate containing the public key {RSA} when in fact it was signed by the public key {ML-DSA, RSA} which happens to share the RSA public key but may in fact belong to a completely different entity. On top of this, a stripping attack isolates the two algorithms, which could lead to still further message forgery attacks against the weaker of the two algorithms.\r\n\r\n(I don\u2019t have the I-D text in front of me right now, so I\u2019ll probably need to adjust it a bit to fit with the section\u2019s flow.)\r\n",
       "createdAt": "2024-09-23T18:18:26Z",
-      "updatedAt": "2024-09-25T07:06:53Z",
+      "updatedAt": "2024-10-09T14:59:10Z",
       "closedAt": null,
       "comments": [
         {
@@ -1244,11 +1250,13 @@
       "state": "OPEN",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "We should mention that when a CA checks a public key to see if it has previously been revoked, this is often done by public key hash, so it is possible that a composite public key is submitted to a CA and even though both component keys have been revoked for key compromise, the CA may not detect it. For this reason, CAs checking composite keys for revocation for key compromise SHOULD check for both component keys independently.\r\n\r\nWe may already have text to this effect, but we should review it.",
       "createdAt": "2024-09-25T15:00:55Z",
-      "updatedAt": "2024-09-25T15:03:30Z",
+      "updatedAt": "2024-10-09T14:57:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -1265,14 +1273,45 @@
       "id": "I_kwDOL5eEDM6YFUOQ",
       "title": "PrivateKey section is not explicit about which AlgID OIDs to place in the component OneAsymmetricKeys",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/55",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Relates to #6.\r\n\r\nIf we decide to do the private key compression, then this issue will become moot.",
       "createdAt": "2024-09-26T21:05:28Z",
-      "updatedAt": "2024-09-26T21:05:28Z",
+      "updatedAt": "2024-10-09T14:55:03Z",
+      "closedAt": "2024-10-09T14:54:22Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The Group agreed to solve #6 so this issue should no longer be relevant.  ",
+          "createdAt": "2024-10-09T14:54:22Z",
+          "updatedAt": "2024-10-09T14:54:22Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Removing the redundancy from the Private key, so this issue is no longer valid.",
+          "createdAt": "2024-10-09T14:55:02Z",
+          "updatedAt": "2024-10-09T14:55:02Z"
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "id": "I_kwDOL5eEDM6ZmHub",
+      "title": "Do we lock CMS usage down to Hash specified in OIDs",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/60",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently we have this text:\r\n\r\nWhen signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in {{tab-cms-shas}}, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:\r\n\r\nIt seems to imply we MUST use the Hashing algorithm specified in the tab-cms-shas table, but that table says it is Mandatory strength considerations.  So I think we are saying we would allow other Hash algorithms as long as they are considered as secure as the ones listed in tab-cms-shas, but this is not clear.",
+      "createdAt": "2024-10-09T20:38:43Z",
+      "updatedAt": "2024-10-09T20:38:43Z",
       "closedAt": null,
       "comments": []
     }
@@ -1479,21 +1518,21 @@
       "id": "PR_kwDOL5eEDM5545xm",
       "title": "Added context string consideration",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/38",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "feventura",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Added context string consideration, as defined in #35.",
       "createdAt": "2024-08-29T20:50:57Z",
-      "updatedAt": "2024-10-06T09:21:19Z",
+      "updatedAt": "2024-10-09T17:08:30Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
-      "baseRefOid": "32d88d9e083ab25bbbe61a8febae922ae9509824",
+      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "issue-35",
-      "headRefOid": "561e6d791854c05ff9d054e2de36830c5f2fb8c0",
-      "closedAt": null,
+      "headRefOid": "2957443d71c8085b3e52963004ac748d3282972a",
+      "closedAt": "2024-10-09T17:08:30Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -1504,6 +1543,13 @@
           "body": "Do not merge, we decided to do this differently. See comments #42 ",
           "createdAt": "2024-09-25T14:38:47Z",
           "updatedAt": "2024-09-25T14:38:47Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "All the changes in this pull request are now in #59 which will eventually get pushed to main",
+          "createdAt": "2024-10-09T17:08:30Z",
+          "updatedAt": "2024-10-09T17:08:30Z"
         }
       ],
       "reviews": [
@@ -1747,7 +1793,7 @@
       "labels": [],
       "body": "\u2026n Criteria because it no longer aligns.",
       "createdAt": "2024-09-26T18:41:37Z",
-      "updatedAt": "2024-09-26T18:41:37Z",
+      "updatedAt": "2024-10-09T14:47:01Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
@@ -1758,7 +1804,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group will resolve conflicts and remove",
+          "createdAt": "2024-10-09T14:46:59Z",
+          "updatedAt": "2024-10-09T14:46:59Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -2161,6 +2215,60 @@
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids-1",
       "headRefOid": "d583a633f5072eaca69e494e472de38813e38d90",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 58,
+      "id": "PR_kwDOL5eEDM5-G6Jt",
+      "title": "Issue 35",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/58",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Integrate the changes from the issue35 with Main, so the latest updates to the OID tables can be picked up by issue 35",
+      "createdAt": "2024-10-09T16:57:20Z",
+      "updatedAt": "2024-10-09T17:04:41Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "integrate_issue35_with_main",
+      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "issue-35",
+      "headRefOid": "2957443d71c8085b3e52963004ac748d3282972a",
+      "closedAt": "2024-10-09T17:04:40Z",
+      "mergedAt": "2024-10-09T17:04:40Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "72f7909d7f7ae08c86e6076872f3160148d973e5"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 59,
+      "id": "PR_kwDOL5eEDM5-G9fd",
+      "title": "Integrate issue35 with main",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/59",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Updating the pull request to have the latest main changes for adding the context String and the pure and pre-hash modes of composite.",
+      "createdAt": "2024-10-09T17:05:50Z",
+      "updatedAt": "2024-10-09T20:48:08Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "integrate_issue35_with_main",
+      "headRefOid": "0a01fc351778c40c0ed86a198e5c37c791af8188",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
