@@ -1672,31 +1672,32 @@ Signature Verification Procedure::
    hybrids.  Specifically, we want to consider a modified version of the
    EUF-CMA game where the attacker has access to either a signing oracle
    over the two component algorithms in isolation, Trad.Sign() and ML-
-   DSA.Sign() and wishes to fraudulently present them as a composite, or
-   where the attacker has access to an oracle for CompositeML-DSA.Sign()
-   and then is attempting to split the signature back into components
-   and present them to either ML-DSA.Verify() or Trad.Verify().  In the
-   first case, CompositeML-DSA provides cross-protocol EUF-CMA with
-   respect to a verifier that is using CompositeML-DSA.Verify()
-   according to this specification because honest oracles for the
-   component algoritms will sign directly the message m, whereas the
-   CompositeML-DSA.Verify() will first prepend the massage with the
-   composite domain separator before performing verification.  In the
-   other direction where we take a signed message from a composite
-   oracle and split it into components, this specification admits a
-   cross-protocol EUF-CMA attack whereby the message M' (containing the
-   composite domain separator) is presented as having been signed by a
-   standalone component algorithm.  This attack works as-is against the
-   traditional component, but for the ML-DSA component it requires a
-   protocol which allows for the attacker to set the ML-DSA context
-   string to the composite domain separator.  Furthormore, this attack
-   is completely foiled if implementors strictly follow the prohibition
-   on key reuse presented in Section 11.4 since then there cannot exist
-   simulaneously composite and non-composite signers and verifiers for
-   the same keys.  Consequently, following the specification and
-   verification of the policy mechanism, such as a composite X.509
-   certificate which defines the bound keys, is essential when using
-   keys intended for use with a CompositeML-DSA signing algorithm.
+   DSA.Sign(), and attempts to fraudulently present them as a composite,
+   or where the attacker has access to an oracle for CompositeML-
+   DSA.Sign() and then is attempting to split the signature back into
+   components and present them to either ML-DSA.Verify() or
+   Trad.Verify().  In the first case, CompositeML-DSA provides cross-
+   protocol EUF-CMA with respect to a verifier that is using
+   CompositeML-DSA.Verify() according to this specification because
+   honest oracles for the component algorithms will sign directly the
+   message m, whereas the CompositeML-DSA.Verify() will first prepend
+   the massage with the composite domain separator before performing
+   verification.  In the other direction where we take a signed message
+   from a composite oracle and split it into components, this
+   specification admits a cross-protocol EUF-CMA attack whereby the
+   message M' (containing the composite domain separator) is presented
+   as having been signed by a standalone component algorithm.  This
+   attack works as-is against the traditional component, but for the ML-
+   DSA component it requires a protocol which allows for the attacker to
+   set the ML-DSA context string to the composite domain separator.
+   Furthermore, this attack is completely foiled if implementors
+   strictly follow the prohibition on key reuse presented in
+   Section 11.4 since then there cannot exist simultaneously composite
+   and non-composite signers and verifiers for the same keys.
+   Consequently, following the specification and verification of the
+   policy mechanism, such as a composite X.509 certificate which defines
+   the bound keys, is essential when using keys intended for use with a
+   CompositeML-DSA signing algorithm.
 
 11.4.  Key Reuse
 
