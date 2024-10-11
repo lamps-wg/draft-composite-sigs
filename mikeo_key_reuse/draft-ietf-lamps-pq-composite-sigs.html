@@ -17,12 +17,12 @@
 
 
     " name="description">
-<meta content="xml2rfc 3.23.1" name="generator">
+<meta content="xml2rfc 3.23.2" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-lamps-pq-composite-sigs-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.1
-    Python 3.12.6
+  xml2rfc 3.23.2
+    Python 3.12.7
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
@@ -1032,11 +1032,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">PQ Composite ML-DSA</td>
-<td class="right">September 2024</td>
+<td class="right">October 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 3 April 2025</td>
+<td class="center">Expires 14 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1049,12 +1049,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-30" class="published">30 September 2024</time>
+<time datetime="2024-10-11" class="published">11 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-03">3 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-14">14 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1104,7 +1104,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1258,17 +1258,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
                 <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-prehashing-algorithm-select" class="internal xref">PreHashing Algorithm Selection Criteria</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.1">
-                    <p id="section-toc.1-1.11.2.2.2.1.1"><a href="#section-11.2.1" class="auto internal xref">11.2.1</a>.  <a href="#name-non-separability-and-euf-cm" class="internal xref">Non-separability and EUF-CMA</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.2">
-                    <p id="section-toc.1-1.11.2.2.2.2.1"><a href="#section-11.2.2" class="auto internal xref">11.2.2</a>.  <a href="#name-key-reuse" class="internal xref">Key Reuse</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
-                <p id="section-toc.1-1.11.2.3.1"><a href="#section-11.3" class="auto internal xref">11.3</a>.  <a href="#name-policy-for-deprecated-and-a" class="internal xref">Policy for Deprecated and Acceptable Algorithms</a></p>
+                <p id="section-toc.1-1.11.2.3.1"><a href="#section-11.3" class="auto internal xref">11.3</a>.  <a href="#name-non-separability-and-euf-cm" class="internal xref">Non-separability and EUF-CMA</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4">
+                <p id="section-toc.1-1.11.2.4.1"><a href="#section-11.4" class="auto internal xref">11.4</a>.  <a href="#name-key-reuse" class="internal xref">Key Reuse</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.5">
+                <p id="section-toc.1-1.11.2.5.1"><a href="#section-11.5" class="auto internal xref">11.5</a>.  <a href="#name-policy-for-deprecated-and-a" class="internal xref">Policy for Deprecated and Acceptable Algorithms</a></p>
 </li>
             </ul>
 </li>
@@ -3042,46 +3040,47 @@ END
             <p id="section-11.2-2.4.1">Ed448 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.<a href="#section-11.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
+</section>
+</div>
 <div id="sec-cons-non-separability">
-<section id="section-11.2.1">
-          <h4 id="name-non-separability-and-euf-cm">
-<a href="#section-11.2.1" class="section-number selfRef">11.2.1. </a><a href="#name-non-separability-and-euf-cm" class="section-name selfRef">Non-separability and EUF-CMA</a>
-          </h4>
-<p id="section-11.2.1-1">The signature combiner defined in this document achieves both Weak Non-Separability and Strong Non-Separability as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>. Consider a composite signature, message pair <code>(\sigma, M)</code> which is actually <code>((\sigma1, \sigma2), M)</code>. Weak Non-Separability is trivially obtained since evidence of the hybrid is left behind since the pair <code>(\sigma1, M)</code> will not verify under the first component key, but rather only <code>(\sigma2, Domain || M)</code> which binds the domain separator of the composite algorithm that was used.<a href="#section-11.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-11.2.1-2">Existential Unforgeability under a Chosen Message Attack (EUF-CMA) for the composite signature algorithm as a whole, is conditioned on the algorithm identifier being per specification used as defined, namely that <code>Domain || M</code> is the expected format that the verification algorithm will check to validate under the component algorithms. Thus there is a policy mechanism enforced by the verifier. Within protocols that use X.509 certificates, the certificate will dictate that the signature is associated with a composite public key, and so barring key reuse (discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2.2</a>), this provides the necessary binding for both Weak Non-Separabality and EUF-CMA security.<a href="#section-11.2.1-2" class="pilcrow">¶</a></p>
+<section id="section-11.3">
+        <h3 id="name-non-separability-and-euf-cm">
+<a href="#section-11.3" class="section-number selfRef">11.3. </a><a href="#name-non-separability-and-euf-cm" class="section-name selfRef">Non-separability and EUF-CMA</a>
+        </h3>
+<p id="section-11.3-1">The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>,  since the forged message <code>M’</code> will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.4</a> further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
+<p id="section-11.3-2">Unforgeability properties are somewhat more nuanced. The classic EUF-CMA game is in reference to a pair of algorithms <code>( Sign(), Verify() )</code> where the attacker has access to a signing oracle using the <code>Sign()</code> and must produce a signature-message pair <code>(s, m)</code> that is accepted by the verifier using <code>Verify()</code> and where <code>m</code> was never signed by the oracle. The pair <code>( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )</code> is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure. There is a stronger notion of Strong Existential Unforgeability (SUF) in which an attacker is required to produce a new signature to an already-signed message. CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(s1*, m)</code> pair where <code>s1*</code> was not produced by the honest signer and it then can be combined with an honestly-signed <code>(s2, m)</code> signature over the same message <code>m</code> to create <code>( (s1*, s2), m)</code> which violates SUF for the composite algorithm.<a href="#section-11.3-2" class="pilcrow">¶</a></p>
+<p id="section-11.3-3">In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code> and wishes to fraudulently present them as a composite, or where the attacker has access to an oracle for <code>CompositeML-DSA.Sign()</code> and then is attempting to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, CompositeML-DSA provides cross-protocol EUF-CMA with respect to a verifier that is using <code>CompositeML-DSA.Verify()</code> according to this specification because honest oracles for the component algoritms will sign directly the message <code>m</code>, whereas the <code>CompositeML-DSA.Verify()</code> will first prepend the massage with the composite domain separator before performing verification. In the other direction where we take a signed message from a composite oracle and split it into components, this specification admits a cross-protocol EUF-CMA attack whereby the message <code>M'</code> (containing the composite domain separator) is presented as having been signed by a standalone component algorithm. This attack works as-is against the traditional component, but for the ML-DSA component it requires a protocol which allows for the attacker to set the ML-DSA context string to the composite domain separator. Furthormore, this attack is completely foiled if implementors strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.4</a> since then there cannot exist simulaneously composite and non-composite signers and verifiers for the same keys. Consequently, following the specification and verification of the policy mechanism, such as a composite X.509 certificate which defines the bound keys, is essential when using keys intended for use with a CompositeML-DSA signing algorithm.<a href="#section-11.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cons-key-reuse">
-<section id="section-11.2.2">
-          <h4 id="name-key-reuse">
-<a href="#section-11.2.2" class="section-number selfRef">11.2.2. </a><a href="#name-key-reuse" class="section-name selfRef">Key Reuse</a>
-          </h4>
-<p id="section-11.2.2-1">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)<a href="#section-11.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-11.2.2-2">Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 11.2.1</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.<a href="#section-11.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-11.2.2-3">In adition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.<a href="#section-11.2.2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
+<section id="section-11.4">
+        <h3 id="name-key-reuse">
+<a href="#section-11.4" class="section-number selfRef">11.4. </a><a href="#name-key-reuse" class="section-name selfRef">Key Reuse</a>
+        </h3>
+<p id="section-11.4-1">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)<a href="#section-11.4-1" class="pilcrow">¶</a></p>
+<p id="section-11.4-2">Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 11.3</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.<a href="#section-11.4-2" class="pilcrow">¶</a></p>
+<p id="section-11.4-3">In adition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.<a href="#section-11.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="policy-for-deprecated-and-acceptable-algorithms">
-<section id="section-11.3">
+<section id="section-11.5">
         <h3 id="name-policy-for-deprecated-and-a">
-<a href="#section-11.3" class="section-number selfRef">11.3. </a><a href="#name-policy-for-deprecated-and-a" class="section-name selfRef">Policy for Deprecated and Acceptable Algorithms</a>
+<a href="#section-11.5" class="section-number selfRef">11.5. </a><a href="#name-policy-for-deprecated-and-a" class="section-name selfRef">Policy for Deprecated and Acceptable Algorithms</a>
         </h3>
-<p id="section-11.3-1">Traditionally, a public key, certificate, or signature contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), then clients performing signatures or verifications should be updated to adhere to appropriate policies.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
-<p id="section-11.3-2">In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.<a href="#section-11.3-2" class="pilcrow">¶</a></p>
-<p id="section-11.3-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256-SHA512</code> even after ECDSA-P256 is deprecated.<a href="#section-11.3-3" class="pilcrow">¶</a></p>
-<p id="section-11.3-4">When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.<a href="#section-11.3-4" class="pilcrow">¶</a></p>
-<p id="section-11.3-5">Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:<a href="#section-11.3-5" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-11.3-6">
-<li id="section-11.3-6.1">
-            <p id="section-11.3-6.1.1">This specification assumes that all of the component keys within a composite key are freshly generated for the composite; ie a given public key MUST NOT appear as a component within a composite key and also within single-algorithm constructions.<a href="#section-11.3-6.1.1" class="pilcrow">¶</a></p>
+<p id="section-11.5-1">Traditionally, a public key, certificate, or signature contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), then clients performing signatures or verifications should be updated to adhere to appropriate policies.<a href="#section-11.5-1" class="pilcrow">¶</a></p>
+<p id="section-11.5-2">In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.<a href="#section-11.5-2" class="pilcrow">¶</a></p>
+<p id="section-11.5-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256-SHA512</code> even after ECDSA-P256 is deprecated.<a href="#section-11.5-3" class="pilcrow">¶</a></p>
+<p id="section-11.5-4">When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.<a href="#section-11.5-4" class="pilcrow">¶</a></p>
+<p id="section-11.5-5">Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:<a href="#section-11.5-5" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-11.5-6">
+<li id="section-11.5-6.1">
+            <p id="section-11.5-6.1.1">This specification assumes that all of the component keys within a composite key are freshly generated for the composite; ie a given public key MUST NOT appear as a component within a composite key and also within single-algorithm constructions.<a href="#section-11.5-6.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-11.3-6.2">
-            <p id="section-11.3-6.2.1">This specification assumes that composite public keys will be bound in a structure that contains a signature over the public key (for example, an X.509 Certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>), which is chained back to a trust anchor, and where that signature algorithm is at least as strong as the composite public key that it is protecting.<a href="#section-11.3-6.2.1" class="pilcrow">¶</a></p>
+          <li id="section-11.5-6.2">
+            <p id="section-11.5-6.2.1">This specification assumes that composite public keys will be bound in a structure that contains a signature over the public key (for example, an X.509 Certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>), which is chained back to a trust anchor, and where that signature algorithm is at least as strong as the composite public key that it is protecting.<a href="#section-11.5-6.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-11.3-7">There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in [RFC5914]. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.<a href="#section-11.3-7" class="pilcrow">¶</a></p>
+<p id="section-11.5-7">There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in [RFC5914]. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.<a href="#section-11.5-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3736,7 +3735,7 @@ Ll2dp7GZtR5tyKObPtvUc1s16fP3g7xhvgIga8IVcv0k6DUIApPztCsP/UByrm8k
       </h2>
 <p id="appendix-E-1">This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:<a href="#appendix-E-1" class="pilcrow">¶</a></p>
 <p id="appendix-E-2">Daniel Van Geest (CryptoNext),
-Britta Hale,
+Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
@@ -3749,9 +3748,10 @@ José Ignacio Escribano and
 Jan Oupický
 陳志華 (Abel C. H. Chen, Chunghwa Telecom)
 林邦曄 (Austin Lin, Chunghwa Telecom)<a href="#appendix-E-2" class="pilcrow">¶</a></p>
-<p id="appendix-E-3">We are grateful to all, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-E-3" class="pilcrow">¶</a></p>
-<p id="appendix-E-4">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
-   documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-E-4" class="pilcrow">¶</a></p>
+<p id="appendix-E-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.<a href="#appendix-E-3" class="pilcrow">¶</a></p>
+<p id="appendix-E-4">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-E-4" class="pilcrow">¶</a></p>
+<p id="appendix-E-5">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
+   documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-E-5" class="pilcrow">¶</a></p>
 <div id="making-contributions">
 <section id="appendix-E.1">
         <h3 id="name-making-contributions">
