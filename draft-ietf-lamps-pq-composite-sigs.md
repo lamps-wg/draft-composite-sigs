@@ -953,15 +953,18 @@ As noted in the composite signature generation process and composite signature v
 
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
 
-### Non-separability and EUF-CMA {#sec-cons-non-separability}
 
-The signature combiner defined in this document achieves both Weak Non-Separability and Strong Non-Separability as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}. Consider a composite signature, message pair `(\sigma, M)` which is actually `((\sigma1, \sigma2), M)`. Weak Non-Separability is trivially obtained since evidence of the hybrid is left behind since the pair `(\sigma1, M)` will not verify under the first component key, but rather only `(\sigma2, Domain || M)` which binds the domain separator of the composite algorithm that was used.
+## Non-separability and EUF-CMA {#sec-cons-non-separability}
 
-Existential Unforgeability under a Chosen Message Attack (EUF-CMA) for the composite signature algorithm as a whole, is conditioned on the algorithm identifier being per specification used as defined, namely that `Domain || M` is the expected format that the verification algorithm will check to validate under the component algorithms. Thus there is a policy mechanism enforced by the verifier. Within protocols that use X.509 certificates, the certificate will dictate that the signature is associated with a composite public key, and so barring key reuse (discussed in {{sec-cons-key-reuse}}), this provides the necessary binding for both Weak Non-Separabality and EUF-CMA security.
+The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}},  since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
+
+Unforgeability properties are somewhat more nuanced. The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a signature-message pair `(s, m)` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure. There is a stronger notion of Strong Existential Unforgeability (SUF) in which an attacker is required to produce a new signature to an already-signed message. CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(s1*, m)` pair where `s1*` was not produced by the honest signer and it then can be combined with an honestly-signed `(s2, m)` signature over the same message `m` to create `( (s1*, s2), m)` which violates SUF for the composite algorithm.
+
+In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()` and wishes to fraudulently present them as a composite, or where the attacker has access to an oracle for `CompositeML-DSA.Sign()` and then is attempting to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`. In the first case, CompositeML-DSA provides cross-protocol EUF-CMA with respect to a verifier that is using `CompositeML-DSA.Verify()` according to this specification because honest oracles for the component algoritms will sign directly the message `m`, whereas the `CompositeML-DSA.Verify()` will first prepend the massage with the composite domain separator before performing verification. In the other direction where we take a signed message from a composite oracle and split it into components, this specification admits a cross-protocol EUF-CMA attack whereby the message `M'` (containing the composite domain separator) is presented as having been signed by a standalone component algorithm. This attack works as-is against the traditional component, but for the ML-DSA component it requires a protocol which allows for the attacker to set the ML-DSA context string to the composite domain separator. Furthormore, this attack is completely foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since then there cannot exist simulaneously composite and non-composite signers and verifiers for the same keys. Consequently, following the specification and verification of the policy mechanism, such as a composite X.509 certificate which defines the bound keys, is essential when using keys intended for use with a CompositeML-DSA signing algorithm.
 
 
 
-### Key Reuse {#sec-cons-key-reuse}
+## Key Reuse {#sec-cons-key-reuse}
 
 When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)
 
@@ -1084,7 +1087,7 @@ https://datatracker.ietf.org/ipr/3588/
 This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
 Daniel Van Geest (CryptoNext),
-Britta Hale,
+Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
@@ -1098,7 +1101,9 @@ Jan Oupický
 陳志華 (Abel C. H. Chen, Chunghwa Telecom)
 林邦曄 (Austin Lin, Chunghwa Telecom)
 
-We are grateful to all, including any contributors who may have been inadvertently omitted from this list.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
+
+We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.
 
 This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
    documents.  "Copying always makes things easier and less error prone" - [RFC8411].
