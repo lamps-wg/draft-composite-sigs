@@ -159,6 +159,7 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 * ASN.1 Module changes:
   * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
   * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
+* Updated Security Considerations about Non-separability, EUF-CMA and key reuse.
 
 # Introduction {#sec-intro}
 
