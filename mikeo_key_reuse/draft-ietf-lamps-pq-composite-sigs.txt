@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 14 April 2025                                           M. Pala
+Expires: 16 April 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         11 October 2024
+                                                         13 October 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 April 2025.
+   This Internet-Draft will expire on 16 April 2025.
 
 Copyright Notice
 
@@ -133,6 +133,9 @@ Table of Contents
 
       -  Simplified the ASN.1 module to make it more compiler-friendly
          (thanks Carl!) -- should not affect wire encodings.
+
+   *  Updated Security Considerations about Non-separability, EUF-CMA
+      and key reuse.
 
 2.  Introduction
 
