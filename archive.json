@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-10T00:49:33.527921+00:00",
+  "timestamp": "2024-10-13T00:53:41.819478+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1047,13 +1047,23 @@
       "state": "OPEN",
       "author": "mojtaba-bisheh",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "I am seeking clarification on the input message for the composite signature specification to ensure consistent understanding and implementation. Given that ML-DSA operates in two modes\u2014pure and pre-hash\u2014and there are various prefixes/OIDs for the pre-hashed mode, this clarification is crucial. \r\nThere is also one more hashing operation within the ECC boundary that should not be mistaken for what the composite signature needs in `M' := Domain || HASH(Message)` step.\r\n\r\nThere are two options here:\r\n\r\nOne option is to move hybrid domain concatenation into HASH operation (similar to ML-DSA scheme),i.e., `M' := HASH(Domain || Message)`. In this case, there is one other HASH operation for both ECC and pre-hash ML-DSA:\r\nfor ECC: `HASH(M') = HASH(HASH(Hybrid_Domain || Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || HASH(Hybrid_Domain || Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(HASH(Hybrid_Domain || Message))`\r\nThis back-to-back hashing operation for ECC and pre-hash MLDSA makes no sense, so you can remove the hash operation and just append message with an OID that reduces the complexity of the computation too.\r\n\r\nSecond option is keeping the current condition as:\r\nfor ECC: `HASH(M') = HASH(Hybrid_Domain || HASH(Message))`\r\nfor pure ML-DSA: = `HASH(tr || M') = H(tr || 0x00 || ctx_len || ctx || Hybrid_Domain || HASH(Message))`\r\nfor pre-hash ML-DSA: = `HASH(tr || M') = H(tr || 0x01 || ctx_len || ctx || OID || HASH(Hybrid_Domain || HASH(Message))`\r\n\r\nFurthermore, Including test vectors and examples in the specification would promote uniform implementation across the industry.",
       "createdAt": "2024-08-30T13:11:46Z",
-      "updatedAt": "2024-08-30T20:50:46Z",
+      "updatedAt": "2024-10-10T11:29:48Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi @mojtaba-bisheh ,\r\n\r\nThis seems similar to #34 and #45 .\r\nSolution is to use only pure ML-DSA in Composites and do either a PreHash or not when generating M'. \r\n\r\npure M' := Domain || IntegerToBytes(|ctx|, 1) || ctx || Message\r\npreHash M' := Domain || IntegerToBytes(|ctx|, 1) || ctx || HashOID || HASH(Message)\r\n\r\nBoth ECC and ML-DSA get the same M'. The ECC algorithm will do another Hash again.\r\n\r\nDoes this work for you or do you see any issues with that?",
+          "createdAt": "2024-10-10T11:29:21Z",
+          "updatedAt": "2024-10-10T11:29:48Z"
+        }
+      ]
     },
     {
       "number": 40,
@@ -1229,7 +1239,7 @@
       "id": "I_kwDOL5eEDM6X2y13",
       "title": "Use raw encodings for EDDSA Public Key ECPoint",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/48",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1238,9 +1248,17 @@
       "labels": [],
       "body": "Hey composite sigs authors, I just wanted to point out that I think the ASN.1 for EDDSA composites is wrong.  It uses ECPoint for the SecondPublicKeytype, but EDDSA public keys aren't encoded using ECPoint, they are raw.\r\n\r\n   pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=\r\n     pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,\r\n     OCTET STRING, ECPoint}\r\nRFC 8410:\r\n\r\n    pk-Ed25519 PUBLIC-KEY ::= {\r\n        IDENTIFIER id-Ed25519\r\n        -- KEY no ASN.1 wrapping --\r\n        PARAMS ARE absent\r\n        CERT-KEY-USAGE {digitalSignature, nonRepudiation,\r\n                        keyCertSign, cRLSign}\r\n        PRIVATE-KEY CurvePrivateKey\r\n    }\r\nSo however you do the encoding for the ML-DSA keys is how you should do the encoding for EDDSA keys as well.\r\n\r\nDaniel",
       "createdAt": "2024-09-25T11:27:38Z",
-      "updatedAt": "2024-09-25T11:27:38Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-10T10:38:43Z",
+      "closedAt": "2024-10-10T10:38:43Z",
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "done with #47  ",
+          "createdAt": "2024-10-10T10:38:43Z",
+          "updatedAt": "2024-10-10T10:38:43Z"
+        }
+      ]
     },
     {
       "number": 49,
@@ -1314,6 +1332,35 @@
       "updatedAt": "2024-10-09T20:38:43Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 61,
+      "id": "I_kwDOL5eEDM6ZxrCn",
+      "title": "Review DER encoding of OIDs",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/61",
+      "state": "OPEN",
+      "author": "opencrypto",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "opencrypto",
+        "johngray-dev"
+      ],
+      "labels": [
+        "bug"
+      ],
+      "body": "During the implementation of the new version, the DER encoding value seems to give wrong results for the OID. Here's the binary value that I use in my implementation:\r\n```\r\n0x60, 0x86, 0x48, 0x01, 0x86, 0xFA, 0x6B, 0x50, 0x08, 0x01, 0x01\r\n```\r\ninstead of the value in the draft that has a couple of extra bytes.\r\n\r\nAm I missing something?",
+      "createdAt": "2024-10-10T22:01:50Z",
+      "updatedAt": "2024-10-11T12:48:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The Tag and Length values of the Object ID are in the draft now... Thats the 060B part at the beginning\r\n\r\nPlug the ones in the draft in this site:  https://lapo.it/asn1js/\r\n060B6086480186FA6B50080115\r\n\r\nIt gives the following as an object ID\r\n2.16.840.1.114027.80.8.1.21\r\n\r\nWe could strip that off if we wanted, and just have the value, which is:\r\n6086480186FA6B50080115\r\n",
+          "createdAt": "2024-10-11T12:48:09Z",
+          "updatedAt": "2024-10-11T12:48:09Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1629,7 +1676,7 @@
       "labels": [],
       "body": " Closes #9",
       "createdAt": "2024-09-24T21:44:18Z",
-      "updatedAt": "2024-09-26T14:56:23Z",
+      "updatedAt": "2024-10-10T10:36:15Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "66252f92269a84a03b02c3f00b70911a4698ca70",
@@ -1670,6 +1717,13 @@
           "body": "I checked that the ASN.1 module compiles in asn.1 playground.",
           "createdAt": "2024-09-25T17:36:03Z",
           "updatedAt": "2024-09-25T17:36:03Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closes #48",
+          "createdAt": "2024-10-10T10:36:13Z",
+          "updatedAt": "2024-10-10T10:36:13Z"
         }
       ],
       "reviews": []
@@ -1827,13 +1881,13 @@
       "labels": [],
       "body": "Closes #49 \r\nCloses #46\r\n\r\nRelated to, but does not fully address #27 ",
       "createdAt": "2024-09-26T19:11:34Z",
-      "updatedAt": "2024-10-02T04:15:12Z",
+      "updatedAt": "2024-10-11T10:38:53Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_key_reuse",
-      "headRefOid": "de589b77f7a8139e157f0ebe4a5bec9bfa2fb597",
+      "headRefOid": "0af193c58cdba22ff2d3598324bceae395a8b901",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -1845,6 +1899,13 @@
           "body": "Closes #27 ",
           "createdAt": "2024-09-30T15:54:22Z",
           "updatedAt": "2024-09-30T15:54:22Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "After several rounds of back-and-forth with Britta, Falko, and Markku about the EUF-CMA properties, I think this PR is ready to me merged.",
+          "createdAt": "2024-10-11T10:32:18Z",
+          "updatedAt": "2024-10-11T10:32:18Z"
         }
       ],
       "reviews": [
@@ -2208,13 +2269,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-10-02T13:37:08Z",
-      "updatedAt": "2024-10-02T13:37:08Z",
+      "updatedAt": "2024-10-11T20:15:02Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
-      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids-1",
-      "headRefOid": "d583a633f5072eaca69e494e472de38813e38d90",
+      "headRefOid": "1a9ddce9c44696f63ea9155abd8086a3afd5d72b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2262,13 +2323,13 @@
       "labels": [],
       "body": "Updating the pull request to have the latest main changes for adding the context String and the pure and pre-hash modes of composite.",
       "createdAt": "2024-10-09T17:05:50Z",
-      "updatedAt": "2024-10-09T20:48:08Z",
+      "updatedAt": "2024-10-10T19:36:22Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "integrate_issue35_with_main",
-      "headRefOid": "0a01fc351778c40c0ed86a198e5c37c791af8188",
+      "headRefOid": "06a24e373646985d98e0586b6eaf08544e596ae8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
