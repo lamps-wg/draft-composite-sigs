@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 14 April 2025                                           M. Pala
+Expires: 17 April 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         11 October 2024
+                                                         14 October 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 April 2025.
+   This Internet-Draft will expire on 17 April 2025.
 
 Copyright Notice
 
@@ -108,40 +108,44 @@ Table of Contents
      12.1.  Normative References
      12.2.  Informative References
    Appendix A.  Component Algorithm Reference
-   Appendix B.  Subject Public Key Info
+   Appendix B.  Component AlgorithmIdentifiers for Public Keys and
+           Signatures
      B.1.  ML-DSA-44
-       B.1.1.  Algorithm within subjectPublicKeyInfo
-       B.1.2.  Algorithm within TBSCertificate
-     B.2.  RSA PSS 2048
-       B.2.1.  Algorithm within subjectPublicKeyInfo
-       B.2.2.  Algorithm within TBSCertificate
-     B.3.  RSA PSS 3072 & 4096
-       B.3.1.  Algorithm within subjectPublicKeyInfo
-       B.3.2.  Algorithm within TBSCertificate
-     B.4.  RSA PKCS 1.5 2048
-       B.4.1.  Algorithm within subjectPublicKeyInfo
-       B.4.2.  Algorithm within TBSCertificate
-     B.5.  RSA PKCS 1.5 3072 & 4096
-       B.5.1.  Algorithm within subjectPublicKeyInfo
-       B.5.2.  Algorithm within TBSCertificate
-     B.6.  EC Brainpool-256
-       B.6.1.  Algorithm within subjectPublicKeyInfo
-       B.6.2.  Algorithm within TBSCertificate
-     B.7.  EC Brainpool-384
-       B.7.1.  Algorithm within subjectPublicKeyInfo
-       B.7.2.  Algorithm within TBSCertificate
+       B.1.1.  AlgorithmIdentifier of Public Key and Signature
+     B.2.  ML-DSA-65
+       B.2.1.  AlgorithmIdentifier of Public Key and Signature
+     B.3.  ML-DSA-87
+       B.3.1.  AlgorithmIdentifier of Public Key and Signature
+     B.4.  RSA PSS 2048
+       B.4.1.  AlgorithmIdentifier of Public Key
+       B.4.2.  AlgorithmIdentifier of Signature
+     B.5.  RSA PSS 3072 & 4096
+       B.5.1.  AlgorithmIdentifier of Public Key
+       B.5.2.  AlgorithmIdentifier of Signature
+     B.6.  RSA PKCS 1.5 2048
+       B.6.1.  AlgorithmIdentifier of Public Key
+       B.6.2.  AlgorithmIdentifier of Signature
+     B.7.  RSA PKCS 1.5 3072 & 4096
+       B.7.1.  AlgorithmIdentifier of Public Key
+       B.7.2.  AlgorithmIdentifier of Signature
      B.8.  EC NIST 256
-       B.8.1.  Algorithm within subjectPublicKeyInfo
-       B.8.2.  Algorithm within TBSCertificate
+       B.8.1.  AlgorithmIdentifier of Public Key
+       B.8.2.  AlgorithmIdentifier of Signature
      B.9.  EC NIST-384
-       B.9.1.  Algorithm within subjectPublicKeyInfo
-       B.9.2.  Algorithm within TBSCertificate
-     B.10. Ed25519
-       B.10.1.  Algorithm within subjectPublicKeyInfo
-       B.10.2.  Algorithm within TBSCertificate
-     B.11. Ed448
-       B.11.1.  Algorithm within subjectPublicKeyInfo
-       B.11.2.  Algorithm within TBSCertificate
+       B.9.1.  AlgorithmIdentifier of Public Key
+       B.9.2.  AlgorithmIdentifier of Signature
+     B.10. EC Brainpool-256
+       B.10.1.  AlgorithmIdentifier of Public Key
+       B.10.2.  AlgorithmIdentifier of Signature
+     B.11. EC Brainpool-384
+       B.11.1.  AlgorithmIdentifier of Public Key
+       B.11.2.  AlgorithmIdentifier of Signature
+     B.12. Ed25519
+       B.12.1.  AlgorithmIdentifier of Public Key
+       B.12.2.  AlgorithmIdentifier of Signature
+     B.13. Ed448
+       B.13.1.  AlgorithmIdentifier of Public Key
+       B.13.2.  AlgorithmIdentifier of Signature
    Appendix C.  Samples
      C.1.  Explicit Composite Signature Examples
        C.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
@@ -2052,16 +2056,25 @@ Appendix A.  Component Algorithm Reference
 
          Table 10: Hash algorithms used in Composite Constructions
 
-Appendix B.  Subject Public Key Info
+Appendix B.  Component AlgorithmIdentifiers for Public Keys and
+             Signatures
 
-   In order to ease implementing Composite Signatures this section
-   specifies the Subject Public Key Info for each component algorithm
-   referenced in composite constructions.  They are also provided as
-   copy and paste DER format to avoid any ambiguity.
+   To ease implementing Composite Signatures this section specifies the
+   Algorithms Identifiers for each component algorithm.  They are
+   provided as ASN.1 value notation and copy and paste DER encoding to
+   avoid any ambiguity.  Developers may use this information to
+   reconstruct non hybrid public keys and signatures from each component
+   that can be fed to crypto APIs to create or verify a single component
+   signature.
+
+   For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers
+   are the same for Public Key and Signature.  Older Algorithms have
+   different AlgorithmIdentifiers for keys and signatures and are
+   specified separately here for each component.
 
 B.1.  ML-DSA-44
 
-B.1.1.  Algorithm within subjectPublicKeyInfo
+B.1.1.  AlgorithmIdentifier of Public Key and Signature
 
    ASN.1:
 
@@ -2073,21 +2086,37 @@ B.1.1.  Algorithm within subjectPublicKeyInfo
 
      30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
 
-B.1.2.  Algorithm within TBSCertificate
+B.2.  ML-DSA-65
+
+B.2.1.  AlgorithmIdentifier of Public Key and Signature
 
    ASN.1:
 
-     signature AlgorithmIdentifier ::= {
-       algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 4 4)
-       }
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 6 5)
+      }
 
    DER:
 
-     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
+     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 06 05
 
-B.2.  RSA PSS 2048
+B.3.  ML-DSA-87
 
-B.2.1.  Algorithm within subjectPublicKeyInfo
+B.3.1.  AlgorithmIdentifier of Public Key and Signature
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 8 7)
+      }
+
+   DER:
+
+     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 08 07
+
+B.4.  RSA PSS 2048
+
+B.4.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2099,7 +2128,7 @@ B.2.1.  Algorithm within subjectPublicKeyInfo
 
      30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 
-B.2.2.  Algorithm within TBSCertificate
+B.4.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2125,9 +2154,9 @@ B.2.2.  Algorithm within TBSCertificate
 
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 
-B.3.  RSA PSS 3072 & 4096
+B.5.  RSA PSS 3072 & 4096
 
-B.3.1.  Algorithm within subjectPublicKeyInfo
+B.5.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2139,7 +2168,7 @@ B.3.1.  Algorithm within subjectPublicKeyInfo
 
      30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 
-B.3.2.  Algorithm within TBSCertificate
+B.5.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2165,9 +2194,9 @@ B.3.2.  Algorithm within TBSCertificate
 
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 
-B.4.  RSA PKCS 1.5 2048
+B.6.  RSA PKCS 1.5 2048
 
-B.4.1.  Algorithm within subjectPublicKeyInfo
+B.6.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2180,7 +2209,7 @@ B.4.1.  Algorithm within subjectPublicKeyInfo
 
      30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 
-B.4.2.  Algorithm within TBSCertificate
+B.6.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2193,9 +2222,9 @@ B.4.2.  Algorithm within TBSCertificate
 
      30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 
-B.5.  RSA PKCS 1.5 3072 & 4096
+B.7.  RSA PKCS 1.5 3072 & 4096
 
-B.5.1.  Algorithm within subjectPublicKeyInfo
+B.7.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2208,7 +2237,7 @@ B.5.1.  Algorithm within subjectPublicKeyInfo
 
      30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 
-B.5.2.  Algorithm within TBSCertificate
+B.7.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2221,71 +2250,9 @@ B.5.2.  Algorithm within TBSCertificate
 
      30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 
-B.6.  EC Brainpool-256
-
-B.6.1.  Algorithm within subjectPublicKeyInfo
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm brainpoolP256r1                     -- (1.3.36.3.3.2.8.1.1.7)
-           }
-         }
-       }
-
-   DER:
-
-     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
-
-B.6.2.  Algorithm within TBSCertificate
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 02
-
-B.7.  EC Brainpool-384
-
-B.7.1.  Algorithm within subjectPublicKeyInfo
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm brainpoolP384r1                     -- (1.3.36.3.3.2.8.1.1.11)
-           }
-         }
-       }
-
-   DER:
-
-     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
-
-B.7.2.  Algorithm within TBSCertificate
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 03
-
 B.8.  EC NIST 256
 
-B.8.1.  Algorithm within subjectPublicKeyInfo
+B.8.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2302,7 +2269,7 @@ B.8.1.  Algorithm within subjectPublicKeyInfo
 
      30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
 
-B.8.2.  Algorithm within TBSCertificate
+B.8.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2316,7 +2283,7 @@ B.8.2.  Algorithm within TBSCertificate
 
 B.9.  EC NIST-384
 
-B.9.1.  Algorithm within subjectPublicKeyInfo
+B.9.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2333,7 +2300,7 @@ B.9.1.  Algorithm within subjectPublicKeyInfo
 
      30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
 
-B.9.2.  Algorithm within TBSCertificate
+B.9.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2345,9 +2312,71 @@ B.9.2.  Algorithm within TBSCertificate
 
      30 0A 06 08 2A 86 48 CE 3D 04 03 03
 
-B.10.  Ed25519
+B.10.  EC Brainpool-256
 
-B.10.1.  Algorithm within subjectPublicKeyInfo
+B.10.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm brainpoolP256r1                     -- (1.3.36.3.3.2.8.1.1.7)
+           }
+         }
+       }
+
+   DER:
+
+     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
+
+B.10.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 02
+
+B.11.  EC Brainpool-384
+
+B.11.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm brainpoolP384r1                     -- (1.3.36.3.3.2.8.1.1.11)
+           }
+         }
+       }
+
+   DER:
+
+     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
+
+B.11.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 03
+
+B.12.  Ed25519
+
+B.12.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2359,7 +2388,7 @@ B.10.1.  Algorithm within subjectPublicKeyInfo
 
      30 05 06 03 2B 65 70
 
-B.10.2.  Algorithm within TBSCertificate
+B.12.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
@@ -2371,9 +2400,9 @@ B.10.2.  Algorithm within TBSCertificate
 
      30 05 06 03 2B 65 70
 
-B.11.  Ed448
+B.13.  Ed448
 
-B.11.1.  Algorithm within subjectPublicKeyInfo
+B.13.1.  AlgorithmIdentifier of Public Key
 
    ASN.1:
 
@@ -2385,7 +2414,7 @@ B.11.1.  Algorithm within subjectPublicKeyInfo
 
      30 05 06 03 2B 65 71
 
-B.11.2.  Algorithm within TBSCertificate
+B.13.2.  AlgorithmIdentifier of Signature
 
    ASN.1:
 
