@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-13T00:53:41.819478+00:00",
+  "timestamp": "2024-10-15T00:50:54.850724+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1361,6 +1361,64 @@
           "updatedAt": "2024-10-11T12:48:09Z"
         }
       ]
+    },
+    {
+      "number": 62,
+      "id": "I_kwDOL5eEDM6aLP_V",
+      "title": "Missing MLDSA44_BrainPool256 from algorithm combinations",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/62",
+      "state": "OPEN",
+      "author": "opencrypto",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "johngray-dev"
+      ],
+      "labels": [
+        "bug"
+      ],
+      "body": "In the latest version of the draft where RSA4096 was added seems to be missing the low-level combination for BrainPool curves (MLDSA44 with BrainPool256R1). Shall it be added back?",
+      "createdAt": "2024-10-14T17:28:34Z",
+      "updatedAt": "2024-10-14T18:19:47Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "opencrypto",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Also the corresponding domain separator is missing.",
+          "createdAt": "2024-10-14T17:41:34Z",
+          "updatedAt": "2024-10-14T17:41:34Z"
+        },
+        {
+          "author": "danvangeest",
+          "authorAssociation": "NONE",
+          "body": "Neither BSI nor ANSSI approve MLDSA44 for use.  If I understand correctly, BrainPool is included for them.  So if MLDSA44 with BrainPool256R1 is added I don't think it will be used.",
+          "createdAt": "2024-10-14T18:19:46Z",
+          "updatedAt": "2024-10-14T18:19:46Z"
+        }
+      ]
+    },
+    {
+      "number": 63,
+      "id": "I_kwDOL5eEDM6aLdjP",
+      "title": "Combination for Level 3 has been changed to (Draft 3) ML_DSA_65 + NISTP384 from (Draft 2) ML_DSA_65 + NISTP256)",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/63",
+      "state": "OPEN",
+      "author": "opencrypto",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ounsworth",
+        "feventura",
+        "johngray-dev",
+        "janklaussner"
+      ],
+      "labels": [
+        "bug"
+      ],
+      "body": "The algorithm mldsa65_p384 is replacing the mldsa64_p256 we had previously. It needs to be reverted back.",
+      "createdAt": "2024-10-14T17:53:52Z",
+      "updatedAt": "2024-10-14T17:55:50Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1881,13 +1939,13 @@
       "labels": [],
       "body": "Closes #49 \r\nCloses #46\r\n\r\nRelated to, but does not fully address #27 ",
       "createdAt": "2024-09-26T19:11:34Z",
-      "updatedAt": "2024-10-11T10:38:53Z",
+      "updatedAt": "2024-10-13T19:46:56Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_key_reuse",
-      "headRefOid": "0af193c58cdba22ff2d3598324bceae395a8b901",
+      "headRefOid": "b1f5cd70706dbb951fb086dd9580a4b3505b41f1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2243,7 +2301,7 @@
       "labels": [],
       "body": "Closes #55",
       "createdAt": "2024-09-27T14:51:44Z",
-      "updatedAt": "2024-09-28T15:18:41Z",
+      "updatedAt": "2024-10-14T17:35:23Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
@@ -2254,7 +2312,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "opencrypto",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't think this pull request shall be merged. Besides the fact that it reference KEM algorithms, I completely disagree with using wrong algorithm identifiers for the components. This is, to me, completely wrong and I vote for NOT MERGING this pull request. More and more it feels like we are over-engineering what already works fine and allows for the re-use of existing code. We should not change the OneAsymmetric key standard (please!).",
+          "createdAt": "2024-10-14T17:32:53Z",
+          "updatedAt": "2024-10-14T17:34:39Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -2269,18 +2335,26 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-10-02T13:37:08Z",
-      "updatedAt": "2024-10-11T20:15:02Z",
+      "updatedAt": "2024-10-14T16:42:39Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids-1",
-      "headRefOid": "1a9ddce9c44696f63ea9155abd8086a3afd5d72b",
+      "headRefOid": "048314314a07fa07b92b1cb035f2c77792b5a166",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ounsworth , @johngray-dev this PR is ready for review...",
+          "createdAt": "2024-10-14T16:42:38Z",
+          "updatedAt": "2024-10-14T16:42:38Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -2323,7 +2397,7 @@
       "labels": [],
       "body": "Updating the pull request to have the latest main changes for adding the context String and the pure and pre-hash modes of composite.",
       "createdAt": "2024-10-09T17:05:50Z",
-      "updatedAt": "2024-10-10T19:36:22Z",
+      "updatedAt": "2024-10-13T09:59:07Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
@@ -2335,7 +2409,106 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6M9Sk-",
+          "commit": {
+            "abbreviatedOid": "06a24e3"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2024-10-13T09:36:34Z",
+          "updatedAt": "2024-10-13T09:59:07Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\nA composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding verification public key.\r\n```",
+              "createdAt": "2024-10-13T09:37:37Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 61,
+              "body": "```suggestion\r\n   2. Compute the Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of ctx, the value ctx and the original message M\r\n```",
+              "createdAt": "2024-10-13T09:39:12Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 94,
+              "body": "```suggestion\r\nThis mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator \"Domain\" {{sec-oid-concat}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the original message `M` .\r\n```",
+              "createdAt": "2024-10-13T09:42:48Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 140,
+              "body": "This whole paragraph needs to be re-done. The prohibition of recursive composites is a hold-over from generics and no longer makes sense.",
+              "createdAt": "2024-10-13T09:46:08Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 142,
+              "body": "The order of steps should be synced with .Sign(). For example, ,Sign() has \r\n\r\n```\r\n1. If |ctx| > 255\r\n2. Compute the Message format M'\r\n3. Separate the private key into componet keys.\r\n```\r\n\r\nBut here in .Verify(), we have:\r\n\r\n```\r\n1. Separate the keys and signatures\r\n2. If |ctx| > 255\r\n3. Format the Message as follows\r\n```\r\n\r\nI think the order in .Verify() makes more sense, so we should change .Sign() to match.",
+              "createdAt": "2024-10-13T09:49:23Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "```suggestion\r\n   3. Compute the Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of ctx, the value ctx and the original message M\r\n```",
+              "createdAt": "2024-10-13T09:50:07Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 268,
+              "body": "Again, we should make sure that the order of steps is aligned with the pure algs above.",
+              "createdAt": "2024-10-13T09:51:42Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 371,
+              "body": "Again, we should make sure that the order of steps is aligned with the pure algs above.",
+              "createdAt": "2024-10-13T09:52:15Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 385,
+              "body": "```suggestion\r\nThe following tables summarize the details for each explicit composite signature algorithms:\r\n```",
+              "createdAt": "2024-10-13T09:53:03Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 402,
+              "body": "```suggestion\r\n| id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.23 | id-ML-DSA-44  | id-Ed25519 | None |\r\n```",
+              "createdAt": "2024-10-13T09:53:26Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 411,
+              "body": "```suggestion\r\n| id-MLDSA65-Ed25519                      | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 | None |\r\n```",
+              "createdAt": "2024-10-13T09:53:40Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 416,
+              "body": "```suggestion\r\n| id-MLDSA87-Ed448                        | &lt;CompSig&gt;.33 | id-ML-DSA-87 | id-Ed448 | None |\r\n```",
+              "createdAt": "2024-10-13T09:53:51Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 394,
+              "body": "```suggestion\r\nPure Composite-ML-DSA Signature public key types:\r\n```",
+              "createdAt": "2024-10-13T09:54:41Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            },
+            {
+              "originalPosition": 422,
+              "body": "```suggestion\r\nHashComposite-ML-DSA Signature public key types:\r\n```",
+              "createdAt": "2024-10-13T09:54:55Z",
+              "updatedAt": "2024-10-13T09:59:07Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
