@@ -820,7 +820,7 @@ replace &lt;CompSig&gt; with the String "2.16.840.1.114027.80.8.1"
 
 Therefore &lt;CompSig&gt;.21 is equal to 2.16.840.1.114027.80.8.1.21
 
-Pure Signature public key types:
+Pure Composite-ML-DSA Signature public key types:
 
 | Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID | Second Alg PreHash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
