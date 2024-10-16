@@ -102,7 +102,7 @@ informative:
   RFC8446:
   RFC8551:
   RFC8017:
-  I-D.draft-hale-pquip-hybrid-signature-spectrums-01:
+  I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
   I-D.draft-ounsworth-pq-composite-kem-01:
   I-D.draft-becker-guthrie-noncomposite-hybrid-auth-00:
   I-D.draft-guthrie-ipsecme-ikev2-hybrid-auth-00:
@@ -159,6 +159,7 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 * ASN.1 Module changes:
   * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
   * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
+* Updated Security Considerations about Non-separability, EUF-CMA and key reuse.
 
 # Introduction {#sec-intro}
 
@@ -304,7 +305,7 @@ The key generation functions MUST be executed for both algorithms. Compliant par
 
 ## Signature Generation {#sec-comp-sig-gen}
 
-Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
+Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.ietf-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
 Composite signature generation starts with pre-hashing the message that is concatenated with the Domain separator {{sec-oid-concat}}. After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
@@ -945,6 +946,27 @@ As noted in the composite signature generation process and composite signature v
 1. Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set of prehashing algorihtms, SHA512 was selected to pre-hash the message when Ed448 is a component algorithm.
 
 
+## Non-separability and EUF-CMA {#sec-cons-non-separability}
+
+The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}},  since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
+
+Unforgeability properties are somewhat more nuanced. The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a signature-message pair `(s, m)` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure. There is a stronger notion of Strong Existential Unforgeability (SUF) in which an attacker is required to produce a new signature to an already-signed message. CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(s1*, m)` pair where `s1*` was not produced by the honest signer and it then can be combined with an honestly-signed `(s2, m)` signature over the same message `m` to create `( (s1*, s2), m)` which violates SUF for the composite algorithm.
+
+In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, Trad.Sign() and ML-DSA.Sign(), and attempts to fraudulently present them as a composite, or where the attacker has access to a composite oracle for signing and then attempts to split the signature back into components and present them to either ML-DSA.Verify() or Trad.Verify(). The latter version bears a resemblance to a stripping attack, which parallel signatures are subject to, but is slightly different in that the cross-protocol EUF-CMA game also considers modification message definition as signed differs from the message the verifier accepts. In contrast stripping attacks consider only removing one component signature and attempting verification under the remaining and the same original message.
+
+In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction addition to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in Section 11.4 since then there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys. Consequently, following the specification and verification of the policy mechanism, such as a composite X.509 certificate which defines the bound keys, is essential when using keys intended for use with a CompositeML-DSA signing algorithm.
+
+
+
+## Key Reuse {#sec-cons-key-reuse}
+
+When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)
+
+Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.
+
+In adition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.
+
+
 ## Policy for Deprecated and Acceptable Algorithms
 
 Traditionally, a public key, certificate, or signature contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), then clients performing signatures or verifications should be updated to adhere to appropriate policies.
@@ -1059,7 +1081,7 @@ https://datatracker.ietf.org/ipr/3588/
 This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
 Daniel Van Geest (CryptoNext),
-Britta Hale,
+Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
@@ -1073,7 +1095,9 @@ Jan Oupický
 陳志華 (Abel C. H. Chen, Chunghwa Telecom)
 林邦曄 (Austin Lin, Chunghwa Telecom)
 
-We are grateful to all, including any contributors who may have been inadvertently omitted from this list.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
+
+We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.
 
 This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
    documents.  "Copying always makes things easier and less error prone" - [RFC8411].
