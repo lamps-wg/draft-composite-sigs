@@ -383,7 +383,7 @@ It is possible to construct `CompositePrivateKey`(s) to generate signatures from
 
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
-This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-oid-concat}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the un-hashed message `M` .
+This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-oid-concat}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the original message `M` .
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
