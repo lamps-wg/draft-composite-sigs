@@ -356,7 +356,7 @@ Table of Contents
 
    A composite signature's value MUST include two signature components
    and MUST be in the same order as the components from the
-   corresponding signing key.
+   corresponding verification public key.
 
 4.2.1.  Composite-ML-DSA.Sign
 
