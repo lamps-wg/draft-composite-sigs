@@ -354,7 +354,7 @@ Signature Generation Process:
 
          M' := Domain || len(ctx) || ctx || M
 
-   3. Separate the private key into componet keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
+   3. Separate the private key into component keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
 
          (sk1, sk2) := Unmarshal(sk)
 
@@ -421,18 +421,19 @@ Output:
                         (false) otherwise.
 
 Signature Verification Procedure:
-   1. Separate the keys and signatures
+
+   1. If |ctx| > 255
+        return error
+
+   2. Separate the keys and signatures
 
           (pk1, pk2) := pk
           (s1, s2) := signature
 
-      If Error during Desequencing, or the sequences have
-      different numbers of elements, or any of the public keys
-      P1 or P2 and the algorithm identifiers A1 or A2 are
-      composite then output "Invalid signature" and stop.
-
-   2. If |ctx| > 255
-        return error
+      If Error during Desequencing, or if any of the component
+      keys or signature values are not of the correct key type or
+      length for the given component algorithm then output
+      "Invalid signature" and stop.
 
    3. Format the Message as follows:
 
@@ -513,7 +514,7 @@ Signature Generation Process:
 
          M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
 
-   3. Separate the private key into componet keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
+   3. Separate the private key into component keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
 
          (sk1, sk2) := Unmarshal(sk)
 
@@ -587,18 +588,18 @@ Output:
 
 Signature Verification Procedure::
 
-   1. Separate the keys and signatures
+   1. If |ctx| > 255
+        return error
+
+   2. Separate the keys and signatures
 
           (pk1, pk2) := pk
           (s1, s2) := signature
 
-      If Error during Desequencing, or the sequences have
-      different numbers of elements, or any of the public keys
-      P1 or P2 and the algorithm identifiers A1 or A2 are
-      composite then output "Invalid signature" and stop.
-
-   2. If |ctx| > 255
-        return error
+      If Error during Desequencing, or if any of the component
+      keys or signature values are not of the correct key type or
+      length for the given component algorithm then output
+      "Invalid signature" and stop.
 
    3. Compute a Hash of the Message
 
