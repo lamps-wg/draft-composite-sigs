@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 13 April 2025                                           M. Pala
+Expires: 19 April 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         10 October 2024
+                                                         16 October 2024
 
 
                 Composite ML-DSA for use in Internet PKI
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2025.
+   This Internet-Draft will expire on 19 April 2025.
 
 Copyright Notice
 
@@ -903,22 +903,23 @@ Signature Verification Procedure::
          }
 
    The following is an explanation how SIGNATURE-ALGORITHM elements are
-   used to create Composite Signatures:
+   used to define Composite Signatures:
 
-    +=============================+===================================+
-    | SIGNATURE-ALGORITHM element | Definition                        |
-    +=============================+===================================+
-    | IDENTIFIER                  | The Object ID used to identify    |
-    |                             | the composite Signature Algorithm |
-    +-----------------------------+-----------------------------------+
-    | VALUE                       | The Sequence of BIT STRINGS for   |
-    |                             | each component signature value    |
-    +-----------------------------+-----------------------------------+
-    | PARAMS                      | Parameters are absent             |
-    +-----------------------------+-----------------------------------+
-    | PUBLIC-KEYS                 | The composite key required to     |
-    |                             | produce the composite signature   |
-    +-----------------------------+-----------------------------------+
+     +=====================+=========================================+
+     | SIGNATURE-ALGORITHM | Definition                              |
+     | element             |                                         |
+     +=====================+=========================================+
+     | IDENTIFIER          | The Object ID used to identify the      |
+     |                     | composite Signature Algorithm           |
+     +---------------------+-----------------------------------------+
+     | VALUE               | The Sequence of BIT STRINGS for each    |
+     |                     | component signature value               |
+     +---------------------+-----------------------------------------+
+     | PARAMS              | Parameters are absent                   |
+     +---------------------+-----------------------------------------+
+     | PUBLIC-KEYS         | The composite public key type           |
+     |                     | associated with the composite signature |
+     +---------------------+-----------------------------------------+
 
                                   Table 1
 
