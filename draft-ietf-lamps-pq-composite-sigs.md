@@ -842,7 +842,7 @@ Pure Composite-ML-DSA Signature public key types:
 
 The table above contains everything needed to implement the listed pure ML-DSA composite signature algorithms.  The hash value indicated is used only by the Second algorithm if needed.  See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
 
-HashML-DSA Signature public key types:
+HashComposite-ML-DSA Signature public key types:
 
 | Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
