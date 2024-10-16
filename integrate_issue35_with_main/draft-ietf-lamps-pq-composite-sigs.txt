@@ -435,11 +435,11 @@ Signature Generation Process:
 
 4.2.2.  Composite-ML-DSA.Verify
 
-   This mode mirrors ML-DSA.Sign(sk, M, ctx) defined in Section 5.3 of
-   [FIPS.204].  Verification of a composite signature involves
-   reconstructing the M' message by concatenating the composite domain
-   separator "Domain" Section 7.1 with the length of the context string
-   ctx in bytes, the context string ctx, and finally the un-hashed
+   This mode mirrors ML-DSA.Verify(pk, M, signature, ctx) defined in
+   Section 5.3 of [FIPS.204].  Verification of a composite signature
+   involves reconstructing the M' message by concatenating the composite
+   domain separator "Domain" Section 7.1 with the length of the context
+   string ctx in bytes, the context string ctx, and finally the original
    message M .
 
    Compliant applications MUST output "Valid signature" (true) if and
