@@ -1005,8 +1005,8 @@ Signature Verification Procedure::
    |id-MLDSA65-ECDSA-            |<CompSig>.29|id-ML-     |ecdsa-with-SHA512 with |id-    |
    |brainpoolP256r1-SHA512       |            |DSA-65     |brainpoolP256r1        |sha512 |
    +-----------------------------+------------+-----------+-----------------------+-------+
-   |id-MLDSA65-Ed25519           |<CompSig>.30|id-ML-     |id-Ed25519             |Not    |
-   |                             |            |DSA-65     |                       |Needed |
+   |id-MLDSA65-Ed25519           |<CompSig>.30|id-ML-     |id-Ed25519             |None   |
+   |                             |            |DSA-65     |                       |       |
    +-----------------------------+------------+-----------+-----------------------+-------+
    |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.31|id-ML-     |ecdsa-with-SHA512 with |id-    |
    |                             |            |DSA-87     |secp384r1              |sha512 |
