@@ -1014,8 +1014,8 @@ Signature Verification Procedure::
    |id-MLDSA87-ECDSA-            |<CompSig>.32|id-ML-     |ecdsa-with-SHA512 with |id-    |
    |brainpoolP384r1-SHA512       |            |DSA-87     |brainpoolP384r1        |sha512 |
    +-----------------------------+------------+-----------+-----------------------+-------+
-   |id-MLDSA87-Ed448             |<CompSig>.33|id-ML-     |id-Ed448               |Not    |
-   |                             |            |DSA-87     |                       |Needed |
+   |id-MLDSA87-Ed448             |<CompSig>.33|id-ML-     |id-Ed448               |None   |
+   |                             |            |DSA-87     |                       |       |
    +-----------------------------+------------+-----------+-----------------------+-------+
 
             Table 2: Pure ML-DSA Composite Signature Algorithms
