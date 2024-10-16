@@ -779,14 +779,14 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 ~~~
 
 The following is an explanation how SIGNATURE-ALGORITHM elements are used
-to create Composite Signatures:
+to define Composite Signatures:
 
 | SIGNATURE-ALGORITHM element | Definition |
 | ---------                  | ---------- |
 | IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm |
 | VALUE                       | The Sequence of BIT STRINGS for each component signature value |
 | PARAMS                      | Parameters are absent  |
-| PUBLIC-KEYS                 | The composite key required to produce the composite signature |
+| PUBLIC-KEYS                 | The composite public key type associated with the composite signature |
 
 
 ## CompositeSignatureValue {#sec-compositeSignatureValue}
