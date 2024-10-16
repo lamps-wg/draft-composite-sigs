@@ -837,7 +837,7 @@ Pure Composite-ML-DSA Signature public key types:
 | id-MLDSA65-Ed25519                      | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 | None |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.31  | id-ML-DSA-87 | ecdsa-with-SHA512 with secp384r1 | id-sha512|
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.32 | id-ML-DSA-87 | ecdsa-with-SHA512 with brainpoolP384r1 | id-sha512 |
-| id-MLDSA87-Ed448                        | &lt;CompSig&gt;.33 | id-ML-DSA-87 | id-Ed448 | Not Needed |
+| id-MLDSA87-Ed448                        | &lt;CompSig&gt;.33 | id-ML-DSA-87 | id-Ed448 | None |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
 The table above contains everything needed to implement the listed pure ML-DSA composite signature algorithms.  The hash value indicated is used only by the Second algorithm if needed.  See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
