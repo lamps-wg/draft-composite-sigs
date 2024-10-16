@@ -311,7 +311,7 @@ The key generation functions MUST be executed for both algorithms. Compliant par
 
 Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.hale-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
 
-A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
+A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding verification public key.
 
 
 ### Composite-ML-DSA.Sign
