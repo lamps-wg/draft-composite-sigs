@@ -1043,7 +1043,7 @@ ASN.1:
 
 ~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 6 5)
+    algorithm id-ML-DSA-65                -- (1 3 6 1 4 1 2 267 12 6 5)
    }
 ~~~
 
@@ -1061,7 +1061,7 @@ ASN.1:
 
 ~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 8 7)
+    algorithm id-ML-DSA-87                -- (1 3 6 1 4 1 2 267 12 8 7)
    }
 ~~~
 
