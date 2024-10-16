@@ -981,8 +981,8 @@ Signature Verification Procedure::
    |id-                          |<CompSig>.22|id-ML-     |sha256WithRSAEncryption|id-    |
    |MLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44     |                       |sha256 |
    +-----------------------------+------------+-----------+-----------------------+-------+
-   |id-MLDSA44-Ed25519           |<CompSig>.23|id-ML-     |id-Ed25519             |Not    |
-   |                             |            |DSA-44     |                       |Needed |
+   |id-MLDSA44-Ed25519           |<CompSig>.23|id-ML-     |id-Ed25519             |None   |
+   |                             |            |DSA-44     |                       |       |
    +-----------------------------+------------+-----------+-----------------------+-------+
    |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.24|id-ML-     |ecdsa-with-SHA256 with |id-    |
    |                             |            |DSA-44     |secp256r1              |sha256 |
