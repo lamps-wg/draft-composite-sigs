@@ -105,11 +105,9 @@ Table of Contents
        10.1.2.  Object Identifier Registrations - SMI Security for
                PKIX Algorithms
    11. Security Considerations
-     11.1.  Public Key Algorithm Selection Criteria
-     11.2.  PreHashing Algorithm Selection Criteria
-     11.3.  Non-separability and EUF-CMA
-     11.4.  Key Reuse
-     11.5.  Policy for Deprecated and Acceptable Algorithms
+     11.1.  Non-separability and EUF-CMA
+     11.2.  Key Reuse
+     11.3.  Policy for Deprecated and Acceptable Algorithms
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -2019,73 +2017,14 @@ Signature Verification Procedure::
 
 11.  Security Considerations
 
-11.1.  Public Key Algorithm Selection Criteria
-
-   The composite algorithm combinations defined in this document were
-   chosen according to the following guidelines:
-
-   1.  RSA combinations are provided at a key size of 2048, 3072, and
-       4096 bits matched with NIST PQC Level 2 and 3 algorithms.
-
-   2.  Elliptic curve algorithms are provided with combinations on each
-       of the NIST [RFC6090], Brainpool [RFC5639], and Edwards [RFC7748]
-       curves.  NIST PQC level 1 candidates are provided, matched with
-       256-bit elliptic curves, intended for constrained use cases.
-       NIST levels 3 algorithms are matched with NIST 384-bit, brainpool
-       256-bit and and Ed25519 curves, while NIST level 5 are matched
-       with 384-bit elliptic curves.  This provides a balance between
-       matching classical security levels of post-quantum and
-       traditional algorithms, and also selecting elliptic curves which
-       already have wide adoption.
-
-   If other combinations are needed, a separate specification should be
-   submitted to the IETF LAMPS working group.  To ease implementation,
-   these specifications are encouraged to follow the construction
-   pattern of the algorithms specified in this document.
-
-   The composite structures defined in this specification allow only for
-   pairs of algorithms.  This also does not preclude future
-   specification from extending these structures to define combinations
-   with three or more components.
-
-11.2.  PreHashing Algorithm Selection Criteria
-
-   As noted in the composite signature generation process and composite
-   signature verification process, the Message should be pre-hashed into
-   M' with the digest algorithm specified in the composite signature
-   algorithm identifier.  The selection of the digest algorithm was
-   chosen with the following criteria:
-
-   1.  For composites paired with RSA or ECDSA, the hashing algorithm
-       SHA256 or SHA512 is used as part of the RSA or ECDSA signature
-       algorithm and is therefore also used as the composite prehashing
-       algorithm.
-
-   2.  For ML-DSA [FIPS.204-ipd] signing a digest of the message is
-       allowed as long as the hash function provides at least y bits of
-       classical security strength against both collision and second
-       preimage attacks.  For ML-DSA-44 y is 128 bits, for ML-DSA-65 y
-       is 192 bits and for ML-DSA-87 y is 256 bits.  Therefore SHA256 is
-       paired with RSA and ECDSA with ML-DSA-44 and SHA512 is paired
-       with RSA and ECDSA with ML-DSA-65 and ML-DSA-87 to match the
-       appropriate security strength.
-
-   3.  Ed25519 [RFC8032] uses SHA512 internally, therefore SHA512 is
-       used to pre-hash the message when Ed25519 is a component
-       algorithm.
-
-   4.  Ed448 [RFC8032] uses SHAKE256 internally, but to reduce the set
-       of prehashing algorihtms, SHA512 was selected to pre-hash the
-       message when Ed448 is a component algorithm.
-
-11.3.  Non-separability and EUF-CMA
+11.1.  Non-separability and EUF-CMA
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
    M’ will include the composite domain separator as evidence.  The
    prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 11.4 further strengthens the non-
+   contexts discussed in Section 11.2 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
@@ -2149,7 +2088,7 @@ Signature Verification Procedure::
    the bound keys, is essential when using keys intended for use with a
    CompositeML-DSA signing algorithm.
 
-11.4.  Key Reuse
+11.2.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
@@ -2168,7 +2107,7 @@ Signature Verification Procedure::
    key pair and combine it with an ML-DSA key pair to form a hybrid key
    pair for use in a hybrid algorithm.  Within a hybrid signature
    context this leads to a class of attacks referred to as "stripping
-   attacks" discussed in Section 11.3 and may also open up risks from
+   attacks" discussed in Section 11.1 and may also open up risks from
    further cross-protocol attacks.  Despite the weak non-separability
    property offered by the composite signature combiner, it is still
    RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
@@ -2187,7 +2126,7 @@ Signature Verification Procedure::
    revocation checks on a composite key should also check both component
    keys independently.
 
-11.5.  Policy for Deprecated and Acceptable Algorithms
+11.3.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
