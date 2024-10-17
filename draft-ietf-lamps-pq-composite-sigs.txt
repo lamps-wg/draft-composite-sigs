@@ -778,7 +778,13 @@ Signature Verification Procedure::
            secondPublicKey BIT STRING (CONTAINING id-raw-key)
          }
 
-   id-raw-key is defined by this document.
+   id-raw-key is defined by this document.  It signifies that the public
+   key has no ASN.1 wrapping and the raw bits are placed here according
+   to the encoding of the underlying algorithm specification.  In some
+   situations and protocols, the key might be wrapped in ASN.1 or may
+   have some other additional decoration or encoding.  If so, such
+   wrapping MUST be removed prior to encoding the key itself as a BIT
+   STRING.
 
    This structure is intentionally generic in the first public key slot
    since ML-DSA, as defined in [I-D.ietf-lamps-dilithium-certificates],
