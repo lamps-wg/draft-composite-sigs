@@ -959,7 +959,7 @@ Signature Verification Procedure::
    combination of supported algorithms, while others desire the rigidity
    of explicitly-specified combinations of algorithms.
 
-   The following tables summarizes the details for each explicit
+   The following tables summarize the details for each explicit
    composite signature algorithms:
 
    The OID referenced are TBD for prototyping only, and the following
