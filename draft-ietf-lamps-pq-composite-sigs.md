@@ -812,7 +812,7 @@ This section is not intended to be exhaustive and other authors may define other
 
 Some use-cases desire the flexibility for clients to use any combination of supported algorithms, while others desire the rigidity of explicitly-specified combinations of algorithms.
 
-The following tables summarizes the details for each explicit composite signature algorithms:
+The following tables summarize the details for each explicit composite signature algorithms:
 
 
 The OID referenced are TBD for prototyping only, and the following prefix is used for each:
