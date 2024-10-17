@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-15T00:50:54.850724+00:00",
+  "timestamp": "2024-10-17T00:50:06.400753+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -185,7 +185,7 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/121\r\n\r\nWe simplified the composite signature public key format from:\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2..MAX) OF SubjectPublicKeyInfo\r\nto\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\nWe haven't changed the CompositePrivateKeyFormat:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey\r\n\r\nOneAsymmetric Key from RFC 5958 is this:\r\n\r\nOneAsymmetricKey ::= SEQUENCE {\r\nversion Version,\r\nprivateKeyAlgorithm PrivateKeyAlgorithmIdentifier,\r\nprivateKey PrivateKey,\r\nattributes [0] Attributes OPTIONAL,\r\n...,\r\n[[2: publicKey [1] PublicKey OPTIONAL ]],\r\n...\r\n}\r\n\r\nPrivateKey ::= OCTET STRING\r\n-- Content varies based on type of key. The\r\n-- algorithm identifier dictates the format of\r\n-- the key.\r\n\r\nOneAsymmetricKey can carry the public key and has the algorithmIdentifier and version fields which are really redundant information. I think we could simply do this:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF PrivateKey\r\n\r\nwhich is effectively:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING\r\n\r\nIt would allow sending composite private keys in PKCS12, or in raw encrypted blobs, to be smaller.\r\n\r\n\r\nAs of May 8th, 2024 - We are leaning in making this compact change - after getting the v14 update published on the lamp-wg github.\r\n\r\nIt also has the benefit of making key consistency better defined as a static mapping of the algorithm details needs to be used to reonstruct the private key.",
       "createdAt": "2024-06-04T21:23:19Z",
-      "updatedAt": "2024-10-09T14:53:24Z",
+      "updatedAt": "2024-10-16T15:05:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -236,6 +236,13 @@
           "body": "That comment wasn't a vote in either direction, it was just a point for consideration :)  It would be really nice to get rid of the redundancy of the OneAsymmetricKeys, and that's the way I would lean.  I just think the text has to be extra clear about what the PrivateKey OCTET STRING contains, i.e. the structure of the public key is in PUBLIC-KEY.&PrivateKey from the public key identifier of the component keys.\r\n\r\n> Dan vG further voted to keep it as SEQUENCE OF OneAsymmetricKey:\r\n> \r\n> > Regarding the composite private key being a SEQUENCE of OneAsymmetricKey, from an implementation perspective that's actually really convenient because there will already be PKCS#8 or RFC 5958 APIs for the component private keys, so you only need to stick those in a SEQUENCE.  Making it a SEQUENCE of PrivateKey complicates the implementation somewhat because, if you mean the same PrivateKey in the OneAsymmetricKey, there's often not an API to get that directly so you may have to dissect the OneAsymmetricKey ASN.1 to get at it.  But of course it's a trade-off to reduce the complexity in the composite private key format, and probably a good trade-off.  I'm actually in the middle of making such a dissecting change myself, so I'll see how bad it is!\r\n\r\n",
           "createdAt": "2024-09-25T22:02:57Z",
           "updatedAt": "2024-09-25T22:02:57Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group is agreeing to change it to:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING",
+          "createdAt": "2024-10-16T15:05:37Z",
+          "updatedAt": "2024-10-16T15:05:37Z"
         }
       ]
     },
@@ -967,7 +974,7 @@
       "labels": [],
       "body": "ML-DSA has a 'context string' as an input; the idea is to allow the capability to bind a signature to a specific context.\r\n\r\nShould we specify that, when we implement ML-DSA within a composite signature, that we have a nonempty context?\r\n\r\nIf the verifier will never accept a signature signed by a specific ML-DSA key except as part of a composite signature, we don't gain anything.  However, it might be a helpful 'belt-and-suspenders' if some application would happen to reuse the ML-DSA public key.\r\n\r\nIf we do have a nonempty context string, what should it be:\r\n- Should it be the OID for the composite (so that the signature can be used only as a part of that specific combination)\r\n- Should it be the hash of the composite public key (so that we're safe even if some fool changes the other components)\r\n\r\nThoughts?",
       "createdAt": "2024-08-28T14:51:26Z",
-      "updatedAt": "2024-09-26T12:10:03Z",
+      "updatedAt": "2024-10-16T13:04:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -1004,6 +1011,13 @@
           "body": "Duplicate of #42\r\n",
           "createdAt": "2024-09-26T12:09:21Z",
           "updatedAt": "2024-09-26T12:10:03Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We ended up adding both Pure and Hash versions with the context string, so this will also resolve #45\r\n\r\nresolves #45 ",
+          "createdAt": "2024-10-16T13:04:24Z",
+          "updatedAt": "2024-10-16T13:04:24Z"
         }
       ]
     },
@@ -1186,9 +1200,17 @@
       "labels": [],
       "body": "Laurent Pion points out that a signature is produced by a private key, not a public key.\r\n\r\n> Chapter 6.1, table 1\r\n> Don\u2019t know if it\u2019s my wrong understanding or a little mistake, PUBLIC-KEYS, is it the composite (private) key required to produce the signature or the public key to verify it?\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/S5CyDKP4xngRmHNdlmHozXrpLzw/\r\n",
       "createdAt": "2024-09-17T16:01:51Z",
-      "updatedAt": "2024-09-25T14:08:07Z",
+      "updatedAt": "2024-10-16T14:16:35Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, the description is wrong.  In RFC 5912 it is this:\r\n\r\nSIGNATURE-ALGORITHM ::= CLASS {\r\n    &id             OBJECT IDENTIFIER UNIQUE,\r\n    &Value          OPTIONAL,\r\n    &Params         OPTIONAL,\r\n    &paramPresence  ParamOptions DEFAULT absent,\r\n    &HashSet        DIGEST-ALGORITHM OPTIONAL,\r\n    &PublicKeySet   PUBLIC-KEY OPTIONAL,\r\n    &smimeCaps      SMIME-CAPS OPTIONAL\r\n} WITH SYNTAX {\r\n    IDENTIFIER &id\r\n    [VALUE &Value]\r\n    [PARAMS [TYPE &Params] ARE &paramPresence ]\r\n    [HASHES &HashSet]\r\n    [PUBLIC-KEYS &PublicKeySet]\r\n\r\n\r\nSo we changed the wording in the document to the following to clarify:\r\n\r\nThe following is an explanation how SIGNATURE-ALGORITHM elements are used\r\nto define Composite Signatures:\r\n\r\n| SIGNATURE-ALGORITHM element | Definition |\r\n| ---------                  | ---------- |\r\n| IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm |\r\n| VALUE                       | The Sequence of BIT STRINGS for each component signature value |\r\n| PARAMS                      | Parameters are absent  |\r\n| PUBLIC-KEYS                 | The composite public key type associated with the composite signature |\r\n\r\n\r\n\r\n",
+          "createdAt": "2024-10-16T14:16:34Z",
+          "updatedAt": "2024-10-16T14:16:34Z"
+        }
+      ]
     },
     {
       "number": 45,
@@ -1213,7 +1235,7 @@
       "id": "I_kwDOL5eEDM6XmDo5",
       "title": "Adjust Security Consideration on stripping attacks",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/46",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1222,8 +1244,8 @@
       "labels": [],
       "body": "In response to comments from Falko:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/-wg0a8xuhrosRdZlzvQpYD1r0vE/\r\n\r\nOLD\r\n> When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature.\r\n\r\nNEW\r\n\r\n> Hybrid signature primitives that are susceptible to stripping attacks violate existential universal forgery by virtue of the fact that the signer produced (\\sigma, M) where \\sigma = {\\sigma_mldsa, \\sigma_trad}, and thus the ability to produce from this valid pairs (\\sigma_mldsa, M) or (\\sigma_trad, M) would constitute existential forgery attacks under the definition of EUF. This could be turned into practical attacks in a number of ways, such as a \u201csignature mis-attribution attack\u201d where the attacker makes a message appear to be signed by a certificate containing the public key {RSA} when in fact it was signed by the public key {ML-DSA, RSA} which happens to share the RSA public key but may in fact belong to a completely different entity. On top of this, a stripping attack isolates the two algorithms, which could lead to still further message forgery attacks against the weaker of the two algorithms.\r\n\r\n(I don\u2019t have the I-D text in front of me right now, so I\u2019ll probably need to adjust it a bit to fit with the section\u2019s flow.)\r\n",
       "createdAt": "2024-09-23T18:18:26Z",
-      "updatedAt": "2024-10-09T14:59:10Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-16T12:58:21Z",
+      "closedAt": "2024-10-16T12:58:21Z",
       "comments": [
         {
           "author": "codespree",
@@ -1265,7 +1287,7 @@
       "id": "I_kwDOL5eEDM6X4yzW",
       "title": "Security consideration: do we mention the revocation problem?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/49",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1274,8 +1296,8 @@
       "labels": [],
       "body": "We should mention that when a CA checks a public key to see if it has previously been revoked, this is often done by public key hash, so it is possible that a composite public key is submitted to a CA and even though both component keys have been revoked for key compromise, the CA may not detect it. For this reason, CAs checking composite keys for revocation for key compromise SHOULD check for both component keys independently.\r\n\r\nWe may already have text to this effect, but we should review it.",
       "createdAt": "2024-09-25T15:00:55Z",
-      "updatedAt": "2024-10-09T14:57:47Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-16T12:58:20Z",
+      "closedAt": "2024-10-16T12:58:20Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -1338,7 +1360,7 @@
       "id": "I_kwDOL5eEDM6ZxrCn",
       "title": "Review DER encoding of OIDs",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/61",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "opencrypto",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1350,8 +1372,8 @@
       ],
       "body": "During the implementation of the new version, the DER encoding value seems to give wrong results for the OID. Here's the binary value that I use in my implementation:\r\n```\r\n0x60, 0x86, 0x48, 0x01, 0x86, 0xFA, 0x6B, 0x50, 0x08, 0x01, 0x01\r\n```\r\ninstead of the value in the draft that has a couple of extra bytes.\r\n\r\nAm I missing something?",
       "createdAt": "2024-10-10T22:01:50Z",
-      "updatedAt": "2024-10-11T12:48:11Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-16T14:06:46Z",
+      "closedAt": "2024-10-16T14:06:45Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -1359,6 +1381,20 @@
           "body": "The Tag and Length values of the Object ID are in the draft now... Thats the 060B part at the beginning\r\n\r\nPlug the ones in the draft in this site:  https://lapo.it/asn1js/\r\n060B6086480186FA6B50080115\r\n\r\nIt gives the following as an object ID\r\n2.16.840.1.114027.80.8.1.21\r\n\r\nWe could strip that off if we wanted, and just have the value, which is:\r\n6086480186FA6B50080115\r\n",
           "createdAt": "2024-10-11T12:48:09Z",
           "updatedAt": "2024-10-11T12:48:09Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@opencrypto these are domain separator string, you can just close your eyes and pretend that it's a random hex string. It does not really matter if it can be decoded correctly or not.",
+          "createdAt": "2024-10-16T14:06:36Z",
+          "updatedAt": "2024-10-16T14:06:36Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "These aren't really meant to be decoded by software (but they can if you like), that is why we have them in a table for domain separation..",
+          "createdAt": "2024-10-16T14:06:46Z",
+          "updatedAt": "2024-10-16T14:06:46Z"
         }
       ]
     },
@@ -1367,7 +1403,7 @@
       "id": "I_kwDOL5eEDM6aLP_V",
       "title": "Missing MLDSA44_BrainPool256 from algorithm combinations",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/62",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "opencrypto",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1378,8 +1414,8 @@
       ],
       "body": "In the latest version of the draft where RSA4096 was added seems to be missing the low-level combination for BrainPool curves (MLDSA44 with BrainPool256R1). Shall it be added back?",
       "createdAt": "2024-10-14T17:28:34Z",
-      "updatedAt": "2024-10-14T18:19:47Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-16T14:04:00Z",
+      "closedAt": "2024-10-16T14:03:59Z",
       "comments": [
         {
           "author": "opencrypto",
@@ -1394,6 +1430,27 @@
           "body": "Neither BSI nor ANSSI approve MLDSA44 for use.  If I understand correctly, BrainPool is included for them.  So if MLDSA44 with BrainPool256R1 is added I don't think it will be used.",
           "createdAt": "2024-10-14T18:19:46Z",
           "updatedAt": "2024-10-14T18:19:46Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree with @danvangeest, and also look at openpgp wg: https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf",
+          "createdAt": "2024-10-16T06:14:55Z",
+          "updatedAt": "2024-10-16T06:14:55Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Based on the comments, I don't think we need this.  We want to align as much with others as possible, and adding another combination means more OIDs and no point adding it unless we know someone that wants this one.",
+          "createdAt": "2024-10-16T13:01:24Z",
+          "updatedAt": "2024-10-16T13:01:24Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group agreed to close... We will not add this combination",
+          "createdAt": "2024-10-16T14:03:59Z",
+          "updatedAt": "2024-10-16T14:03:59Z"
         }
       ]
     },
@@ -1402,7 +1459,7 @@
       "id": "I_kwDOL5eEDM6aLdjP",
       "title": "Combination for Level 3 has been changed to (Draft 3) ML_DSA_65 + NISTP384 from (Draft 2) ML_DSA_65 + NISTP256)",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/63",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "opencrypto",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1416,7 +1473,38 @@
       ],
       "body": "The algorithm mldsa65_p384 is replacing the mldsa64_p256 we had previously. It needs to be reverted back.",
       "createdAt": "2024-10-14T17:53:52Z",
-      "updatedAt": "2024-10-14T17:55:50Z",
+      "updatedAt": "2024-10-16T14:03:01Z",
+      "closedAt": "2024-10-16T14:03:01Z",
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi @opencrypto , \r\nwe decided to align the algorithm combinations with the openpgp WG. There ML-DSA-65 is only combined with NISTP384 curves. See the presentation from IETF 120 (https://datatracker.ietf.org/meeting/120/materials/slides-120-openpgp-pqc-with-nist-and-brainpool-curves-00.pdf) As there NIST is engaged in the selection I think the current combination fits best. \r\nDo YOU explicitely need MLDSA-65 with NISTP256?",
+          "createdAt": "2024-10-15T07:27:36Z",
+          "updatedAt": "2024-10-15T07:27:36Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group decided to close since we want to align with openPGP",
+          "createdAt": "2024-10-16T14:03:01Z",
+          "updatedAt": "2024-10-16T14:03:01Z"
+        }
+      ]
+    },
+    {
+      "number": 64,
+      "id": "I_kwDOL5eEDM6agUH3",
+      "title": "Should we use the context String for the underlying ED448 and X25519 algorithms",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/64",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We are using the Domain as a context String for ML-DSA,\r\n\r\nWe can't use the Domain as the context for RSA or ECDSA as they algorithms don't take a context string.\r\n\r\nHowever, ED448 and X25519 do use a context String and could be used.  \r\n\r\nThat would likely give us SUF security for those algorithm combinations.  ",
+      "createdAt": "2024-10-16T14:59:16Z",
+      "updatedAt": "2024-10-16T14:59:16Z",
       "closedAt": null,
       "comments": []
     }
@@ -1932,24 +2020,26 @@
       "id": "PR_kwDOL5eEDM581oI0",
       "title": "Added a security consideration about key reuse",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/54",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #49 \r\nCloses #46\r\n\r\nRelated to, but does not fully address #27 ",
       "createdAt": "2024-09-26T19:11:34Z",
-      "updatedAt": "2024-10-13T19:46:56Z",
+      "updatedAt": "2024-10-16T14:46:34Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_key_reuse",
-      "headRefOid": "b1f5cd70706dbb951fb086dd9580a4b3505b41f1",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "60e83ba5a3786e94ae0c86043ef45a6f46757e28",
+      "closedAt": "2024-10-16T12:58:19Z",
+      "mergedAt": "2024-10-16T12:58:19Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "e727467211be0c1b25fc418c097d8de48eeb91ae"
+      },
       "comments": [
         {
           "author": "ounsworth",
@@ -1964,6 +2054,13 @@
           "body": "After several rounds of back-and-forth with Britta, Falko, and Markku about the EUF-CMA properties, I think this PR is ready to me merged.",
           "createdAt": "2024-10-11T10:32:18Z",
           "updatedAt": "2024-10-11T10:32:18Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Merge it!",
+          "createdAt": "2024-10-15T19:18:42Z",
+          "updatedAt": "2024-10-15T19:18:42Z"
         }
       ],
       "reviews": [
@@ -2326,7 +2423,7 @@
     {
       "number": 57,
       "id": "PR_kwDOL5eEDM59YMnJ",
-      "title": "wip: Add DER ancodings of SPKI and Signature algorithm Identifiers.",
+      "title": "Add DER ancodings of SPKI and Signature algorithm Identifiers.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/57",
       "state": "OPEN",
       "author": "janklaussner",
@@ -2335,13 +2432,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-10-02T13:37:08Z",
-      "updatedAt": "2024-10-14T16:42:39Z",
+      "updatedAt": "2024-10-16T15:08:15Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids-1",
-      "headRefOid": "048314314a07fa07b92b1cb035f2c77792b5a166",
+      "headRefOid": "3c8c123db5a7714a065e14b795af84b3562c754d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2355,7 +2452,48 @@
           "updatedAt": "2024-10-14T16:42:38Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6NbaQw",
+          "commit": {
+            "abbreviatedOid": "0483143"
+          },
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T14:56:08Z",
+          "updatedAt": "2024-10-16T15:01:21Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "wrong id",
+              "createdAt": "2024-10-16T14:56:08Z",
+              "updatedAt": "2024-10-16T15:01:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6Nbiqd",
+          "commit": {
+            "abbreviatedOid": "0483143"
+          },
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T15:08:15Z",
+          "updatedAt": "2024-10-16T15:08:15Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "done",
+              "createdAt": "2024-10-16T15:08:15Z",
+              "updatedAt": "2024-10-16T15:08:15Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 58,
@@ -2397,13 +2535,13 @@
       "labels": [],
       "body": "Updating the pull request to have the latest main changes for adding the context String and the pure and pre-hash modes of composite.",
       "createdAt": "2024-10-09T17:05:50Z",
-      "updatedAt": "2024-10-13T09:59:07Z",
+      "updatedAt": "2024-10-16T19:36:10Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "integrate_issue35_with_main",
-      "headRefOid": "06a24e373646985d98e0586b6eaf08544e596ae8",
+      "headRefOid": "86d05eac7aa3f76342646e177fc2d9f95facaa0b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -2505,6 +2643,106 @@
               "body": "```suggestion\r\nHashComposite-ML-DSA Signature public key types:\r\n```",
               "createdAt": "2024-10-13T09:54:55Z",
               "updatedAt": "2024-10-13T09:59:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6NbCQe",
+          "commit": {
+            "abbreviatedOid": "06a24e3"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T14:27:22Z",
+          "updatedAt": "2024-10-16T14:27:22Z",
+          "comments": [
+            {
+              "originalPosition": 140,
+              "body": "Suggestion:\r\n\r\nIf Error during Desequencing, or if any of the component keys or signature values are not of the correct key type or length for the given component algorithm then output \"Invalid signature\" and stop.",
+              "createdAt": "2024-10-16T14:27:22Z",
+              "updatedAt": "2024-10-16T14:27:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6NbIdu",
+          "commit": {
+            "abbreviatedOid": "b4ab950"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T14:32:54Z",
+          "updatedAt": "2024-10-16T14:32:54Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "typo in component",
+              "createdAt": "2024-10-16T14:32:54Z",
+              "updatedAt": "2024-10-16T14:32:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6Nc82f",
+          "commit": {
+            "abbreviatedOid": "06a24e3"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T17:16:12Z",
+          "updatedAt": "2024-10-16T17:16:12Z",
+          "comments": [
+            {
+              "originalPosition": 402,
+              "body": "Group agreed with this change. ",
+              "createdAt": "2024-10-16T17:16:12Z",
+              "updatedAt": "2024-10-16T17:16:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6NdAI5",
+          "commit": {
+            "abbreviatedOid": "06a24e3"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T17:22:38Z",
+          "updatedAt": "2024-10-16T17:22:38Z",
+          "comments": [
+            {
+              "originalPosition": 142,
+              "body": "I don't agree.   If we want to change them to be the same order, then we change Verify.     In Sign() if ctx > 255 then computing M' would fail because the length of the context can't be encoded into a single byte and computing M' would fail or be incorrect.  Why do all that when a simple check of the length would tell us if we can encode M' properly?    For verify, I don't really think the order matters as separating the keys is independent of the context check, but since the context check is faster, lets just do that one first in verify so they match up...  ",
+              "createdAt": "2024-10-16T17:22:38Z",
+              "updatedAt": "2024-10-16T17:22:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6NeF0t",
+          "commit": {
+            "abbreviatedOid": "06a24e3"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-10-16T19:26:46Z",
+          "updatedAt": "2024-10-16T19:26:46Z",
+          "comments": [
+            {
+              "originalPosition": 142,
+              "body": "I made the change to Verify so the two now match.  The first step is now the context check in a cases (both for pure and pre-hash).",
+              "createdAt": "2024-10-16T19:26:46Z",
+              "updatedAt": "2024-10-16T19:26:46Z"
             }
           ]
         }
