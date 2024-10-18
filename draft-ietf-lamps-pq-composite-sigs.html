@@ -1496,30 +1496,33 @@ svg :is([fill="white"], [fill^="#fff"]) {
           <p id="section-1-1.1.1">Added the ASN.1 encodings for the component public keys and signature algorithm identifiers<a href="#section-1-1.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-1.2">
-          <p id="section-1-1.2.1">ASN.1 Module changes:<a href="#section-1-1.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-1.2.2.1">
-              <p id="section-1-1.2.2.1.1">Renamed the module from Composite-Signatures-2023 -&gt; Composite-MLDSA-2024<a href="#section-1-1.2.2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-1.2.1">Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency<a href="#section-1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1-1.2.2.2">
-              <p id="section-1-1.2.2.2.1">Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.<a href="#section-1-1.2.2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-1-1.3">
+          <p id="section-1-1.3.1">ASN.1 Module changes:<a href="#section-1-1.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-1.3.2.1">
+              <p id="section-1-1.3.2.1.1">Renamed the module from Composite-Signatures-2023 -&gt; Composite-MLDSA-2024<a href="#section-1-1.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1-1.3.2.2">
+              <p id="section-1-1.3.2.2.1">Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.<a href="#section-1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
-        <li class="normal" id="section-1-1.3">
-          <p id="section-1-1.3.1">Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions<a href="#section-1-1.3.1" class="pilcrow">¶</a></p>
-</li>
         <li class="normal" id="section-1-1.4">
-          <p id="section-1-1.4.1">Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.<a href="#section-1-1.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-1.4.1">Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions<a href="#section-1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-1.5">
-          <p id="section-1-1.5.1">Updated the OID table for new Pre-Hash OIDs and added them to the IANA section<a href="#section-1-1.5.1" class="pilcrow">¶</a></p>
+          <p id="section-1-1.5.1">Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.<a href="#section-1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-1.6">
-          <p id="section-1-1.6.1">Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.<a href="#section-1-1.6.1" class="pilcrow">¶</a></p>
+          <p id="section-1-1.6.1">Updated the OID table for new Pre-Hash OIDs and added them to the IANA section<a href="#section-1-1.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-1.7">
-          <p id="section-1-1.7.1">Updated Security Considerations about Non-separability, EUF-CMA and key reuse.<a href="#section-1-1.7.1" class="pilcrow">¶</a></p>
+          <p id="section-1-1.7.1">Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.<a href="#section-1-1.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-1.8">
+          <p id="section-1-1.8.1">Updated Security Considerations about Non-separability, EUF-CMA and key reuse.<a href="#section-1-1.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -2094,7 +2097,7 @@ CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
 </pre><a href="#section-5.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.2-3">A composite key MUST contain two component public keys. The order of the component keys is determined by the definition of the corresponding algorithm identifier as defined in section <a href="#sec-alg-ids" class="auto internal xref">Section 7</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of <code>SEQUENCE OF BIT STRING</code> instead of <code>SEQUENCE OF OCTET STRING</code>; using <code>BIT STRING</code> allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of <code>SEQUENCE OF BIT STRING</code> instead of <code>SEQUENCE OF OCTET STRING</code>; using <code>BIT STRING</code> allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 <p id="section-5.2-5">When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in <a href="#sec-encoding-rules" class="auto internal xref">Section 5.4</a>.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
 <p id="section-5.2-6">Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other type of key or as a standalone key.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 </section>
@@ -2104,18 +2107,35 @@ CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
         <h3 id="name-compositesignatureprivateke">
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-compositesignatureprivateke" class="section-name selfRef">CompositeSignaturePrivateKey</a>
         </h3>
-<p id="section-5.3-1">Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span> MUST use the following structure.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-1">Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span> MUST use the OneAsymmetricKey <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span> structure into which the privateKey field contains the CompositeSignaturePrivateKey:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-2">
 <pre>
-CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+ OneAsymmetricKey ::= SEQUENCE {
+       version                   Version,
+       privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
+       privateKey                PrivateKey,
+       attributes            [0] Attributes OPTIONAL,
+       ...,
+       [[2: publicKey        [1] PublicKey OPTIONAL ]],
+       ...
+     }
+
+  ...
+  PrivateKey ::= OCTET STRING
+                        -- Content varies based on type of key.  The
+                        -- algorithm identifier dictates the format of
+                        -- the key.
 </pre><a href="#section-5.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.3-3">Each element is a <code>OneAsymmetricKey</code>` <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span> object for a component private key.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
-<p id="section-5.3-4">The parameters field MUST be absent.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">The order of the component keys is the same as the order defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.2</a> for the components of CompositeSignaturePublicKey.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
-<p id="section-5.3-6">When a <code>CompositeSignaturePrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a>, the privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MUST NOT be present. Associated public key material MAY be present in the CompositeSignaturePrivateKey.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
-<p id="section-5.3-7">In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.<a href="#section-5.3-7" class="pilcrow">¶</a></p>
-<p id="section-5.3-8">Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.<a href="#section-5.3-8" class="pilcrow">¶</a></p>
+<div class="lang-ASN.1 sourcecode" id="section-5.3-3">
+<pre>
+CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
+</pre><a href="#section-5.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-5.3-4">When a <code>CompositeSignaturePrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent.  Each element of the CompositeSignaturePrivateKey Sequence is an <code>OCTET STRING</code> according to the encoding of the underlying algorithm specification.  The PrivateKey for each component algorithm MUST be in the same order as defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.2</a>.  The privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MAY be present.  If the publicKey field is present, it MUST be a CompositeSignaturePublicKey.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.3-6">Some applications may need to reconstruct the <code>OneAsymmetricKey</code> objects corresponding to each component private key. <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.3-7">Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.<a href="#section-5.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-encoding-rules">
@@ -3030,7 +3050,7 @@ CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
 CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
                                 CompositeSignaturePublicKey ENCODED BY der)
 
-CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 
 CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 
@@ -3517,7 +3537,7 @@ END
         <h3 id="name-object-identifier-allocatio">
 <a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-object-identifier-allocatio" class="section-name selfRef">Object Identifier Allocations</a>
         </h3>
-<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> and <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <div id="module-registration-smi-security-for-pkix-module-identifier">
 <section id="section-10.1.1">
           <h4 id="name-module-registration-smi-sec">
@@ -5239,6 +5259,7 @@ Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
 Serge Mister (Entrust),
+Piotr Popis,
 François Rousseau,
 Falko Strenzke,
 Felipe Ventura (Entrust),

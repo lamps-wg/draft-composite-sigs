@@ -169,6 +169,9 @@ Table of Contents
    *  Added the ASN.1 encodings for the component public keys and
       signature algorithm identifiers
 
+   *  Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF
+      OCTET STRING instead of OneAsymmetricKey to remove redundency
+
    *  ASN.1 Module changes:
 
       -  Renamed the module from Composite-Signatures-2023 -> Composite-
@@ -830,10 +833,10 @@ Signature Verification Procedure::
    corresponding algorithm identifier as defined in section Section 7.
 
    Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 2 in
-   Section 7 provides the necessary mapping between composite and their
-   component algorithms for doing this reconstruction.  This also
-   motivates the design choice of SEQUENCE OF BIT STRING instead of
+   objects corresponding to each component public key.  Table 2 or
+   Table 3 in Section 7 provides the necessary mapping between composite
+   and their component algorithms for doing this reconstruction.  This
+   also motivates the design choice of SEQUENCE OF BIT STRING instead of
    SEQUENCE OF OCTET STRING; using BIT STRING allows for easier
    transcription between CompositeSignaturePublicKey and
    SubjectPublicKeyInfo.
@@ -849,27 +852,40 @@ Signature Verification Procedure::
 
    Use cases that require an interoperable encoding for composite
    private keys, such as when private keys are carried in PKCS #12
-   [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the following
-   structure.
+   [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the
+   OneAsymmetricKey [RFC5958] structure into which the privateKey field
+   contains the CompositeSignaturePrivateKey:
 
-   CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+    OneAsymmetricKey ::= SEQUENCE {
+          version                   Version,
+          privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
+          privateKey                PrivateKey,
+          attributes            [0] Attributes OPTIONAL,
+          ...,
+          [[2: publicKey        [1] PublicKey OPTIONAL ]],
+          ...
+        }
 
-   Each element is a OneAsymmetricKey` [RFC5958] object for a component
-   private key.
+     ...
+     PrivateKey ::= OCTET STRING
+                           -- Content varies based on type of key.  The
+                           -- algorithm identifier dictates the format of
+                           -- the key.
 
-   The parameters field MUST be absent.
-
-   The order of the component keys is the same as the order defined in
-   Section 5.2 for the components of CompositeSignaturePublicKey.
+   CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 
    When a CompositeSignaturePrivateKey is conveyed inside a
    OneAsymmetricKey structure (version 1 of which is also known as
    PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set
    to the corresponding composite algorithm identifier defined according
-   to Section 7, the privateKey field SHALL contain the
-   CompositeSignaturePrivateKey, and the publicKey field MUST NOT be
-   present.  Associated public key material MAY be present in the
-   CompositeSignaturePrivateKey.
+   to Section 7 and its parameters field MUST be absent.  Each element
+   of the CompositeSignaturePrivateKey Sequence is an OCTET STRING
+   according to the encoding of the underlying algorithm specification.
+   The PrivateKey for each component algorithm MUST be in the same order
+   as defined in Section 5.2.  The privateKey field SHALL contain the
+   CompositeSignaturePrivateKey, and the publicKey field MAY be present.
+   If the publicKey field is present, it MUST be a
+   CompositeSignaturePublicKey.
 
    In some usecases the private keys that comprise a composite key may
    not be represented in a single structure or even be contained in a
@@ -879,6 +895,11 @@ Signature Verification Procedure::
    between public keys in a CompositeSignaturePublicKey and private keys
    not represented in a single composite structure is beyond the scope
    of this document.
+
+   Some applications may need to reconstruct the OneAsymmetricKey
+   objects corresponding to each component private key.  Table 2 or
+   Table 3 in Section 7 provides the necessary mapping between composite
+   and their component algorithms for doing this reconstruction.
 
    Component keys of a CompositeSignaturePrivateKey MUST NOT be used in
    any other type of key or as a standalone key.
@@ -1527,7 +1548,7 @@ Signature Verification Procedure::
    CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
                                    CompositeSignaturePublicKey ENCODED BY der)
 
-   CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+   CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 
    CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 
@@ -2009,7 +2030,7 @@ Signature Verification Procedure::
 10.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
-   module and in Table 2.
+   module and in Table 2 and Table 3.
 
 10.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
@@ -3410,10 +3431,10 @@ Appendix F.  Contributors and Acknowledgements
 
    Daniel Van Geest (CryptoNext), Dr. Britta Hale (Naval Postgraduade
    School), Tim Hollebeek (Digicert), Panos Kampanakis (Cisco Systems),
-   Richard Kisley (IBM), Serge Mister (Entrust), François Rousseau,
-   Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien (Siemens),
-   José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
-   Telecom) and 林邦曄 (Austin Lin, Chunghwa Telecom)
+   Richard Kisley (IBM), Serge Mister (Entrust), Piotr Popis, François
+   Rousseau, Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien
+   (Siemens), José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.
+   Chen, Chunghwa Telecom) and 林邦曄 (Austin Lin, Chunghwa Telecom)
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensly with strengthening the signature combiner
