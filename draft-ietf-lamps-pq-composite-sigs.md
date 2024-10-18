@@ -725,9 +725,8 @@ CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 ~~~
 {: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
 
-Each element of the CompositeSignaturePrivateKey Sequence is an `OCTET STRING` representing the PrivateKey for each component algorithm in the same order defined in {{sec-composite-pub-keys}} for the components of CompositeSignaturePublicKey.
 
-When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent.  The privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MAY be present.
+When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent.  Each element of the CompositeSignaturePrivateKey Sequence is an `OCTET STRING` according to the encoding of the underlying algorithm specification.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.  The privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MAY be present.  If the publicKey field is present, it MUST be a CompositeSignaturePublicKey.
 
 In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.
 
