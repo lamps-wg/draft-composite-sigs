@@ -3051,7 +3051,7 @@ CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
 CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
                                 CompositeSignaturePublicKey ENCODED BY der)
 
-CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 
 CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 
