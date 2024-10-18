@@ -874,18 +874,18 @@ Signature Verification Procedure::
 
    CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 
-   Each element of the CompositeSignaturePrivateKey Sequence is an OCTET
-   STRING representing the PrivateKey for each component algorithm in
-   the same order defined in Section 5.2 for the components of
-   CompositeSignaturePublicKey.
-
    When a CompositeSignaturePrivateKey is conveyed inside a
    OneAsymmetricKey structure (version 1 of which is also known as
    PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set
    to the corresponding composite algorithm identifier defined according
-   to Section 7 and its parameters field MUST be absent.  The privateKey
-   field SHALL contain the CompositeSignaturePrivateKey, and the
-   publicKey field MAY be present.
+   to Section 7 and its parameters field MUST be absent.  Each element
+   of the CompositeSignaturePrivateKey Sequence is an OCTET STRING
+   according to the encoding of the underlying algorithm specification.
+   The PrivateKey for each component algorithm MUST be in the same order
+   as defined in Section 5.2.  The privateKey field SHALL contain the
+   CompositeSignaturePrivateKey, and the publicKey field MAY be present.
+   If the publicKey field is present, it MUST be a
+   CompositeSignaturePublicKey.
 
    In some usecases the private keys that comprise a composite key may
    not be represented in a single structure or even be contained in a
