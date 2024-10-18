@@ -157,6 +157,7 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 ## Changes in -03
 
 * Added the ASN.1 encodings for the component public keys and signature algorithm identifiers
+* Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency
 * ASN.1 Module changes:
   * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
   * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
@@ -690,7 +691,7 @@ CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
 
 A composite key MUST contain two component public keys. The order of the component keys is determined by the definition of the corresponding algorithm identifier as defined in section {{sec-alg-ids}}.
 
-Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of `SEQUENCE OF BIT STRING` instead of `SEQUENCE OF OCTET STRING`; using `BIT STRING` allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.
+Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of `SEQUENCE OF BIT STRING` instead of `SEQUENCE OF OCTET STRING`; using `BIT STRING` allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.
 
 When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in {{sec-encoding-rules}}.
 
@@ -698,22 +699,38 @@ Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other ty
 
 ## CompositeSignaturePrivateKey {#sec-priv-key}
 
-Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the following structure.
+Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the OneAsymmetricKey [RFC5958] structure into which the privateKey field contains the CompositeSignaturePrivateKey:
 
 ~~~ ASN.1
-CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey
+ OneAsymmetricKey ::= SEQUENCE {
+       version                   Version,
+       privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
+       privateKey                PrivateKey,
+       attributes            [0] Attributes OPTIONAL,
+       ...,
+       [[2: publicKey        [1] PublicKey OPTIONAL ]],
+       ...
+     }
+
+  ...
+  PrivateKey ::= OCTET STRING
+                        -- Content varies based on type of key.  The
+                        -- algorithm identifier dictates the format of
+                        -- the key.
+~~~
+{: artwork-name="RFC5958-OneAsymmetricKey-asn.1-structure"}
+
+~~~ ASN.1
+CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 ~~~
 {: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
 
-Each element is a `OneAsymmetricKey`` [RFC5958] object for a component private key.
 
-The parameters field MUST be absent.
-
-The order of the component keys is the same as the order defined in {{sec-composite-pub-keys}} for the components of CompositeSignaturePublicKey.
-
-When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}}, the privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MUST NOT be present. Associated public key material MAY be present in the CompositeSignaturePrivateKey.
+When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent.  Each element of the CompositeSignaturePrivateKey Sequence is an `OCTET STRING` according to the encoding of the underlying algorithm specification.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.  The privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MAY be present.  If the publicKey field is present, it MUST be a CompositeSignaturePublicKey.
 
 In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.
+
+Some applications may need to reconstruct the `OneAsymmetricKey` objects corresponding to each component private key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
 Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.
 
@@ -1076,7 +1093,7 @@ The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST i
 IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry [RFC7299] for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the fourteen Algorithms defined within.
 
 ##  Object Identifier Allocations
-EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{tab-sig-algs}}.
+EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{tab-sig-algs}} and {{tab-hash-sig-algs}}.
 
 ###  Module Registration - SMI Security for PKIX Module Identifier
 -  Decimal: IANA Assigned - **Replace TBDMOD**
@@ -1827,6 +1844,7 @@ Tim Hollebeek (Digicert),
 Panos Kampanakis (Cisco Systems),
 Richard Kisley (IBM),
 Serge Mister (Entrust),
+Piotr Popis,
 François Rousseau,
 Falko Strenzke,
 Felipe Ventura (Entrust),
