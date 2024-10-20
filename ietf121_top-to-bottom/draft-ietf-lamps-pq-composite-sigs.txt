@@ -85,10 +85,10 @@ Table of Contents
      3.1.  Pure vs Pre-hashed modes
    4.  Composite ML-DSA Functions
      4.1.  Key Generation
-     4.2.  Pure Signature Generation
+     4.2.  Pure Signature Mode
        4.2.1.  Composite-ML-DSA.Sign
        4.2.2.  Composite-ML-DSA.Verify
-     4.3.  PreHash-Signature Generation
+     4.3.  PreHash-Signature Mode
        4.3.1.  HashComposite-ML-DSA-Sign signature mode
        4.3.2.  HashComposite-ML-DSA-Verify
    5.  Composite Key Structures
@@ -408,25 +408,28 @@ Table of Contents
    use or import component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
 
-4.2.  Pure Signature Generation
+4.2.  Pure Signature Mode
 
-   Composite schemes' signatures provide important properties for multi-
-   key environments such as non-separability and key-binding.  For more
-   information on the additional security properties and their
-   applicability to multi-key or hybrid environments, please refer to
-   [I-D.ietf-pquip-hybrid-signature-spectrums] and the use of labels as
-   defined in [Bindel2017]
+   This mode mirrors HashML-DSA defined in Sections 5.2 and 5.3 of
+   [FIPS.204].
+
+   In the pure mode the Domain separator value is concatenated with the
+   length of the context in bytes, the context, the message to be
+   signed.  After that, the signature process for each component
+   algorithm is invoked and the values are then placed in the
+   CompositeSignatureValue structure defined in Section 6.1.
 
    A composite signature's value MUST include two signature components
    and MUST be in the same order as the components from the
-   corresponding verification public key.
+   corresponding signing key.
 
 4.2.1.  Composite-ML-DSA.Sign
 
    This mode mirrors ML-DSA.Sign(sk, M, ctx) defined in Section 5.2 of
-   [FIPS.204].  The composite domain separator "Domain" Section 7.1 is
-   concatenated with the length of the context string ctx in bytes, the
-   context string ctx, and finally the un-hashed message M .
+   [FIPS.204].  The composite domain separator "Domain" (values given in
+   Section 7.1) is concatenated with the length of the context string
+   ctx in bytes, the context string ctx, and finally the un-hashed
+   message M .
 
    The following process is used to generate pure composite signature
    values and mirrors Algorithm 2 in [FIPS.204].
@@ -501,9 +504,9 @@ Signature Generation Process:
    This mode mirrors ML-DSA.Verify(pk, M, signature, ctx) defined in
    Section 5.3 of [FIPS.204].  Verification of a composite signature
    involves reconstructing the M' message by concatenating the composite
-   domain separator "Domain" Section 7.1 with the length of the context
-   string ctx in bytes, the context string ctx, and finally the original
-   message M .
+   domain separator "Domain" (values given in Section 7.1) with the
+   length of the context string ctx in bytes, the context string ctx,
+   and finally the original message M .
 
    Compliant applications MUST output "Valid signature" (true) if and
    only if all component signatures were successfully validated, and
@@ -581,23 +584,21 @@ Signature Verification Procedure:
    conformant to this document so long as it produces the same output as
    the process sketched above.
 
-4.3.  PreHash-Signature Generation
+4.3.  PreHash-Signature Mode
 
    This mode mirrors HashML-DSA defined in Section 5.4 of [FIPS.204].
 
    In the pre-hash mode the Domain separator Section 7.1 is concatenated
    with the length of the context in bytes, the context, an additional
    DER encoded value that represents the OID of the Hash function and
-   finally the hash of the message.  After that, the signature process
-   for each component algorithm is invoked and the values are then
-   placed in the CompositeSignatureValue structure defined in
-   Section 6.1.
+   finally the hash of the message to de signed.  After that, the
+   signature process for each component algorithm is invoked and the
+   values are then placed in the CompositeSignatureValue structure
+   defined in Section 6.1.
 
    A composite signature's value MUST include two signature components
    and MUST be in the same order as the components from the
    corresponding signing key.
-
-   The following process is used to generate composite signature values.
 
 4.3.1.  HashComposite-ML-DSA-Sign signature mode
 
