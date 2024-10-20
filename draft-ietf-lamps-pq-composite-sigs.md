@@ -1,8 +1,6 @@
 ---
-title: Composite ML-DSA For Use In Internet PKI
+title: Composite ML-DSA For use in X.509 Public Key Infrastructure and CMS
 abbrev: Composite ML-DSA
-title: Composite ML-DSA for use in Internet PKI
-abbrev: PQ Composite ML-DSA
 docname: draft-ietf-lamps-pq-composite-sigs-latest
 
 ipr: trust200902
@@ -10,6 +8,14 @@ area: Security
 wg: LAMPS
 kw: Internet-Draft
 cat: std
+
+venue:
+  group: LAMPS
+  type: Working Group
+  mail: spams@ietf.org
+  arch: https://datatracker.ietf.org/wg/lamps/about/
+  github: lamps-wg/draft-composite-sigs
+  latest: https://lamps-wg.github.io/draft-composite-sigs/draft-ietf-lamps-pq-composite-sigs.html
 
 coding: utf-8
 pi:    # can use array (if all yes) or hash here
@@ -146,7 +152,7 @@ informative:
 
 --- abstract
 
-This document introduces a set of signature schemes that use pairs of cryptographic elements such as public keys and signatures to combine their security properties. These schemes effectively mitigate risks associated with the adoption of post-quantum cryptography and are fully compatible with existing X.509, PKIX, and CMS data structures and protocols. This document defines thirteen specific pairwise combinations, called ML-DSA Composite Schemes, that blend ML-DSA with traditional algorithms such as RSA, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-KEM.
 
 <!-- End of Abstract -->
 
@@ -156,15 +162,20 @@ This document introduces a set of signature schemes that use pairs of cryptograp
 
 ## Changes in -03
 
-* Added the ASN.1 encodings for the component public keys and signature algorithm identifiers
+Interop-affecting changes:
+
 * Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency
+* Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
+* Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions.
+* Updated the OID table for new Pre-Hash OIDs and added them to the IANA section.
+* Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.
+
+Editorial changes:
+
+* Added the ASN.1 encodings for the component public keys and signature algorithm identifiers
 * ASN.1 Module changes:
   * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
   * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
-* Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions
-* Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
-* Updated the OID table for new Pre-Hash OIDs and added them to the IANA section
-* Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.
 * Updated Security Considerations about Non-separability, EUF-CMA and key reuse.
 
 
