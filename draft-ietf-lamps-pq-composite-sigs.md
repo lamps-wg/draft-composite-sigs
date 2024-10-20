@@ -113,7 +113,7 @@ informative:
   I-D.draft-becker-guthrie-noncomposite-hybrid-auth-00:
   I-D.draft-guthrie-ipsecme-ikev2-hybrid-auth-00:
   I-D.draft-pala-klaussner-composite-kofn-00:
-  I-D.draft-driscoll-pqt-hybrid-terminology-01:
+  I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
   I-D.draft-vaira-pquip-pqc-use-cases-00:
   I-D.draft-massimo-lamps-pq-sig-certificates-00:
   I-D.draft-ietf-lamps-dilithium-certificates-04:
@@ -185,7 +185,7 @@ The advent of quantum computing poses a significant threat to current cryptograp
 
 Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.
 
-Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.driscoll-pqt-hybrid-terminology}}.
+Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.ietf-pquip-pqt-hybrid-terminology}}.
 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
 
@@ -195,59 +195,40 @@ Composite ML-DSA is applicable in any application that would otherwise use ML-DS
 
 {::boilerplate bcp14+}
 
-This document is consistent with the terminology defined in {{I-D.driscoll-pqt-hybrid-terminology}}. In addition, the following terminology is used throughout this document:
+This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt-hybrid-terminology}}. In addition, the following terminology is used throughout this document:
 
-ALGORITHM:
-          A standardized cryptographic primitive, as well as
-          any ASN.1 structures needed for encoding data and
-          metadata needed to use the algorithm. This document is
-          primarily concerned with algorithms for producing digital
-          signatures.
+**ALGORITHM**:
+          The usage of the term "algorithm" within this
+          document generally refers to any function which
+          has a registered Object Identifier (OID) for
+          use within an ASN.1 AlgorithmIdentifier. This
+          loosely, but not precisely, aligns with the
+          definitions of "cryptographic algorithm" and
+          "cryptographic scheme" given in {{I-D.ietf-pquip-pqt-hybrid-terminology}}.
 
-BER:
+**BER**:
           Basic Encoding Rules (BER) as defined in [X.690].
 
-CLIENT:
+**CLIENT**:
           Any software that is making use of a cryptographic key.
           This includes a signer, verifier, encrypter, decrypter.
+          This is not meant to imply any sort of client-server
+          relationship between the communicating parties.
 
-COMPONENT ALGORITHM:
-          A single basic algorithm which is contained within a
-            composite algorithm.
-
-COMPOSITE ALGORITHM:
-          An algorithm which is a sequence of two component
-            algorithms, as defined in {{sec-composite-structs}}.
-
-DER:
+**DER**:
           Distinguished Encoding Rules as defined in [X.690].
 
-LEGACY:   For the purposes of this document, a legacy algorithm is
-          any cryptographic algorithm currently in use which is
-          not believed to be resistant to quantum cryptanalysis.
-
-PKI:
+**PKI**:
           Public Key Infrastructure, as defined in [RFC5280].
 
-POST-QUANTUM ALGORITHM:
-          Any cryptographic algorithm which is believed to be resistant
-          to classical and quantum cryptanalysis, such as the algorithms being considered for standardization by NIST.
-
-PUBLIC / PRIVATE KEY:
+**PUBLIC / PRIVATE KEY**:
           The public and private portion of an asymmetric cryptographic
-            key, making no assumptions about which algorithm.
+          key, making no assumptions about which algorithm.
 
-SIGNATURE:
+**SIGNATURE**:
           A digital cryptographic signature, making no assumptions
             about which algorithm.
 
-STRIPPING ATTACK:
-          An attack in which the attacker is able to downgrade the
-          cryptographic object to an attacker-chosen subset of
-          original set of component algorithms in such a way that
-          it is not detectable by the receiver. For example,
-          substituting a composite public key or signature for a
-          version with fewer components.
 
 # Composite Signatures Schemes
 
