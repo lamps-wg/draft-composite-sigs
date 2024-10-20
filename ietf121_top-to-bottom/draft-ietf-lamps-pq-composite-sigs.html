@@ -1554,7 +1554,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       </h2>
 <p id="section-2-1">The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.driscoll-pqt-hybrid-terminology" class="cite xref">I-D.driscoll-pqt-hybrid-terminology</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
@@ -1569,47 +1569,32 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.
 These words may also appear in this document in
 lower case as plain English words, absent their normative meanings.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.1-2">This document is consistent with the terminology defined in <span>[<a href="#I-D.driscoll-pqt-hybrid-terminology" class="cite xref">I-D.driscoll-pqt-hybrid-terminology</a>]</span>. In addition, the following terminology is used throughout this document:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
-<p id="section-2.1-3">ALGORITHM:
-          A standardized cryptographic primitive, as well as
-          any ASN.1 structures needed for encoding data and
-          metadata needed to use the algorithm. This document is
-          primarily concerned with algorithms for producing digital
-          signatures.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.1-4">BER:
+<p id="section-2.1-2">This document is consistent with the terminology defined in <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>. In addition, the following terminology is used throughout this document:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-3"><strong>ALGORITHM</strong>:
+          The usage of the term "algorithm" within this
+          document generally refers to any function which
+          has a registered Object Identifier (OID) for
+          use within an ASN.1 AlgorithmIdentifier. This
+          loosely, but not precisely, aligns with the
+          definitions of "cryptographic algorithm" and
+          "cryptographic scheme" given in <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-4"><strong>BER</strong>:
           Basic Encoding Rules (BER) as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
-<p id="section-2.1-5">CLIENT:
+<p id="section-2.1-5"><strong>CLIENT</strong>:
           Any software that is making use of a cryptographic key.
-          This includes a signer, verifier, encrypter, decrypter.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
-<p id="section-2.1-6">COMPONENT ALGORITHM:
-          A single basic algorithm which is contained within a
-            composite algorithm.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
-<p id="section-2.1-7">COMPOSITE ALGORITHM:
-          An algorithm which is a sequence of two component
-            algorithms, as defined in <a href="#sec-composite-structs" class="auto internal xref">Section 5</a>.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
-<p id="section-2.1-8">DER:
-          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-8" class="pilcrow">¶</a></p>
-<p id="section-2.1-9">LEGACY:   For the purposes of this document, a legacy algorithm is
-          any cryptographic algorithm currently in use which is
-          not believed to be resistant to quantum cryptanalysis.<a href="#section-2.1-9" class="pilcrow">¶</a></p>
-<p id="section-2.1-10">PKI:
-          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-2.1-10" class="pilcrow">¶</a></p>
-<p id="section-2.1-11">POST-QUANTUM ALGORITHM:
-          Any cryptographic algorithm which is believed to be resistant
-          to classical and quantum cryptanalysis, such as the algorithms being considered for standardization by NIST.<a href="#section-2.1-11" class="pilcrow">¶</a></p>
-<p id="section-2.1-12">PUBLIC / PRIVATE KEY:
+          This includes a signer, verifier, encrypter, decrypter.
+          This is not meant to imply any sort of client-server
+          relationship between the communicating parties.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
+<p id="section-2.1-6"><strong>DER</strong>:
+          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
+<p id="section-2.1-7"><strong>PKI</strong>:
+          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
+<p id="section-2.1-8"><strong>PUBLIC / PRIVATE KEY</strong>:
           The public and private portion of an asymmetric cryptographic
-            key, making no assumptions about which algorithm.<a href="#section-2.1-12" class="pilcrow">¶</a></p>
-<p id="section-2.1-13">SIGNATURE:
+          key, making no assumptions about which algorithm.<a href="#section-2.1-8" class="pilcrow">¶</a></p>
+<p id="section-2.1-9"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-2.1-13" class="pilcrow">¶</a></p>
-<p id="section-2.1-14">STRIPPING ATTACK:
-          An attack in which the attacker is able to downgrade the
-          cryptographic object to an attacker-chosen subset of
-          original set of component algorithms in such a way that
-          it is not detectable by the receiver. For example,
-          substituting a composite public key or signature for a
-          version with fewer components.<a href="#section-2.1-14" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-2.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4098,10 +4083,6 @@ END
         <dd>
 <span class="refAuthor">Becker, A.</span>, <span class="refAuthor">Guthrie, R.</span>, and <span class="refAuthor">M. J. Jenkins</span>, <span class="refTitle">"Non-Composite Hybrid Authentication in PKIX and Applications to Internet Protocols"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-becker-guthrie-noncomposite-hybrid-auth-00</span>, <time datetime="2022-03-22" class="refDate">22 March 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-becker-guthrie-noncomposite-hybrid-auth-00">https://datatracker.ietf.org/doc/html/draft-becker-guthrie-noncomposite-hybrid-auth-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.driscoll-pqt-hybrid-terminology">[I-D.driscoll-pqt-hybrid-terminology]</dt>
-        <dd>
-<span class="refAuthor">D, F.</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-driscoll-pqt-hybrid-terminology-01</span>, <time datetime="2022-10-20" class="refDate">20 October 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-driscoll-pqt-hybrid-terminology-01">https://datatracker.ietf.org/doc/html/draft-driscoll-pqt-hybrid-terminology-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.guthrie-ipsecme-ikev2-hybrid-auth">[I-D.guthrie-ipsecme-ikev2-hybrid-auth]</dt>
         <dd>
 <span class="refAuthor">Guthrie, R.</span>, <span class="refTitle">"Hybrid Non-Composite Authentication in IKEv2"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-guthrie-ipsecme-ikev2-hybrid-auth-00</span>, <time datetime="2022-03-25" class="refDate">25 March 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-guthrie-ipsecme-ikev2-hybrid-auth-00">https://datatracker.ietf.org/doc/html/draft-guthrie-ipsecme-ikev2-hybrid-auth-00</a>&gt;</span>. </dd>
@@ -4113,6 +4094,10 @@ END
 <dt id="I-D.ietf-pquip-hybrid-signature-spectrums">[I-D.ietf-pquip-hybrid-signature-spectrums]</dt>
         <dd>
 <span class="refAuthor">Bindel, N.</span>, <span class="refAuthor">Hale, B.</span>, <span class="refAuthor">Connolly, D.</span>, and <span class="refAuthor">F. D</span>, <span class="refTitle">"Hybrid signature spectrums"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-hybrid-signature-spectrums-00</span>, <time datetime="2024-05-24" class="refDate">24 May 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-00">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-pquip-pqt-hybrid-terminology">[I-D.ietf-pquip-pqt-hybrid-terminology]</dt>
+        <dd>
+<span class="refAuthor">D, F.</span>, <span class="refAuthor">P, M.</span>, and <span class="refAuthor">B. Hale</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-pqt-hybrid-terminology-04</span>, <time datetime="2024-09-10" class="refDate">10 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-04">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.massimo-lamps-pq-sig-certificates">[I-D.massimo-lamps-pq-sig-certificates]</dt>
         <dd>
