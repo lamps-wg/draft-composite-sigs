@@ -102,6 +102,7 @@ normative:
 
 informative:
   RFC3279:
+  RFC5914:
   RFC7292:
   RFC7296:
   RFC7299:
@@ -228,6 +229,16 @@ This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
             about which algorithm.
+
+## Composite Design Philosophy
+
+{{I-D.ietf-pquip-pqt-hybrid-terminology}} defines composites as:
+
+>   *Composite Cryptographic Element*:  A cryptographic element that
+>      incorporates multiple component cryptographic elements of the same
+>      type in a multi-algorithm scheme.
+
+Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analagous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
 
 
 # Composite Signatures Schemes
