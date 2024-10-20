@@ -1153,10 +1153,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-03" class="internal xref">Changes in -03</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
                 <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-conventions-and-terminology" class="internal xref">Conventions and Terminology</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1" class="keepWithNext"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-composite-design-philosophy" class="internal xref">Composite Design Philosophy</a></p>
 </li>
             </ul>
 </li>
@@ -1597,6 +1600,22 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
             about which algorithm.<a href="#section-2.1-9" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="composite-design-philosophy">
+<section id="section-2.2">
+        <h3 id="name-composite-design-philosophy">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-composite-design-philosophy" class="section-name selfRef">Composite Design Philosophy</a>
+        </h3>
+<p id="section-2.2-1"><span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span> defines composites as:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-2.2-2.1">
+            <p id="section-2.2-2.1.1"><em>Composite Cryptographic Element</em>:  A cryptographic element that
+     incorporates multiple component cryptographic elements of the same
+     type in a multi-algorithm scheme.<a href="#section-2.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-2.2-3">Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analagous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="composite-signatures-schemes">
@@ -1604,7 +1623,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
       <h2 id="name-composite-signatures-scheme">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-composite-signatures-scheme" class="section-name selfRef">Composite Signatures Schemes</a>
       </h2>
-<p id="section-3-1">The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format [RFC5914].<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Composite schemes are defined as cryptographic primitives that consists of three algorithms:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-3.1">
@@ -3966,7 +3985,7 @@ END
             <p id="section-11.3-6.2.1">This specification assumes that composite public keys will be bound in a structure that contains a signature over the public key (for example, an X.509 Certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>), which is chained back to a trust anchor, and where that signature algorithm is at least as strong as the composite public key that it is protecting.<a href="#section-11.3-6.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-11.3-7">There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in [RFC5914]. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.<a href="#section-11.3-7" class="pilcrow">¶</a></p>
+<p id="section-11.3-7">There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.<a href="#section-11.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4118,6 +4137,10 @@ END
 <dt id="RFC3279">[RFC3279]</dt>
         <dd>
 <span class="refAuthor">Bassham, L.</span>, <span class="refAuthor">Polk, W.</span>, and <span class="refAuthor">R. Housley</span>, <span class="refTitle">"Algorithms and Identifiers for the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 3279</span>, <span class="seriesInfo">DOI 10.17487/RFC3279</span>, <time datetime="2002-04" class="refDate">April 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3279">https://www.rfc-editor.org/info/rfc3279</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5914">[RFC5914]</dt>
+        <dd>
+<span class="refAuthor">Housley, R.</span>, <span class="refAuthor">Ashmore, S.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"Trust Anchor Format"</span>, <span class="seriesInfo">RFC 5914</span>, <span class="seriesInfo">DOI 10.17487/RFC5914</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5914">https://www.rfc-editor.org/info/rfc5914</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7292">[RFC7292]</dt>
         <dd>
