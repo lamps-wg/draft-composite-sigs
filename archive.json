@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-17T00:50:06.400753+00:00",
+  "timestamp": "2024-10-20T00:54:46.269870+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -160,23 +160,31 @@
       "id": "I_kwDOL5eEDM6LI_C2",
       "title": "Resolve OID registration - Entrust assignment or IANA assignment",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/126\r\n\r\nRuss suggested Entrust could just assign the OIDs for composite sigs since we maintain an OID repository. Discuss this with the authors group and add to the next version -13?\r\n\r\nFrom Russ: \": If you are going to use the Entrust OID arc for the module assignment, why not assign it now.\"\r\n\r\nFor example, the module assignment could be:\r\nComposite-Signatures-2023\r\n{ joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)\r\nalgorithm(80) composite(8) id-composite-signatures-2023 (1) }\r\n\r\nToday we have:\r\nComposite-Signatures-2023\r\n{ joint-iso-itu-t(2) country(16) us(840) organization(1) entrust(114027)\r\nalgorithm(80) id-composite-signatures-2023 (TBDMOD) }\r\n\r\nAnd in Composite KEM we are using (for comparison):\r\n\r\nComposite-KEM-2023\r\n{iso(1) identified-organization(3) dod(6) internet(1)\r\nsecurity(5) mechanisms(5) pkix(7) id-mod(0)\r\nid-mod-composite-kems(TBDMOD) }\r\n\r\n\r\nMike and I discussed, we think having IANA assignment would make it more official and not look like it is only for Entrust.   The group decided that IANA assignment is the way to go, this will align with Composite KEM as well\r\n\r\n",
       "createdAt": "2024-06-04T21:21:15Z",
-      "updatedAt": "2024-06-04T21:21:15Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-17T19:20:34Z",
+      "closedAt": "2024-10-17T19:20:34Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Group decided we would request official OIDs from IANA and that is what is currently in the draft.",
+          "createdAt": "2024-10-17T19:20:34Z",
+          "updatedAt": "2024-10-17T19:20:34Z"
+        }
+      ]
     },
     {
       "number": 6,
       "id": "I_kwDOL5eEDM6LI_pD",
       "title": "Should we consider compacting the CompositeSignaturePrivateKey Format like we did with the public key format?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -185,8 +193,8 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/121\r\n\r\nWe simplified the composite signature public key format from:\r\n\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2..MAX) OF SubjectPublicKeyInfo\r\nto\r\nCompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING\r\n\r\nWe haven't changed the CompositePrivateKeyFormat:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OneAsymmetricKey\r\n\r\nOneAsymmetric Key from RFC 5958 is this:\r\n\r\nOneAsymmetricKey ::= SEQUENCE {\r\nversion Version,\r\nprivateKeyAlgorithm PrivateKeyAlgorithmIdentifier,\r\nprivateKey PrivateKey,\r\nattributes [0] Attributes OPTIONAL,\r\n...,\r\n[[2: publicKey [1] PublicKey OPTIONAL ]],\r\n...\r\n}\r\n\r\nPrivateKey ::= OCTET STRING\r\n-- Content varies based on type of key. The\r\n-- algorithm identifier dictates the format of\r\n-- the key.\r\n\r\nOneAsymmetricKey can carry the public key and has the algorithmIdentifier and version fields which are really redundant information. I think we could simply do this:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF PrivateKey\r\n\r\nwhich is effectively:\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING\r\n\r\nIt would allow sending composite private keys in PKCS12, or in raw encrypted blobs, to be smaller.\r\n\r\n\r\nAs of May 8th, 2024 - We are leaning in making this compact change - after getting the v14 update published on the lamp-wg github.\r\n\r\nIt also has the benefit of making key consistency better defined as a static mapping of the algorithm details needs to be used to reonstruct the private key.",
       "createdAt": "2024-06-04T21:23:19Z",
-      "updatedAt": "2024-10-16T15:05:39Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T17:18:33Z",
+      "closedAt": "2024-10-18T17:18:33Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -243,6 +251,13 @@
           "body": "Group is agreeing to change it to:\r\n\r\nCompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING",
           "createdAt": "2024-10-16T15:05:37Z",
           "updatedAt": "2024-10-16T15:05:37Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Resolved in Pull #68 ",
+          "createdAt": "2024-10-18T17:18:33Z",
+          "updatedAt": "2024-10-18T17:18:33Z"
         }
       ]
     },
@@ -251,7 +266,7 @@
       "id": "I_kwDOL5eEDM6LJAQa",
       "title": "Add a new section: explicitely list SPKI AlgIds",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -260,8 +275,8 @@
       "labels": [],
       "body": "From:  https://github.com/EntrustCorporation/draft-ounsworth-composite-sigs/issues/116\r\n\r\nWe should add a section listing explicitly the DER-encoded AlgorithmIdentifiers for the components of each composite public key and signature algorithm. This is important to resolve ambiguity on, for example, whether the RSA should have a NULL param, and the ECC curve params.\r\n\r\nExample, for id-MLDSA44-ECDSA-P256-SHA256 the ML-DSA SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nAnd the ECDSA-P256-SHA256 would have a SPKI would have an AlgorithmIdentifier of:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ecPublicKey,\r\n       secp256r1  \r\n  }\r\nwhich is:\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) keyType(2) 1 },\r\n       iso(1) member-body(2) us(840) ansi-X9-62(10045) curves(3) prime(1) 7}\r\nAnd the signature algorithm for id-MLDSA44-ECDSA-P256-SHA256, the first component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n        id-ml-dsa\r\n    }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  }\r\nand the second component signature algorithm would have an AlgorithmIdentifier of\r\n\r\n   AlgorithmIdentifier  ::=  SEQUENCE  {\r\n          ecdsa-with-SHA256\r\n  }\r\nwhich is:\r\n\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\nWith that done, we should replace the message prefix values in Sectien 2.4 with the SHA256 hash of the signature AlgorithmIdentifiers. This has two nice properties that are better than using the ASCII encoding of the OID name: 1) they are all the same length (ie the length of SHA256), and 2) if the inner OIDs change, for example with a new Kyber version, then the message prefix changes, which prevents cryptographic compatibility issues; or otherwise stated: provides signature domain-separation based on the component OIDs.\r\n\r\n--- SHA256 of the DER encoding of the following ASN.1 value\r\n--- Security Consideration note: the choice of SHA256 here is not security-relevant since it is only to generate fixed string values.\r\n\r\nSEQUENCE {\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n        {\r\n     1.3.6.1.4.1.2.267.12.4.4\r\n      }\r\n  },\r\nAlgorithmIdentifier  ::=  SEQUENCE  {\r\n           {\r\n     iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2\r\n       }\r\n  }\r\n}",
       "createdAt": "2024-06-04T21:24:28Z",
-      "updatedAt": "2024-09-11T14:36:39Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:41:11Z",
+      "closedAt": "2024-10-17T19:41:11Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -360,15 +375,15 @@
       "id": "I_kwDOL5eEDM6LZ42X",
       "title": "Should the pk-CompositeSignature ASN.1 constructor be unrolled for each type?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/11",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "We defined the pk-CompositeSignature information object class so that the rest of the ASN.1 module could be more compact, but it might be limiting optimization since this draft is now ML-DSA only. Perhaps we should remove this and and just directly define the PUBLIC-KEY structure for each public key type?\r\n\r\nSee, for example, the definition from draft-ietf-lamps-dilithium-certificates-03\r\n\r\n~~~\r\n  pk-MLDSA PUBLIC-KEY ::= {\r\n    IDENTIFIER id-MLDSA\r\n    -- KEY no ASN.1 wrapping --\r\n    PARAMS ARE absent\r\n    CERT-KEY-USAGE { nonRepudiation, digitalSignature,\r\n                    keyCertSign, cRLSign }\r\n    --- PRIVATE-KEY no ASN.1 wrapping --\r\n  }\r\n~~~",
       "createdAt": "2024-06-06T17:35:24Z",
-      "updatedAt": "2024-07-03T14:51:12Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:19:31Z",
+      "closedAt": "2024-10-17T19:19:30Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -383,6 +398,13 @@
           "body": "The optimization that I would like us to take advantage of is to more closely match the public key encoding from \r\n\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-lamps-dilithium-certificates-03#name-asn1-module\r\n\r\nWe should check the DER encoding of the Dilithium public key within a composite public key against the sample in the dilithium-certs draft. The question is whether the composite is adding an extra OCTET STRING tag which is not strictly necessary.",
           "createdAt": "2024-07-03T14:51:10Z",
           "updatedAt": "2024-07-03T14:51:10Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was done based on Carl Wallace's comments and subsequent updates to the ASN.1 module.   ",
+          "createdAt": "2024-10-17T19:19:30Z",
+          "updatedAt": "2024-10-17T19:19:30Z"
         }
       ]
     },
@@ -495,7 +517,7 @@
       "id": "I_kwDOL5eEDM6O80RT",
       "title": "Read Carl's email",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -504,8 +526,8 @@
       "labels": [],
       "body": "See https://mailarchive.ietf.org/arch/msg/spasm/b7rvHiKnA80oZ-VqQY7LIoFdsu8/. The point below is the that using a template like this with an embedded ASN.1 definition causes compilers (or at least the compiler I use) to emit far more code than if the structure were factored out of the template definition. I\u2019ve not spent any time with composite-kem yet, but it looks like some of the comments I had relative to the composite-signatures draft would apply here too.",
       "createdAt": "2024-07-09T13:56:32Z",
-      "updatedAt": "2024-09-25T18:57:54Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:18:26Z",
+      "closedAt": "2024-10-17T19:18:26Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -513,6 +535,13 @@
           "body": "This work was done in composite signatures, now the composite KEM draft needs to also be updated.",
           "createdAt": "2024-09-25T18:57:53Z",
           "updatedAt": "2024-09-25T18:57:53Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This work was completed in signatures.  ",
+          "createdAt": "2024-10-17T19:18:26Z",
+          "updatedAt": "2024-10-17T19:18:26Z"
         }
       ]
     },
@@ -521,7 +550,7 @@
       "id": "I_kwDOL5eEDM6O87nU",
       "title": "Feedback from Piotr",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/21",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -530,9 +559,17 @@
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/69ApI6-0EjcaQrel70vAV1Avyho/",
       "createdAt": "2024-07-09T14:09:54Z",
-      "updatedAt": "2024-09-25T15:07:56Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-18T17:30:08Z",
+      "closedAt": "2024-10-18T17:30:08Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We will mention this as part of the Change log.   We believe the comments have been addressed in the most recent changes to the draft.  ",
+          "createdAt": "2024-10-18T17:30:08Z",
+          "updatedAt": "2024-10-18T17:30:08Z"
+        }
+      ]
     },
     {
       "number": 22,
@@ -781,32 +818,48 @@
       "id": "I_kwDOL5eEDM6S31IC",
       "title": "Update draft to support Official ML-DSA standard",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/28",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The new FIPS 204 standard for ML-DSA was released.   We need to update the draft pointing to this draft:\r\nhttps://csrc.nist.gov/pubs/fips/204/ipd\r\n",
       "createdAt": "2024-08-13T19:53:01Z",
-      "updatedAt": "2024-08-13T19:53:01Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-17T19:17:52Z",
+      "closedAt": "2024-10-17T19:17:52Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Added in Pull #59 ",
+          "createdAt": "2024-10-17T19:17:52Z",
+          "updatedAt": "2024-10-17T19:17:52Z"
+        }
+      ]
     },
     {
       "number": 29,
       "id": "I_kwDOL5eEDM6S_K_3",
       "title": "List security strength of each composite",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/29",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "From the LAMPS mail list:\r\n\r\nHi Piotr,\r\n\r\n> \u201cIn addition, it might be appropriate to add a column, for example, in Table 6 (or even better, in a new table in Section 11.1) indicating the \"overall\" Security strength, which would take into account the weakest element.\u201d\r\n\r\nWhile I agree that this will be useful to a reader, I think that coming up with a single \u201coverall security strength\u201d for a composite will be difficult. For example, are you considering before or after your adversary has a CRQC? Perhaps the best we could do is to have two columns for \u201cClassical security\u201d and \u201cPQ Security\u201d and list different numbers in each column. Is this worth doing? \r\n",
       "createdAt": "2024-08-14T14:34:54Z",
-      "updatedAt": "2024-08-14T14:34:54Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-17T19:17:07Z",
+      "closedAt": "2024-10-17T19:17:07Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It is hard to quantify the overall strength at any given point it time, because it changes based on cryptanalysis.  Therefore, we don't think this table would add value.  We have added a strong security considerations section that talks about the strength of the algorithms in terms of their underlying notions.  ",
+          "createdAt": "2024-10-17T19:17:07Z",
+          "updatedAt": "2024-10-17T19:17:07Z"
+        }
+      ]
     },
     {
       "number": 30,
@@ -868,15 +921,17 @@
       "id": "I_kwDOL5eEDM6TQ4ks",
       "title": "Digicert feedback",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/32",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "ounsworth"
+      ],
       "labels": [],
       "body": "\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/ReWx7kichMke-HuTHjCih3iZpD0/\r\n\r\nDigiCert's CA engineering team has some comments on the open issues related\r\nto the composite-sigs draft. We're going to put them in one email just\r\nbecause we have comments on quite a few of them.\r\n\r\nISSUE #1\r\n(Github issue:  https://github.com/lamps-wg/draft-composite-sigs/issues/9)\r\n\r\nASN.1 wrapping confuses people. This came up in the hash-based signatures\r\nupdates last call. Nobody knows what ASN.1 is, or what the consequences\r\nof omiting it are (to be clear, there are really none).\r\n\r\nWe agree that this is largely a question of people being unfamiliar with\r\nASN.1, and that explanatory text is sufficient. All that is needed is a\r\nclear explanation of example what the BIT STRING is, and explaining that\r\nit's simply the bits of the key itself seems pretty straightforward.\r\n\r\nOne can then say something similar to: \r\n\r\n\"In some situations and protocols, the key might be wrapped in ASN.1 or \r\nmay have some other additional decoration or encoding. If so, such wrapping \r\nMUST be removed prior to encoding the key itself as a BIT STRING.\"\r\n\r\nHopefully that makes things crystal clear.\r\n\r\nISSUE #2\r\n(Github Issue: https://github.com/lamps-wg/draft-composite-sigs/issues/19)\r\n\r\nWe don't think it's worth the extra complexity and expense of an additional\r\nhash operation just to achieve a fixed size output. The variation in size\r\nis already pretty small.\r\n\r\nISSUE #3\r\n(Github issue: https://github.com/lamps-wg/draft-composite-sigs/issues/6)\r\n\r\nAgain, we don't believe the additional complexity is worth it for a pretty\r\ntrivial improvement in the private key size. But it's not a strong opinion,\r\nwe could go either way.\r\n\r\nOpen Issues affect both Composite Signatures and Composite KEM:\r\nISSUE #4\r\n\r\nChair hat off, I and the CA team are concerned about the slow progress of \r\nthe composite signature work. In particular, tying it to the Composite KEM\r\ndraft and waiting for the CFRG work on KEM Combiners seems like an\r\nabsolutely horrible idea to us. We would like to see Composite Signatures\r\nprogress ASAP.\r\n\r\nISSUE #5\r\n(Github issues:\r\nhttps://github.com/lamps-wg/draft-composite-kem/issues/37\r\nhttps://github.com/lamps-wg/draft-composite-sigs/issues/24\r\nhttps://github.com/lamps-wg/draft-composite-sigs/issues/23)\r\n\r\nThis is a fun one, and we've spent quite a bit of time discussing it\r\ninternally.\r\n\r\nIn particular, we're still debating the question about exactly how many\r\nbackwards compatibility options are really necessary. For example, given\r\nthat you already need to add lattice, is it really necessary to allow\r\nPKCS15 to continue to exist? For RSA, there's the reasonable argument that\r\nthat might be all you have in your validated hardware/software, but if you\r\nhave RSA as a primitive, can't you do PSS instead of PKCS15? Remember, you\r\nalready have to make changes on both the signing and verify side anyway.\r\n\r\nWe're trending in the direction of thinking that the primary decision is\r\nthe security level and post-quantum algorithm, and the classical side is\r\njust determined by what \"makes sense\" for that security level and algorithm.\r\n\r\nSo what you really want is something like \"id-SL1-MLKEM-RSA\" where the\r\ndocument specifies exactly what \"RSA\" means in the context of a SL1 MLKEM512\r\ncomposite, e.g. RSA4096-PSS-SHA512. This basically means striving for\r\nat most one combination for each triple of (security level, PQC flavor, classical \r\nflavor) and eliminating unnecessary complexity and diversity of options in what \r\nis essentially a redundancy/backup mechanism.\r\n\r\nThe basic idea is to more aggressively standardize the backwards \r\ncompatibility options to only what's actually necessary, instead of\r\ntrying to be backwards compatible with the universe of current behavior,\r\nwhich both unnecessarily complicates things, and preserves some practices\r\n(e.g. PKCS15) longer than is perhaps prudent.\r\n\r\n-Tim\r\n",
       "createdAt": "2024-08-16T17:29:47Z",
-      "updatedAt": "2024-08-16T17:29:47Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T23:54:07Z",
+      "closedAt": "2024-10-17T23:54:07Z",
       "comments": []
     },
     {
@@ -884,15 +939,15 @@
       "id": "I_kwDOL5eEDM6T5Pjf",
       "title": "Burt's feedback: context string in domain separator?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/33",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator also include an optional context string, similar to the domain separator NIST has defined for the recently published FIPS 204/205 [1]?  The context string would provide a way to \u201cseparate uses of the protocol between different protocols \u2026 and between different uses within the same protocol\u201d (Sec. 8.3 of [2]).  \r\n\r\n> Similarly, if an underlying signature algorithm supports a context string, what value should be given to the context string when the algorithm is used with the composite construction?  If the composite construction is updated to include an optional context string in the domain separator, should the context strings for the underlying algorithm and for the overall construction be the same?  Or should the context string for the underlying algorithm instead somehow indicate the \u201cuse\u201d of the underlying algorithm is \u201cfor signing a composite signature hash value\u201d?\r\n\r\n[2] S. Josefsson, I. Liusvaara.  Edwards-Curve Digital Signature Algorithm (EdDSA).  RFC 8032, January 2017",
       "createdAt": "2024-08-22T16:29:29Z",
-      "updatedAt": "2024-09-26T12:03:28Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:13:15Z",
+      "closedAt": "2024-10-17T19:13:15Z",
       "comments": [
         {
           "author": "ounsworth",
@@ -907,6 +962,13 @@
           "body": "Duplicate of #42\r\n",
           "createdAt": "2024-09-26T12:03:17Z",
           "updatedAt": "2024-09-26T12:03:28Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We supported added the context String... Closed #42 already, \r\nthis was part of pull #59 ",
+          "createdAt": "2024-10-17T19:13:15Z",
+          "updatedAt": "2024-10-17T19:13:15Z"
         }
       ]
     },
@@ -915,15 +977,15 @@
       "id": "I_kwDOL5eEDM6T5RGI",
       "title": "Burt's feedback: should we define pre-hashed modes for composite?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/34",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/spasm/vzomXUHvJOouzIcC82WkMF4DP-g/\r\n\r\n> Should the domain separator include an initial byte that identifies the type of domain separator, again similar to NIST\u2019s definition?  For instance, the value 1 could indicate that the message is pre-hashed as currently proposed in draft-ietf-lamps-pq-composite-sigs.  A different value could support another option:  the message is not pre-hashed, but instead is prepended with a domain separator, and then passed to the two signature algorithms.  That option would avoid the need for an additional hashing operation to be specified.  (The domain separator could still include an OID for the combination of the two signature algorithms in order to separate different combinations of algorithms.)\r\n\r\n> If an underlying signature algorithm supports pure and pre-hash modes, which mode should be used with the composite signature construction?  Presumably pure mode when the composite construction includes pre-hashing, because the message will already have been hashed by the time it reaches the underlying signature algorithm, but this should be stated explicitly.\r\n\r\n> In addition to pre-hashing as currently proposed, should there be an option for including a randomizer and/or the signers\u2019 public keys in the input to the pre-hash operation, in addition to the message?  As Joe Harvey observed in comments to NIST earlier this year [3], without such an option, pre-hashing introduces a dependency on collision resistance, whereas the security of the underlying signature algorithm may be based on other security assumptions (e.g., target collision resistance, second preimage resistance).   Moreover, a collision, if found, could potentially be used against multiple users, whereas the underlying signature algorithm may have been designed to provide security in the multi-user model.  (This is not an argument for reducing the size of the hash function output by using randomization, but rather for considering that the use of pre-hashing may change the security assumptions compared to the underlying algorithm, and providing the protocol designer a way to revert to the original assumptions.)\r\n",
       "createdAt": "2024-08-22T16:32:57Z",
-      "updatedAt": "2024-10-02T04:46:22Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:12:14Z",
+      "closedAt": "2024-10-17T19:12:14Z",
       "comments": [
         {
           "author": "ounsworth",
@@ -959,6 +1021,13 @@
           "body": "Mike and I and the Composite authors group are having further discussions.   I think we are going to land on making use of both pure and pre-hash versions of composite, using a construction that is essentially aligned with what NIST has done.  Instead of using 0 or 1, we use the DER Encoding of the Composite Signature OID and call it \"Domain\"\r\n \r\nCompositeML-DSA:\r\n \r\nM' := Domain || IntegerToBytes(|ctx|, 1) || ctx || Message\r\nwhere \u201cDomain\u201d are the DER(OID) values from our table.\r\n \r\n \r\nHashCompositeML-DSA:\r\n \r\nM' := Domain || IntegerToBytes(|ctx|, 1) || ctx || HashOID || PH\r\nwhere \u201cDomain\u201d are the DER(OID) values from our table.\r\nwhere H is not specified in our table, but instead can be SHA-256, SHA-512, SHAKE128 or others in the future.\r\n \r\nFIPS 204 suggests the specified HASH algorithm should be carried in the OID.  Of course we could choose to use an Algorithm parameter for efficiency here or we get major OID explosion.  I think we will just end up choose 1 appropriate HASH for the pre-hash version (similar to what is in the -02 version of the draft).\r\n",
           "createdAt": "2024-10-02T04:46:20Z",
           "updatedAt": "2024-10-02T04:46:20Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We added pre-hash and pure modes.   Merged in pull #59 ",
+          "createdAt": "2024-10-17T19:12:14Z",
+          "updatedAt": "2024-10-17T19:12:14Z"
         }
       ]
     },
@@ -967,15 +1036,15 @@
       "id": "I_kwDOL5eEDM6Ujg1T",
       "title": "Should we have a nonempty ML-DSA context string?",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/35",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sfluhrer",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "ML-DSA has a 'context string' as an input; the idea is to allow the capability to bind a signature to a specific context.\r\n\r\nShould we specify that, when we implement ML-DSA within a composite signature, that we have a nonempty context?\r\n\r\nIf the verifier will never accept a signature signed by a specific ML-DSA key except as part of a composite signature, we don't gain anything.  However, it might be a helpful 'belt-and-suspenders' if some application would happen to reuse the ML-DSA public key.\r\n\r\nIf we do have a nonempty context string, what should it be:\r\n- Should it be the OID for the composite (so that the signature can be used only as a part of that specific combination)\r\n- Should it be the hash of the composite public key (so that we're safe even if some fool changes the other components)\r\n\r\nThoughts?",
       "createdAt": "2024-08-28T14:51:26Z",
-      "updatedAt": "2024-10-16T13:04:26Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:11:38Z",
+      "closedAt": "2024-10-17T19:11:37Z",
       "comments": [
         {
           "author": "ounsworth",
@@ -1018,6 +1087,13 @@
           "body": "We ended up adding both Pure and Hash versions with the context string, so this will also resolve #45\r\n\r\nresolves #45 ",
           "createdAt": "2024-10-16T13:04:24Z",
           "updatedAt": "2024-10-16T13:04:24Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We decided to use the context String, and this was Merged in Pull #59 ",
+          "createdAt": "2024-10-17T19:11:37Z",
+          "updatedAt": "2024-10-17T19:11:37Z"
         }
       ]
     },
@@ -1115,15 +1191,15 @@
       "id": "I_kwDOL5eEDM6WNcSA",
       "title": "We should also expose a context string / domain separator as external input to the composite-sign",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/42",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "See discussion here:\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/YFW4hVCZAQiVge2Z1kzAlIcM4U8/\r\n\r\nThe idea is that you may want to bind the actually application context, like \"MS Firmware Sign\" in addition to the composite sig OID. This \r\n\r\nIf we make this change, the composite sign would become:\r\n\r\n```\r\nM' := Domain || Ctx || HASH(Message)\r\n```\r\n\r\nor possibly\r\n\r\n```\r\nM' := Domain || HASH(Ctx || Message)\r\n```\r\n\r\nwhere `Ctx` is external input to the composite Sign(), and defaults to the empty string.\r\n\r\nMy concern with doing things outside the HASH is that this is the pre-hash for RSA / ECDSA, so a very long context string could overflow the RSA / ECDSA \"block\" -- therefore I think any kind of variable-length Ctx needs to be inside the hash.",
       "createdAt": "2024-09-11T15:44:12Z",
-      "updatedAt": "2024-09-26T14:52:19Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-18T14:46:08Z",
+      "closedAt": "2024-10-18T14:46:08Z",
       "comments": [
         {
           "author": "ounsworth",
@@ -1159,6 +1235,13 @@
           "body": "I was just looking at the ML-DSA draft, and they define the pre-hash as this:\r\n\ud835\udc40 \u2190 BytesToBits(IntegerToBytes(1, 1) \u2225 IntegerToBytes(|\ud835\udc50\ud835\udc61\ud835\udc65|, 1) \u2225 \ud835\udc50\ud835\udc61\ud835\udc65 \u2225 OID \u2225 PH\r\n\r\nWhere OID is equivalent to our Domain, and PH is H (Message)\r\n\r\nSo to align better with what is in pre-hash format of NIST ML-DSA, why don't we re-order to the following:\r\n\r\nM' := Domain || HASH(IntegerToBytes(|ctx|, 1) || ctx || Message)\r\nM' := IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\nThe part that is missing is what Max had pointed out. (BytesToBits(IntegerToBytes(1, 1) )     \r\n\r\nSo I think it makes sense to align to:\r\n\r\nM' :=  BytesToBits(IntegerToBytes(1, 1) ||  IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\n\r\nThis would also align with Bert Kaliski's \"Modes of Operation\" presentation at ICMC.  For example, they are advocating the \"MTL\" mode using something like this:\r\n\r\nM' :=  BytesToBits(IntegerToBytes(129, 1) ||  IntegerToBytes(|ctx|, 1) || ctx || Domain || Hash (Message)\r\n\r\nSo we could request a different integer value to indicate composite signing, or just use 1 to indicate it is essentially a standard ML-DSA pre-hash\r\n\r\n",
           "createdAt": "2024-09-26T14:52:18Z",
           "updatedAt": "2024-09-26T14:52:18Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "After many conversations we resolved this by adding both a Pure and PreHash Modes for the message format that Align with the FIPS 204 document.\r\n\r\nPure:        M' :=  Domain || len(ctx) || ctx || M\r\nPreHash:  M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)",
+          "createdAt": "2024-10-18T14:46:08Z",
+          "updatedAt": "2024-10-18T14:46:08Z"
         }
       ]
     },
@@ -1191,7 +1274,7 @@
       "id": "I_kwDOL5eEDM6W5C8r",
       "title": "Description of \"PUBLIC-KEY\" is wrong",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/44",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1200,8 +1283,8 @@
       "labels": [],
       "body": "Laurent Pion points out that a signature is produced by a private key, not a public key.\r\n\r\n> Chapter 6.1, table 1\r\n> Don\u2019t know if it\u2019s my wrong understanding or a little mistake, PUBLIC-KEYS, is it the composite (private) key required to produce the signature or the public key to verify it?\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/S5CyDKP4xngRmHNdlmHozXrpLzw/\r\n",
       "createdAt": "2024-09-17T16:01:51Z",
-      "updatedAt": "2024-10-16T14:16:35Z",
-      "closedAt": null,
+      "updatedAt": "2024-10-17T19:08:53Z",
+      "closedAt": "2024-10-17T19:08:52Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -1209,6 +1292,13 @@
           "body": "Yes, the description is wrong.  In RFC 5912 it is this:\r\n\r\nSIGNATURE-ALGORITHM ::= CLASS {\r\n    &id             OBJECT IDENTIFIER UNIQUE,\r\n    &Value          OPTIONAL,\r\n    &Params         OPTIONAL,\r\n    &paramPresence  ParamOptions DEFAULT absent,\r\n    &HashSet        DIGEST-ALGORITHM OPTIONAL,\r\n    &PublicKeySet   PUBLIC-KEY OPTIONAL,\r\n    &smimeCaps      SMIME-CAPS OPTIONAL\r\n} WITH SYNTAX {\r\n    IDENTIFIER &id\r\n    [VALUE &Value]\r\n    [PARAMS [TYPE &Params] ARE &paramPresence ]\r\n    [HASHES &HashSet]\r\n    [PUBLIC-KEYS &PublicKeySet]\r\n\r\n\r\nSo we changed the wording in the document to the following to clarify:\r\n\r\nThe following is an explanation how SIGNATURE-ALGORITHM elements are used\r\nto define Composite Signatures:\r\n\r\n| SIGNATURE-ALGORITHM element | Definition |\r\n| ---------                  | ---------- |\r\n| IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm |\r\n| VALUE                       | The Sequence of BIT STRINGS for each component signature value |\r\n| PARAMS                      | Parameters are absent  |\r\n| PUBLIC-KEYS                 | The composite public key type associated with the composite signature |\r\n\r\n\r\n\r\n",
           "createdAt": "2024-10-16T14:16:34Z",
           "updatedAt": "2024-10-16T14:16:34Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed as part of #59 ",
+          "createdAt": "2024-10-17T19:08:52Z",
+          "updatedAt": "2024-10-17T19:08:52Z"
         }
       ]
     },
@@ -1217,7 +1307,7 @@
       "id": "I_kwDOL5eEDM6XFAn8",
       "title": "Clarify that we are using pure ML-DSA, not HashML-DSA",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/45",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1226,9 +1316,17 @@
       "labels": [],
       "body": "We should add text in a few places\r\nWe should add this in the section where we define the signature process, and we should also mention it in the appendix about FIPS certification of a composite implementation.\r\n\r\n(Credit for this ticket: Jeff Andersen)",
       "createdAt": "2024-09-18T20:33:42Z",
-      "updatedAt": "2024-10-09T15:00:44Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-10-17T19:09:27Z",
+      "closedAt": "2024-10-17T19:09:26Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We decided to support both PreHash and Pure modes.  Merged in #59 ",
+          "createdAt": "2024-10-17T19:09:26Z",
+          "updatedAt": "2024-10-17T19:09:26Z"
+        }
+      ]
     },
     {
       "number": 46,
@@ -1507,6 +1605,70 @@
       "updatedAt": "2024-10-16T14:59:16Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 65,
+      "id": "I_kwDOL5eEDM6ar2yE",
+      "title": "Add table of PK, Sig sizes",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/65",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "https://mailarchive.ietf.org/arch/msg/spasm/zfWx5fYjvuvohTOI7asQG4m-NDI/\r\n\r\n> Hi Mike,\r\n>\r\n> Your draft:\r\n> https://datatracker.ietf.org/doc/draft-ietf-lamps-pq-composite-kem/\r\n> could do with table  on Npk, Nsk, and NSig sizes. Such tables greatly help\r\n> in implementation.\r\n>\r\n> The idea is from RFC 9180, Section 7.1\r\n> <https://datatracker.ietf.org/doc/rfc9180/>\r\n>\r\n> [image: image.png]\r\n>\r\n> The details of the calculations can be found here:\r\n>\r\n> https://github.com/codespree/quantcrypt/blob/main/additional_info_keysize.md\r\n>\r\n> All the best,\r\n> Varun\r\n\r\nIn my opinion, we should get sample keys, signatures, and ciphertexts for all algorithms, and then measure them. This sounds like a hackathon project.",
+      "createdAt": "2024-10-17T16:16:12Z",
+      "updatedAt": "2024-10-18T09:51:25Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ZPDSSAI",
+          "authorAssociation": "NONE",
+          "body": "Hi Mike,\r\n\r\nI am Peiduo and I am from Varun(@codespree)'s team. We have computed the public key, secrete key and signature lengths for ML-DSA and its composite variations, and the public key, secrete key, shared secret, and cipher text lengths for ML-KEM and its composite variations. The full table documentation, together with notes on overhead computation, can be found in our project repo [here](https://github.com/codespree/quantcrypt/blob/main/additional_info_keysize.md). \r\n\r\nPlease check if the tables meet the requirement of this issue :) \r\n\r\nBest regards,\r\nZhao Peiduo",
+          "createdAt": "2024-10-18T09:51:23Z",
+          "updatedAt": "2024-10-18T09:51:23Z"
+        }
+      ]
+    },
+    {
+      "number": 66,
+      "id": "I_kwDOL5eEDM6atiQf",
+      "title": "Align with CMS SignerInfo Digest from the CMS ML-DSA draft",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/66",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See https://datatracker.ietf.org/doc/draft-salter-lamps-cms-ml-dsa/",
+      "createdAt": "2024-10-17T20:01:23Z",
+      "updatedAt": "2024-10-17T20:01:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 69,
+      "id": "I_kwDOL5eEDM6a2Fn4",
+      "title": "Need to add the New PreHash OIDs to the ASN.1 module",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/69",
+      "state": "CLOSED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "When Updating the Pre-Hash versions, I forgot to add them to the ASN.1 module.",
+      "createdAt": "2024-10-18T15:47:13Z",
+      "updatedAt": "2024-10-18T17:17:13Z",
+      "closedAt": "2024-10-18T17:17:13Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Resolved in Pull #70 ",
+          "createdAt": "2024-10-18T17:17:13Z",
+          "updatedAt": "2024-10-18T17:17:13Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1986,24 +2148,26 @@
       "id": "PR_kwDOL5eEDM581cUa",
       "title": "Removing security consideration section Public Key Algorithm Selectio\u2026",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/53",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "\u2026n Criteria because it no longer aligns.",
       "createdAt": "2024-09-26T18:41:37Z",
-      "updatedAt": "2024-10-09T14:47:01Z",
+      "updatedAt": "2024-10-17T19:26:21Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
-      "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
+      "baseRefOid": "ed1ffd6d64819c36572fa3baf0dfe059ef549e8f",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_selection_criteria",
-      "headRefOid": "5006b22378e9168f47f07e0829b7896ce927956d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6a18dfedb4638e7d2d260479713dc8a955096312",
+      "closedAt": "2024-10-17T19:26:21Z",
+      "mergedAt": "2024-10-17T19:26:21Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "db3a6aed31c61bec8ed71b71d0535a7011745932"
+      },
       "comments": [
         {
           "author": "johngray-dev",
@@ -2391,21 +2555,21 @@
       "id": "PR_kwDOL5eEDM587uXQ",
       "title": "Clarified AlgIDs for component private keys.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/56",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #55",
       "createdAt": "2024-09-27T14:51:44Z",
-      "updatedAt": "2024-10-14T17:35:23Z",
+      "updatedAt": "2024-10-19T23:16:19Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "caa9a901e51fe82c5ad60f967bae86b228ef9433",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_private_key_oid",
       "headRefOid": "34e828882f1c2f8345eeba542cabf7418a27c1e1",
-      "closedAt": null,
+      "closedAt": "2024-10-19T23:16:19Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -2425,24 +2589,26 @@
       "id": "PR_kwDOL5eEDM59YMnJ",
       "title": "Add DER ancodings of SPKI and Signature algorithm Identifiers.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/57",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-10-02T13:37:08Z",
-      "updatedAt": "2024-10-16T15:08:15Z",
+      "updatedAt": "2024-10-17T19:41:17Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
-      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
+      "baseRefOid": "db3a6aed31c61bec8ed71b71d0535a7011745932",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "7-add-a-new-section-explicitely-list-spki-algids-1",
-      "headRefOid": "3c8c123db5a7714a065e14b795af84b3562c754d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "a404601651eb8e0bc1f33afb39d45f20b6b12236",
+      "closedAt": "2024-10-17T19:41:10Z",
+      "mergedAt": "2024-10-17T19:41:10Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "4da7ef18f0aac498de1db978f6170b28be734584"
+      },
       "comments": [
         {
           "author": "janklaussner",
@@ -2492,6 +2658,19 @@
               "updatedAt": "2024-10-16T15:08:15Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6NoH_4",
+          "commit": {
+            "abbreviatedOid": "3c8c123"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T19:31:09Z",
+          "updatedAt": "2024-10-17T19:31:09Z",
+          "comments": []
         }
       ]
     },
@@ -2528,24 +2707,26 @@
       "id": "PR_kwDOL5eEDM5-G9fd",
       "title": "Integrate issue35 with main",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/59",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Updating the pull request to have the latest main changes for adding the context String and the pure and pre-hash modes of composite.",
       "createdAt": "2024-10-09T17:05:50Z",
-      "updatedAt": "2024-10-16T19:36:10Z",
+      "updatedAt": "2024-10-17T19:08:15Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
-      "baseRefOid": "a20cd4c3183dba03c885b64ddab03e5fc0951562",
+      "baseRefOid": "e727467211be0c1b25fc418c097d8de48eeb91ae",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "integrate_issue35_with_main",
-      "headRefOid": "86d05eac7aa3f76342646e177fc2d9f95facaa0b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "851821e4ca956b3be2689f91d1b0178d374247b4",
+      "closedAt": "2024-10-17T19:08:08Z",
+      "mergedAt": "2024-10-17T19:08:08Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "ed1ffd6d64819c36572fa3baf0dfe059ef549e8f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2745,8 +2926,105 @@
               "updatedAt": "2024-10-16T19:26:46Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6Nn8kZ",
+          "commit": {
+            "abbreviatedOid": "43de3e5"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T19:03:34Z",
+          "updatedAt": "2024-10-17T19:03:34Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 67,
+      "id": "PR_kwDOL5eEDM5_CAvI",
+      "title": "Digicert feedback.",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/67",
+      "state": "MERGED",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #32",
+      "createdAt": "2024-10-17T23:51:22Z",
+      "updatedAt": "2024-10-17T23:54:36Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "4da7ef18f0aac498de1db978f6170b28be734584",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_digicert_feedback",
+      "headRefOid": "ddb17c3b4319dd2a518cd24595563255e608738b",
+      "closedAt": "2024-10-17T23:54:06Z",
+      "mergedAt": "2024-10-17T23:54:06Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "172975bfb31189138cbca3453304be4fe572c5f1"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 68,
+      "id": "PR_kwDOL5eEDM5_HujT",
+      "title": "Update draft-ietf-lamps-pq-composite-sigs.md",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/68",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Changed text to Compact the Private Key format",
+      "createdAt": "2024-10-18T15:39:59Z",
+      "updatedAt": "2024-10-18T17:18:07Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "172975bfb31189138cbca3453304be4fe572c5f1",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "6-CompactPrivateKey",
+      "headRefOid": "8e30367ac3e52c10c115ac7763964f3832ab816a",
+      "closedAt": "2024-10-18T17:18:01Z",
+      "mergedAt": "2024-10-18T17:18:00Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "57432b8becae4eb5b0505dc90c97588a968ca8d5"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 70,
+      "id": "PR_kwDOL5eEDM5_H5iV",
+      "title": "Update Composite-MLDSA-2024.asn",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/70",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update the ASN.1 module to for prehash OIDs and Fix up the pure ones by removing the Hashes for the ED448 and X25519 curves",
+      "createdAt": "2024-10-18T16:08:41Z",
+      "updatedAt": "2024-10-18T17:16:53Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "172975bfb31189138cbca3453304be4fe572c5f1",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "69-AddPreHashOIDStoASN1",
+      "headRefOid": "287443a795450f1eea6a14502ec86c711f2387e2",
+      "closedAt": "2024-10-18T17:16:47Z",
+      "mergedAt": "2024-10-18T17:16:47Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "4a6a717cb0244f7b1e37ce04f226ac9bee3e3016"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
