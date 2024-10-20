@@ -92,6 +92,12 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  FIPS.186-5:
+    title: "Digital Signature Standard (DSS)"
+    date: February 3, 2023
+    author:
+      org: "National Institute of Standards and Technology (NIST)"
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
   FIPS.204:
     title: "Module-Lattice-Based Digital Signature Standard"
     date: August 13, 2024
@@ -241,9 +247,7 @@ This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt
 Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analagous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
 
 
-# Composite Signatures Schemes
-
-The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914].
+# Overview of the Composite ML-DSA Signature Scheme
 
 Composite schemes are defined as cryptographic primitives that consists of three algorithms:
 
@@ -260,15 +264,11 @@ Composite schemes are defined as cryptographic primitives that consists of three
       of the Message.  If the signature and public key cannot verify the Message,
       it returns false.
 
-A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations such as generation and verify and can be used in all applications that use signatures without the need for changes in data structures or protocol messages.
+A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
-## Composite Schemes PreHashing {#sec-prehash}
+This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separablity.
 
-Composite schemes' signature generation process and composite signature verification process are designed to provide security properties meant to address specific issues related to the use multiple algorithms and they require the use of pre-hasing. In Composite schemes, the value of the DER encoding of the selected signature scheme is concatenated with the calculated Hash over the original message.
-
-The output is then used as input for the Sign() and Verify() functions.
-
-# Cryptographic Primitives {#sec-sigs}
+# Composite ML-DSA Functions {#sec-sigs}
 
 ## Key Generation
 
