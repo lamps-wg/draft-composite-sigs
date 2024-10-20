@@ -1164,15 +1164,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-composite-signatures-scheme" class="internal xref">Composite Signatures Schemes</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-composite-schemes-prehashin" class="internal xref">Composite Schemes PreHashing</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-overview-of-the-composite-m" class="internal xref">Overview of the Composite ML-DSA Signature Scheme</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-cryptographic-primitives" class="internal xref">Cryptographic Primitives</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-composite-ml-dsa-functions" class="internal xref">Composite ML-DSA Functions</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-key-generation" class="internal xref">Key Generation</a></p>
@@ -1618,47 +1613,38 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
 </div>
 </section>
 </div>
-<div id="composite-signatures-schemes">
+<div id="overview-of-the-composite-ml-dsa-signature-scheme">
 <section id="section-3">
-      <h2 id="name-composite-signatures-scheme">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-composite-signatures-scheme" class="section-name selfRef">Composite Signatures Schemes</a>
+      <h2 id="name-overview-of-the-composite-m">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview-of-the-composite-m" class="section-name selfRef">Overview of the Composite ML-DSA Signature Scheme</a>
       </h2>
-<p id="section-3-1">The engineering principle behind the definition of Composite schemes is to define a new family of algorithms that combines the use of cryptographic operations from two different ones: ML-DSA one and a traditional one. The complexity of combining security properties from the selected two algorithms is handled at the cryptographic library or cryptographic module, thus minimal changes are expected at the application or protocol level. Composite schemes are fully compatible with the X.509 model: composite public keys, composite private keys, and ciphertexts can be carried in existing data structures and protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">Composite schemes are defined as cryptographic primitives that consists of three algorithms:<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-1">Composite schemes are defined as cryptographic primitives that consists of three algorithms:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-3.1">
-          <p id="section-3-3.1.1">KeyGen() -&gt; (pk, sk): A probabilistic key generation algorithm,
-which generates a public key pk and a secret key sk.<a href="#section-3-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-2.1">
+          <p id="section-3-2.1.1">KeyGen() -&gt; (pk, sk): A probabilistic key generation algorithm,
+which generates a public key pk and a secret key sk.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-3.2">
-          <p id="section-3-3.2.1">Sign(sk, Message) -&gt; (signature): A signing algorithm which takes
-as input a secret key sk and a Message, and outputs a signature<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-2.2">
+          <p id="section-3-2.2.1">Sign(sk, Message) -&gt; (signature): A signing algorithm which takes
+as input a secret key sk and a Message, and outputs a signature<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-3.3">
-          <p id="section-3-3.3.1">Verify(pk, Message, signature) -&gt; true or false: A verification algorithm
+        <li class="normal" id="section-3-2.3">
+          <p id="section-3-2.3.1">Verify(pk, Message, signature) -&gt; true or false: A verification algorithm
 which takes as input a public key, a Message, and a signature and outputs true
 if the signature verifies correctly.  Thus it proves the Message was signed
 with the secret key associated with the public key and verifies the integrity
 of the Message.  If the signature and public key cannot verify the Message,
-it returns false.<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
+it returns false.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-4">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations such as generation and verify and can be used in all applications that use signatures without the need for changes in data structures or protocol messages.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<div id="sec-prehash">
-<section id="section-3.1">
-        <h3 id="name-composite-schemes-prehashin">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-composite-schemes-prehashin" class="section-name selfRef">Composite Schemes PreHashing</a>
-        </h3>
-<p id="section-3.1-1">Composite schemes' signature generation process and composite signature verification process are designed to provide security properties meant to address specific issues related to the use multiple algorithms and they require the use of pre-hasing. In Composite schemes, the value of the DER encoding of the selected signature scheme is concatenated with the calculated Hash over the original message.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1-2">The output is then used as input for the Sign() and Verify() functions.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="section-3-3">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations <code>Sign()</code> and <code>Verify()</code>.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-4">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separablity.<a href="#section-3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-sigs">
 <section id="section-4">
-      <h2 id="name-cryptographic-primitives">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-cryptographic-primitives" class="section-name selfRef">Cryptographic Primitives</a>
+      <h2 id="name-composite-ml-dsa-functions">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-composite-ml-dsa-functions" class="section-name selfRef">Composite ML-DSA Functions</a>
       </h2>
 <div id="key-generation">
 <section id="section-4.1">
@@ -4001,6 +3987,10 @@ END
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
+<dt id="FIPS.186-5">[FIPS.186-5]</dt>
+        <dd>
+<span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"Digital Signature Standard (DSS)"</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="FIPS.204">[FIPS.204]</dt>
         <dd>
 <span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"Module-Lattice-Based Digital Signature Standard"</span>, <time datetime="2024-08" class="refDate">August 2024</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf</a>&gt;</span>. </dd>

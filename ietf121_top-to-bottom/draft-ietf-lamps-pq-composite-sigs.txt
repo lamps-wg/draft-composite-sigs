@@ -81,9 +81,8 @@ Table of Contents
    2.  Introduction
      2.1.  Conventions and Terminology
      2.2.  Composite Design Philosophy
-   3.  Composite Signatures Schemes
-     3.1.  Composite Schemes PreHashing
-   4.  Cryptographic Primitives
+   3.  Overview of the Composite ML-DSA Signature Scheme
+   4.  Composite ML-DSA Functions
      4.1.  Key Generation
      4.2.  Pure Signature Generation
        4.2.1.  Composite-ML-DSA.Sign
@@ -312,20 +311,7 @@ Table of Contents
    scheme without requiring any modification of the protocol to handle
    multiple algorithms.
 
-3.  Composite Signatures Schemes
-
-   The engineering principle behind the definition of Composite schemes
-   is to define a new family of algorithms that combines the use of
-   cryptographic operations from two different ones: ML-DSA one and a
-   traditional one.  The complexity of combining security properties
-   from the selected two algorithms is handled at the cryptographic
-   library or cryptographic module, thus minimal changes are expected at
-   the application or protocol level.  Composite schemes are fully
-   compatible with the X.509 model: composite public keys, composite
-   private keys, and ciphertexts can be carried in existing data
-   structures and protocols such as PKCS#10 [RFC2986], CMP [RFC4210],
-   X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format
-   [RFC5914].
+3.  Overview of the Composite ML-DSA Signature Scheme
 
    Composite schemes are defined as cryptographic primitives that
    consists of three algorithms:
@@ -346,24 +332,20 @@ Table of Contents
 
    A composite signature allows the security properties of the two
    underlying algorithms to be combined via standard signature
-   operations such as generation and verify and can be used in all
-   applications that use signatures without the need for changes in data
-   structures or protocol messages.
+   operations Sign() and Verify().
 
-3.1.  Composite Schemes PreHashing
+   This specification uses the Post-Quantum signature scheme ML-DSA as
+   specified in [FIPS.204] and [I-D.ietf-lamps-dilithium-certificates].
+   For Traditional signature schemes, this document uses the RSA
+   PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic
+   Curve Digital Signature Algorithm ECDSA scheme defined in section 6
+   of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410].
+   A simple "signature combiner"function which prepends a domain
+   separator value specific to the composite algorithm is used to bind
+   the two component signatures to the composite algorithm and achieve
+   weak non-separablity.
 
-   Composite schemes' signature generation process and composite
-   signature verification process are designed to provide security
-   properties meant to address specific issues related to the use
-   multiple algorithms and they require the use of pre-hasing.  In
-   Composite schemes, the value of the DER encoding of the selected
-   signature scheme is concatenated with the calculated Hash over the
-   original message.
-
-   The output is then used as input for the Sign() and Verify()
-   functions.
-
-4.  Cryptographic Primitives
+4.  Composite ML-DSA Functions
 
 4.1.  Key Generation
 
@@ -2470,6 +2452,12 @@ Signature Verification Procedure::
 12.  References
 
 12.1.  Normative References
+
+   [FIPS.186-5]
+              National Institute of Standards and Technology (NIST),
+              "Digital Signature Standard (DSS)", February 2023,
+              <https://nvlpubs.nist.gov/nistpubs/FIPS/
+              NIST.FIPS.186-5.pdf>.
 
    [FIPS.204] National Institute of Standards and Technology (NIST),
               "Module-Lattice-Based Digital Signature Standard", August
