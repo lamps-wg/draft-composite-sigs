@@ -274,44 +274,45 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms for the Composite keypair in no particular order. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
 
-The generated public key structure is described in {{sec-composite-pub-keys}}, while the corresponding composite secret key structure is defined in {{sec-priv-key}}.
-
 The following process is used to generate composite keypair values:
 
 ~~~
 KeyGen() -> (pk, sk)
 
-Input:
-     sk_1, sk_2         Private keys for each component.
+Explicit Inputs:
+     None
 
-     pk_1, pk_2         Public keys for each component.
+Implicit Input:
+  ML-DSA     A placeholder for the specific ML-DSA algorithm and
+             parameter set to use, for example, could be "ML-DSA-65".
 
-     A1, A2             Component signature algorithms.
+  Trad       A placeholder for the specific traditional algorithm and
+             parameter set to use, for example "RSASA-PSS"
+             or "Ed25519".
 
 Output:
-     (pk, sk)           The composite keypair.
+  (pk, sk)   The composite keypair.
 
 Function KeyGen():
 
-  (pk_1, sk_1) <- A1.KeyGen()
-  (pk_2, sk_2) <- A2.KeyGen()
+  (mldsaPK, mldsaSK) <- ML-DSA.KeyGen()
+  (tradPK, tradSK) <- Trad.KeyGen()
 
-  if NOT (pk_1, sk_1) or NOT (pk_2, sk_2):
+  if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
     // Component key generation failure
-    return NULL
+    output "Key generation error"
 
-  (pk, sk) <- encode[(pk_1, sk_1), (pk_2, sk_2)]
-  if NOT (pk, sk):
-    // Encoding failure
-    return False
+  pk <- CompositeSignaturePublicKey(mldsaPK, tradPK)
+  sk <- CompositeSignaturePrivateKey(mldsaSK, tradSK)
 
-  // Success
   return (pk, sk)
 
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
 
-The key generation functions MUST be executed for both algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves (i.e., not only in X.509 certificates).
+The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively.
+
+In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use.
 
 ## Pure Signature Generation {#sec-comp-sig-gen}
 
