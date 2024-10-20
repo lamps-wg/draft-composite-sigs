@@ -318,16 +318,18 @@ The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are 
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use.
 
-## Pure Signature Generation {#sec-comp-sig-gen}
+## Pure Signature Mode {#sec-comp-sig-gen}
 
-Composite schemes' signatures provide important properties for multi-key environments such as non-separability and key-binding. For more information on the additional security properties and their applicability to multi-key or hybrid environments, please refer to {{I-D.ietf-pquip-hybrid-signature-spectrums}} and the use of labels as defined in {{Bindel2017}}
+This mode mirrors `HashML-DSA` defined in Sections 5.2 and 5.3 of [FIPS.204].
 
-A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding verification public key.
+In the pure mode the Domain separator value is concatenated with the length of the context in bytes, the context, the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+
+A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
 
 ### Composite-ML-DSA.Sign
 
-This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Section 5.2 of [FIPS.204]. The composite domain separator "Domain" {{sec-oid-concat}} is concatenated with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the un-hashed message `M` .
+This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Section 5.2 of [FIPS.204]. The composite domain separator "Domain" (values given in {{sec-domsep-values}}) is concatenated with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the un-hashed message `M` .
 
 The following process is used to generate pure composite signature values and mirrors Algorithm 2 in  [FIPS.204].
 
@@ -394,7 +396,7 @@ It is possible to construct `CompositePrivateKey`(s) to generate signatures from
 
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
-This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-oid-concat}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the original message `M` .
+This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" (values given in {{sec-domsep-values}}) with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the original message `M` .
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
@@ -468,22 +470,20 @@ Signature Verification Procedure:
 It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
 
 
-## PreHash-Signature Generation {#sec-comp-sig-gen-prehash}
-
+## PreHash-Signature Mode {#sec-comp-sig-gen-prehash}
 
 This mode mirrors `HashML-DSA` defined in Section 5.4 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-oid-concat}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to de signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
-The following process is used to generate composite signature values.
 
 ### HashComposite-ML-DSA-Sign signature mode
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-oid-concat}} is concatendated with the length of the context in bytes, the context, an additional DER encoded value that represents the Hash and finally the pre-hashed message `PH(M)`.
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatendated with the length of the context in bytes, the context, an additional DER encoded value that represents the Hash and finally the pre-hashed message `PH(M)`.
 
 ~~~
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
@@ -554,7 +554,7 @@ It is possible to construct `CompositePrivateKey`(s) to generate signatures from
 
 This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
-Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-oid-concat}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the pre-hashed message `PH(M)` .
+Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-domsep-values}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the pre-hashed message `PH(M)` .
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
@@ -895,7 +895,7 @@ The table above contains everything needed to implement the listed hash ML-DSA c
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
-## Domain Separators {#sec-oid-concat}
+## Domain Separators {#sec-domsep-values}
 
 As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.
 
