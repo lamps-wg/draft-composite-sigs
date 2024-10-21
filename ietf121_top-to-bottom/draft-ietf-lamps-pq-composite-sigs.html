@@ -1242,13 +1242,21 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-domain-separators" class="internal xref">Domain Separators</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-notes-on-id-mldsa44-rsa2048" class="internal xref">Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256</a></p>
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-rationale-for-choices" class="internal xref">Rationale for choices</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-notes-on-id-mldsa65-rsa3072" class="internal xref">Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512</a></p>
+                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-rsa-pss-parameters" class="internal xref">RSA-PSS Parameters</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5.2.1">
+                    <p id="section-toc.1-1.7.2.5.2.1.1"><a href="#section-7.5.1" class="auto internal xref">7.5.1</a>.  <a href="#name-rsa2048-pss" class="internal xref">RSA2048-PSS</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.6">
-                <p id="section-toc.1-1.7.2.6.1"><a href="#section-7.6" class="auto internal xref">7.6</a>.  <a href="#name-notes-on-id-mldsa65-rsa4096" class="internal xref">Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5.2.2">
+                    <p id="section-toc.1-1.7.2.5.2.2.1"><a href="#section-7.5.2" class="auto internal xref">7.5.2</a>.  <a href="#name-rsa3072-pss" class="internal xref">RSA3072-PSS</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5.2.3">
+                    <p id="section-toc.1-1.7.2.5.2.3.1"><a href="#section-7.5.3" class="auto internal xref">7.5.3</a>.  <a href="#name-rsa4096-pss" class="internal xref">RSA4096-PSS</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -2683,155 +2691,182 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 </div>
 </section>
 </div>
-<div id="notes-on-id-mldsa44-rsa2048-pss-and-id-hashmldsa44-rsa2048-pss-sha256">
+<div id="rationale-for-choices">
 <section id="section-7.4">
-        <h3 id="name-notes-on-id-mldsa44-rsa2048">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-notes-on-id-mldsa44-rsa2048" class="section-name selfRef">Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256</a>
+        <h3 id="name-rationale-for-choices">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-rationale-for-choices" class="section-name selfRef">Rationale for choices</a>
         </h3>
-<p id="section-7.4-1">Use of RSA-PSS <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> deserves a special explanation.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
-<p id="section-7.4-2">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.4-2" class="pilcrow">¶</a></p>
-<p id="section-7.4-3">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.4-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.4-1.1">
+            <p id="section-7.4-1.1.1">Pair equivalent levels.<a href="#section-7.4-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.4-1.2">
+            <p id="section-7.4-1.2.1">NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.<a href="#section-7.4-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.4-1.3">
+            <p id="section-7.4-1.3.1">521 bit curve not widely used.<a href="#section-7.4-1.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-7.4-2">SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.<a href="#section-7.4-2" class="pilcrow">¶</a></p>
+<p id="section-7.4-3">At the higher security levels of pre-hashed Composite ML-DSA, for example <code>id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512</code>, the 384-bit elliptic curve component is used with SHA2-384 is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken th eML-DSA-87 component against collision attack.<a href="#section-7.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rsa-pss-parameters">
+<section id="section-7.5">
+        <h3 id="name-rsa-pss-parameters">
+<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-rsa-pss-parameters" class="section-name selfRef">RSA-PSS Parameters</a>
+        </h3>
+<p id="section-7.5-1">Use of RSA-PSS <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> requires extra parameters to be specified, which differ for each security level.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
+<div id="rsa2048-pss">
+<section id="section-7.5.1">
+          <h4 id="name-rsa2048-pss">
+<a href="#section-7.5.1" class="section-number selfRef">7.5.1. </a><a href="#name-rsa2048-pss" class="section-name selfRef">RSA2048-PSS</a>
+          </h4>
+<p id="section-7.5.1-1">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.5.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.1-2">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.1-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
 <table class="center" id="table-5">
-          <caption>
+            <caption>
 <a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-rsa-pss-2048-parameters" class="selfRef">RSA-PSS 2048 Parameters</a>
-          </caption>
+            </caption>
 <thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
-              <th class="text-left" rowspan="1" colspan="1">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
-              <td class="text-left" rowspan="1" colspan="1">mgf1</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
-              <td class="text-left" rowspan="1" colspan="1">256</td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
+                <td class="text-left" rowspan="1" colspan="1">mgf1</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+                <td class="text-left" rowspan="1" colspan="1">256</td>
+              </tr>
+            </tbody>
+          </table>
 </div>
-<p id="section-7.4-5">where:<a href="#section-7.4-5" class="pilcrow">¶</a></p>
+<p id="section-7.5.1-4">where:<a href="#section-7.5.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.4-6.1">
-            <p id="section-7.4-6.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.4-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.5.1-5.1">
+              <p id="section-7.5.1-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.5.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-6.2">
-            <p id="section-7.4-6.2.1"><code>SHA-256</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.4-6.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.5.1-5.2">
+              <p id="section-7.5.1-5.2.1"><code>SHA-256</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.5.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
+          </ul>
 </section>
 </div>
-<div id="notes-on-id-mldsa65-rsa3072-pss-and-id-hashmldsa65-rsa3072-pss-sha512">
-<section id="section-7.5">
-        <h3 id="name-notes-on-id-mldsa65-rsa3072">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-notes-on-id-mldsa65-rsa3072" class="section-name selfRef">Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512</a>
-        </h3>
-<p id="section-7.5-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
-<p id="section-7.5-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5-2" class="pilcrow">¶</a></p>
+<div id="rsa3072-pss">
+<section id="section-7.5.2">
+          <h4 id="name-rsa3072-pss">
+<a href="#section-7.5.2" class="section-number selfRef">7.5.2. </a><a href="#name-rsa3072-pss" class="section-name selfRef">RSA3072-PSS</a>
+          </h4>
+<p id="section-7.5.2-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.5.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.2-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.2-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
 <table class="center" id="table-6">
-          <caption>
+            <caption>
 <a href="#table-6" class="selfRef">Table 6</a>:
 <a href="#name-rsa-pss-3072-parameters" class="selfRef">RSA-PSS 3072 Parameters</a>
-          </caption>
+            </caption>
 <thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
-              <th class="text-left" rowspan="1" colspan="1">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
-              <td class="text-left" rowspan="1" colspan="1">mgf1</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
-              <td class="text-left" rowspan="1" colspan="1">256</td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
+                <td class="text-left" rowspan="1" colspan="1">mgf1</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+                <td class="text-left" rowspan="1" colspan="1">256</td>
+              </tr>
+            </tbody>
+          </table>
 </div>
-<p id="section-7.5-4">where:<a href="#section-7.5-4" class="pilcrow">¶</a></p>
+<p id="section-7.5.2-4">where:<a href="#section-7.5.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.5-5.1">
-            <p id="section-7.5-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.5-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.5.2-5.1">
+              <p id="section-7.5.2-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.5.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.5-5.2">
-            <p id="section-7.5-5.2.1"><code>SHA-256</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.5-5.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.5.2-5.2">
+              <p id="section-7.5.2-5.2.1"><code>SHA-256</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.5.2-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
+          </ul>
 </section>
 </div>
-<div id="notes-on-id-mldsa65-rsa4096-pss-or-id-hashmldsa65-rsa4096-pss-sha384">
-<section id="section-7.6">
-        <h3 id="name-notes-on-id-mldsa65-rsa4096">
-<a href="#section-7.6" class="section-number selfRef">7.6. </a><a href="#name-notes-on-id-mldsa65-rsa4096" class="section-name selfRef">Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384</a>
-        </h3>
-<p id="section-7.6-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.6-1" class="pilcrow">¶</a></p>
-<p id="section-7.6-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.6-2" class="pilcrow">¶</a></p>
+<div id="rsa4096-pss">
+<section id="section-7.5.3">
+          <h4 id="name-rsa4096-pss">
+<a href="#section-7.5.3" class="section-number selfRef">7.5.3. </a><a href="#name-rsa4096-pss" class="section-name selfRef">RSA4096-PSS</a>
+          </h4>
+<p id="section-7.5.3-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.5.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.3-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
 <table class="center" id="table-7">
-          <caption>
+            <caption>
 <a href="#table-7" class="selfRef">Table 7</a>:
 <a href="#name-rsa-pss-4096-parameters" class="selfRef">RSA-PSS 4096 Parameters</a>
-          </caption>
+            </caption>
 <thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
-              <th class="text-left" rowspan="1" colspan="1">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
-              <td class="text-left" rowspan="1" colspan="1">mgf1</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
-              <td class="text-left" rowspan="1" colspan="1">384</td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation Function</td>
+                <td class="text-left" rowspan="1" colspan="1">mgf1</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
+                <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
+                <td class="text-left" rowspan="1" colspan="1">384</td>
+              </tr>
+            </tbody>
+          </table>
 </div>
-<p id="section-7.6-4">where:<a href="#section-7.6-4" class="pilcrow">¶</a></p>
+<p id="section-7.5.3-4">where:<a href="#section-7.5.3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.6-5.1">
-            <p id="section-7.6-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.6-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.5.3-5.1">
+              <p id="section-7.5.3-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.5.3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.6-5.2">
-            <p id="section-7.6-5.2.1"><code>SHA-384</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.6-5.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.5.3-5.2">
+              <p id="section-7.5.3-5.2.1"><code>SHA-384</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.5.3-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
+          </ul>
+</section>
+</div>
 </section>
 </div>
 </section>
