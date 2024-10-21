@@ -2749,13 +2749,13 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-underlying-components" class="section-name selfRef">Underlying Components</a>
         </h3>
 <p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">The following table lists the MANDATORY Hash algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<span id="name-composite-signature-sha-alg"></span><div id="tab-cms-shas">
+<p id="section-8.1-2">The following table lists the RECOMMENDED Hash algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.  Implementations MAY support other algorithms for the SignerInfo <code>digestAlgorithm</code> so long as they preserve the security and performance characterstics of the recommended Hash algorithms listed in the table below.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<span id="name-recommended-composite-signa"></span><div id="tab-cms-shas">
 <table class="center" id="table-8">
           <caption>
 <a href="#table-8" class="selfRef">Table 8</a>:
-<a href="#name-composite-signature-sha-alg" class="selfRef">Composite Signature SHA Algorithms</a>
+<a href="#name-recommended-composite-signa" class="selfRef">Recommended Composite Signature Digest Algorithms</a>
           </caption>
 <thead>
             <tr>
@@ -2849,7 +2849,10 @@ ELSE message-digest attribute = Hash(content);
 </div>
 <p id="section-8.2-4">When using Composite Signatures, the fields in the SignerInfo are used as follows:<a href="#section-8.2-4" class="pilcrow">¶</a></p>
 <p id="section-8.2-5">digestAlgorithm:
-    The digestAlgorithm contains the one-way hash function used by the CMS signer.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
+    Per Section 5.3 of <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, the digestAlgorithm contains the one-way hash function used by the CMS signer.
+    To ensure collision resistance, the identified message digest algorithm SHOULD produce a hash
+    value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA
+    component algorithm of the Composite Signature.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.2-6">signatureAlgorithm:
     The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.2-7">signature:

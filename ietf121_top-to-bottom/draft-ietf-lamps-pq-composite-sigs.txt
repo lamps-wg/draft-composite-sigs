@@ -1342,13 +1342,16 @@ Signature Verification Process:
    implementation SHOULD support the corresponding Secure Hash algorithm
    identifier in Table 8 that was used as the pre-hash.
 
-   The following table lists the MANDATORY Hash algorithms to preserve
+   The following table lists the RECOMMENDED Hash algorithms to preserve
    security and performance characteristics of each composite algorithm.
 
    A compliant implementation MUST support the following algorithms for
    the SignerInfo digestAlgorithm field when the corresponding Composite
    ML-DSA algorithm is listed in the SignerInfo signatureAlgorithm
-   field.
+   field.  Implementations MAY support other algorithms for the
+   SignerInfo digestAlgorithm so long as they preserve the security and
+   performance characterstics of the recommended Hash algorithms listed
+   in the table below.
 
           +==================================+=================+
           | Composite Signature AlgorithmID  | digestAlgorithm |
@@ -1382,7 +1385,8 @@ Signature Verification Process:
           | id-MLDSA87-Ed448                 | SHA512          |
           +----------------------------------+-----------------+
 
-               Table 8: Composite Signature SHA Algorithms
+             Table 8: Recommended Composite Signature Digest
+                                Algorithms
 
    where:
 
@@ -1417,8 +1421,12 @@ Signature Verification Process:
    When using Composite Signatures, the fields in the SignerInfo are
    used as follows:
 
-   digestAlgorithm: The digestAlgorithm contains the one-way hash
-   function used by the CMS signer.
+   digestAlgorithm: Per Section 5.3 of [RFC5652], the digestAlgorithm
+   contains the one-way hash function used by the CMS signer.  To ensure
+   collision resistance, the identified message digest algorithm SHOULD
+   produce a hash value of a size that is at least twice the collision
+   strength of the internal commitment hash used by ML-DSA component
+   algorithm of the Composite Signature.
 
    signatureAlgorithm: The signatureAlgorithm MUST contain one of the
    the Composite Signature algorithm identifiers as specified in Table 8
