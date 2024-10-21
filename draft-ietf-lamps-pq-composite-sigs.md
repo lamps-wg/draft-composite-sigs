@@ -251,13 +251,13 @@ Composite keys, as defined here, follow this definition and should be regarded a
 
 Composite schemes are defined as cryptographic primitives that consists of three algorithms:
 
-   *  KeyGen() -> (pk, sk): A probabilistic key generation algorithm,
+   *  `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm,
       which generates a public key pk and a secret key sk.
 
-   *  Sign(sk, Message) -> (signature): A signing algorithm which takes
+   *  `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
       as input a secret key sk and a Message, and outputs a signature
 
-   *  Verify(pk, Message, signature) -> true or false: A verification algorithm
+   *  `Verify(pk, Message, signature) -> true or false`: A verification algorithm
       which takes as input a public key, a Message, and a signature and outputs true
       if the signature verifies correctly.  Thus it proves the Message was signed
       with the secret key associated with the public key and verifies the integrity
@@ -284,9 +284,11 @@ The following process is used to generate composite keypair values:
 KeyGen() -> (pk, sk)
 
 Explicit Inputs:
-     None
+
+  None
 
 Implicit Input:
+
   ML-DSA     A placeholder for the specific ML-DSA algorithm and
              parameter set to use, for example, could be "ML-DSA-65".
 
@@ -295,28 +297,38 @@ Implicit Input:
              or "Ed25519".
 
 Output:
+
   (pk, sk)   The composite keypair.
 
-Function KeyGen():
+Key Generation Process:
 
-  (mldsaPK, mldsaSK) <- ML-DSA.KeyGen()
-  (tradPK, tradSK) <- Trad.KeyGen()
+  1. Generate component keys
 
-  if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
-    // Component key generation failure
-    output "Key generation error"
+    (mldsaPK, mldsaSK) = ML-DSA.KeyGen()
+    (tradPK, tradSK)   = Trad.KeyGen()
 
-  pk <- CompositeSignaturePublicKey(mldsaPK, tradPK)
-  sk <- CompositeSignaturePrivateKey(mldsaSK, tradSK)
+  2. Check for component key gen failure
 
-  return (pk, sk)
+    if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
+      output "Key generation error"
+
+  3. Encode the component keys into composite structures
+
+    pk = CompositeSignaturePublicKey(mldsaPK, tradPK)
+    sk = CompositeSignaturePrivateKey(mldsaSK, tradSK)
+
+  4. Output the composite keys
+
+    return (pk, sk)
 
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
 
-The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively.
+The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoparability is not required.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use.
+
+Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
 ## Pure Signature Mode {#sec-comp-sig-gen}
 
@@ -329,103 +341,107 @@ A composite signature's value MUST include two signature components and MUST be 
 
 ### Composite-ML-DSA.Sign
 
-This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Section 5.2 of [FIPS.204]. The composite domain separator "Domain" (values given in {{sec-domsep-values}}) is concatenated with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the un-hashed message `M` .
-
-The following process is used to generate pure composite signature values and mirrors Algorithm 2 in  [FIPS.204].
+This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 2 in Section 5.2 of [FIPS.204].
 
 ~~~
 Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
 Explicit Input:
-     sk                 Composite private key conisting of signing private keys for each component.
 
-     M                  The Message to be signed, an octet string
+  sk    Composite private key conisting of signing private keys for
+        each component.
 
-     ctx                The Message context string, which defaults to the empty string
+  M     The Message to be signed, an octet string.
+
+  ctx   The Message context string, which defaults to the empty string.
 
 
 Implicit inputs:
 
-    ML-DSA             A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-    Trad               A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example "RSASA-PSS with id-sha256"
-                       or "Ed25519".
+  Trad     A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example "RSASA-PSS with id-sha256"
+           or "Ed25519".
 
-    Domain             Domain separator value for binding the signature to the Composite OID.
-                       See section on Domain Separators below.
+  Domain   Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
 
 Output:
-     signature             The composite signature, a CompositeSignatureValue
+
+  signature   The composite signature, a CompositeSignatureValue.
 
 Signature Generation Process:
 
-   1. If |ctx| > 255:
-        return error
+  1. If |ctx| > 255:
+    return error
 
-   2. Compute the Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of ctx, the value ctx and the original message M
+  2. Compute the Message M'.
 
-         M' := Domain || len(ctx) || ctx || M
+    M' = Domain || len(ctx) || ctx || M
 
-   3. Separate the private key into component keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
+  3. Separate the private key into component keys.
 
-         (sk1, sk2) := Unmarshal(sk)
+    (mldsaSK, tradSK) = Unmarshal(sk)
 
-   4. Generate the 2 component signatures independently, by calculating the signature over M'
-      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
+  4. Generate the 2 component signatures independently, by calculating
+     the signature over M' according to their algorithm specifications.
 
-         s1 := ML-DSA.Sign( sk1, M', ctx=Domain )
-         s2 := Trad.Sign( sk2, M' )
+    mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+    tradSig = Trad.Sign( tradSK, M' )
 
-      The Domain is used as the context separator for the ML-DSA.Sign component.
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
+     process must return an error.
 
-      If either ML-DSA.Sign() or Trad.Sign() return an error, then this process must return an error.
+    if NOT mldsaSig or NOT tradSig:
+      output "Signature generation error"
 
-   5. Encode each component signature S1 and S2 into a BIT STRING
-      according to its algorithm specification.
+   6. Encode each component signature into a CompositeSignatureValue.
 
-          signature := Sequence { s1, s2 }
+      signature := CompositeSignatureValue(mldsaSig, tradSig)
 
-   6. Output signature
+  7. Output signature
 
-        return signature
+    return signature
 ~~~
 {: # title="Composite-ML-DSA-Sign(sk, M, ctx)"}
 
-It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
+It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
+
+Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
-This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Section 5.3 of [FIPS.204]. Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" (values given in {{sec-domsep-values}}) with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the original message `M` .
+This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Algorithm 3 in Section 5.3 of [FIPS.204].
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
-
-The following process is used to perform this verification.
-
 
 ~~~
 Composite-ML-DSA.Verify(pk, M, signature, ctx)
 Explicit Inputs:
-     pk                 Composite public key conisting of verification public keys for each component.
+  pk          Composite public key conisting of verification public keys
+              for each component.
 
-     M                  Message whose signature is to be verified,
-                        an octet string.
+  M           Message whose signature is to be verified,
+              an octet string.
 
-     signature          CompositeSignatureValue containing the component
-                        signature values (S1 and S2) to be verified.
-     ctx                The Message context string, which defaults to the empty string
+  signature   CompositeSignatureValue containing the component
+              signature values (mldsaSig and tradSig) to be verified.
+
+  ctx         The Message context string, which defaults to the empty
+              string.
 
 Implicit inputs:
 
-    ML-DSA             A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-    Trad               A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example "RSASA-PSS with id-sha256"
-                       or "Ed25519".
+  Trad     A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example "RSASA-PSS with id-sha256"
+           or "Ed25519".
 
-    Domain             Domain separator value for binding the signature to the Composite OID.
-                       See section on Domain Separators below.
+  Domain   Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
 
 
 Output:
@@ -433,22 +449,22 @@ Output:
                         signature is valid, "Invalid signature"
                         (false) otherwise.
 
-Signature Verification Procedure:
+Signature Verification Process:
 
    1. If |ctx| > 255
         return error
 
    2. Separate the keys and signatures
 
-          (pk1, pk2) := pk
-          (s1, s2) := signature
+          (pk1, pk2) = pk
+          (s1, s2)   = signature
 
       If Error during Desequencing, or if any of the component
       keys or signature values are not of the correct key type or
       length for the given component algorithm then output
       "Invalid signature" and stop.
 
-   3. Compute the Message M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of ctx, the value ctx and the original message M
+   3. Compute the Message M'.
 
          M' = Domain || len(ctx) || ctx || M
 
@@ -467,8 +483,7 @@ Signature Verification Procedure:
 ~~~
 {: #alg-composite-verify title="Composite-ML-DSA-Verify(pk, Message, signature, Context)"}
 
-It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
-
+Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
 ## PreHash-Signature Mode {#sec-comp-sig-gen-prehash}
 
@@ -483,136 +498,141 @@ A composite signature's value MUST include two signature components and MUST be 
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatendated with the length of the context in bytes, the context, an additional DER encoded value that represents the Hash and finally the pre-hashed message `PH(M)`.
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatendated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
 
 ~~~
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
 
 Explicit Input:
-     sk                 Composite private key consisting of signing private keys for each component.
+  sk    Composite private key consisting of signing private keys for
+        each component.
 
-     M                  The Message to be signed, an octet string
+  M     The Message to be signed, an octet string.
 
-     ctx                The Message context string, which defaults to the empty string
+  ctx   The Message context string, which defaults to the empty string
 
-     PH                 The Message Digest Algorithm for pre-hashing.  See
-                        section on pre-hashing the message below.
+  PH    The Message Digest Algorithm for pre-hashing.  See
+        section on pre-hashing the message below.
 
 Implicit inputs:
 
-    ML-DSA             A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-    Trad               A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example "RSASA-PSS with id-sha256"
-                       or "Ed25519".
+  Trad     A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example "RSASA-PSS with id-sha256"
+           or "Ed25519".
 
-    Domain             Domain separator value for binding the signature to the Composite OID.
-                       See section on Domain Separators below.
+ Domain    Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
 
-    HashOID            The DER Encoding of the Object Identifier of the
-                       PreHash algorithm (PH) which is passed into the function
+ HashOID   The DER Encoding of the Object Identifier of the
+           PreHash algorithm (PH) which is passed into the function.
 
 Output:
-     signature          The composite signature, a CompositeSignatureValue
+  signature   The composite signature, a CompositeSignatureValue.
 
 Signature Generation Process:
 
    1. If |ctx| > 255:
         return error
 
-   2. Compute the Message format M' by concatenating the Domain identifier (i.e., the DER encoding of the Composite signature algorithm identifier) with the length of the context, the Context, the HashOID and the Hash of the Message.
+   2. Compute the Message format M'.
 
          M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
 
-   3. Separate the private key into component keys. Note, the exact storage format for composite private keys may be as described in this document, or may be implementation-specific.
+   3. Separate the private key into component keys.
 
-         (sk1, sk2) := Unmarshal(sk)
+         (mldsaSK, tradSK) := Unmarshal(sk)
 
-   4. Generate the 2 component signatures independently, by calculating the signature over M'
-      according to their algorithm specifications that might involve the use of the hash-n-sign paradigm.
+   4. Generate the 2 component signatures independently, by calculating
+      the signature over M' according to their algorithm specifications.
 
-         s1 := ML-DSA.Sign( sk1, M', ctx=Domain )
-         s2 := Trad.Sign( sk2, M' )
+         mldsaSig := ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+         tradSig := Trad.Sign( tradSK, M' )
 
-     The Domain is used as the context separator for the ML-DSA.Sign component.
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
+     process must return an error.
 
-   5. Encode each component signature S1 and S2 into a BIT STRING
-      according to its algorithm specification.
+    if NOT mldsaSig or NOT tradSig:
+      output "Signature generation error"
 
-          signature := Sequence { s1, s2 }
+   6. Encode each component signature into a CompositeSignatureValue.
 
-   6. Output signature
+      signature := CompositeSignatureValue(mldsaSig, tradSig)
+
+   7. Output signature
 
         return signature
 ~~~
 {: #alg-hash-composite-sign title="HashComposite-ML-DSA-Sign(sk, M, ctx, PH)"}
 
-It is possible to construct `CompositePrivateKey`(s) to generate signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
+It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
+
+Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
 ### HashComposite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
 
 This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
-Verification of a composite signature involves reconstructing the `M'` message by concatenating the composite domain separator "Domain" {{sec-domsep-values}} with the length of the context string `ctx` in bytes, the context string `ctx`, and finally the pre-hashed message `PH(M)` .
-
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
-
-The following process is used to perform this verification.
-
 
 ~~~
 HashComposite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
 Explicit Inputs:
-     pk                 Composite public key consisting of verification public keys for each component.
+  pk          Composite public key consisting of verification public
+              keys for each component.
 
-     M                  Message whose signature is to be verified,
-                        an octet string.
+  M           Message whose signature is to be verified, an octet
+              string.
 
-     signature          CompositeSignatureValue containing the component
-                        signature values (S1 and S2) to be verified.
-     ctx                The Message context string, which defaults to the empty string
+  signature   CompositeSignatureValue containing the component
+              signature values (mldsaSig and tradSig) to be verified.
 
-     PH                 The Message Digest Algorithm for pre-hashing.  See
-                        section on pre-hashing the message below.
+  ctx         The Message context string, which defaults to the empty
+              string.
+
+  PH          The Message Digest Algorithm for pre-hashing. See
+              section on pre-hashing the message below.
 
 Implicit inputs:
 
-    ML-DSA             A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA    A placeholder for the specific ML-DSA algorithm and
+            parameter set to use, for example, could be "ML-DSA-65".
 
-    Trad               A placeholder for the specific ML-DSA algorithm and
-                       parameter set to use, for example "RSASA-PSS with id-sha256"
-                       or "Ed25519".
+  Trad      A placeholder for the specific ML-DSA algorithm and
+            parameter set to use, for example "RSASA-PSS with id-sha256"
+            or "Ed25519".
 
-    Domain             Domain separator value for binding the signature to the Composite OID.
-                       See section on Domain Separators below.
+  Domain    Domain separator value for binding the signature to the
+            Composite OID. See section on Domain Separators below.
 
-    HashOID            The DER Encoding of the Object Identifier of the
-                       PreHash algorithm (PH) which is passed into the function
+  HashOID   The DER Encoding of the Object Identifier of the
+            PreHash algorithm (PH) which is passed into the function.
 
 Output:
-    Validity (bool)    "Valid signature" (true) if the composite
-                        signature is valid, "Invalid signature"
-                        (false) otherwise.
 
-Signature Verification Procedure::
+  Validity (bool)   "Valid signature" (true) if the composite
+                    signature is valid, "Invalid signature"
+                    (false) otherwise.
+
+Signature Verification Process:
 
    1. If |ctx| > 255
         return error
 
    2. Separate the keys and signatures
 
-          (pk1, pk2) := pk
-          (s1, s2) := signature
+          (pk1, pk2) = pk
+          (s1, s2) = signature
 
       If Error during Desequencing, or if any of the component
       keys or signature values are not of the correct key type or
       length for the given component algorithm then output
       "Invalid signature" and stop.
 
-   3. Compute a Hash of the Message
+   3. Compute a Hash of the Message.
 
          M' = Domain || len(ctx) || ctx || HashOID || PH(M)
 
@@ -631,8 +651,7 @@ Signature Verification Procedure::
 ~~~
 {: #alg-hash-composite-verify title="Hash-Composite-ML-DSA-Verify(pk, M, signature, ctx, PH)"}
 
-It is possible to construct `CompositePublicKey`(s) to verify signatures from component keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output as the process sketched above.
-
+Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
 
 # Composite Key Structures {#sec-composite-structs}
