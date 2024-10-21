@@ -729,7 +729,17 @@ The full set of key types defined by this specification can be found in the ASN.
 
 ## CompositeSignaturePrivateKey {#sec-priv-key}
 
-Use cases that require an interoperable encoding for composite private keys, such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211] MUST use the OneAsymmetricKey [RFC5958] structure into which the privateKey field contains the CompositeSignaturePrivateKey:
+When a Composite ML-DSA private key is to be exported from a cryptographic module, it uses an analogous definition to the public keys:
+
+~~~ ASN.1
+CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
+~~~
+{: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
+
+Each element of the `CompositeSignaturePrivateKey` Sequence is an `OCTET STRING` according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in {{sec-composite-pub-keys}}. This document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.
+
+
+Use cases that require an interoperable encoding for composite private keys will often need to place a `CompositeSignaturePrivateKey` inside a `OneAsymmetricKey` structure defined in [RFC5958], such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211]. The definition of `OneAsymmetricKey` is copied here for convenience:
 
 ~~~ ASN.1
  OneAsymmetricKey ::= SEQUENCE {
@@ -741,7 +751,6 @@ Use cases that require an interoperable encoding for composite private keys, suc
        [[2: publicKey        [1] PublicKey OPTIONAL ]],
        ...
      }
-
   ...
   PrivateKey ::= OCTET STRING
                         -- Content varies based on type of key.  The
@@ -750,19 +759,13 @@ Use cases that require an interoperable encoding for composite private keys, suc
 ~~~
 {: artwork-name="RFC5958-OneAsymmetricKey-asn.1-structure"}
 
-~~~ ASN.1
-CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
-~~~
-{: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
 
+When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent. The privateKey field SHALL contain the `CompositeSignaturePrivateKey`, and the `publicKey` field remains OPTIONAL.  If the `publicKey` field is present, it MUST be a `CompositeKEMPublicKey`.
 
-When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent.  Each element of the CompositeSignaturePrivateKey Sequence is an `OCTET STRING` according to the encoding of the underlying algorithm specification.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.  The privateKey field SHALL contain the CompositeSignaturePrivateKey, and the publicKey field MAY be present.  If the publicKey field is present, it MUST be a CompositeSignaturePublicKey.
-
-In some usecases the private keys that comprise a composite key may not be represented in a single structure or even be contained in a single cryptographic module; for example if one component is within the FIPS boundary of a cryptographic module and the other is not; see {sec-fips} for more discussion. The establishment of correspondence between public keys in a CompositeSignaturePublicKey and private keys not represented in a single composite structure is beyond the scope of this document.
-
-Some applications may need to reconstruct the `OneAsymmetricKey` objects corresponding to each component private key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
+Some applications may need to reconstruct the `OneAsymmetricKey` objects corresponding to each component private key. {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
 Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+
 
 ## Encoding Rules {#sec-encoding-rules}
 <!-- EDNOTE 7: Examples of how other specifications specify how a data structure is converted to a bit string can be found in RFC 2313, section 10.1.4, 3279 section 2.3.5, and RFC 4055, section 3.2. -->
