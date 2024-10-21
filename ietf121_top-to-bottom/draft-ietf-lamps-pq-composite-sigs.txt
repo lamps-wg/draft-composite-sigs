@@ -419,6 +419,8 @@ Table of Contents
    executed for both component algorithms.  Compliant parties MUST NOT
    use or import component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
+   For more details on the security considerations around key reuse, see
+   section Section 11.2.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
@@ -882,7 +884,9 @@ Signature Verification Process:
    Section 5.4.
 
    Component keys of a CompositeSignaturePublicKey MUST NOT be used in
-   any other type of key or as a standalone key.
+   any other type of key or as a standalone key.  For more details on
+   the security considerations around key reuse, see section
+   Section 11.2.
 
 5.3.  CompositeSignaturePrivateKey
 
@@ -938,7 +942,9 @@ Signature Verification Process:
    and their component algorithms for doing this reconstruction.
 
    Component keys of a CompositeSignaturePrivateKey MUST NOT be used in
-   any other type of key or as a standalone key.
+   any other type of key or as a standalone key.  For more details on
+   the security considerations around key reuse, see section
+   Section 11.2.
 
 5.4.  Encoding Rules
 
@@ -2379,7 +2385,7 @@ Signature Verification Process:
    a reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.4 since then there cannot exist simultaneously composite
+   Section 11.2 since then there cannot exist simultaneously composite
    and non-composite signers and verifiers for the same keys.
    Consequently, following the specification and verification of the
    policy mechanism, such as a composite X.509 certificate which defines
@@ -2411,7 +2417,7 @@ Signature Verification Process:
    RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
    cases could introduce EUF-CMA vulnerabilities.
 
-   In adition, there is a further implication to key reuse regarding
+   In addition, there is a further implication to key reuse regarding
    certificate revocation.  Upon receiving a new certificate enrollment
    request, many certification authorities will check if the requested
    public key has been previously revoked due to key compromise.  Often
