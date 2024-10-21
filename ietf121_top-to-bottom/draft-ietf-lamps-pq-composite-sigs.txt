@@ -800,17 +800,16 @@ Signature Verification Process:
 
 5.  Composite Key Structures
 
-   In order for signatures to be composed of multiple algorithms, we
-   define encodings consisting of a sequence of signature primitives
-   (aka "component algorithms") such that these structures can be used
-   as a drop-in replacement for existing signature fields such as those
-   found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS
-   [RFC5652].
+   In order to form composite public keys and signature values, we
+   define ASN.1-based composite encodings such that these structures can
+   be used as a drop-in replacement for existing public key and
+   signature fields such as those found in PKCS#10 [RFC2986], CMP
+   [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
 5.1.  pk-CompositeSignature
 
    The following ASN.1 structures represent a composite public key
-   combined with an RSA and Elliptic Curve public key, respectively.
+   combined with an RSA or Elliptic Curve public key.
 
    RsaCompositeSignaturePublicKey ::= SEQUENCE {
            firstPublicKey BIT STRING (ENCODED BY id-raw-key),
@@ -824,7 +823,7 @@ Signature Verification Process:
 
    EdCompositeSignaturePublicKey ::= SEQUENCE {
            firstPublicKey BIT STRING (ENCODED BY id-raw-key),
-           secondPublicKey BIT STRING (CONTAINING id-raw-key)
+           secondPublicKey BIT STRING (ENCODED BY id-raw-key)
          }
 
    id-raw-key is defined by this document.  It signifies that the public
@@ -835,20 +834,18 @@ Signature Verification Process:
    wrapping MUST be removed prior to encoding the key itself as a BIT
    STRING.
 
-   This structure is intentionally generic in the first public key slot
-   since ML-DSA, as defined in [I-D.ietf-lamps-dilithium-certificates],
-   does not define any ASN.1 public key structures.  For use with this
-   document, the firstPublicKey MUST be the BIT STRING representation of
-   an ML-DSA key as specified in
-   [I-D.ietf-lamps-dilithium-certificates].  Note that here we used BIT
-   STRING rather than OCTET STRING so that these keys can be trivially
-   transcoded into a SubjectPublicKeyInfo as necessary, for example when
-   a crypto library requires this for invoking the component algorithm.
-   The public key for Edwards curve DSA component is also encoded as a
-   raw key.
+   For use with this document, ML-DSA keys MUST be be the raw BIT STRING
+   representation as specified in
+   [I-D.ietf-lamps-dilithium-certificates] and Edwards Curve keys MUST
+   be the raw BIT STRING representation as speified in [RFC8410].  Note
+   that here we used BIT STRING rather than OCTET STRING so that these
+   keys can be trivially transcoded into a SubjectPublicKeyInfo as
+   necessary, for example when a crypto library requires this for
+   invoking the component algorithm.
 
-   The following ASN.1 Information Object Class is defined to then allow
-   for compact definitions of each composite algorithm.
+   The following ASN.1 Information Object Class is defined to allow for
+   compact definitions of each composite algorithm, leading to a smaller
+   overall ASN.1 module.
 
    pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
        PUBLIC-KEY ::= {
@@ -858,12 +855,13 @@ Signature Verification Process:
          CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
        }
 
-   As an example, the public key type pk-MLDSA44-ECDSA-P256-SHA256 is
-   defined as:
+   As an example, the public key type id-MLDSA44-ECDSA-P256 is defined
+   as:
 
-   pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-     EcCompositeSignaturePublicKey}
+   id-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
+     pk-CompositeSignature{
+       id-MLDSA44-ECDSA-P256,
+       EcCompositeSignaturePublicKey }
 
    The full set of key types defined by this specification can be found
    in the ASN.1 Module in Section 9.

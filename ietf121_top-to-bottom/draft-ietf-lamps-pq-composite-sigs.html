@@ -2087,13 +2087,13 @@ Signature Verification Process:
       <h2 id="name-composite-key-structures">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-composite-key-structures" class="section-name selfRef">Composite Key Structures</a>
       </h2>
-<p id="section-5-1">In order for signatures to be composed of multiple algorithms, we define encodings consisting of a sequence of signature primitives (aka "component algorithms") such that these structures can be used as a drop-in replacement for existing signature fields such as those found in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="pk-compositesignature">
 <section id="section-5.1">
         <h3 id="name-pk-compositesignature">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-pk-compositesignature" class="section-name selfRef">pk-CompositeSignature</a>
         </h3>
-<p id="section-5.1-1">The following ASN.1 structures represent a composite public key combined with an RSA and Elliptic Curve public key, respectively.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-1">The following ASN.1 structures represent a composite public key combined with an RSA or Elliptic Curve public key.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.1-2">
 <pre>
 RsaCompositeSignaturePublicKey ::= SEQUENCE {
@@ -2108,14 +2108,14 @@ EcCompositeSignaturePublicKey ::= SEQUENCE {
 
 EdCompositeSignaturePublicKey ::= SEQUENCE {
         firstPublicKey BIT STRING (ENCODED BY id-raw-key),
-        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+        secondPublicKey BIT STRING (ENCODED BY id-raw-key)
       }
 </pre><a href="#section-5.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.1-3"><code>id-raw-key</code> is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or
 may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">This structure is intentionally generic in the first public key slot since ML-DSA, as defined in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>, does not define any ASN.1 public key structures. For use with this document, the <code>firstPublicKey</code> MUST be the BIT STRING representation of an ML-DSA key as specified in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm. The public key for Edwards curve DSA component is also encoded as a raw key.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1-5">The following ASN.1 Information Object Class is defined to then allow for compact definitions of each composite algorithm.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and Edwards Curve keys MUST be the raw BIT STRING representation as speified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-5">The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.1-6">
 <pre>
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
@@ -2127,12 +2127,13 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     }
 </pre><a href="#section-5.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-5.1-7">As an example, the public key type <code>pk-MLDSA44-ECDSA-P256-SHA256</code> is defined as:<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<p id="section-5.1-7">As an example, the public key type <code>id-MLDSA44-ECDSA-P256</code> is defined as:<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.1-8">
 <pre>
-pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-  EcCompositeSignaturePublicKey}
+id-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
+  pk-CompositeSignature{
+    id-MLDSA44-ECDSA-P256,
+    EcCompositeSignaturePublicKey }
 </pre><a href="#section-5.1-8" class="pilcrow">¶</a>
 </div>
 <p id="section-5.1-9">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 9</a>.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
