@@ -1393,451 +1393,317 @@ To ease implementing Composite Signatures this section specifies the Algorithms 
 
 For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.
 
-## ML-DSA-44
+**ML-DSA-44 -- AlgorithmIdentifier of Public Key and Signature**
 
-### AlgorithmIdentifier of Public Key and Signature
-
-ASN.1:
-
-~~~ ASN.1
-  algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 4 4)
-   }
 ~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ML-DSA-44   -- (1 3 6 1 4 1 2 267 12 4 4)
+   }
 
 DER:
-
-~~~
   30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
 ~~~
 
-## ML-DSA-65
 
-### AlgorithmIdentifier of Public Key and Signature
+**ML-DSA-65 -- AlgorithmIdentifier of Public Key and Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-65                -- (1 3 6 1 4 1 2 267 12 6 5)
-   }
 ~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ML-DSA-65   -- (1 3 6 1 4 1 2 267 12 6 5)
+   }
 
 DER:
-
-~~~
   30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 06 05
 ~~~
 
-## ML-DSA-87
 
-### AlgorithmIdentifier of Public Key and Signature
+**ML-DSA-87 -- AlgorithmIdentifier of Public Key and Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-87                -- (1 3 6 1 4 1 2 267 12 8 7)
-   }
 ~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ML-DSA-87   -- (1 3 6 1 4 1 2 267 12 8 7)
+   }
 
 DER:
-
-~~~
   30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 08 07
 ~~~
 
-## RSA PSS 2048
 
-### AlgorithmIdentifier of Public Key
+**RSA PSS 2048 -- AlgorithmIdentifier of Public Key**
 
-ASN.1:
-
-~~~ ASN.1
-  algorithm AlgorithmIdentifier ::= {
-    algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
-    }
 ~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-RSASSA-PSS   -- (1.2.840.113549.1.1.10)
+    }
 
 DER:
-
-~~~
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-### AlgorithmIdentifier of Signature
+**RSA PSS 2048 -- AlgorithmIdentifier of Signature**
 
+~~~
 ASN.1:
-
-~~~ ASN.1
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
+    algorithm id-RSASSA-PSS,   -- (1.2.840.113549.1.1.10)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm id-sha256,                    -- (2.16.840.1.101.3.4.2.1)
+        algorithm id-sha256,   -- (2.16.840.1.101.3.4.2.1)
         parameters NULL
         },
       AlgorithmIdentifier ::= {
-        algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
+        algorithm id-mgf1,       -- (1.2.840.113549.1.1.8)
         parameters AlgorithmIdentifier ::= {
-          algorithm id-sha256,                  -- (2.16.840.1.101.3.4.2.1)
+          algorithm id-sha256,   -- (2.16.840.1.101.3.4.2.1)
           parameters NULL
           }
         },
       saltLength 32
       }
     }
-~~~
 
 DER:
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
+  48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
+  08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
+~~~
+
+**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
 ~~~
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
-~~~
-
-## RSA PSS 3072 & 4096
-
-### AlgorithmIdentifier of Public Key
-
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
+    algorithm id-RSASSA-PSS   -- (1.2.840.113549.1.1.10)
     }
-~~~
 
 DER:
-
-~~~
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-### AlgorithmIdentifier of Signature
+**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
+~~~
 ASN.1:
-
-~~~ ASN.1
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
+    algorithm id-RSASSA-PSS,   -- (1.2.840.113549.1.1.10)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm id-sha512,                    -- (2.16.840.1.101.3.4.2.3)
+        algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
         parameters NULL
         },
       AlgorithmIdentifier ::= {
-        algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
+        algorithm id-mgf1,       -- (1.2.840.113549.1.1.8)
         parameters AlgorithmIdentifier ::= {
-          algorithm id-sha512,                  -- (2.16.840.1.101.3.4.2.3)
+          algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
           parameters NULL
           }
         },
       saltLength 64
       }
     }
-~~~
 
 DER:
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
+  48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
+  08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
+~~~
+
+**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Public Key**
 
 ~~~
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
-~~~
-
-## RSA PKCS 1.5 2048
-
-### AlgorithmIdentifier of Public Key
-
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
+    algorithm rsaEncryption,   -- (1.2.840.113549.1.1.1)
     parameters NULL
     }
-~~~
 
 DER:
-
-~~~
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-### AlgorithmIdentifier of Signature
+**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Signature**
 
+~~~
 ASN.1:
-
-~~~ ASN.1
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm sha256WithRSAEncryption,          -- (1.2.840.113549.1.1.11)
+    algorithm sha256WithRSAEncryption,   -- (1.2.840.113549.1.1.11)
     parameters NULL
     }
-~~~
 
 DER:
-
-~~~
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-## RSA PKCS 1.5 3072 & 4096
+**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
-### AlgorithmIdentifier of Public Key
-
+~~~
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
+    algorithm rsaEncryption,   -- (1.2.840.113549.1.1.1)
     parameters NULL
     }
-~~~
 
 DER:
-
-~~~
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-### AlgorithmIdentifier of Signature
+**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
+~~~
 ASN.1:
-
-~~~ ASN.1
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm sha512WithRSAEncryption,          -- (1.2.840.113549.1.1.13)
+    algorithm sha512WithRSAEncryption,   -- (1.2.840.113549.1.1.13)
     parameters NULL
     }
-~~~
 
 DER:
-
-~~~
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-## EC NIST 256
+**ECDSA NIST 256 -- AlgorithmIdentifier of Public Key**
 
-### AlgorithmIdentifier of Public Key
-
+~~~
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm secp256r1                           -- (1.2.840.10045.3.1.7)
+        algorithm secp256r1   -- (1.2.840.10045.3.1.7)
         }
       }
     }
-~~~
 
 DER:
-
-~~~
   30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
 ~~~
 
-### AlgorithmIdentifier of Signature
+**ECDSA NIST 256 -- AlgorithmIdentifier of Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
-    }
 ~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA256   -- (1.2.840.10045.4.3.2)
+    }
 
 DER:
-
-~~~
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
 ~~~
 
-## EC NIST-384
+**ECDSA NIST-384 -- AlgorithmIdentifier of Public Key**
 
-### AlgorithmIdentifier of Public Key
-
+~~~
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm secp384r1                           -- (1.3.132.0.34)
+        algorithm secp384r1   -- (1.3.132.0.34)
         }
       }
     }
-~~~
 
 DER:
-
-~~~
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
 ~~~
 
-### AlgorithmIdentifier of Signature
+**ECDSA NIST-384 -- AlgorithmIdentifier of Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
-    }
 ~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA384   -- (1.2.840.10045.4.3.3)
+    }
 
 DER:
-
-~~~
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
 ~~~
 
-## EC Brainpool-256
+**ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key**
 
-### AlgorithmIdentifier of Public Key
-
+~~~
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm brainpoolP256r1                     -- (1.3.36.3.3.2.8.1.1.7)
+        algorithm brainpoolP256r1   -- (1.3.36.3.3.2.8.1.1.7)
         }
       }
     }
-~~~
 
 DER:
-
-~~~
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
 ~~~
 
-### AlgorithmIdentifier of Signature
+**ECDSA Brainpool-256 -- AlgorithmIdentifier of Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
-    }
 ~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA256   -- (1.2.840.10045.4.3.2)
+    }
 
 DER:
-
-~~~
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
 ~~~
 
-## EC Brainpool-384
+**ECDSA Brainpool-384 -- AlgorithmIdentifier of Public Key**
 
-### AlgorithmIdentifier of Public Key
-
+~~~
 ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm brainpoolP384r1                     -- (1.3.36.3.3.2.8.1.1.11)
+        algorithm brainpoolP384r1   -- (1.3.36.3.3.2.8.1.1.11)
         }
       }
     }
-~~~
 
 DER:
-
-~~~
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
 ~~~
 
-### AlgorithmIdentifier of Signature
+**ECDSA Brainpool-384 -- AlgorithmIdentifier of Signature**
 
-ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
-    }
 ~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA384   -- (1.2.840.10045.4.3.3)
+    }
 
 DER:
-
-~~~
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
 ~~~
 
-## Ed25519
+**Ed25519 -- AlgorithmIdentifier of Public Key and Signature**
 
-### AlgorithmIdentifier of Public Key
-
-ASN.1:
-
-~~~ ASN.1
-  algorithm AlgorithmIdentifier ::= {
-    algorithm id-Ed25519                        -- (1.3.101.112)
-    }
 ~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-Ed25519   -- (1.3.101.112)
+    }
 
 DER:
-
-~~~
   30 05 06 03 2B 65 70
 ~~~
 
-### AlgorithmIdentifier of Signature
+**Ed448 -- AlgorithmIdentifier of Public Key and Signature**
 
+~~~
 ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm id-Ed25519                        -- (1.3.101.112)
-    }
-~~~
-
-DER:
-
-~~~
-  30 05 06 03 2B 65 70
-~~~
-
-## Ed448
-
-### AlgorithmIdentifier of Public Key
-
-ASN.1:
-
-~~~ ASN.1
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-Ed448                          -- (1.3.101.113)
+    algorithm id-Ed448   -- (1.3.101.113)
     }
-~~~
 
 DER:
-
-~~~
   30 05 06 03 2B 65 71
 ~~~
 
-### AlgorithmIdentifier of Signature
-
-ASN.1:
-
-~~~ ASN.1
-  signature AlgorithmIdentifier ::= {
-    algorithm id-Ed448                          -- (1.3.101.113)
-    }
-~~~
-
-DER:
-
-~~~
-  30 05 06 03 2B 65 71
-~~~
 
 # Implementation Considerations {#sec-imp-considers}
 
