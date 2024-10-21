@@ -100,12 +100,14 @@ Table of Contents
      6.1.  sa-CompositeSignature
      6.2.  CompositeSignatureValue
    7.  Algorithm Identifiers
-     7.1.  Domain Separators
-     7.2.  Notes on id-MLDSA44-RSA2048-PSS and
+     7.1.  Composite-ML-DSA Algorithm Identifiers
+     7.2.  HashComposite-ML-DSA Algorithm Identifiers
+     7.3.  Domain Separators
+     7.4.  Notes on id-MLDSA44-RSA2048-PSS and
            id-HashMLDSA44-RSA2048-PSS-SHA256
-     7.3.  Notes on id-MLDSA65-RSA3072-PSS and
+     7.5.  Notes on id-MLDSA65-RSA3072-PSS and
            id-HashMLDSA65-RSA3072-PSS-SHA512
-     7.4.  Notes on id-MLDSA65-RSA4096-PSS or
+     7.6.  Notes on id-MLDSA65-RSA4096-PSS or
            id-HashMLDSA65-RSA4096-PSS-SHA384
    8.  Use in CMS
      8.1.  Underlying Components
@@ -126,50 +128,50 @@ Table of Contents
    12. References
      12.1.  Normative References
      12.2.  Informative References
-   Appendix A.  Component Algorithm Reference
-   Appendix B.  Component AlgorithmIdentifiers for Public Keys and
+   Appendix A.  Samples
+     A.1.  Explicit Composite Signature Examples
+       A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
+       A.1.2.  MLDSA44-ECDSA-P256 Private Key
+       A.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+   Appendix B.  Component Algorithm Reference
+   Appendix C.  Component AlgorithmIdentifiers for Public Keys and
            Signatures
-     B.1.  ML-DSA-44
-       B.1.1.  AlgorithmIdentifier of Public Key and Signature
-     B.2.  ML-DSA-65
-       B.2.1.  AlgorithmIdentifier of Public Key and Signature
-     B.3.  ML-DSA-87
-       B.3.1.  AlgorithmIdentifier of Public Key and Signature
-     B.4.  RSA PSS 2048
-       B.4.1.  AlgorithmIdentifier of Public Key
-       B.4.2.  AlgorithmIdentifier of Signature
-     B.5.  RSA PSS 3072 & 4096
-       B.5.1.  AlgorithmIdentifier of Public Key
-       B.5.2.  AlgorithmIdentifier of Signature
-     B.6.  RSA PKCS 1.5 2048
-       B.6.1.  AlgorithmIdentifier of Public Key
-       B.6.2.  AlgorithmIdentifier of Signature
-     B.7.  RSA PKCS 1.5 3072 & 4096
-       B.7.1.  AlgorithmIdentifier of Public Key
-       B.7.2.  AlgorithmIdentifier of Signature
-     B.8.  EC NIST 256
-       B.8.1.  AlgorithmIdentifier of Public Key
-       B.8.2.  AlgorithmIdentifier of Signature
-     B.9.  EC NIST-384
-       B.9.1.  AlgorithmIdentifier of Public Key
-       B.9.2.  AlgorithmIdentifier of Signature
-     B.10. EC Brainpool-256
-       B.10.1.  AlgorithmIdentifier of Public Key
-       B.10.2.  AlgorithmIdentifier of Signature
-     B.11. EC Brainpool-384
-       B.11.1.  AlgorithmIdentifier of Public Key
-       B.11.2.  AlgorithmIdentifier of Signature
-     B.12. Ed25519
-       B.12.1.  AlgorithmIdentifier of Public Key
-       B.12.2.  AlgorithmIdentifier of Signature
-     B.13. Ed448
-       B.13.1.  AlgorithmIdentifier of Public Key
-       B.13.2.  AlgorithmIdentifier of Signature
-   Appendix C.  Samples
-     C.1.  Explicit Composite Signature Examples
-       C.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
-       C.1.2.  MLDSA44-ECDSA-P256 Private Key
-       C.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+     C.1.  ML-DSA-44
+       C.1.1.  AlgorithmIdentifier of Public Key and Signature
+     C.2.  ML-DSA-65
+       C.2.1.  AlgorithmIdentifier of Public Key and Signature
+     C.3.  ML-DSA-87
+       C.3.1.  AlgorithmIdentifier of Public Key and Signature
+     C.4.  RSA PSS 2048
+       C.4.1.  AlgorithmIdentifier of Public Key
+       C.4.2.  AlgorithmIdentifier of Signature
+     C.5.  RSA PSS 3072 & 4096
+       C.5.1.  AlgorithmIdentifier of Public Key
+       C.5.2.  AlgorithmIdentifier of Signature
+     C.6.  RSA PKCS 1.5 2048
+       C.6.1.  AlgorithmIdentifier of Public Key
+       C.6.2.  AlgorithmIdentifier of Signature
+     C.7.  RSA PKCS 1.5 3072 & 4096
+       C.7.1.  AlgorithmIdentifier of Public Key
+       C.7.2.  AlgorithmIdentifier of Signature
+     C.8.  EC NIST 256
+       C.8.1.  AlgorithmIdentifier of Public Key
+       C.8.2.  AlgorithmIdentifier of Signature
+     C.9.  EC NIST-384
+       C.9.1.  AlgorithmIdentifier of Public Key
+       C.9.2.  AlgorithmIdentifier of Signature
+     C.10. EC Brainpool-256
+       C.10.1.  AlgorithmIdentifier of Public Key
+       C.10.2.  AlgorithmIdentifier of Signature
+     C.11. EC Brainpool-384
+       C.11.1.  AlgorithmIdentifier of Public Key
+       C.11.2.  AlgorithmIdentifier of Signature
+     C.12. Ed25519
+       C.12.1.  AlgorithmIdentifier of Public Key
+       C.12.2.  AlgorithmIdentifier of Signature
+     C.13. Ed448
+       C.13.1.  AlgorithmIdentifier of Public Key
+       C.13.2.  AlgorithmIdentifier of Signature
    Appendix D.  Implementation Considerations
      D.1.  FIPS certification
      D.2.  Backwards Compatibility
@@ -609,7 +611,7 @@ Signature Verification Process:
 
    This mode mirrors HashML-DSA defined in Section 5.4 of [FIPS.204].
 
-   In the pre-hash mode the Domain separator Section 7.1 is concatenated
+   In the pre-hash mode the Domain separator Section 7.3 is concatenated
    with the length of the context in bytes, the context, an additional
    DER encoded value that represents the OID of the Hash function and
    finally the hash of the message to be signed.  After that, the
@@ -626,7 +628,7 @@ Signature Verification Process:
    This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in
    Section 5.4.1 of [FIPS.204].
 
-   In the pre-hash mode the Domain separator Section 7.1 is
+   In the pre-hash mode the Domain separator Section 7.3 is
    concatendated with the length of the context in bytes, the context,
    an additional DER encoded value that indicates which Hash function
    was used for the pre-hash and finally the pre-hashed message PH(M).
@@ -1027,31 +1029,15 @@ Signature Verification Process:
 
 7.  Algorithm Identifiers
 
-   This section defines the algorithm identifiers for explicit
-   combinations.  For simplicity and prototyping purposes, the signature
-   algorithm object identifiers specified in this document are the same
-   as the composite key object Identifiers.  A proper implementation
-   should not presume that the object ID of a composite key will be the
-   same as its composite signature algorithm.
+   This table summarizes the list of Composite ML-DSA algorithms and
+   lists the OID and the two component algorithms.  Domain separator
+   values are defined below in Section 7.3.
 
-   This section is not intended to be exhaustive and other authors may
-   define other composite signature algorithms so long as they are
-   compatible with the structures and processes defined in this and
-   companion public and private key documents.
+   EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-   Some use-cases desire the flexibility for clients to use any
-   combination of supported algorithms, while others desire the rigidity
-   of explicitly-specified combinations of algorithms.
+   <CompSig>.1 is equal to 2.16.840.1.114027.80.8.1.1
 
-   The following tables summarize the details for each explicit
-   composite signature algorithms:
-
-   The OID referenced are TBD for prototyping only, and the following
-   prefix is used for each:
-
-   replace <CompSig> with the String "2.16.840.1.114027.80.8.1"
-
-   Therefore <CompSig>.21 is equal to 2.16.840.1.114027.80.8.1.21
+7.1.  Composite-ML-DSA Algorithm Identifiers
 
    Pure Composite-ML-DSA Signature public key types:
 
@@ -1104,11 +1090,13 @@ Signature Verification Process:
 
             Table 1: Pure ML-DSA Composite Signature Algorithms
 
-   The table above contains everything needed to implement the listed
-   pure ML-DSA composite signature algorithms.  The hash value indicated
-   is used only by the Second algorithm if needed.  See the ASN.1 module
-   in section Section 9 for the explicit definitions of the above
-   Composite signature algorithms.
+   See the ASN.1 module in section Section 9 for the explicit
+   definitions of the above Composite ML-DSA algorithms.
+
+   Full specifications for the referenced algorithms can be found in
+   Appendix B.
+
+7.2.  HashComposite-ML-DSA Algorithm Identifiers
 
    HashComposite-ML-DSA Signature public key types:
 
@@ -1161,19 +1149,18 @@ Signature Verification Process:
 
             Table 2: Hash ML-DSA Composite Signature Algorithms
 
-   The table above contains everything needed to implement the listed
-   hash ML-DSA composite signature algorithms.  The Pre-Hash algorithm
-   is used as the PH algorithm and the DER Encoded OID value of this
-   Hash is used as HashOID for the Message format in step 2 of HashML-
-   DSA.Sign in section Section 4.3.  This hash value is also used as the
-   pre-hash of the Second algorithm if needed.  See the ASN.1 module in
-   section Section 9 for the explicit definitions of the above Composite
-   signature algorithms.
+   See the ASN.1 module in Section 9 for the explicit definitions of the
+   above Composite ML-DSA algorithms.
+
+   The Pre-Hash algorithm is used as the PH algorithm in and the DER
+   Encoded OID value of this Hash is used as HashOID for the Message
+   format in step 2 of HashComposite-ML-DSA.Sign in section
+   Section 4.3.1 and HashComposite-ML-DSA.Verify in Section 4.3.2.
 
    Full specifications for the referenced algorithms can be found in
-   Appendix A.
+   Appendix B.
 
-7.1.  Domain Separators
+7.3.  Domain Separators
 
    As mentioned above, the OID input value is used as a domain separator
    for the Composite Signature Generation and verification process and
@@ -1255,7 +1242,7 @@ Signature Verification Process:
 
         Table 4: Hash ML-DSA Composite Signature Domain Separators
 
-7.2.  Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-
+7.4.  Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-
       SHA256
 
    Use of RSA-PSS [RFC8017] deserves a special explanation.
@@ -1289,7 +1276,7 @@ Signature Verification Process:
 
    *  SHA-256 is defined in [RFC6234].
 
-7.3.  Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-
+7.5.  Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-
       SHA512
 
    The RSA component keys MUST be generated at the 3072-bit security
@@ -1321,7 +1308,7 @@ Signature Verification Process:
 
    *  SHA-256 is defined in [RFC6234].
 
-7.4.  Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-
+7.6.  Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-
       SHA384
 
    The RSA component keys MUST be generated at the 4096-bit security
@@ -2740,485 +2727,11 @@ Signature Verification Process:
               Message Specification", RFC 8551, DOI 10.17487/RFC8551,
               April 2019, <https://www.rfc-editor.org/info/rfc8551>.
 
-Appendix A.  Component Algorithm Reference
+Appendix A.  Samples
 
-   This section provides references to the full specification of the
-   algorithms used in the composite constructions.
+A.1.  Explicit Composite Signature Examples
 
-   +=========================+===========================+=============+
-   | Component Signature     | OID                       |Specification|
-   | Algorithm ID            |                           |             |
-   +=========================+===========================+=============+
-   | id-ML-DSA-44            | 2.16.840.1.101.3.4.3.17   |_ML-DSA_:    |
-   |                         |                           |[FIPS.204]   |
-   +-------------------------+---------------------------+-------------+
-   | id-ML-DSA-65            | 2.16.840.1.101.3.4.3.18   |_ML-DSA_:    |
-   |                         |                           |[FIPS.204]   |
-   +-------------------------+---------------------------+-------------+
-   | id-ML-DSA-87            | 2.16.840.1.101.3.4.3.19   |_ML-DSA_:    |
-   |                         |                           |[FIPS.204]   |
-   +-------------------------+---------------------------+-------------+
-   | id-Ed25519              | iso(1) identified-        |_Ed25519 /   |
-   |                         | organization(3)           |Ed448_:      |
-   |                         | thawte(101) 112           |[RFC8410]    |
-   +-------------------------+---------------------------+-------------+
-   | id-Ed448                | iso(1) identified-        |_Ed25519 /   |
-   |                         | organization(3)           |Ed448_:      |
-   |                         | thawte(101) id-           |[RFC8410]    |
-   |                         | Ed448(113)                |             |
-   +-------------------------+---------------------------+-------------+
-   | ecdsa-with-SHA256       | iso(1) member-body(2)     |_ECDSA_:     |
-   |                         | us(840) ansi-             |[RFC5758]    |
-   |                         | X9-62(10045)              |             |
-   |                         | signatures(4) ecdsa-      |             |
-   |                         | with-SHA2(3) 2            |             |
-   +-------------------------+---------------------------+-------------+
-   | ecdsa-with-SHA512       | iso(1) member-body(2)     |_ECDSA_:     |
-   |                         | us(840) ansi-             |[RFC5758]    |
-   |                         | X9-62(10045)              |             |
-   |                         | signatures(4) ecdsa-      |             |
-   |                         | with-SHA2(3) 4            |             |
-   +-------------------------+---------------------------+-------------+
-   | sha256WithRSAEncryption | iso(1) member-body(2)     |_RSAES-PKCS- |
-   |                         | us(840) rsadsi(113549)    |v1_5_:       |
-   |                         | pkcs(1) pkcs-1(1) 11      |[RFC8017]    |
-   +-------------------------+---------------------------+-------------+
-   | sha512WithRSAEncryption | iso(1) member-body(2)     |_RSAES-PKCS- |
-   |                         | us(840) rsadsi(113549)    |v1_5_:       |
-   |                         | pkcs(1) pkcs-1(1) 13      |[RFC8017]    |
-   +-------------------------+---------------------------+-------------+
-   | id-RSASA-PSS            | iso(1) member-body(2)     |_RSASSA-PSS_:|
-   |                         | us(840) rsadsi(113549)    |[RFC8017]    |
-   |                         | pkcs(1) pkcs-1(1) 10      |             |
-   +-------------------------+---------------------------+-------------+
-
-         Table 9: Component Signature Algorithms used in Composite
-                               Constructions
-
-   +=================+=================================+===============+
-   | Elliptic        | OID                             | Specification |
-   | CurveID         |                                 |               |
-   +=================+=================================+===============+
-   | secp256r1       | iso(1) member-body(2)           | [RFC6090]     |
-   |                 | us(840) ansi-x962(10045)        |               |
-   |                 | curves(3) prime(1) 7            |               |
-   +-----------------+---------------------------------+---------------+
-   | secp384r1       | iso(1) identified-              | [RFC6090]     |
-   |                 | organization(3)                 |               |
-   |                 | certicom(132) curve(0) 34       |               |
-   +-----------------+---------------------------------+---------------+
-   | brainpoolP256r1 | iso(1) identified-              | [RFC5639]     |
-   |                 | organization(3)                 |               |
-   |                 | teletrust(36) algorithm(3)      |               |
-   |                 | signatureAlgorithm(3)           |               |
-   |                 | ecSign(2)                       |               |
-   |                 | ecStdCurvesAndGeneration(8)     |               |
-   |                 | ellipticCurve(1)                |               |
-   |                 | versionOne(1) 7                 |               |
-   +-----------------+---------------------------------+---------------+
-   | brainpoolP384r1 | iso(1) identified-              | [RFC5639]     |
-   |                 | organization(3)                 |               |
-   |                 | teletrust(36) algorithm(3)      |               |
-   |                 | signatureAlgorithm(3)           |               |
-   |                 | ecSign(2)                       |               |
-   |                 | ecStdCurvesAndGeneration(8)     |               |
-   |                 | ellipticCurve(1)                |               |
-   |                 | versionOne(1) 11                |               |
-   +-----------------+---------------------------------+---------------+
-
-         Table 10: Elliptic Curves used in Composite Constructions
-
-      +===========+=================================+===============+
-      | HashID    | OID                             | Specification |
-      +===========+=================================+===============+
-      | id-sha256 | joint-iso-itu-t(2) country(16)  | [RFC6234]     |
-      |           | us(840) organization(1)         |               |
-      |           | gov(101) csor(3)                |               |
-      |           | nistAlgorithms(4) hashAlgs(2) 1 |               |
-      +-----------+---------------------------------+---------------+
-      | id-sha512 | joint-iso-itu-t(2) country(16)  | [RFC6234]     |
-      |           | us(840) organization(1)         |               |
-      |           | gov(101) csor(3)                |               |
-      |           | nistAlgorithms(4) hashAlgs(2) 3 |               |
-      +-----------+---------------------------------+---------------+
-
-         Table 11: Hash algorithms used in Composite Constructions
-
-Appendix B.  Component AlgorithmIdentifiers for Public Keys and
-             Signatures
-
-   To ease implementing Composite Signatures this section specifies the
-   Algorithms Identifiers for each component algorithm.  They are
-   provided as ASN.1 value notation and copy and paste DER encoding to
-   avoid any ambiguity.  Developers may use this information to
-   reconstruct non hybrid public keys and signatures from each component
-   that can be fed to crypto APIs to create or verify a single component
-   signature.
-
-   For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers
-   are the same for Public Key and Signature.  Older Algorithms have
-   different AlgorithmIdentifiers for keys and signatures and are
-   specified separately here for each component.
-
-B.1.  ML-DSA-44
-
-B.1.1.  AlgorithmIdentifier of Public Key and Signature
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 4 4)
-      }
-
-   DER:
-
-     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
-
-B.2.  ML-DSA-65
-
-B.2.1.  AlgorithmIdentifier of Public Key and Signature
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ML-DSA-65                -- (1 3 6 1 4 1 2 267 12 6 5)
-      }
-
-   DER:
-
-     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 06 05
-
-B.3.  ML-DSA-87
-
-B.3.1.  AlgorithmIdentifier of Public Key and Signature
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ML-DSA-87                -- (1 3 6 1 4 1 2 267 12 8 7)
-      }
-
-   DER:
-
-     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 08 07
-
-B.4.  RSA PSS 2048
-
-B.4.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
-       }
-
-   DER:
-
-     30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
-
-B.4.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signatureAlgorithm AlgorithmIdentifier ::= {
-       algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm id-sha256,                    -- (2.16.840.1.101.3.4.2.1)
-           parameters NULL
-           },
-         AlgorithmIdentifier ::= {
-           algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
-           parameters AlgorithmIdentifier ::= {
-             algorithm id-sha256,                  -- (2.16.840.1.101.3.4.2.1)
-             parameters NULL
-             }
-           },
-         saltLength 32
-         }
-       }
-
-   DER:
-
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
-
-B.5.  RSA PSS 3072 & 4096
-
-B.5.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
-       }
-
-   DER:
-
-     30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
-
-B.5.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signatureAlgorithm AlgorithmIdentifier ::= {
-       algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm id-sha512,                    -- (2.16.840.1.101.3.4.2.3)
-           parameters NULL
-           },
-         AlgorithmIdentifier ::= {
-           algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
-           parameters AlgorithmIdentifier ::= {
-             algorithm id-sha512,                  -- (2.16.840.1.101.3.4.2.3)
-             parameters NULL
-             }
-           },
-         saltLength 64
-         }
-       }
-
-   DER:
-
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
-
-B.6.  RSA PKCS 1.5 2048
-
-B.6.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
-       parameters NULL
-       }
-
-   DER:
-
-     30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-
-B.6.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signatureAlgorithm AlgorithmIdentifier ::= {
-       algorithm sha256WithRSAEncryption,          -- (1.2.840.113549.1.1.11)
-       parameters NULL
-       }
-
-   DER:
-
-     30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-
-B.7.  RSA PKCS 1.5 3072 & 4096
-
-B.7.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
-       parameters NULL
-       }
-
-   DER:
-
-     30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-
-B.7.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signatureAlgorithm AlgorithmIdentifier ::= {
-       algorithm sha512WithRSAEncryption,          -- (1.2.840.113549.1.1.13)
-       parameters NULL
-       }
-
-   DER:
-
-     30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-
-B.8.  EC NIST 256
-
-B.8.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm secp256r1                           -- (1.2.840.10045.3.1.7)
-           }
-         }
-       }
-
-   DER:
-
-     30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
-
-B.8.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 02
-
-B.9.  EC NIST-384
-
-B.9.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm secp384r1                           -- (1.3.132.0.34)
-           }
-         }
-       }
-
-   DER:
-
-     30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
-
-B.9.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 03
-
-B.10.  EC Brainpool-256
-
-B.10.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm brainpoolP256r1                     -- (1.3.36.3.3.2.8.1.1.7)
-           }
-         }
-       }
-
-   DER:
-
-     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
-
-B.10.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 02
-
-B.11.  EC Brainpool-384
-
-B.11.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
-       parameters ANY ::= {
-         AlgorithmIdentifier ::= {
-           algorithm brainpoolP384r1                     -- (1.3.36.3.3.2.8.1.1.11)
-           }
-         }
-       }
-
-   DER:
-
-     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
-
-B.11.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
-       }
-
-   DER:
-
-     30 0A 06 08 2A 86 48 CE 3D 04 03 03
-
-B.12.  Ed25519
-
-B.12.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-Ed25519                        -- (1.3.101.112)
-       }
-
-   DER:
-
-     30 05 06 03 2B 65 70
-
-B.12.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm id-Ed25519                        -- (1.3.101.112)
-       }
-
-   DER:
-
-     30 05 06 03 2B 65 70
-
-B.13.  Ed448
-
-B.13.1.  AlgorithmIdentifier of Public Key
-
-   ASN.1:
-
-     algorithm AlgorithmIdentifier ::= {
-       algorithm id-Ed448                          -- (1.3.101.113)
-       }
-
-   DER:
-
-     30 05 06 03 2B 65 71
-
-B.13.2.  AlgorithmIdentifier of Signature
-
-   ASN.1:
-
-     signature AlgorithmIdentifier ::= {
-       algorithm id-Ed448                          -- (1.3.101.113)
-       }
-
-   DER:
-
-     30 05 06 03 2B 65 71
-
-Appendix C.  Samples
-
-C.1.  Explicit Composite Signature Examples
-
-C.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
+A.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
 
    -----BEGIN PUBLIC KEY-----
    MIIFfzANBgtghkgBhvprUAgBBAOCBWwAMIIFZwSCBSAA9DTYoQys3PVrayi9zTam
@@ -3253,7 +2766,7 @@ C.1.1.  MLDSA44-ECDSA-P256-SHA256 Public Key
    EPbQ/KPspugi6gkrLFhcmy/OiA==
    -----END PUBLIC KEY-----
 
-C.1.2.  MLDSA44-ECDSA-P256 Private Key
+A.1.2.  MLDSA44-ECDSA-P256 Private Key
 
    -----BEGIN PRIVATE KEY-----
    MIIPmQIBADANBgtghkgBhvprUAgBBASCD4Mwgg9/BIIPAAD0NNihDKzc9WtrKL3N
@@ -3342,7 +2855,7 @@ C.1.2.  MLDSA44-ECDSA-P256 Private Key
    pugi6gkrLFhcmy/OiA==
    -----END PRIVATE KEY-----
 
-C.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+A.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
 
    -----BEGIN CERTIFICATE-----
    MIIP9zCCBhigAwIBAgIUUFXlmVgQD4nQC6Tzr4OlRKxVYYQwDQYLYIZIAYb6a1AI
@@ -3432,6 +2945,434 @@ C.1.3.  MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
    Ll2dp7GZtR5tyKObPtvUc1s16fP3g7xhvgIga8IVcv0k6DUIApPztCsP/UByrm8k
    1nbSe/5A4mF87n0=
    -----END CERTIFICATE-----
+
+Appendix B.  Component Algorithm Reference
+
+   This section provides references to the full specification of the
+   algorithms used in the composite constructions.
+
+    +=========================+=========================+=============+
+    | Component Signature     | OID                     |Specification|
+    | Algorithm ID            |                         |             |
+    +=========================+=========================+=============+
+    | id-ML-DSA-44            | 2.16.840.1.101.3.4.3.17 |[FIPS.204]   |
+    +-------------------------+-------------------------+-------------+
+    | id-ML-DSA-65            | 2.16.840.1.101.3.4.3.18 |[FIPS.204]   |
+    +-------------------------+-------------------------+-------------+
+    | id-ML-DSA-87            | 2.16.840.1.101.3.4.3.19 |[FIPS.204]   |
+    +-------------------------+-------------------------+-------------+
+    | id-Ed25519              | 1.3.101.112             |[RFC8410]    |
+    +-------------------------+-------------------------+-------------+
+    | id-Ed448                | 1.3.101.113             |[RFC8410]    |
+    +-------------------------+-------------------------+-------------+
+    | ecdsa-with-SHA256       | 1.2.840.10045.4.3.2     |[RFC5758]    |
+    +-------------------------+-------------------------+-------------+
+    | ecdsa-with-SHA512       | 1.2.840.10045.4.3.4     |[RFC5758]    |
+    +-------------------------+-------------------------+-------------+
+    | sha256WithRSAEncryption | 1.2.840.113549.1.1.11   |[RFC8017]    |
+    +-------------------------+-------------------------+-------------+
+    | sha512WithRSAEncryption | 1.2.840.113549.1.1.13   |[RFC8017]    |
+    +-------------------------+-------------------------+-------------+
+    | id-RSASA-PSS            | 1.2.840.113549.1.1.10   |[RFC8017]    |
+    +-------------------------+-------------------------+-------------+
+
+         Table 9: Component Signature Algorithms used in Composite
+                               Constructions
+
+       +==================+=======================+===============+
+       | Elliptic CurveID | OID                   | Specification |
+       +==================+=======================+===============+
+       | secp256r1        | 1.2.840.10045.3.1.7   | [RFC6090]     |
+       +------------------+-----------------------+---------------+
+       | secp384r1        | 1.3.132.0.34          | [RFC6090]     |
+       +------------------+-----------------------+---------------+
+       | brainpoolP256r1  | 1.3.36.3.3.2.8.1.1.7  | [RFC5639]     |
+       +------------------+-----------------------+---------------+
+       | brainpoolP384r1  | 1.3.36.3.3.2.8.1.1.11 | [RFC5639]     |
+       +------------------+-----------------------+---------------+
+
+        Table 10: Elliptic Curves used in Composite Constructions
+
+          +===========+=========================+===============+
+          | HashID    | OID                     | Specification |
+          +===========+=========================+===============+
+          | id-sha256 | 2.16.840.1.101.3.4.2.1  | [RFC6234]     |
+          +-----------+-------------------------+---------------+
+          | id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234]     |
+          +-----------+-------------------------+---------------+
+
+                Table 11: Hash algorithms used in Composite
+                               Constructions
+
+Appendix C.  Component AlgorithmIdentifiers for Public Keys and
+             Signatures
+
+   To ease implementing Composite Signatures this section specifies the
+   Algorithms Identifiers for each component algorithm.  They are
+   provided as ASN.1 value notation and copy and paste DER encoding to
+   avoid any ambiguity.  Developers may use this information to
+   reconstruct non hybrid public keys and signatures from each component
+   that can be fed to crypto APIs to create or verify a single component
+   signature.
+
+   For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers
+   are the same for Public Key and Signature.  Older Algorithms have
+   different AlgorithmIdentifiers for keys and signatures and are
+   specified separately here for each component.
+
+C.1.  ML-DSA-44
+
+C.1.1.  AlgorithmIdentifier of Public Key and Signature
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ML-DSA-44                -- (1 3 6 1 4 1 2 267 12 4 4)
+      }
+
+   DER:
+
+     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
+
+C.2.  ML-DSA-65
+
+C.2.1.  AlgorithmIdentifier of Public Key and Signature
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ML-DSA-65                -- (1 3 6 1 4 1 2 267 12 6 5)
+      }
+
+   DER:
+
+     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 06 05
+
+C.3.  ML-DSA-87
+
+C.3.1.  AlgorithmIdentifier of Public Key and Signature
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ML-DSA-87                -- (1 3 6 1 4 1 2 267 12 8 7)
+      }
+
+   DER:
+
+     30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 08 07
+
+C.4.  RSA PSS 2048
+
+C.4.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
+       }
+
+   DER:
+
+     30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
+
+C.4.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signatureAlgorithm AlgorithmIdentifier ::= {
+       algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm id-sha256,                    -- (2.16.840.1.101.3.4.2.1)
+           parameters NULL
+           },
+         AlgorithmIdentifier ::= {
+           algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
+           parameters AlgorithmIdentifier ::= {
+             algorithm id-sha256,                  -- (2.16.840.1.101.3.4.2.1)
+             parameters NULL
+             }
+           },
+         saltLength 32
+         }
+       }
+
+   DER:
+
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
+
+C.5.  RSA PSS 3072 & 4096
+
+C.5.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-RSASSA-PSS                       -- (1.2.840.113549.1.1.10)
+       }
+
+   DER:
+
+     30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
+
+C.5.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signatureAlgorithm AlgorithmIdentifier ::= {
+       algorithm id-RSASSA-PSS,                    -- (1.2.840.113549.1.1.10)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm id-sha512,                    -- (2.16.840.1.101.3.4.2.3)
+           parameters NULL
+           },
+         AlgorithmIdentifier ::= {
+           algorithm id-mgf1,                      -- (1.2.840.113549.1.1.8)
+           parameters AlgorithmIdentifier ::= {
+             algorithm id-sha512,                  -- (2.16.840.1.101.3.4.2.3)
+             parameters NULL
+             }
+           },
+         saltLength 64
+         }
+       }
+
+   DER:
+
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
+
+C.6.  RSA PKCS 1.5 2048
+
+C.6.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
+       parameters NULL
+       }
+
+   DER:
+
+     30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
+
+C.6.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signatureAlgorithm AlgorithmIdentifier ::= {
+       algorithm sha256WithRSAEncryption,          -- (1.2.840.113549.1.1.11)
+       parameters NULL
+       }
+
+   DER:
+
+     30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
+
+C.7.  RSA PKCS 1.5 3072 & 4096
+
+C.7.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm rsaEncryption,                    -- (1.2.840.113549.1.1.1)
+       parameters NULL
+       }
+
+   DER:
+
+     30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
+
+C.7.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signatureAlgorithm AlgorithmIdentifier ::= {
+       algorithm sha512WithRSAEncryption,          -- (1.2.840.113549.1.1.13)
+       parameters NULL
+       }
+
+   DER:
+
+     30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
+
+C.8.  EC NIST 256
+
+C.8.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm secp256r1                           -- (1.2.840.10045.3.1.7)
+           }
+         }
+       }
+
+   DER:
+
+     30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
+
+C.8.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 02
+
+C.9.  EC NIST-384
+
+C.9.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm secp384r1                           -- (1.3.132.0.34)
+           }
+         }
+       }
+
+   DER:
+
+     30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
+
+C.9.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 03
+
+C.10.  EC Brainpool-256
+
+C.10.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm brainpoolP256r1                     -- (1.3.36.3.3.2.8.1.1.7)
+           }
+         }
+       }
+
+   DER:
+
+     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
+
+C.10.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA256                       -- (1.2.840.10045.4.3.2)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 02
+
+C.11.  EC Brainpool-384
+
+C.11.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-ecPublicKey                          -- (1.2.840.10045.2.1)
+       parameters ANY ::= {
+         AlgorithmIdentifier ::= {
+           algorithm brainpoolP384r1                     -- (1.3.36.3.3.2.8.1.1.11)
+           }
+         }
+       }
+
+   DER:
+
+     30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
+
+C.11.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm ecdsa-with-SHA384                       -- (1.2.840.10045.4.3.3)
+       }
+
+   DER:
+
+     30 0A 06 08 2A 86 48 CE 3D 04 03 03
+
+C.12.  Ed25519
+
+C.12.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-Ed25519                        -- (1.3.101.112)
+       }
+
+   DER:
+
+     30 05 06 03 2B 65 70
+
+C.12.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm id-Ed25519                        -- (1.3.101.112)
+       }
+
+   DER:
+
+     30 05 06 03 2B 65 70
+
+C.13.  Ed448
+
+C.13.1.  AlgorithmIdentifier of Public Key
+
+   ASN.1:
+
+     algorithm AlgorithmIdentifier ::= {
+       algorithm id-Ed448                          -- (1.3.101.113)
+       }
+
+   DER:
+
+     30 05 06 03 2B 65 71
+
+C.13.2.  AlgorithmIdentifier of Signature
+
+   ASN.1:
+
+     signature AlgorithmIdentifier ::= {
+       algorithm id-Ed448                          -- (1.3.101.113)
+       }
+
+   DER:
+
+     30 05 06 03 2B 65 71
 
 Appendix D.  Implementation Considerations
 
