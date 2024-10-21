@@ -170,7 +170,7 @@ Interop-affecting changes:
 
 * Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency
 * Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
-* Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility will all previous versions.
+* Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility with all previous versions.
 * Updated the OID table for new Pre-Hash OIDs and added them to the IANA section.
 * Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.
 
