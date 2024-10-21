@@ -92,11 +92,10 @@ Table of Contents
        4.3.1.  HashComposite-ML-DSA-Sign signature mode
        4.3.2.  HashComposite-ML-DSA-Verify
    5.  Composite Key Structures
-     5.1.  pk-CompositeSignature
-     5.2.  CompositeSignaturePublicKey
-     5.3.  CompositeSignaturePrivateKey
-     5.4.  Encoding Rules
-     5.5.  Key Usage Bits
+     5.1.  CompositeSignaturePublicKey
+     5.2.  CompositeSignaturePrivateKey
+     5.3.  Encoding Rules
+     5.4.  Key Usage Bits
    6.  Composite Signature Structures
      6.1.  sa-CompositeSignature
      6.2.  CompositeSignatureValue
@@ -413,8 +412,8 @@ Table of Contents
                      Figure 1: Composite KeyGen(pk, sk)
 
    The structures CompositeSignaturePublicKey and
-   CompositeSignaturePrivateKey are described in Section 5.2 and
-   Section 5.3 respectively and are used here as placeholders since
+   CompositeSignaturePrivateKey are described in Section 5.1 and
+   Section 5.2 respectively and are used here as placeholders since
    implementations MAY use their own internal key representations in
    cases where interoparability is not required.
 
@@ -806,10 +805,15 @@ Signature Verification Process:
    signature fields such as those found in PKCS#10 [RFC2986], CMP
    [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
-5.1.  pk-CompositeSignature
+5.1.  CompositeSignaturePublicKey
 
-   The following ASN.1 structures represent a composite public key
-   combined with an RSA or Elliptic Curve public key.
+   The wire encoding of a Composite ML-DSA public key is:
+
+   CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
+
+   Since RSA and ECDSA component public keys are themselves in a DER
+   encoding, the following ASN.1 structures show the internal structure
+   of the various public key types used in this specification:
 
    RsaCompositeSignaturePublicKey ::= SEQUENCE {
            firstPublicKey BIT STRING (ENCODED BY id-raw-key),
@@ -837,11 +841,25 @@ Signature Verification Process:
    For use with this document, ML-DSA keys MUST be be the raw BIT STRING
    representation as specified in
    [I-D.ietf-lamps-dilithium-certificates] and Edwards Curve keys MUST
-   be the raw BIT STRING representation as speified in [RFC8410].  Note
-   that here we used BIT STRING rather than OCTET STRING so that these
-   keys can be trivially transcoded into a SubjectPublicKeyInfo as
-   necessary, for example when a crypto library requires this for
-   invoking the component algorithm.
+   be the raw BIT STRING representation as speified in [RFC8410].
+
+   Some applications may need to reconstruct the SubjectPublicKeyInfo
+   objects corresponding to each component public key.  Table 2 or
+   Table 3 in Section 7 provides the necessary mapping between composite
+   and their component algorithms for doing this reconstruction.  This
+   also motivates the design choice of SEQUENCE OF BIT STRING instead of
+   SEQUENCE OF OCTET STRING; using BIT STRING allows for easier
+   transcription between CompositeSignaturePublicKey and
+   SubjectPublicKeyInfo.
+
+   When the CompositeSignaturePublicKey must be provided in octet string
+   or bit string format, the data structure is encoded as specified in
+   Section 5.3.
+
+   Component keys of a CompositeSignaturePublicKey MUST NOT be used in
+   any other type of key or as a standalone key.  For more details on
+   the security considerations around key reuse, see section
+   Section 11.2.
 
    The following ASN.1 Information Object Class is defined to allow for
    compact definitions of each composite algorithm, leading to a smaller
@@ -866,35 +884,7 @@ Signature Verification Process:
    The full set of key types defined by this specification can be found
    in the ASN.1 Module in Section 9.
 
-5.2.  CompositeSignaturePublicKey
-
-   Composite public key data is represented by the following structure:
-
-   CompositeSignaturePublicKey ::= SEQUENCE SIZE (2) OF BIT STRING
-
-   A composite key MUST contain two component public keys.  The order of
-   the component keys is determined by the definition of the
-   corresponding algorithm identifier as defined in section Section 7.
-
-   Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 2 or
-   Table 3 in Section 7 provides the necessary mapping between composite
-   and their component algorithms for doing this reconstruction.  This
-   also motivates the design choice of SEQUENCE OF BIT STRING instead of
-   SEQUENCE OF OCTET STRING; using BIT STRING allows for easier
-   transcription between CompositeSignaturePublicKey and
-   SubjectPublicKeyInfo.
-
-   When the CompositeSignaturePublicKey must be provided in octet string
-   or bit string format, the data structure is encoded as specified in
-   Section 5.4.
-
-   Component keys of a CompositeSignaturePublicKey MUST NOT be used in
-   any other type of key or as a standalone key.  For more details on
-   the security considerations around key reuse, see section
-   Section 11.2.
-
-5.3.  CompositeSignaturePrivateKey
+5.2.  CompositeSignaturePrivateKey
 
    Use cases that require an interoperable encoding for composite
    private keys, such as when private keys are carried in PKCS #12
@@ -928,7 +918,7 @@ Signature Verification Process:
    of the CompositeSignaturePrivateKey Sequence is an OCTET STRING
    according to the encoding of the underlying algorithm specification.
    The PrivateKey for each component algorithm MUST be in the same order
-   as defined in Section 5.2.  The privateKey field SHALL contain the
+   as defined in Section 5.1.  The privateKey field SHALL contain the
    CompositeSignaturePrivateKey, and the publicKey field MAY be present.
    If the publicKey field is present, it MUST be a
    CompositeSignaturePublicKey.
@@ -952,7 +942,7 @@ Signature Verification Process:
    the security considerations around key reuse, see section
    Section 11.2.
 
-5.4.  Encoding Rules
+5.3.  Encoding Rules
 
    Many protocol specifications will require that the composite public
    key and composite private key data structures be represented by an
@@ -977,7 +967,7 @@ Signature Verification Process:
    implementations that parse these structures MAY accept both BER and
    DER.
 
-5.5.  Key Usage Bits
+5.4.  Key Usage Bits
 
    For protocols such as X.509 [RFC5280] that specify key usage along
    with the public key, then the composite public key associated with a
