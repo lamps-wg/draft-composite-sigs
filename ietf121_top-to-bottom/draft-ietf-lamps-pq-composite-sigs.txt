@@ -431,7 +431,7 @@ Table of Contents
    [FIPS.204].
 
    In the pure mode the Domain separator value is concatenated with the
-   length of the context in bytes, the context, the message to be
+   length of the context in bytes, the context, and the message to be
    signed.  After that, the signature process for each component
    algorithm is invoked and the values are then placed in the
    CompositeSignatureValue structure defined in Section 6.1.
@@ -605,7 +605,7 @@ Signature Verification Process:
    In the pre-hash mode the Domain separator Section 7.1 is concatenated
    with the length of the context in bytes, the context, an additional
    DER encoded value that represents the OID of the Hash function and
-   finally the hash of the message to de signed.  After that, the
+   finally the hash of the message to be signed.  After that, the
    signature process for each component algorithm is invoked and the
    values are then placed in the CompositeSignatureValue structure
    defined in Section 6.1.
