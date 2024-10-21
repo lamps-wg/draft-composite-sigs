@@ -116,14 +116,11 @@ informative:
   RFC8551:
   RFC8017:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
-  I-D.draft-ounsworth-pq-composite-kem-01:
-  I-D.draft-becker-guthrie-noncomposite-hybrid-auth-00:
-  I-D.draft-guthrie-ipsecme-ikev2-hybrid-auth-00:
+  #I-D.draft-ounsworth-pq-composite-kem-01:
   I-D.draft-pala-klaussner-composite-kofn-00:
   I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
-  I-D.draft-vaira-pquip-pqc-use-cases-00:
-  I-D.draft-massimo-lamps-pq-sig-certificates-00:
   I-D.draft-ietf-lamps-dilithium-certificates-04:
+  I-D.draft-salter-lamps-cms-ml-dsa-00:
   Bindel2017:
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
@@ -1032,13 +1029,17 @@ where:
 
 Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
 
+All recommendations for using Composite ML-KEM in CMS are fully aligned with the use of ML-KEM in CMS {{I-D.salter-lamps-cms-ml-dsa}}.
+
 ## Underlying Components
 
 When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
 
 The following table lists the MANDATORY Hash algorithms to preserve security and performance characteristics of each composite algorithm.
 
-| Composite Signature AlgorithmID | Secure Hash |
+A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.
+
+| Composite Signature AlgorithmID | digestAlgorithm |
 | ----------- | ----------- |
 | id-MLDSA44-RSA2048-PSS | SHA256 |
 | id-MLDSA44-RSA2048-PKCS15 | SHA256 |
