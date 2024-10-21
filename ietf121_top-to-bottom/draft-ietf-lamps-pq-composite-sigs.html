@@ -2118,7 +2118,7 @@ EdCompositeSignaturePublicKey ::= SEQUENCE {
 <p id="section-5.1-5"><code>id-raw-key</code> is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or
 may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 <p id="section-5.1-6">For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and Edwards Curve keys MUST be the raw BIT STRING representation as speified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1-7">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of <code>SEQUENCE OF BIT STRING</code> instead of <code>SEQUENCE OF OCTET STRING</code>; using <code>BIT STRING</code> allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<p id="section-5.1-7">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 1</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 2</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of <code>SEQUENCE OF BIT STRING</code> instead of <code>SEQUENCE OF OCTET STRING</code>; using <code>BIT STRING</code> allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <p id="section-5.1-8">When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in <a href="#sec-encoding-rules" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
 <p id="section-5.1-9">Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
 <p id="section-5.1-10">The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-5.1-10" class="pilcrow">¶</a></p>
@@ -2257,35 +2257,6 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
       }
 </pre><a href="#section-6.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.1-3">The following is an explanation how SIGNATURE-ALGORITHM elements are used
-to define Composite Signatures:<a href="#section-6.1-3" class="pilcrow">¶</a></p>
-<table class="center" id="table-1">
-          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
-<thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">SIGNATURE-ALGORITHM element</th>
-              <th class="text-left" rowspan="1" colspan="1">Definition</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">IDENTIFIER</td>
-              <td class="text-left" rowspan="1" colspan="1">The Object ID used to identify the composite Signature Algorithm</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">VALUE</td>
-              <td class="text-left" rowspan="1" colspan="1">The Sequence of BIT STRINGS for each component signature value</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">PARAMS</td>
-              <td class="text-left" rowspan="1" colspan="1">Parameters are absent</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">PUBLIC-KEYS</td>
-              <td class="text-left" rowspan="1" colspan="1">The composite public key type associated with the composite signature</td>
-            </tr>
-          </tbody>
-        </table>
 </section>
 </div>
 <div id="sec-compositeSignatureValue">
@@ -2293,14 +2264,15 @@ to define Composite Signatures:<a href="#section-6.1-3" class="pilcrow">¶</a></
         <h3 id="name-compositesignaturevalue">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-compositesignaturevalue" class="section-name selfRef">CompositeSignatureValue</a>
         </h3>
-<p id="section-6.2-1">The output of the composite signature algorithm is the DER encoding of the following structure:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<div class="lang-asn.1 sourcecode" id="section-6.2-2">
+<p id="section-6.2-1">The output of a Composite ML-DSA algorithm is the DER encoding of the following structure:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-2">The <code>CompositeSignatureValue</code> is the DER encoing of a SEQUENCE of the signature values from the
+underlying component algorithms.  It is represented in ASN.1 as follows:<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<div class="lang-asn.1 sourcecode" id="section-6.2-3">
 <pre>
 CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
-</pre><a href="#section-6.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.2-3" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2-3">Where each BIT STRING within the SEQUENCE is a signature value produced by one of the component keys. It MUST contain one signature value produced by each component algorithm, and in the same order as specified in the object identifier.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
-<p id="section-6.2-4">The choice of <code>SEQUENCE SIZE (2) OF BIT STRING</code>, rather than for example a single BIT STRING containing the concatenated signature values, is to gracefully handle variable-length signature values by taking advantage of ASN.1's built-in length fields.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
+<p id="section-6.2-4">The order of the component signature values is the same as the order defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a>.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2319,9 +2291,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-7-7">Therefore &lt;CompSig&gt;.21 is equal to 2.16.840.1.114027.80.8.1.21<a href="#section-7-7" class="pilcrow">¶</a></p>
 <p id="section-7-8">Pure Composite-ML-DSA Signature public key types:<a href="#section-7-8" class="pilcrow">¶</a></p>
 <span id="name-pure-ml-dsa-composite-signa"></span><div id="tab-sig-algs">
-<table class="center" id="table-2">
+<table class="center" id="table-1">
         <caption>
-<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#table-1" class="selfRef">Table 1</a>:
 <a href="#name-pure-ml-dsa-composite-signa" class="selfRef">Pure ML-DSA Composite Signature Algorithms</a>
         </caption>
 <thead>
@@ -2423,9 +2395,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-7-10">The table above contains everything needed to implement the listed pure ML-DSA composite signature algorithms.  The hash value indicated is used only by the Second algorithm if needed.  See the ASN.1 module in section <a href="#sec-asn1-module" class="auto internal xref">Section 9</a> for the explicit definitions of the above Composite signature algorithms.<a href="#section-7-10" class="pilcrow">¶</a></p>
 <p id="section-7-11">HashComposite-ML-DSA Signature public key types:<a href="#section-7-11" class="pilcrow">¶</a></p>
 <span id="name-hash-ml-dsa-composite-signa"></span><div id="tab-hash-sig-algs">
-<table class="center" id="table-3">
+<table class="center" id="table-2">
         <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-hash-ml-dsa-composite-signa" class="selfRef">Hash ML-DSA Composite Signature Algorithms</a>
         </caption>
 <thead>
@@ -2548,9 +2520,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </h3>
 <p id="section-7.1-1">As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <span id="name-pure-ml-dsa-composite-signat"></span><div id="tab-sig-alg-oids">
-<table class="center" id="table-4">
+<table class="center" id="table-3">
           <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#table-3" class="selfRef">Table 3</a>:
 <a href="#name-pure-ml-dsa-composite-signat" class="selfRef">Pure ML-DSA Composite Signature Domain Separators</a>
           </caption>
 <thead>
@@ -2620,9 +2592,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </table>
 </div>
 <span id="name-hash-ml-dsa-composite-signat"></span><div id="tab-hash-sig-alg-oids">
-<table class="center" id="table-5">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-hash-ml-dsa-composite-signat" class="selfRef">Hash ML-DSA Composite Signature Domain Separators</a>
           </caption>
 <thead>
@@ -2702,9 +2674,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-7.2-2">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.2-3">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
-<table class="center" id="table-6">
+<table class="center" id="table-5">
           <caption>
-<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-rsa-pss-2048-parameters" class="selfRef">RSA-PSS 2048 Parameters</a>
           </caption>
 <thead>
@@ -2752,9 +2724,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-7.3-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <p id="section-7.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
-<table class="center" id="table-7">
+<table class="center" id="table-6">
           <caption>
-<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#table-6" class="selfRef">Table 6</a>:
 <a href="#name-rsa-pss-3072-parameters" class="selfRef">RSA-PSS 3072 Parameters</a>
           </caption>
 <thead>
@@ -2802,9 +2774,9 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <p id="section-7.4-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <p id="section-7.4-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.4-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
-<table class="center" id="table-8">
+<table class="center" id="table-7">
           <caption>
-<a href="#table-8" class="selfRef">Table 8</a>:
+<a href="#table-7" class="selfRef">Table 7</a>:
 <a href="#name-rsa-pss-4096-parameters" class="selfRef">RSA-PSS 4096 Parameters</a>
           </caption>
 <thead>
@@ -2858,12 +2830,12 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         <h3 id="name-underlying-components">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-underlying-components" class="section-name selfRef">Underlying Components</a>
         </h3>
-<p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 9</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1-2">The following table lists the MANDATORY Hash algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <span id="name-composite-signature-sha-alg"></span><div id="tab-cms-shas">
-<table class="center" id="table-9">
+<table class="center" id="table-8">
           <caption>
-<a href="#table-9" class="selfRef">Table 9</a>:
+<a href="#table-8" class="selfRef">Table 8</a>:
 <a href="#name-composite-signature-sha-alg" class="selfRef">Composite Signature SHA Algorithms</a>
           </caption>
 <thead>
@@ -2947,7 +2919,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-signeddata-conventions" class="section-name selfRef">SignedData Conventions</a>
         </h3>
 <p id="section-8.2-1">As specified in CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.2-2">When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in <a href="#tab-cms-shas" class="auto internal xref">Table 9</a>, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a>, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:<a href="#section-8.2-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-3">
 <pre>
 IF (signed attributes are absent)
@@ -2960,7 +2932,7 @@ ELSE message-digest attribute = Hash(content);
 <p id="section-8.2-5">digestAlgorithm:
     The digestAlgorithm contains the one-way hash function used by the CMS signer.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.2-6">signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 9</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
+    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.2-7">signature:
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
 </section>
@@ -2990,7 +2962,7 @@ cRLSign
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
         </h3>
 <p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute that announces support for the RSA-KEM Algorithm.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 9</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3611,7 +3583,7 @@ END
         <h3 id="name-object-identifier-allocatio">
 <a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-object-identifier-allocatio" class="section-name selfRef">Object Identifier Allocations</a>
         </h3>
-<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> and <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 1</a> and <a href="#tab-hash-sig-algs" class="auto internal xref">Table 2</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <div id="module-registration-smi-security-for-pkix-module-identifier">
 <section id="section-10.1.1">
           <h4 id="name-module-registration-smi-sec">
@@ -4232,9 +4204,9 @@ END
       </h2>
 <p id="appendix-A-1">This section provides references to the full specification of the algorithms used in the composite constructions.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <span id="name-component-signature-algorit"></span><div id="tab-component-sig-algs">
-<table class="center" id="table-10">
+<table class="center" id="table-9">
         <caption>
-<a href="#table-10" class="selfRef">Table 10</a>:
+<a href="#table-9" class="selfRef">Table 9</a>:
 <a href="#name-component-signature-algorit" class="selfRef">Component Signature Algorithms used in Composite Constructions</a>
         </caption>
 <thead>
@@ -4319,9 +4291,9 @@ END
       </table>
 </div>
 <span id="name-elliptic-curves-used-in-com"></span><div id="tab-component-curve-algs">
-<table class="center" id="table-11">
+<table class="center" id="table-10">
         <caption>
-<a href="#table-11" class="selfRef">Table 11</a>:
+<a href="#table-10" class="selfRef">Table 10</a>:
 <a href="#name-elliptic-curves-used-in-com" class="selfRef">Elliptic Curves used in Composite Constructions</a>
         </caption>
 <thead>
@@ -4364,9 +4336,9 @@ END
       </table>
 </div>
 <span id="name-hash-algorithms-used-in-com"></span><div id="tab-component-hash">
-<table class="center" id="table-12">
+<table class="center" id="table-11">
         <caption>
-<a href="#table-12" class="selfRef">Table 12</a>:
+<a href="#table-11" class="selfRef">Table 11</a>:
 <a href="#name-hash-algorithms-used-in-com" class="selfRef">Hash algorithms used in Composite Constructions</a>
         </caption>
 <thead>

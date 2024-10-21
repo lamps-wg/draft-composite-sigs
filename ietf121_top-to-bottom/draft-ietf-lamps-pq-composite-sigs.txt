@@ -844,8 +844,8 @@ Signature Verification Process:
    be the raw BIT STRING representation as speified in [RFC8410].
 
    Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 2 or
-   Table 3 in Section 7 provides the necessary mapping between composite
+   objects corresponding to each component public key.  Table 1 or
+   Table 2 in Section 7 provides the necessary mapping between composite
    and their component algorithms for doing this reconstruction.  This
    also motivates the design choice of SEQUENCE OF BIT STRING instead of
    SEQUENCE OF OCTET STRING; using BIT STRING allows for easier
@@ -1011,43 +1011,19 @@ Signature Verification Process:
             PUBLIC-KEYS {publicKeyType}
          }
 
-   The following is an explanation how SIGNATURE-ALGORITHM elements are
-   used to define Composite Signatures:
-
-     +=====================+=========================================+
-     | SIGNATURE-ALGORITHM | Definition                              |
-     | element             |                                         |
-     +=====================+=========================================+
-     | IDENTIFIER          | The Object ID used to identify the      |
-     |                     | composite Signature Algorithm           |
-     +---------------------+-----------------------------------------+
-     | VALUE               | The Sequence of BIT STRINGS for each    |
-     |                     | component signature value               |
-     +---------------------+-----------------------------------------+
-     | PARAMS              | Parameters are absent                   |
-     +---------------------+-----------------------------------------+
-     | PUBLIC-KEYS         | The composite public key type           |
-     |                     | associated with the composite signature |
-     +---------------------+-----------------------------------------+
-
-                                  Table 1
-
 6.2.  CompositeSignatureValue
 
-   The output of the composite signature algorithm is the DER encoding
-   of the following structure:
+   The output of a Composite ML-DSA algorithm is the DER encoding of the
+   following structure:
+
+   The CompositeSignatureValue is the DER encoing of a SEQUENCE of the
+   signature values from the underlying component algorithms.  It is
+   represented in ASN.1 as follows:
 
    CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 
-   Where each BIT STRING within the SEQUENCE is a signature value
-   produced by one of the component keys.  It MUST contain one signature
-   value produced by each component algorithm, and in the same order as
-   specified in the object identifier.
-
-   The choice of SEQUENCE SIZE (2) OF BIT STRING, rather than for
-   example a single BIT STRING containing the concatenated signature
-   values, is to gracefully handle variable-length signature values by
-   taking advantage of ASN.1's built-in length fields.
+   The order of the component signature values is the same as the order
+   defined in Section 5.1.
 
 7.  Algorithm Identifiers
 
@@ -1126,7 +1102,7 @@ Signature Verification Process:
    |                      |            |DSA-87     |                       |
    +----------------------+------------+-----------+-----------------------+
 
-            Table 2: Pure ML-DSA Composite Signature Algorithms
+            Table 1: Pure ML-DSA Composite Signature Algorithms
 
    The table above contains everything needed to implement the listed
    pure ML-DSA composite signature algorithms.  The hash value indicated
@@ -1183,7 +1159,7 @@ Signature Verification Process:
    |                                 |            |DSA-87     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
 
-            Table 3: Hash ML-DSA Composite Signature Algorithms
+            Table 2: Hash ML-DSA Composite Signature Algorithms
 
    The table above contains everything needed to implement the listed
    hash ML-DSA composite signature algorithms.  The Pre-Hash algorithm
@@ -1237,7 +1213,7 @@ Signature Verification Process:
      | id-MLDSA87-Ed448                 | 060B6086480186FA6B50080121 |
      +----------------------------------+----------------------------+
 
-         Table 4: Pure ML-DSA Composite Signature Domain Separators
+         Table 3: Pure ML-DSA Composite Signature Domain Separators
 
     +===================================+============================+
     | Composite Signature AlgorithmID   | Domain Separator (in Hex   |
@@ -1277,7 +1253,7 @@ Signature Verification Process:
     | id-HashMLDSA87-Ed448-SHA512       | 060B6086480186FA6B50080135 |
     +-----------------------------------+----------------------------+
 
-        Table 5: Hash ML-DSA Composite Signature Domain Separators
+        Table 4: Hash ML-DSA Composite Signature Domain Separators
 
 7.2.  Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-
       SHA256
@@ -1305,7 +1281,7 @@ Signature Verification Process:
                   | Salt Length in bits      | 256     |
                   +--------------------------+---------+
 
-                     Table 6: RSA-PSS 2048 Parameters
+                     Table 5: RSA-PSS 2048 Parameters
 
    where:
 
@@ -1337,7 +1313,7 @@ Signature Verification Process:
                   | Salt Length in bits      | 256     |
                   +--------------------------+---------+
 
-                     Table 7: RSA-PSS 3072 Parameters
+                     Table 6: RSA-PSS 3072 Parameters
 
    where:
 
@@ -1369,7 +1345,7 @@ Signature Verification Process:
                   | Salt Length in bits      | 384     |
                   +--------------------------+---------+
 
-                     Table 8: RSA-PSS 4096 Parameters
+                     Table 7: RSA-PSS 4096 Parameters
 
    where:
 
@@ -1391,7 +1367,7 @@ Signature Verification Process:
 
    When a particular Composite Signature OID is supported in CMS, an
    implementation SHOULD support the corresponding Secure Hash algorithm
-   identifier in Table 9 that was used as the pre-hash.
+   identifier in Table 8 that was used as the pre-hash.
 
    The following table lists the MANDATORY Hash algorithms to preserve
    security and performance characteristics of each composite algorithm.
@@ -1428,7 +1404,7 @@ Signature Verification Process:
             | id-MLDSA87-Ed448                 | SHA512      |
             +----------------------------------+-------------+
 
-               Table 9: Composite Signature SHA Algorithms
+               Table 8: Composite Signature SHA Algorithms
 
    where:
 
@@ -1448,7 +1424,7 @@ Signature Verification Process:
    When signed attributes are absent, the composite signature is
    computed over the message digest of the content.  When signed
    attributes are present, a hash is computed over the content using the
-   hash function specified in Table 9, and then a message-digest
+   hash function specified in Table 8, and then a message-digest
    attribute is constructed to contain the resulting hash value, and
    then the result of DER encoding the set of signed attributes, which
    MUST include a content-type attribute and a message-digest attribute,
@@ -1467,7 +1443,7 @@ Signature Verification Process:
    function used by the CMS signer.
 
    signatureAlgorithm: The signatureAlgorithm MUST contain one of the
-   the Composite Signature algorithm identifiers as specified in Table 9
+   the Composite Signature algorithm identifiers as specified in Table 8
 
    signature: The signature field contains the signature value resulting
    from the composite signing operation of the specified
@@ -1512,7 +1488,7 @@ Signature Verification Process:
 
    The SMIMECapability SEQUENCE representing a composite signature
    Algorithm MUST include the appropriate object identifier as per
-   Table 9 in the capabilityID field.
+   Table 8 in the capabilityID field.
 
 9.  ASN.1 Module
 
@@ -2120,7 +2096,7 @@ Signature Verification Process:
 10.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
-   module and in Table 2 and Table 3.
+   module and in Table 1 and Table 2.
 
 10.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
@@ -2816,7 +2792,7 @@ Appendix A.  Component Algorithm Reference
    |                         | pkcs(1) pkcs-1(1) 10      |             |
    +-------------------------+---------------------------+-------------+
 
-         Table 10: Component Signature Algorithms used in Composite
+         Table 9: Component Signature Algorithms used in Composite
                                Constructions
 
    +=================+=================================+===============+
@@ -2850,7 +2826,7 @@ Appendix A.  Component Algorithm Reference
    |                 | versionOne(1) 11                |               |
    +-----------------+---------------------------------+---------------+
 
-         Table 11: Elliptic Curves used in Composite Constructions
+         Table 10: Elliptic Curves used in Composite Constructions
 
       +===========+=================================+===============+
       | HashID    | OID                             | Specification |
@@ -2866,7 +2842,7 @@ Appendix A.  Component Algorithm Reference
       |           | nistAlgorithms(4) hashAlgs(2) 3 |               |
       +-----------+---------------------------------+---------------+
 
-         Table 12: Hash algorithms used in Composite Constructions
+         Table 11: Hash algorithms used in Composite Constructions
 
 Appendix B.  Component AlgorithmIdentifiers for Public Keys and
              Signatures
