@@ -831,29 +831,20 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
       }
 ~~~
 
-The following is an explanation how SIGNATURE-ALGORITHM elements are used
-to define Composite Signatures:
-
-| SIGNATURE-ALGORITHM element | Definition |
-| ---------                  | ---------- |
-| IDENTIFIER                  | The Object ID used to identify the composite Signature Algorithm |
-| VALUE                       | The Sequence of BIT STRINGS for each component signature value |
-| PARAMS                      | Parameters are absent  |
-| PUBLIC-KEYS                 | The composite public key type associated with the composite signature |
-
-
 ## CompositeSignatureValue {#sec-compositeSignatureValue}
 
-The output of the composite signature algorithm is the DER encoding of the following structure:
+The output of a Composite ML-DSA algorithm is the DER encoding of the following structure:
+
+
+The `CompositeSignatureValue` is the DER encoing of a SEQUENCE of the signature values from the
+underlying component algorithms.  It is represented in ASN.1 as follows:
 
 ~~~ asn.1
 CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 ~~~
 {: artwork-name="composite-sig-asn.1"}
 
-Where each BIT STRING within the SEQUENCE is a signature value produced by one of the component keys. It MUST contain one signature value produced by each component algorithm, and in the same order as specified in the object identifier.
-
-The choice of `SEQUENCE SIZE (2) OF BIT STRING`, rather than for example a single BIT STRING containing the concatenated signature values, is to gracefully handle variable-length signature values by taking advantage of ASN.1's built-in length fields.
+The order of the component signature values is the same as the order defined in {{sec-composite-pub-keys}}.
 
 
 # Algorithm Identifiers {#sec-alg-ids}
