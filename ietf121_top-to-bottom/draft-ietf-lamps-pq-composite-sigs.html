@@ -1239,13 +1239,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-domain-separators" class="internal xref">Domain Separators</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
-                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-notes-on-id-mldsa44-rsa2048" class="internal xref">Notes on id-MLDSA44-RSA2048-PSS-SHA256</a></p>
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-notes-on-id-mldsa44-rsa2048" class="internal xref">Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-notes-on-id-mldsa65-rsa3072" class="internal xref">Notes on id-MLDSA65-RSA3072-PSS-SHA512</a></p>
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-notes-on-id-mldsa65-rsa3072" class="internal xref">Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-notes-on-id-mldsa65-rsa4096" class="internal xref">Notes on id-MLDSA65-RSA4096-PSS-SHA512</a></p>
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-notes-on-id-mldsa65-rsa4096" class="internal xref">Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384</a></p>
 </li>
             </ul>
 </li>
@@ -2703,14 +2703,14 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 </div>
 </section>
 </div>
-<div id="notes-on-id-mldsa44-rsa2048-pss-sha256">
+<div id="notes-on-id-mldsa44-rsa2048-pss-and-id-hashmldsa44-rsa2048-pss-sha256">
 <section id="section-7.2">
         <h3 id="name-notes-on-id-mldsa44-rsa2048">
-<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-notes-on-id-mldsa44-rsa2048" class="section-name selfRef">Notes on id-MLDSA44-RSA2048-PSS-SHA256</a>
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-notes-on-id-mldsa44-rsa2048" class="section-name selfRef">Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256</a>
         </h3>
 <p id="section-7.2-1">Use of RSA-PSS <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> deserves a special explanation.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.2-2">The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-2">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
 <table class="center" id="table-6">
           <caption>
@@ -2754,13 +2754,13 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </ul>
 </section>
 </div>
-<div id="notes-on-id-mldsa65-rsa3072-pss-sha512">
+<div id="notes-on-id-mldsa65-rsa3072-pss-and-id-hashmldsa65-rsa3072-pss-sha512">
 <section id="section-7.3">
         <h3 id="name-notes-on-id-mldsa65-rsa3072">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-notes-on-id-mldsa65-rsa3072" class="section-name selfRef">Notes on id-MLDSA65-RSA3072-PSS-SHA512</a>
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-notes-on-id-mldsa65-rsa3072" class="section-name selfRef">Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512</a>
         </h3>
-<p id="section-7.3-1">The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA-65.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+<p id="section-7.3-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
 <table class="center" id="table-7">
           <caption>
@@ -2780,15 +2780,15 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-256</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
-              <td class="text-left" rowspan="1" colspan="1">512</td>
+              <td class="text-left" rowspan="1" colspan="1">256</td>
             </tr>
           </tbody>
         </table>
@@ -2799,18 +2799,18 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             <p id="section-7.3-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.3-5.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.3-5.2">
-            <p id="section-7.3-5.2.1"><code>SHA-512</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.3-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.3-5.2.1"><code>SHA-256</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.3-5.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
-<div id="notes-on-id-mldsa65-rsa4096-pss-sha512">
+<div id="notes-on-id-mldsa65-rsa4096-pss-or-id-hashmldsa65-rsa4096-pss-sha384">
 <section id="section-7.4">
         <h3 id="name-notes-on-id-mldsa65-rsa4096">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-notes-on-id-mldsa65-rsa4096" class="section-name selfRef">Notes on id-MLDSA65-RSA4096-PSS-SHA512</a>
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-notes-on-id-mldsa65-rsa4096" class="section-name selfRef">Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384</a>
         </h3>
 <p id="section-7.4-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
-<p id="section-7.4-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.4-2" class="pilcrow">¶</a></p>
+<p id="section-7.4-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.4-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
 <table class="center" id="table-8">
           <caption>
@@ -2830,15 +2830,15 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Mask Generation params</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Message Digest Algorithm</td>
-              <td class="text-left" rowspan="1" colspan="1">SHA-512</td>
+              <td class="text-left" rowspan="1" colspan="1">SHA-384</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Salt Length in bits</td>
-              <td class="text-left" rowspan="1" colspan="1">512</td>
+              <td class="text-left" rowspan="1" colspan="1">384</td>
             </tr>
           </tbody>
         </table>
@@ -2849,7 +2849,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
             <p id="section-7.4-5.1.1"><code>Mask Generation Function (mgf1)</code> is defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span><a href="#section-7.4-5.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-5.2">
-            <p id="section-7.4-5.2.1"><code>SHA-512</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.4-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-5.2.1"><code>SHA-384</code> is defined in <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>.<a href="#section-7.4-5.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2884,11 +2884,11 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
           </thead>
           <tbody>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PSS-SHA256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">SHA256</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PKCS15-SHA256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PKCS15</td>
               <td class="text-left" rowspan="1" colspan="1">SHA256</td>
             </tr>
             <tr>
@@ -2896,31 +2896,31 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-ECDSA-P256-SHA256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-ECDSA-P256</td>
               <td class="text-left" rowspan="1" colspan="1">SHA256</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P384-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P384</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-brainpoolP256r1-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-brainpoolP256r1</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
@@ -2928,11 +2928,11 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P384-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P384</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-brainpoolP384r1-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-brainpoolP384r1</td>
               <td class="text-left" rowspan="1" colspan="1">SHA512</td>
             </tr>
             <tr>
