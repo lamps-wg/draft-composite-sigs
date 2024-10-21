@@ -775,15 +775,15 @@ Many protocol specifications will require that the composite public key and comp
 When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
-                                CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyOs ::= OCTET STRING
+                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 ~~~
 
 When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
-                                CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyBs ::= BIT STRING
+                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 ~~~
 
 In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.
