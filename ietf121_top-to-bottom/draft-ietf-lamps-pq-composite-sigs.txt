@@ -156,7 +156,7 @@ Table of Contents
       algorithm.
 
    *  Added Pre-Hash and Pure modes and changed the Message format to
-      align with FIPS-204.  This breaks backwards compatibility will all
+      align with FIPS-204.  This breaks backwards compatibility with all
       previous versions.
 
    *  Updated the OID table for new Pre-Hash OIDs and added them to the
