@@ -168,7 +168,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 Interop-affecting changes:
 
-* Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency
+* Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundancy
 * Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
 * Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility with all previous versions.
 * Updated the OID table for new Pre-Hash OIDs and added them to the IANA section.
@@ -241,12 +241,12 @@ This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt
 >      incorporates multiple component cryptographic elements of the same
 >      type in a multi-algorithm scheme.
 
-Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analagous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
+Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
 
 
 # Overview of the Composite ML-DSA Signature Scheme
 
-Composite schemes are defined as cryptographic primitives that consists of three algorithms:
+Composite schemes are defined as cryptographic primitives that consist of three algorithms:
 
    *  `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm,
       which generates a public key pk and a secret key sk.
@@ -321,7 +321,7 @@ Key Generation Process:
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
 
-The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoparability is not required.
+The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoperability is not required.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
@@ -345,7 +345,7 @@ Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
 
 Explicit inputs:
 
-  sk    Composite private key conisting of signing private keys for
+  sk    Composite private key consisting of signing private keys for
         each component.
 
   M     The Message to be signed, an octet string.
@@ -498,7 +498,7 @@ A composite signature's value MUST include two signature components and MUST be 
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatendated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
 
 ~~~
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
@@ -692,7 +692,7 @@ EdCompositeSignaturePublicKey ::= SEQUENCE {
 `id-raw-key` is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or
 may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.
 
-For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in {{I-D.ietf-lamps-dilithium-certificates}} and Edwards Curve keys MUST be the raw BIT STRING representation as speified in [RFC8410].
+For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in {{I-D.ietf-lamps-dilithium-certificates}} and Edwards Curve keys MUST be the raw BIT STRING representation as specified in [RFC8410].
 
 Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of `SEQUENCE OF BIT STRING` instead of `SEQUENCE OF OCTET STRING`; using `BIT STRING` allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.
 
@@ -1337,23 +1337,7 @@ There are mechanisms within Internet PKI where trusted public keys do not appear
 
 ## Explicit Composite Signature Examples {#appdx-expComposite-examples}
 
-### MLDSA44-ECDSA-P256-SHA256 Public Key
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.pub}
-~~~
-
-### MLDSA44-ECDSA-P256 Private Key
-
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.pvt}
-~~~
-
-### MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
-
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.crt}
-~~~
-
+TODO - Need Samples
 
 # Component Algorithm Reference {#appdx_components}
 
@@ -1758,7 +1742,7 @@ Jan Oupický,
 林邦曄 (Austin Lin, Chunghwa Telecom) and
 Mojtaba Bisheh-Niasar
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
 We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.
 
