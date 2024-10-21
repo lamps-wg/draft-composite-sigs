@@ -1326,17 +1326,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
                 <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-explicit-composite-signatur" class="internal xref">Explicit Composite Signature Examples</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1.2.1">
-                    <p id="section-toc.1-1.13.2.1.2.1.1"><a href="#appendix-A.1.1" class="auto internal xref">A.1.1</a>.  <a href="#name-mldsa44-ecdsa-p256-sha256-p" class="internal xref">MLDSA44-ECDSA-P256-SHA256 Public Key</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1.2.2">
-                    <p id="section-toc.1-1.13.2.1.2.2.1"><a href="#appendix-A.1.2" class="auto internal xref">A.1.2</a>.  <a href="#name-mldsa44-ecdsa-p256-private-" class="internal xref">MLDSA44-ECDSA-P256 Private Key</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1.2.3">
-                    <p id="section-toc.1-1.13.2.1.2.3.1"><a href="#appendix-A.1.3" class="auto internal xref">A.1.3</a>.  <a href="#name-mldsa44-ecdsa-p256-self-sig" class="internal xref">MLDSA44-ECDSA-P256 Self-Signed X509 Certificate</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -1388,7 +1377,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-1">Interop-affecting changes:<a href="#section-1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-2.1">
-          <p id="section-1-2.1.1">Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundency<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.1.1">Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundancy<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.2">
           <p id="section-1-2.2.1">Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
@@ -1488,7 +1477,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
      type in a multi-algorithm scheme.<a href="#section-2.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-2.2-3">Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analagous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1498,7 +1487,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
       <h2 id="name-overview-of-the-composite-m">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview-of-the-composite-m" class="section-name selfRef">Overview of the Composite ML-DSA Signature Scheme</a>
       </h2>
-<p id="section-3-1">Composite schemes are defined as cryptographic primitives that consists of three algorithms:<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">Composite schemes are defined as cryptographic primitives that consist of three algorithms:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
           <p id="section-3-2.1.1"><code>KeyGen() -&gt; (pk, sk)</code>: A probabilistic key generation algorithm,
@@ -1591,7 +1580,7 @@ Key Generation Process:
 <a href="#name-composite-keygenpk-sk" class="selfRef">Composite KeyGen(pk, sk)</a>
           </figcaption></figure>
 </div>
-<p id="section-4.1-4">The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a> and <a href="#sec-priv-key" class="auto internal xref">Section 5.2</a> respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoparability is not required.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.1-4">The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a> and <a href="#sec-priv-key" class="auto internal xref">Section 5.2</a> respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoperability is not required.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.1-5">In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.1-6">Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
 </section>
@@ -1617,7 +1606,7 @@ Composite-ML-DSA.Sign (sk, M, ctx) -&gt; (signature)
 
 Explicit inputs:
 
-  sk    Composite private key conisting of signing private keys for
+  sk    Composite private key consisting of signing private keys for
         each component.
 
   M     The Message to be signed, an octet string.
@@ -1783,7 +1772,7 @@ Signature Verification Process:
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-hashcomposite-ml-dsa-sign-s" class="section-name selfRef">HashComposite-ML-DSA-Sign signature mode</a>
           </h4>
 <p id="section-4.3.1-1">This mode mirrors <code>HashML-DSA.Sign(sk, M, ctx, PH)</code> defined in Section 5.4.1 of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.1-2">In the pre-hash mode the Domain separator <a href="#sec-domsep-values" class="auto internal xref">Section 7.3</a> is concatendated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message <code>PH(M)</code>.<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-2">In the pre-hash mode the Domain separator <a href="#sec-domsep-values" class="auto internal xref">Section 7.3</a> is concatenated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message <code>PH(M)</code>.<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
 <span id="name-hashcomposite-ml-dsasignsk-"></span><div id="alg-hash-composite-sign">
 <figure id="figure-4">
             <div class="alignLeft art-text artwork" id="section-4.3.1-3.1">
@@ -1995,7 +1984,7 @@ EdCompositeSignaturePublicKey ::= SEQUENCE {
 </div>
 <p id="section-5.1-5"><code>id-raw-key</code> is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or
 may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1-6">For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and Edwards Curve keys MUST be the raw BIT STRING representation as speified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.1-6">For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and Edwards Curve keys MUST be the raw BIT STRING representation as specified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
 <p id="section-5.1-7">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 1</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 2</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of <code>SEQUENCE OF BIT STRING</code> instead of <code>SEQUENCE OF OCTET STRING</code>; using <code>BIT STRING</code> allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <p id="section-5.1-8">When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in <a href="#sec-encoding-rules" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
 <p id="section-5.1-9">Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
@@ -2742,15 +2731,14 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
       </h2>
 <p id="section-8-1">[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.]<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span>.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-3">All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span>.
+[EDNOTE: at time of writing, this draft is not aligned with <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span> because it uses SHAKE for the digest algorithm. We believe that it should use SHA2, and we are sorting this out between authors. See: https://mailarchive.ietf.org/arch/msg/spasm/yM8kS1kCoizWCMjS8pdcV3IFaDg/]<a href="#section-8-3" class="pilcrow">¶</a></p>
 <div id="underlying-components">
 <section id="section-8.1">
         <h3 id="name-underlying-components">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-underlying-components" class="section-name selfRef">Underlying Components</a>
         </h3>
-<p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">The following table lists the RECOMMENDED Hash algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.  Implementations MAY support other algorithms for the SignerInfo <code>digestAlgorithm</code> so long as they preserve the security and performance characterstics of the recommended Hash algorithms listed in the table below.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.  Implementations MAY also support other algorithms for the SignerInfo <code>digestAlgorithm</code> and SHOULD use algorithms of equivalent strength or greater.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <span id="name-recommended-composite-signa"></span><div id="tab-cms-shas">
 <table class="center" id="table-8">
           <caption>
@@ -2823,13 +2811,13 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
           </tbody>
         </table>
 </div>
-<p id="section-8.1-5">where:<a href="#section-8.1-5" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">where:<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.1-6.1">
-            <p id="section-8.1-6.1.1">SHA2 instantiations are defined in [FIPS180].<a href="#section-8.1-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8.1-4.1">
+            <p id="section-8.1-4.1.1">SHA2 instantiations are defined in [FIPS180].<a href="#section-8.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.1-7">Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.<a href="#section-8.1-7" class="pilcrow">¶</a></p>
+<p id="section-8.1-5">Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="signeddata-conventions">
@@ -4113,247 +4101,7 @@ END
         <h3 id="name-explicit-composite-signatur">
 <a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-explicit-composite-signatur" class="section-name selfRef">Explicit Composite Signature Examples</a>
         </h3>
-<div id="mldsa44-ecdsa-p256-sha256-public-key">
-<section id="appendix-A.1.1">
-          <h4 id="name-mldsa44-ecdsa-p256-sha256-p">
-<a href="#appendix-A.1.1" class="section-number selfRef">A.1.1. </a><a href="#name-mldsa44-ecdsa-p256-sha256-p" class="section-name selfRef">MLDSA44-ECDSA-P256-SHA256 Public Key</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="appendix-A.1.1-1">
-<pre>
------BEGIN PUBLIC KEY-----
-MIIFfzANBgtghkgBhvprUAgBBAOCBWwAMIIFZwSCBSAA9DTYoQys3PVrayi9zTam
-kTzpqf6vuNI5+UaMENvnrq3Rps5LmiQ5gSXaQMu0HYjVpCEQVQWl/8nbJavELelk
-gCVn528ndGBQUChAnffxhRdxgaFmOb2SEySTnHIh6QO1UFPO2kGiGx9zU6F9xZGK
-FZFBm8B076UvRHCbaw+BTvu4o+Kg1irOFRPI3hLN4ku3si2nwWSZNhDoiLaPTfJe
-7TRziBznEyrnSV3I2Xn7QdKxIWUFOwPXWBnnk/FGG/A2HdxGpiqIWxZ0gNLNcb+j
-Cz6CWZSJhoOLoJWdOD5zyojPPrH5iFIGM96p0PZ4mv5PhmZDPA/RTIg/PcG1rywn
-OJYqAsazntGyEhHEFLRe8QYOVEbiBuv20tNzkFaaulQRdW+boStcW8NefSkKG/9D
-FgGnyR87W4Z/ieHEyIva4FBamvRm60xrblAyI0Z7II4l7LTStDzL/ghFq06RVria
-au+mY5laq8rAGmRbWkUxNeKeGOVHxjGFYB3uaAkHef0o7tSMMkCSSjiDQlNk5ReQ
-xgJMkuTRE7YRN1bDXv/0uPPjg7zfa3M0tMCD9wTXFhIk04HDLVV5WAsH0EK6Nytd
-gqnsjGCwfZb2+Fw/QytBei50DUBHpIG3da4dBrxcaRTMiQPzPzL8FaDascE0ZIJM
-9ilKvxgq02ryEHLGALFN8eZD1r6zq43KFlRzaynWBWqJ27MiUzK2dk8oC+dH5cz6
-+xGXAhLJ+MipoO9k9dLg8re3dOAufsKaY5DLuuluo7dO6IF7rG9xblbiIzWpyfu3
-7kJvUdwk36QzsQNGsxpELk65LaWYnaebV7wKyIaaniLysuNCG0dIcAicxRNLgpX9
-jic5pi+BzlJI1IuPk+DqOG57pNnU7lTg3op08MUslNyeUH5yaag8DNsLG7uZHzvx
-jcqffaqcqS+v6FVmbV2tDF07jn8a754Fnn/QNgsNcdfw9Ov4w7Ty+q5nT2wg2Lsg
-bAuzN6b6FiWEuHHMw/I5aIL5cLj2GUpjHtlUHL4KEHpxZ2J5jbBgeqpTWEy1TuPQ
-R34lryVASmue/kmk2liah6wNK5RXlGa8uidBm7RT8b5SkIMsrosLx9KpC5lKobzn
-8ttK1NSy0ZuMDw9wtnePUbROGjEuw5Na/K1VgO68dATj/7rscvz7C+ZuQORrt88X
-+OZmoyw+fEDWAocDnhzI6rJIHLPB0p+rSJ8iSKZpFZYeIy+CD0t6E98RJQHll8BJ
-lLyJiMT0xAyelOMzrCJayHxD01aLw6LLOddFbiIRMq4lni5Ha4noWmdO2C80xy3A
-jskUEK5sbD8KFl910JUHwaGvb/gDCqW+n10mRa9+cB0tRVjo5OZeSiB01Bkagu7a
-f+bRv2i8cBa2ZoGVyW3xFFFhIkHzLgHaU+RLaGwJDe0qxKtwKYz5c/YpAsH+lodM
-NV2E/PzHtNY+sg0PijblN6IVO+yiLkxJspKIjf0I1+s8hczhz3QkLRed7dU2nvID
-puJQfgraKyS6rawlqLyWo66/PDtdd3tngw50wnDNZik0hz/usDc6o7IN5J9ha7XO
-0vZQluMb9R5l+W6RLD2nRd4mlKVqm/Yfq0R8PKoIh8f7uLVk1kbN4prkfpsokvqR
-rli5h4URG7WCNvp4bg/i1Ix/CEEjH56LRj83dhVB0O6WXorrZMAChQShMhwnEgeS
-USaB5au7xRAM+9fWvF9cmju3hXSTT1zv0owyoSgp36OHcy2HzwZXxA7YWtRDbhMX
-BEEEkSZvSVDhZlBXhAkaTBxlrRt624URpHlDVrd0njnPiR92XNs+NTjjvAImETMh
-EPbQ/KPspugi6gkrLFhcmy/OiA==
------END PUBLIC KEY-----
-</pre><a href="#appendix-A.1.1-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="mldsa44-ecdsa-p256-private-key">
-<section id="appendix-A.1.2">
-          <h4 id="name-mldsa44-ecdsa-p256-private-">
-<a href="#appendix-A.1.2" class="section-number selfRef">A.1.2. </a><a href="#name-mldsa44-ecdsa-p256-private-" class="section-name selfRef">MLDSA44-ECDSA-P256 Private Key</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="appendix-A.1.2-1">
-<pre>
------BEGIN PRIVATE KEY-----
-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
-pugi6gkrLFhcmy/OiA==
------END PRIVATE KEY-----
-
-</pre><a href="#appendix-A.1.2-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="mldsa44-ecdsa-p256-self-signed-x509-certificate">
-<section id="appendix-A.1.3">
-          <h4 id="name-mldsa44-ecdsa-p256-self-sig">
-<a href="#appendix-A.1.3" class="section-number selfRef">A.1.3. </a><a href="#name-mldsa44-ecdsa-p256-self-sig" class="section-name selfRef">MLDSA44-ECDSA-P256 Self-Signed X509 Certificate</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="appendix-A.1.3-1">
-<pre>
------BEGIN CERTIFICATE-----
-MIIP9zCCBhigAwIBAgIUUFXlmVgQD4nQC6Tzr4OlRKxVYYQwDQYLYIZIAYb6a1AI
-AQQwEjEQMA4GA1UEAwwHb3FzdGVzdDAeFw0yMzEyMTkxOTIzNDBaFw0yNDEyMTgx
-OTIzNDBaMBIxEDAOBgNVBAMMB29xc3Rlc3QwggV/MA0GC2CGSAGG+mtQCAEEA4IF
-bAAwggVnBIIFIAD0NNihDKzc9WtrKL3NNqaRPOmp/q+40jn5RowQ2+eurdGmzkua
-JDmBJdpAy7QdiNWkIRBVBaX/ydslq8Qt6WSAJWfnbyd0YFBQKECd9/GFF3GBoWY5
-vZITJJOcciHpA7VQU87aQaIbH3NToX3FkYoVkUGbwHTvpS9EcJtrD4FO+7ij4qDW
-Ks4VE8jeEs3iS7eyLafBZJk2EOiIto9N8l7tNHOIHOcTKudJXcjZeftB0rEhZQU7
-A9dYGeeT8UYb8DYd3EamKohbFnSA0s1xv6MLPoJZlImGg4uglZ04PnPKiM8+sfmI
-UgYz3qnQ9nia/k+GZkM8D9FMiD89wbWvLCc4lioCxrOe0bISEcQUtF7xBg5URuIG
-6/bS03OQVpq6VBF1b5uhK1xbw159KQob/0MWAafJHztbhn+J4cTIi9rgUFqa9Gbr
-TGtuUDIjRnsgjiXstNK0PMv+CEWrTpFWuJpq76ZjmVqrysAaZFtaRTE14p4Y5UfG
-MYVgHe5oCQd5/Sju1IwyQJJKOINCU2TlF5DGAkyS5NETthE3VsNe//S48+ODvN9r
-czS0wIP3BNcWEiTTgcMtVXlYCwfQQro3K12CqeyMYLB9lvb4XD9DK0F6LnQNQEek
-gbd1rh0GvFxpFMyJA/M/MvwVoNqxwTRkgkz2KUq/GCrTavIQcsYAsU3x5kPWvrOr
-jcoWVHNrKdYFaonbsyJTMrZ2TygL50flzPr7EZcCEsn4yKmg72T10uDyt7d04C5+
-wppjkMu66W6jt07ogXusb3FuVuIjNanJ+7fuQm9R3CTfpDOxA0azGkQuTrktpZid
-p5tXvArIhpqeIvKy40IbR0hwCJzFE0uClf2OJzmmL4HOUkjUi4+T4Oo4bnuk2dTu
-VODeinTwxSyU3J5QfnJpqDwM2wsbu5kfO/GNyp99qpypL6/oVWZtXa0MXTuOfxrv
-ngWef9A2Cw1x1/D06/jDtPL6rmdPbCDYuyBsC7M3pvoWJYS4cczD8jlogvlwuPYZ
-SmMe2VQcvgoQenFnYnmNsGB6qlNYTLVO49BHfiWvJUBKa57+SaTaWJqHrA0rlFeU
-Zry6J0GbtFPxvlKQgyyuiwvH0qkLmUqhvOfy20rU1LLRm4wPD3C2d49RtE4aMS7D
-k1r8rVWA7rx0BOP/uuxy/PsL5m5A5Gu3zxf45majLD58QNYChwOeHMjqskgcs8HS
-n6tInyJIpmkVlh4jL4IPS3oT3xElAeWXwEmUvImIxPTEDJ6U4zOsIlrIfEPTVovD
-oss510VuIhEyriWeLkdriehaZ07YLzTHLcCOyRQQrmxsPwoWX3XQlQfBoa9v+AMK
-pb6fXSZFr35wHS1FWOjk5l5KIHTUGRqC7tp/5tG/aLxwFrZmgZXJbfEUUWEiQfMu
-AdpT5EtobAkN7SrEq3ApjPlz9ikCwf6Wh0w1XYT8/Me01j6yDQ+KNuU3ohU77KIu
-TEmykoiN/QjX6zyFzOHPdCQtF53t1Tae8gOm4lB+CtorJLqtrCWovJajrr88O113
-e2eDDnTCcM1mKTSHP+6wNzqjsg3kn2Frtc7S9lCW4xv1HmX5bpEsPadF3iaUpWqb
-9h+rRHw8qgiHx/u4tWTWRs3imuR+myiS+pGuWLmHhREbtYI2+nhuD+LUjH8IQSMf
-notGPzd2FUHQ7pZeiutkwAKFBKEyHCcSB5JRJoHlq7vFEAz719a8X1yaO7eFdJNP
-XO/SjDKhKCnfo4dzLYfPBlfEDtha1ENuExcEQQSRJm9JUOFmUFeECRpMHGWtG3rb
-hRGkeUNWt3SeOc+JH3Zc2z41OOO8AiYRMyEQ9tD8o+ym6CLqCSssWFybL86IoyEw
-HzAdBgNVHQ4EFgQUhcS/LyOtUFUrF+FJxoSERDrtcXQwDQYLYIZIAYb6a1AIAQQD
-ggnIADCCCcMDggl1AMX5C7IKC8y1AX2ANKQWQWycGovPVFkiv+qctjfWt0jaErT1
-XnR80WfR3XX1rIIZ6jG1ulkLdUGx2tFcu8Qeb0umxvYWYC6htzvGw+bjxcRm0DES
-d+bkwWIBzdK23b9WqBNLqvzNccgAPXvP6PwrLxCz+sEnWcCDDqgeHphbYf3vzedR
-uMvIsRYqGO09qt/tWu3JG5nwGiX+6t/YFgE5knii3sXdlHWZQ+nSAnekc2sgtCV4
-cA0Lg01kBi+AZGelNuVK3EtgKJ0VTP5DQn5D1dLn/RGbqlMngsNs4xUlIFyvnJ8l
-UZp6+VtfE2fWRDW4yQ4ob4Ed2KEWMtWa1GaFtIfUjDGyqYLwMOJUjE5fmhLxioqS
-pk/cST+AaK5iNZzlDRC220hGOIOsiyf7UQKw+bFTENVqyXrYgTmns9zg+mc5KeZj
-hE6IMFMtkQyJnRVWUL1eRviu1JL90Tcmvw1gvKdGFPDe4A7FWx0tDyAVY1wVd/sd
-Lylt5QvBaIqgrtc4rDeS5pHGNdgy3zsi1YYpet5pyfQwZCtmqRggBDTCmH7nTfrV
-rXDbsUm0euCK+YMwbi6DbpDV5mQrUqDX1MGk0RFDzlKRtTWrvxhhCVLgV/l/ZVgi
-bEuFQg6POuCn0IA2jFJyza2TK8p82RAZbcvtM8XdJVhM0okKIRyi/8lw2kbX/p5L
-l7vMmD0xPOezi2FQMxev9460Seb6FtOlvFptsLoTw4grUTQHl9brftzPAhVmUBBY
-wGffj4rl70m5fHZzL3YXpxkr4jlqG8tKJc9370Emh9xXV4KMuo2Us+vnRUN+9QeX
-tvDaG70jX3+760hTl4qDqMWfXY1nXhCeHWGCCmn2Yq8ULdYtIjZIMcHCXAvy68jv
-7vkM5xQzDdgRMXop1Pj3aZLRI0boQ4OuR16sxmmpPUIGanfmDbvrdBBNucNcDYDy
-BU5QpuCEZ8yHs94TSWLO9KP9i+IlL35TGG2zIbwbhI15HKOWzZU9ncoC2BOF6zhw
-u60tdBvy5O8pinjMBQKVDPMbrIKjfCUK4f0YQ1/Bk4ssPogQNk3sRYJqWZ0MvElk
-q3674KpN0OVB/kJFdAB1Uqpk4ARnZ7SsO8B/6u7rRNdthHSRsu4Fhe31EE0VUoUh
-x3GQM/7gTk9El2jDBlZxwEpPEtTqARgp0ad6EJnMcIW0PEKr56HUFqfxKVjJWagV
-fhtKzskghDS5lRpDY3vPq1Cq8qSl1ojcij5zm0BxI/cJIjh41RnW5D3kjt3r3Fzo
-an4pPZkXzZm9/iGAoFAy7BThfg4PXVq2BMCNZPdASQjIiPEWklylW9iX+g/12iCV
-Gy7F/JOG0SOH5/2d12gRDDiwn6k1KDwKPDa9htaPBGaNNXLIpr/Wb68GtTkNs1TG
-e7Sf9aigE9BtTGgeniJ1Gn/aV9LGQFqRRQsnqB98bMKABZi0RjZ9yebLj6lwSFXU
-pTdq/YNnBGwAmOm/HXzksOHJOjh20iDPhLjfMB6Fi+XkWVZ0TWzV2ZwOtM56tY+a
-QoauIHR30QYtGZMI38HpVeLSj+iNUEKbE6kY5c69Bjalwa1pCqb9aP5VnKOkMA+3
-qQ6c2ggxgudchBSXK/BZw4n4l7IvHu9wEMvsVh9mt/SAGkK53k28RDkNtX7+jfJR
-5/q7Qp626ts6Sc8rG6BmZoJIJnUXjeOcqlAoDXYRGuxCw6Jm91DL9j4t3m0bQhub
-hUt9diovZ/hw2hOng+xT/oSVvauPHFpxSUu3NVcncjIljD+0U3y6cn9VnE7oFNSU
-G3HadJlVTZncMrWYo954Wt3cwNA1Opcq+5Tlu76laOWJ/4eRcvOwmxrKZHUW8Tmu
-qPPsAOTagFmMxOBkLzIaq39SZxHkw61SdJxXlKAtmZYnNvwT2NGpauF6P6G0FHAO
-Ucfu/DDpAdKZ/GGpVxC2ttfDCzO3iya139M5fbg32RpI0q18swYFhUAqszdAPihc
-4lpCGw9JdrO8i1JhB+IORJegJRPs08DYUNv7nzSbOi03iYY/QHtGw7ka5AGLfkY8
-ajiLzlXwI2xMB6XBqUsAH2VxTRPJ3N/kGTzFvhiGBOYx8+jO/FqEa5E8+cafU+kW
-m9/RCpumizdVzrH5MiFh0NI9iUegdHs+hDW6GDpA3VpGi5MmmeE6Ck8UyOzDNnY9
-t53b9QxuwiYgDdw9z0KpYtGt7tRGd0qDARky8uRQZ6HFS4sNXlUFiAG9ko62CFTD
-WCALXmhtqvPcjfiDDL6qMRLevi31YnhAua/Kb0Mhja+KDM/UwRIVaB3WHhulzn7U
-pFQG0vVnwb0+VWhKsrWVJaJw1Eg9tmy5HJBsnmne+A2qG1ehBFCWJtV2MvyK8H9G
-BxaJbq7PpPlte9ID53apvkhyvag843Ar/pOiTc8J6xncJa6w+mVViUi47/ZkZCkU
-lipgCv1ZqZhQG/CERDxACulTa+0S8nO+g5CBpW6cuQVa052nRV/qhVUkQ9yzm0Pw
-vUOftuX9b/W5QXas/ysUwPAeGd2XPBmK5lByyYaW14d6GBJGmyNYv7vjrbL1xeJr
-smjnaRPipOvwEh6IE1OdsrlqfjG27+aXgfZWbCW28DAeTK7ilLB3ubyvPcoTrmX3
-DxM7OKF+MT6PAtqSM92l76PfECvyUfv/Rf+cSF/CleTIM7xfe7IOwgxPPdMEw2rH
-uS/CeJMsdBW8DwQyRcgK5h17zyaRqztATSAQK3MQ/B2f7MoXf3Z9oLpgqyBT7aiL
-/XdYk8UipIyuRK4Y9Cj2UNc3DgYhzFPQY9SO3gO483uC8Tqc2IyoKaGsNS1rWY/W
-rleqqraEmlMN9NToAa4ftZvqdWQLqH7sJcCQ1EzfbrkyrTKgjRmvRyA4n3t9Yjry
-k+ZI3xkgrUj90xfETb+Vx/JrbegfbfZ70w7yTRnSDB01cbQP4rjI2uGZVRCxXJal
-XRtaOUey+c0ZeIRp2aPrYP2DesL0Fmlc/ooSRgC8f+QHJU/7Js+WYuK8MVK/vil9
-J9FgwoCJImfRzkA9KXYaix/f4XgvFLopb6kAszAff5Zmpcq72gwWv+nEE/3M78PO
-zs9k5+wt65W3h4zelAIUM5hfgmJj4vvq53AeZP42AhcSV+bgsPg2xGM0Im7WAQ0P
-IScqN1pepq7T9/0eMEhRdXiKj5ufub/Nztfc+Ao8RVVidXt8oMnv9vf8FxgfLkpj
-dn6Mjq7Y5OXz9AAAAAAAAAAAAAAAAAAAAAAAAAAOHy09A0gAMEUCIQDD13F6CblJ
-Ll2dp7GZtR5tyKObPtvUc1s16fP3g7xhvgIga8IVcv0k6DUIApPztCsP/UByrm8k
-1nbSe/5A4mF87n0=
------END CERTIFICATE-----
-
-</pre><a href="#appendix-A.1.3-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
+<p id="appendix-A.1-1">TODO - Need Samples<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4911,7 +4659,7 @@ Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
 林邦曄 (Austin Lin, Chunghwa Telecom) and
 Mojtaba Bisheh-Niasar<a href="#appendix-F-2" class="pilcrow">¶</a></p>
-<p id="appendix-F-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
+<p id="appendix-F-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
 <p id="appendix-F-4">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-F-4" class="pilcrow">¶</a></p>
 <p id="appendix-F-5">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
    documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-F-5" class="pilcrow">¶</a></p>
