@@ -497,7 +497,7 @@ In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
 
-### HashComposite-ML-DSA-Sign signature mode
+### HashComposite-ML-DSA-Sign signature mode {#sec-hash-comp-sig-sign}
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
 
@@ -849,20 +849,13 @@ The order of the component signature values is the same as the order defined in 
 
 # Algorithm Identifiers {#sec-alg-ids}
 
-This section defines the algorithm identifiers for explicit combinations. For simplicity and prototyping purposes, the signature algorithm object identifiers specified in this document are the same as the composite key object Identifiers.  A proper implementation should not presume that the object ID of a composite key will be the same as its composite signature algorithm.
+This table summarizes the list of Composite ML-DSA algorithms and lists the OID and the two component algorithms. Domain separator values are defined below in {{sec-domsep-values}}.
 
-This section is not intended to be exhaustive and other authors may define other composite signature algorithms so long as they are compatible with the structures and processes defined in this and companion public and private key documents.
+EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-Some use-cases desire the flexibility for clients to use any combination of supported algorithms, while others desire the rigidity of explicitly-specified combinations of algorithms.
+&lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
 
-The following tables summarize the details for each explicit composite signature algorithms:
-
-
-The OID referenced are TBD for prototyping only, and the following prefix is used for each:
-
-replace &lt;CompSig&gt; with the String "2.16.840.1.114027.80.8.1"
-
-Therefore &lt;CompSig&gt;.21 is equal to 2.16.840.1.114027.80.8.1.21
+## Composite-ML-DSA Algorithm Identifiers
 
 Pure Composite-ML-DSA Signature public key types:
 
@@ -884,7 +877,11 @@ Pure Composite-ML-DSA Signature public key types:
 | id-MLDSA87-Ed448                        | &lt;CompSig&gt;.33 | id-ML-DSA-87 | id-Ed448 |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
-The table above contains everything needed to implement the listed pure ML-DSA composite signature algorithms.  The hash value indicated is used only by the Second algorithm if needed.  See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
+See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
+
+Full specifications for the referenced algorithms can be found in {{appdx_components}}.
+
+## HashComposite-ML-DSA Algorithm Identifiers
 
 HashComposite-ML-DSA Signature public key types:
 
@@ -906,7 +903,10 @@ HashComposite-ML-DSA Signature public key types:
 | id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.53 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-The table above contains everything needed to implement the listed hash ML-DSA composite signature algorithms.  The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of HashML-DSA.Sign in section {{sec-comp-sig-gen-prehash}}.  This hash value is also used as the pre-hash of the Second algorithm if needed.  See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite signature algorithms.
+
+See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
+
+The Pre-Hash algorithm is used as the PH algorithm in and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `HashComposite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `HashComposite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1319,36 +1319,59 @@ There are mechanisms within Internet PKI where trusted public keys do not appear
 
 --- back
 
+
+# Samples {#appdx-samples}
+
+## Explicit Composite Signature Examples {#appdx-expComposite-examples}
+
+### MLDSA44-ECDSA-P256-SHA256 Public Key
+~~~
+{::include examples/MLDSA44-ECDSA-P256-SHA256.pub}
+~~~
+
+### MLDSA44-ECDSA-P256 Private Key
+
+~~~
+{::include examples/MLDSA44-ECDSA-P256-SHA256.pvt}
+~~~
+
+### MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
+
+~~~
+{::include examples/MLDSA44-ECDSA-P256-SHA256.crt}
+~~~
+
+
 # Component Algorithm Reference {#appdx_components}
 
 This section provides references to the full specification of the algorithms used in the composite constructions.
 
 | Component Signature Algorithm ID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| id-ML-DSA-44 | 2.16.840.1.101.3.4.3.17 | _ML-DSA_:  [FIPS.204] |
-| id-ML-DSA-65 | 2.16.840.1.101.3.4.3.18 | _ML-DSA_:  [FIPS.204] |
-| id-ML-DSA-87 | 2.16.840.1.101.3.4.3.19 | _ML-DSA_:  [FIPS.204] |
-| id-Ed25519 | iso(1) identified-organization(3) thawte(101) 112 | _Ed25519 / Ed448_: [RFC8410] |
-| id-Ed448 | iso(1) identified-organization(3) thawte(101) id-Ed448(113) | _Ed25519 / Ed448_: [RFC8410] |
-| ecdsa-with-SHA256 | iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 2 | _ECDSA_: [RFC5758] |
-| ecdsa-with-SHA512 | iso(1) member-body(2) us(840) ansi-X9-62(10045) signatures(4) ecdsa-with-SHA2(3) 4 | _ECDSA_: [RFC5758] |
-| sha256WithRSAEncryption | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 11 | _RSAES-PKCS-v1_5_: [RFC8017] |
-| sha512WithRSAEncryption | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 13 | _RSAES-PKCS-v1_5_: [RFC8017] |
-| id-RSASA-PSS | iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(1) 10 | _RSASSA-PSS_: [RFC8017] |
+| id-ML-DSA-44 | 2.16.840.1.101.3.4.3.17 | [FIPS.204] |
+| id-ML-DSA-65 | 2.16.840.1.101.3.4.3.18 | [FIPS.204] |
+| id-ML-DSA-87 | 2.16.840.1.101.3.4.3.19 | [FIPS.204] |
+| id-Ed25519   | 1.3.101.112 | [RFC8410] |
+| id-Ed448     | 1.3.101.113 | [RFC8410] |
+| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758] |
+| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
+| sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
+| sha512WithRSAEncryption | 1.2.840.113549.1.1.13 | [RFC8017] |
+| id-RSASA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
 {: #tab-component-sig-algs title="Component Signature Algorithms used in Composite Constructions"}
 
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| secp256r1 | iso(1) member-body(2) us(840) ansi-x962(10045) curves(3) prime(1) 7 | [RFC6090] |
-| secp384r1 | iso(1) identified-organization(3) certicom(132) curve(0) 34 | [RFC6090] |
-| brainpoolP256r1 | iso(1) identified-organization(3) teletrust(36) algorithm(3) signatureAlgorithm(3) ecSign(2) ecStdCurvesAndGeneration(8) ellipticCurve(1) versionOne(1) 7 | [RFC5639] |
-| brainpoolP384r1 | iso(1) identified-organization(3) teletrust(36) algorithm(3) signatureAlgorithm(3) ecSign(2) ecStdCurvesAndGeneration(8) ellipticCurve(1) versionOne(1) 11 | [RFC5639] |
+| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090] |
+| secp384r1 | 1.3.132.0.34 | [RFC6090] |
+| brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
+| brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
 
 | HashID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| id-sha256 | joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3) nistAlgorithms(4) hashAlgs(2) 1 | [RFC6234] |
-| id-sha512 | joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3) nistAlgorithms(4) hashAlgs(2) 3 | [RFC6234] |
+| id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
+| id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234] |
 {: #tab-component-hash title="Hash algorithms used in Composite Constructions"}
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
@@ -1801,27 +1824,6 @@ DER:
 
 ~~~
   30 05 06 03 2B 65 71
-~~~
-
-# Samples {#appdx-samples}
-
-## Explicit Composite Signature Examples {#appdx-expComposite-examples}
-
-### MLDSA44-ECDSA-P256-SHA256 Public Key
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.pub}
-~~~
-
-### MLDSA44-ECDSA-P256 Private Key
-
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.pvt}
-~~~
-
-### MLDSA44-ECDSA-P256 Self-Signed X509 Certificate
-
-~~~
-{::include examples/MLDSA44-ECDSA-P256-SHA256.crt}
 ~~~
 
 # Implementation Considerations {#sec-imp-considers}
