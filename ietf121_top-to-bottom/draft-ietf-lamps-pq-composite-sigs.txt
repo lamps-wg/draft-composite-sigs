@@ -2078,6 +2078,16 @@ Signature Verification Process:
      sa-MLDSA87-Ed448,
      ... }
 
+
+   --
+   -- Expand the S/MIME capabilities set used by CMS [RFC5911]
+   --
+
+   -- TODO: this doesn't compile, error:
+   -- "The referenced object 'sa-ml-dsa-87' in the 'ValueFromObject'
+   -- syntax with the field '&smimeCaps' is invalid or does not exist."
+   -- We need help from an SMIME expert
+
    SMimeCaps SMIME-CAPS ::= {
      sa-MLDSA44-RSA2048-PSS.&smimeCaps |
      sa-MLDSA44-RSA2048-PKCS15.&smimeCaps |
