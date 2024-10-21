@@ -334,7 +334,7 @@ Note that in step 2 above, both component key generation processes are invoked, 
 
 This mode mirrors `HashML-DSA` defined in Sections 5.2 and 5.3 of [FIPS.204].
 
-In the pure mode the Domain separator value is concatenated with the length of the context in bytes, the context, the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+In the pure mode the Domain separator value is concatenated with the length of the context in bytes, the context, and the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
@@ -489,7 +489,7 @@ Note that in step 4 above, the function fails early if the first component fails
 
 This mode mirrors `HashML-DSA` defined in Section 5.4 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to de signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
