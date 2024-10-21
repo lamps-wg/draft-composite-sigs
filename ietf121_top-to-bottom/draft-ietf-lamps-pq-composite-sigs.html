@@ -2209,27 +2209,27 @@ CompositeSignaturePublicKeyBs ::= BIT STRING
         <h3 id="name-key-usage-bits">
 <a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-key-usage-bits" class="section-name selfRef">Key Usage Bits</a>
         </h3>
-<p id="section-5.4-1">For protocols such as X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> that specify key usage along with the public key, then the composite public key associated with a composite signature MUST have a signing-type key usage.
-This is because the composite public key can only be used in situations
-that are appropriate for both component algorithms, so even if the
-classical component key supports both signing and encryption,
-the post-quantum algorithms do not.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<p id="section-5.4-2">If the keyUsage extension is present in a Certification Authority (CA) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.4-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4-3">
+<p id="section-5.4-1">When any of the Composite ML-DSA <code>AlgorithmIdentifier</code> appears in the <code>SubjectPublicKeyInfo</code> field of an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the key usage certificate extension MUST only contain only signing-type key usages.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-2">The normal keyUsage rules for signing-type keys from <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> apply, and are reproduced here for completeness.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.4-3">For Certification Authority (CA) certificates that carry a composite public key, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4-4">
 <pre>
 digitalSignature;
 nonRepudiation;
 keyCertSign; and
 cRLSign.
-</pre><a href="#section-5.4-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-4">If the keyUsage extension is present in an End Entity (EE) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4-5">
+<p id="section-5.4-5">For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.4-6">
 <pre>
 digitalSignature; and
 nonRepudiation;
-</pre><a href="#section-5.4-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.4-6" class="pilcrow">¶</a>
 </div>
+<p id="section-5.4-7">Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
+traditional component key supports both signing and encryption,
+the post-quantum algorithms do not and therefore the overall composite algorithm does not.<a href="#section-5.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
