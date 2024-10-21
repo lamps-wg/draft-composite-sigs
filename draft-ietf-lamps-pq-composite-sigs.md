@@ -1035,9 +1035,9 @@ All recommendations for using Composite ML-DSA in CMS are fully aligned with the
 
 When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
 
-The following table lists the MANDATORY Hash algorithms to preserve security and performance characteristics of each composite algorithm.
+The following table lists the RECOMMENDED Hash algorithms to preserve security and performance characteristics of each composite algorithm.
 
-A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.
+A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY support other algorithms for the SignerInfo `digestAlgorithm` so long as they preserve the security and performance characterstics of the recommended Hash algorithms listed in the table below.
 
 | Composite Signature AlgorithmID | digestAlgorithm |
 | ----------- | ----------- |
@@ -1055,7 +1055,7 @@ A compliant implementation MUST support the following algorithms for the SignerI
 | id-MLDSA87-ECDSA-P384            | SHA512|
 | id-MLDSA87-ECDSA-brainpoolP384r1 |  SHA512 |
 | id-MLDSA87-Ed448              | SHA512 |
-{: #tab-cms-shas title="Composite Signature SHA Algorithms"}
+{: #tab-cms-shas title="Recommended Composite Signature Digest Algorithms"}
 
 where:
 
@@ -1079,7 +1079,10 @@ ELSE message-digest attribute = Hash(content);
 When using Composite Signatures, the fields in the SignerInfo are used as follows:
 
 digestAlgorithm:
-    The digestAlgorithm contains the one-way hash function used by the CMS signer.
+    Per Section 5.3 of [RFC5652], the digestAlgorithm contains the one-way hash function used by the CMS signer.
+    To ensure collision resistance, the identified message digest algorithm SHOULD produce a hash
+    value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA
+    component algorithm of the Composite Signature.
 
 signatureAlgorithm:
     The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{tab-cms-shas}}
