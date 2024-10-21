@@ -950,10 +950,22 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA87-Ed448-SHA512 |060B6086480186FA6B50080135|
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
+## Rationale for choices
 
-## Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256
+* Pair equivalent levels.
+* NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.
+* 521 bit curve not widely used.
 
-Use of RSA-PSS [RFC8017] deserves a special explanation.
+SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.
+
+At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken th eML-DSA-87 component against collision attack.
+
+## RSA-PSS Parameters
+
+Use of RSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
+
+
+### RSA2048-PSS
 
 The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44
 
@@ -973,7 +985,7 @@ where:
 * `SHA-256` is defined in [RFC6234].
 
 
-## Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512
+### RSA3072-PSS
 
 The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.
 
@@ -992,7 +1004,7 @@ where:
 * `Mask Generation Function (mgf1)` is defined in [RFC8017]
 * `SHA-256` is defined in [RFC6234].
 
-## Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384
+### RSA4096-PSS
 
 The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
 
