@@ -790,15 +790,11 @@ In the interests of simplicity and avoiding compatibility issues, implementation
 
 ## Key Usage Bits
 
-For protocols such as X.509 [RFC5280] that specify key usage along with the public key, then the composite public key associated with a composite signature MUST have a signing-type key usage.
-This is because the composite public key can only be used in situations
-that are appropriate for both component algorithms, so even if the
-classical component key supports both signing and encryption,
-the post-quantum algorithms do not.
+When any of the Composite ML-DSA `AlgorithmIdentifier` appears in the `SubjectPublicKeyInfo` field of an X.509 certificate [RFC5280], the key usage certificate extension MUST only contain only signing-type key usages.
 
+The normal keyUsage rules for signing-type keys from [RFC5280] apply, and are reproduced here for completeness.
 
-If the keyUsage extension is present in a Certification Authority (CA) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:
-
+For Certification Authority (CA) certificates that carry a composite public key, any combination of the following values MAY be present and any other values MUST NOT be present:
 
 ~~~
 digitalSignature;
@@ -807,13 +803,16 @@ keyCertSign; and
 cRLSign.
 ~~~
 
-If the keyUsage extension is present in an End Entity (EE) certificate that indicates a composite key, then any combination of the following values MAY be present and any other values MUST NOT be present:
-
+For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:
 
 ~~~
 digitalSignature; and
 nonRepudiation;
 ~~~
+
+Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
+traditional component key supports both signing and encryption,
+the post-quantum algorithms do not and therefore the overall composite algorithm does not.
 
 # Composite Signature Structures
 
