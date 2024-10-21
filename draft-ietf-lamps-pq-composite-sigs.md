@@ -702,12 +702,13 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     }
 ~~~
 
-As an example, the public key type `pk-MLDSA44-ECDSA-P256-SHA256` is defined as:
+As an example, the public key type `id-MLDSA44-ECDSA-P256` is defined as:
 
 ~~~
-pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-  EcCompositeSignaturePublicKey}
+id-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
+  pk-CompositeSignature{
+    id-MLDSA44-ECDSA-P256,
+    EcCompositeSignaturePublicKey }
 ~~~
 
 The full set of key types defined by this specification can be found in the ASN.1 Module in {{sec-asn1-module}}.
