@@ -556,21 +556,7 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA65-Ed25519 |
   sa-MLDSA87-ECDSA-P384 |
   sa-MLDSA87-ECDSA-brainpoolP384r1 |
-  sa-MLDSA87-Ed448 |
-  sa-HashMLDSA44-RSA2048-PSS-SHA256 |
-  sa-HashMLDSA44-RSA2048-PKCS15-SHA256 |
-  sa-HashMLDSA44-Ed25519-SHA512 |
-  sa-HashMLDSA44-ECDSA-P256-SHA256 |
-  sa-HashMLDSA65-RSA3072-PSS-SHA512 |
-  sa-HashMLDSA65-RSA3072-PKCS15-SHA512 |
-  sa-HashMLDSA65-RSA4096-PSS-SHA512 |
-  sa-HashMLDSA65-RSA4096-PKCS15-SHA512 |
-  sa-HashMLDSA65-ECDSA-P256-SHA512 |
-  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 |
-  sa-HashMLDSA65-Ed25519-SHA512 |
-  sa-HashMLDSA87-ECDSA-P384-SHA512 |
-  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |
-  sa-HashMLDSA87-Ed448-SHA512,
+  sa-MLDSA87-Ed448,
   ... }
 
 SMimeCaps SMIME-CAPS ::= {
@@ -587,21 +573,7 @@ SMimeCaps SMIME-CAPS ::= {
   sa-MLDSA65-Ed25519.&smimeCaps |
   sa-MLDSA87-ECDSA-P384.&smimeCaps |
   sa-MLDSA87-ECDSA-brainpoolP384r1.&smimeCaps |
-  sa-MLDSA87-Ed448.&smimeCaps |
-  sa-HashMLDSA44-RSA2048-PSS-SHA256.&smimeCaps |
-  sa-HashMLDSA44-RSA2048-PKCS15-SHA256.&smimeCaps |
-  sa-HashMLDSA44-Ed25519-SHA512.&smimeCaps |
-  sa-HashMLDSA44-ECDSA-P256-SHA256.&smimeCaps |
-  sa-HashMLDSA65-RSA3072-PSS-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA3072-PKCS15-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA4096-PSS-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA4096-PKCS15-SHA512.&smimeCaps |
-  sa-HashMLDSA65-ECDSA-P256-SHA512.&smimeCaps |
-  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512.&smimeCaps |
-  sa-HashMLDSA65-Ed25519-SHA512.&smimeCaps |
-  sa-HashMLDSA87-ECDSA-P384-SHA512.&smimeCaps |
-  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512.&smimeCaps |
-  sa-HashMLDSA87-Ed448-SHA512.&smimeCaps,
+  sa-MLDSA87-Ed448.&smimeCaps,
   ... }
 
 END
