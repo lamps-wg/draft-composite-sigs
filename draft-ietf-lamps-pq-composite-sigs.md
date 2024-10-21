@@ -1880,8 +1880,9 @@ Felipe Ventura (Entrust),
 Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
-陳志華 (Abel C. H. Chen, Chunghwa Telecom) and
-林邦曄 (Austin Lin, Chunghwa Telecom)
+陳志華 (Abel C. H. Chen, Chunghwa Telecom),
+林邦曄 (Austin Lin, Chunghwa Telecom) and
+Mojtaba Bisheh-Niasar
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensly with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
