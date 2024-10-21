@@ -1030,14 +1030,11 @@ where:
 Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
 
 All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS {{I-D.salter-lamps-cms-ml-dsa}}.
+\[EDNOTE: at time of writing, this draft is not aligned with {{I-D.salter-lamps-cms-ml-dsa}} because it uses SHAKE for the digest algorithm. We believe that it should use SHA2, and we are sorting this out between authors. See: https://mailarchive.ietf.org/arch/msg/spasm/yM8kS1kCoizWCMjS8pdcV3IFaDg/\] 
 
 ## Underlying Components
 
-When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in {{tab-cms-shas}} that was used as the pre-hash.
-
-The following table lists the RECOMMENDED Hash algorithms to preserve security and performance characteristics of each composite algorithm.
-
-A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY support other algorithms for the SignerInfo `digestAlgorithm` so long as they preserve the security and performance characterstics of the recommended Hash algorithms listed in the table below.
+A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms of equivalent strength or greater.
 
 | Composite Signature AlgorithmID | digestAlgorithm |
 | ----------- | ----------- |
