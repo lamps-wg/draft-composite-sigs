@@ -960,13 +960,13 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
 
-## Notes on id-MLDSA44-RSA2048-PSS-SHA256
+## Notes on id-MLDSA44-RSA2048-PSS and id-HashMLDSA44-RSA2048-PSS-SHA256
 
 Use of RSA-PSS [RFC8017] deserves a special explanation.
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to match with ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44
 
-As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
 
 | RSA-PSS Parameter          | Value                      |
 | -------------------------- | -------------------------- |
@@ -982,43 +982,43 @@ where:
 * `SHA-256` is defined in [RFC6234].
 
 
-## Notes on id-MLDSA65-RSA3072-PSS-SHA512
+## Notes on id-MLDSA65-RSA3072-PSS and id-HashMLDSA65-RSA3072-PSS-SHA512
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
 
 | RSA-PSS Parameter          | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
-| Mask Generation params     | SHA-512                |
-| Message Digest Algorithm   | SHA-512                |
-| Salt Length in bits        | 512                    |
+| Mask Generation params     | SHA-256                |
+| Message Digest Algorithm   | SHA-256                |
+| Salt Length in bits        | 256                    |
 {: #rsa-pss-params3072 title="RSA-PSS 3072 Parameters"}
 
 where:
 
 * `Mask Generation Function (mgf1)` is defined in [RFC8017]
-* `SHA-512` is defined in [RFC6234].
+* `SHA-256` is defined in [RFC6234].
 
-## Notes on id-MLDSA65-RSA4096-PSS-SHA512
+## Notes on id-MLDSA65-RSA4096-PSS or id-HashMLDSA65-RSA4096-PSS-SHA384
 
 The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSA-PSS with the following parameters:
 
 | RSA-PSS Parameter          | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
-| Mask Generation params     | SHA-512                |
-| Message Digest Algorithm   | SHA-512                |
-| Salt Length in bits        | 512                    |
+| Mask Generation params     | SHA-384                |
+| Message Digest Algorithm   | SHA-384                |
+| Salt Length in bits        | 384                    |
 {: #rsa-pss-params4096 title="RSA-PSS 4096 Parameters"}
 
 where:
 
 * `Mask Generation Function (mgf1)` is defined in [RFC8017]
-* `SHA-512` is defined in [RFC6234].
+* `SHA-384` is defined in [RFC6234].
 
 <!-- End of Composite Signature Algorithm section -->
 
@@ -1037,19 +1037,19 @@ The following table lists the MANDATORY Hash algorithms to preserve security and
 
 | Composite Signature AlgorithmID | Secure Hash |
 | ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256 | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256 | SHA256 |
+| id-MLDSA44-RSA2048-PSS | SHA256 |
+| id-MLDSA44-RSA2048-PKCS15 | SHA256 |
 | id-MLDSA44-Ed25519 | SHA512 |
-| id-MLDSA44-ECDSA-P256-SHA256         | SHA256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15-SHA512         | SHA512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | SHA512 |
-| id-MLDSA65-RSA4096-PKCS15-SHA512        | SHA512 |
-| id-MLDSA65-ECDSA-P384-SHA512            | SHA512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | SHA512 |
+| id-MLDSA44-ECDSA-P256         | SHA256 |
+| id-MLDSA65-RSA3072-PSS           | SHA512 |
+| id-MLDSA65-RSA3072-PKCS15         | SHA512 |
+| id-MLDSA65-RSA4096-PSS           | SHA512 |
+| id-MLDSA65-RSA4096-PKCS15        | SHA512 |
+| id-MLDSA65-ECDSA-P384            | SHA512 |
+| id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512 |
 | id-MLDSA65-Ed25519              | SHA512 |
-| id-MLDSA87-ECDSA-P384-SHA512            | SHA512|
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |  SHA512 |
+| id-MLDSA87-ECDSA-P384            | SHA512|
+| id-MLDSA87-ECDSA-brainpoolP384r1 |  SHA512 |
 | id-MLDSA87-Ed448              | SHA512 |
 {: #tab-cms-shas title="Composite Signature SHA Algorithms"}
 
