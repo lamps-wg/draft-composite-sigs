@@ -11,7 +11,7 @@
 <meta content="Jan Klaussner" name="author">
 <meta content="Scott Fluhrer" name="author">
 <meta content="
-       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-KEM. 
+       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA. 
        
 
 
@@ -1083,7 +1083,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Composite ML-DSA For use in X.509 Public Key Infrastructure and CMS</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-KEM.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -2054,7 +2054,7 @@ CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
                         -- the key.
 </pre><a href="#section-5.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-6">When a <code>CompositeSignaturePrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent. The privateKey field SHALL contain the <code>CompositeSignaturePrivateKey</code>, and the <code>publicKey</code> field remains OPTIONAL.  If the <code>publicKey</code> field is present, it MUST be a <code>CompositeKEMPublicKey</code>.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">When a <code>CompositeSignaturePrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent. The privateKey field SHALL contain the <code>CompositeSignaturePrivateKey</code>, and the <code>publicKey</code> field remains OPTIONAL.  If the <code>publicKey</code> field is present, it MUST be a <code>CompositeSignaturePublicKey</code>.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 <p id="section-5.2-7">Some applications may need to reconstruct the <code>OneAsymmetricKey</code> objects corresponding to each component private key. <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-5.2-7" class="pilcrow">¶</a></p>
 <p id="section-5.2-8">Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.2-8" class="pilcrow">¶</a></p>
 </section>
@@ -2742,7 +2742,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
       </h2>
 <p id="section-8-1">[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.]<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
-<p id="section-8-3">All recommendations for using Composite ML-KEM in CMS are fully aligned with the use of ML-KEM in CMS <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span>.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-3">All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span>.<a href="#section-8-3" class="pilcrow">¶</a></p>
 <div id="underlying-components">
 <section id="section-8.1">
         <h3 id="name-underlying-components">
@@ -2880,7 +2880,7 @@ cRLSign
         <h3 id="name-smimecapabilities-attribute">
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
         </h3>
-<p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute that announces support for the RSA-KEM Algorithm.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>

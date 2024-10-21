@@ -25,7 +25,7 @@ Abstract
    practices and regulatory requirements.  Composite ML-DSA is
    applicable in any application that uses X.509, PKIX, and CMS data
    structures and protocols that accept ML-DSA, but where the operator
-   wants extra protection against breaks or catastrophic bugs in ML-KEM.
+   wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 About This Document
 
@@ -894,7 +894,7 @@ Signature Verification Process:
    to Section 7 and its parameters field MUST be absent.  The privateKey
    field SHALL contain the CompositeSignaturePrivateKey, and the
    publicKey field remains OPTIONAL.  If the publicKey field is present,
-   it MUST be a CompositeKEMPublicKey.
+   it MUST be a CompositeSignaturePublicKey.
 
    Some applications may need to reconstruct the OneAsymmetricKey
    objects corresponding to each component private key.  Section 7
@@ -1333,8 +1333,8 @@ Signature Verification Process:
    Composite Signature algorithms MAY be employed for one or more
    recipients in the CMS signed-data content type [RFC5652].
 
-   All recommendations for using Composite ML-KEM in CMS are fully
-   aligned with the use of ML-KEM in CMS [I-D.salter-lamps-cms-ml-dsa].
+   All recommendations for using Composite ML-DSA in CMS are fully
+   aligned with the use of ML-DSA in CMS [I-D.salter-lamps-cms-ml-dsa].
 
 8.1.  Underlying Components
 
@@ -1461,8 +1461,7 @@ Signature Verification Process:
    announce a partial list of algorithms that an S/MIME implementation
    can support.  When constructing a CMS signed-data content type
    [RFC5652], a compliant implementation MAY include the
-   SMIMECapabilities attribute that announces support for the RSA-KEM
-   Algorithm.
+   SMIMECapabilities attribute.
 
    The SMIMECapability SEQUENCE representing a composite signature
    Algorithm MUST include the appropriate object identifier as per
