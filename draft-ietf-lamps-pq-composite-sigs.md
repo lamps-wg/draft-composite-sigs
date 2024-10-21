@@ -877,7 +877,7 @@ Therefore &lt;CompSig&gt;.21 is equal to 2.16.840.1.114027.80.8.1.21
 Pure Composite-ML-DSA Signature public key types:
 
 | Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID |
-| ----------- | ----------- | ----------- |  ----------- | ----------- |
+| ----------- | ----------- | ----------- |  ----------- |
 | id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.21 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 |
 | id-MLDSA44-RSA2048-PKCS15    | &lt;CompSig&gt;.22 | id-ML-DSA-44  | sha256WithRSAEncryption |
 | id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.23 | id-ML-DSA-44  | id-Ed25519 |
