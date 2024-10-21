@@ -2878,6 +2878,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
       </h2>
 <p id="section-8-1">[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.]<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">All recommendations for using Composite ML-KEM in CMS are fully aligned with the use of ML-KEM in CMS <span>[<a href="#I-D.salter-lamps-cms-ml-dsa" class="cite xref">I-D.salter-lamps-cms-ml-dsa</a>]</span>.<a href="#section-8-3" class="pilcrow">¶</a></p>
 <div id="underlying-components">
 <section id="section-8.1">
         <h3 id="name-underlying-components">
@@ -2885,6 +2886,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
         </h3>
 <p id="section-8.1-1">When a particular Composite Signature OID is supported in CMS, an implementation SHOULD support the corresponding Secure Hash algorithm identifier in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> that was used as the pre-hash.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1-2">The following table lists the MANDATORY Hash algorithms to preserve security and performance characteristics of each composite algorithm.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 <span id="name-composite-signature-sha-alg"></span><div id="tab-cms-shas">
 <table class="center" id="table-8">
           <caption>
@@ -2894,7 +2896,7 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Composite Signature AlgorithmID</th>
-              <th class="text-left" rowspan="1" colspan="1">Secure Hash</th>
+              <th class="text-left" rowspan="1" colspan="1">digestAlgorithm</th>
             </tr>
           </thead>
           <tbody>
@@ -2957,13 +2959,13 @@ CompositeSignatureValue ::= SEQUENCE SIZE (2) OF BIT STRING
           </tbody>
         </table>
 </div>
-<p id="section-8.1-4">where:<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1-5">where:<a href="#section-8.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.1-5.1">
-            <p id="section-8.1-5.1.1">SHA2 instantiations are defined in [FIPS180].<a href="#section-8.1-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8.1-6.1">
+            <p id="section-8.1-6.1.1">SHA2 instantiations are defined in [FIPS180].<a href="#section-8.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.1-6">Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.<a href="#section-8.1-6" class="pilcrow">¶</a></p>
+<p id="section-8.1-7">Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.<a href="#section-8.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="signeddata-conventions">
@@ -4177,14 +4179,6 @@ END
         <dd>
 <span class="refAuthor">Federal Office for Information Security (BSI)</span>, <span class="refTitle">"Quantum-safe cryptography - fundamentals, current developments and recommendations"</span>, <time datetime="2021-10" class="refDate">October 2021</time>, <span>&lt;<a href="https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf">https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.becker-guthrie-noncomposite-hybrid-auth">[I-D.becker-guthrie-noncomposite-hybrid-auth]</dt>
-        <dd>
-<span class="refAuthor">Becker, A.</span>, <span class="refAuthor">Guthrie, R.</span>, and <span class="refAuthor">M. J. Jenkins</span>, <span class="refTitle">"Non-Composite Hybrid Authentication in PKIX and Applications to Internet Protocols"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-becker-guthrie-noncomposite-hybrid-auth-00</span>, <time datetime="2022-03-22" class="refDate">22 March 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-becker-guthrie-noncomposite-hybrid-auth-00">https://datatracker.ietf.org/doc/html/draft-becker-guthrie-noncomposite-hybrid-auth-00</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.guthrie-ipsecme-ikev2-hybrid-auth">[I-D.guthrie-ipsecme-ikev2-hybrid-auth]</dt>
-        <dd>
-<span class="refAuthor">Guthrie, R.</span>, <span class="refTitle">"Hybrid Non-Composite Authentication in IKEv2"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-guthrie-ipsecme-ikev2-hybrid-auth-00</span>, <time datetime="2022-03-25" class="refDate">25 March 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-guthrie-ipsecme-ikev2-hybrid-auth-00">https://datatracker.ietf.org/doc/html/draft-guthrie-ipsecme-ikev2-hybrid-auth-00</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.ietf-lamps-dilithium-certificates">[I-D.ietf-lamps-dilithium-certificates]</dt>
         <dd>
 <span class="refAuthor">Massimo, J.</span>, <span class="refAuthor">Kampanakis, P.</span>, <span class="refAuthor">Turner, S.</span>, and <span class="refAuthor">B. Westerbaan</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure: Algorithm Identifiers for ML-DSA"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lamps-dilithium-certificates-04</span>, <time datetime="2024-07-22" class="refDate">22 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lamps-dilithium-certificates-04">https://datatracker.ietf.org/doc/html/draft-ietf-lamps-dilithium-certificates-04</a>&gt;</span>. </dd>
@@ -4197,21 +4191,13 @@ END
         <dd>
 <span class="refAuthor">D, F.</span>, <span class="refAuthor">P, M.</span>, and <span class="refAuthor">B. Hale</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-pqt-hybrid-terminology-04</span>, <time datetime="2024-09-10" class="refDate">10 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-04">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.massimo-lamps-pq-sig-certificates">[I-D.massimo-lamps-pq-sig-certificates]</dt>
-        <dd>
-<span class="refAuthor">Massimo, J.</span>, <span class="refAuthor">Kampanakis, P.</span>, <span class="refAuthor">Turner, S.</span>, and <span class="refAuthor">B. Westerbaan</span>, <span class="refTitle">"Algorithms and Identifiers for Post-Quantum Algorithms"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-massimo-lamps-pq-sig-certificates-00</span>, <time datetime="2022-07-08" class="refDate">8 July 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-massimo-lamps-pq-sig-certificates-00">https://datatracker.ietf.org/doc/html/draft-massimo-lamps-pq-sig-certificates-00</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.ounsworth-pq-composite-kem">[I-D.ounsworth-pq-composite-kem]</dt>
-        <dd>
-<span class="refAuthor">Ounsworth, M.</span> and <span class="refAuthor">J. Gray</span>, <span class="refTitle">"Composite KEM For Use In Internet PKI"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ounsworth-pq-composite-kem-01</span>, <time datetime="2023-03-13" class="refDate">13 March 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ounsworth-pq-composite-kem-01">https://datatracker.ietf.org/doc/html/draft-ounsworth-pq-composite-kem-01</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="I-D.pala-klaussner-composite-kofn">[I-D.pala-klaussner-composite-kofn]</dt>
         <dd>
 <span class="refAuthor">Pala, M.</span> and <span class="refAuthor">J. Klaußner</span>, <span class="refTitle">"K-threshold Composite Signatures for the Internet PKI"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-pala-klaussner-composite-kofn-00</span>, <time datetime="2022-11-15" class="refDate">15 November 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-pala-klaussner-composite-kofn-00">https://datatracker.ietf.org/doc/html/draft-pala-klaussner-composite-kofn-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.vaira-pquip-pqc-use-cases">[I-D.vaira-pquip-pqc-use-cases]</dt>
+<dt id="I-D.salter-lamps-cms-ml-dsa">[I-D.salter-lamps-cms-ml-dsa]</dt>
         <dd>
-<span class="refAuthor">Vaira, A.</span>, <span class="refAuthor">Brockhaus, H.</span>, <span class="refAuthor">Railean, A.</span>, <span class="refAuthor">Gray, J.</span>, and <span class="refAuthor">M. Ounsworth</span>, <span class="refTitle">"Post-quantum cryptography use cases"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-vaira-pquip-pqc-use-cases-00</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-vaira-pquip-pqc-use-cases-00">https://datatracker.ietf.org/doc/html/draft-vaira-pquip-pqc-use-cases-00</a>&gt;</span>. </dd>
+<span class="refAuthor">S, B.</span>, <span class="refAuthor">R, A.</span>, and <span class="refAuthor">D. Van Geest</span>, <span class="refTitle">"Use of the ML-DSA Signature Algorithm in the Cryptographic Message Syntax (CMS)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-salter-lamps-cms-ml-dsa-00</span>, <time datetime="2024-10-14" class="refDate">14 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-salter-lamps-cms-ml-dsa-00">https://datatracker.ietf.org/doc/html/draft-salter-lamps-cms-ml-dsa-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3279">[RFC3279]</dt>
         <dd>

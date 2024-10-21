@@ -1369,6 +1369,9 @@ Signature Verification Process:
    Composite Signature algorithms MAY be employed for one or more
    recipients in the CMS signed-data content type [RFC5652].
 
+   All recommendations for using Composite ML-KEM in CMS are fully
+   aligned with the use of ML-KEM in CMS [I-D.salter-lamps-cms-ml-dsa].
+
 8.1.  Underlying Components
 
    When a particular Composite Signature OID is supported in CMS, an
@@ -1378,37 +1381,42 @@ Signature Verification Process:
    The following table lists the MANDATORY Hash algorithms to preserve
    security and performance characteristics of each composite algorithm.
 
-            +==================================+=============+
-            | Composite Signature AlgorithmID  | Secure Hash |
-            +==================================+=============+
-            | id-MLDSA44-RSA2048-PSS           | SHA256      |
-            +----------------------------------+-------------+
-            | id-MLDSA44-RSA2048-PKCS15        | SHA256      |
-            +----------------------------------+-------------+
-            | id-MLDSA44-Ed25519               | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA44-ECDSA-P256            | SHA256      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-RSA3072-PSS           | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-RSA3072-PKCS15        | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-RSA4096-PSS           | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-RSA4096-PKCS15        | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-ECDSA-P384            | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA65-Ed25519               | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA87-ECDSA-P384            | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512      |
-            +----------------------------------+-------------+
-            | id-MLDSA87-Ed448                 | SHA512      |
-            +----------------------------------+-------------+
+   A compliant implementation MUST support the following algorithms for
+   the SignerInfo digestAlgorithm field when the corresponding Composite
+   ML-DSA algorithm is listed in the SignerInfo signatureAlgorithm
+   field.
+
+          +==================================+=================+
+          | Composite Signature AlgorithmID  | digestAlgorithm |
+          +==================================+=================+
+          | id-MLDSA44-RSA2048-PSS           | SHA256          |
+          +----------------------------------+-----------------+
+          | id-MLDSA44-RSA2048-PKCS15        | SHA256          |
+          +----------------------------------+-----------------+
+          | id-MLDSA44-Ed25519               | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA44-ECDSA-P256            | SHA256          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-RSA3072-PSS           | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-RSA3072-PKCS15        | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-RSA4096-PSS           | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-RSA4096-PKCS15        | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-ECDSA-P384            | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA65-Ed25519               | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA87-ECDSA-P384            | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512          |
+          +----------------------------------+-----------------+
+          | id-MLDSA87-Ed448                 | SHA512          |
+          +----------------------------------+-----------------+
 
                Table 8: Composite Signature SHA Algorithms
 
@@ -2641,21 +2649,6 @@ Signature Verification Process:
               <https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/
               Publications/Brochure/quantum-safe-cryptography.pdf>.
 
-   [I-D.becker-guthrie-noncomposite-hybrid-auth]
-              Becker, A., Guthrie, R., and M. J. Jenkins, "Non-Composite
-              Hybrid Authentication in PKIX and Applications to Internet
-              Protocols", Work in Progress, Internet-Draft, draft-
-              becker-guthrie-noncomposite-hybrid-auth-00, 22 March 2022,
-              <https://datatracker.ietf.org/doc/html/draft-becker-
-              guthrie-noncomposite-hybrid-auth-00>.
-
-   [I-D.guthrie-ipsecme-ikev2-hybrid-auth]
-              Guthrie, R., "Hybrid Non-Composite Authentication in
-              IKEv2", Work in Progress, Internet-Draft, draft-guthrie-
-              ipsecme-ikev2-hybrid-auth-00, 25 March 2022,
-              <https://datatracker.ietf.org/doc/html/draft-guthrie-
-              ipsecme-ikev2-hybrid-auth-00>.
-
    [I-D.ietf-lamps-dilithium-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
               Westerbaan, "Internet X.509 Public Key Infrastructure:
@@ -2678,21 +2671,6 @@ Signature Verification Process:
               September 2024, <https://datatracker.ietf.org/doc/html/
               draft-ietf-pquip-pqt-hybrid-terminology-04>.
 
-   [I-D.massimo-lamps-pq-sig-certificates]
-              Massimo, J., Kampanakis, P., Turner, S., and B.
-              Westerbaan, "Algorithms and Identifiers for Post-Quantum
-              Algorithms", Work in Progress, Internet-Draft, draft-
-              massimo-lamps-pq-sig-certificates-00, 8 July 2022,
-              <https://datatracker.ietf.org/doc/html/draft-massimo-
-              lamps-pq-sig-certificates-00>.
-
-   [I-D.ounsworth-pq-composite-kem]
-              Ounsworth, M. and J. Gray, "Composite KEM For Use In
-              Internet PKI", Work in Progress, Internet-Draft, draft-
-              ounsworth-pq-composite-kem-01, 13 March 2023,
-              <https://datatracker.ietf.org/doc/html/draft-ounsworth-pq-
-              composite-kem-01>.
-
    [I-D.pala-klaussner-composite-kofn]
               Pala, M. and J. Klaußner, "K-threshold Composite
               Signatures for the Internet PKI", Work in Progress,
@@ -2700,13 +2678,13 @@ Signature Verification Process:
               November 2022, <https://datatracker.ietf.org/doc/html/
               draft-pala-klaussner-composite-kofn-00>.
 
-   [I-D.vaira-pquip-pqc-use-cases]
-              Vaira, A., Brockhaus, H., Railean, A., Gray, J., and M.
-              Ounsworth, "Post-quantum cryptography use cases", Work in
-              Progress, Internet-Draft, draft-vaira-pquip-pqc-use-cases-
-              00, 23 October 2023,
-              <https://datatracker.ietf.org/doc/html/draft-vaira-pquip-
-              pqc-use-cases-00>.
+   [I-D.salter-lamps-cms-ml-dsa]
+              S, B., R, A., and D. Van Geest, "Use of the ML-DSA
+              Signature Algorithm in the Cryptographic Message Syntax
+              (CMS)", Work in Progress, Internet-Draft, draft-salter-
+              lamps-cms-ml-dsa-00, 14 October 2024,
+              <https://datatracker.ietf.org/doc/html/draft-salter-lamps-
+              cms-ml-dsa-00>.
 
    [RFC3279]  Bassham, L., Polk, W., and R. Housley, "Algorithms and
               Identifiers for the Internet X.509 Public Key
