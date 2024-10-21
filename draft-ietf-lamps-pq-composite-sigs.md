@@ -167,7 +167,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 --- middle
 
 
-## Changes in -03
+# Changes in -03
 
 Interop-affecting changes:
 
@@ -661,12 +661,12 @@ Note that in step 4 above, the function fails early if the first component fails
 
 # Composite Key Structures {#sec-composite-structs}
 
-In order for signatures to be composed of multiple algorithms, we define encodings consisting of a sequence of signature primitives (aka "component algorithms") such that these structures can be used as a drop-in replacement for existing signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
+In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
 
 ## pk-CompositeSignature
 
-The following ASN.1 structures represent a composite public key combined with an RSA and Elliptic Curve public key, respectively.
+The following ASN.1 structures represent a composite public key combined with an RSA or Elliptic Curve public key.
 
 ~~~ ASN.1
 RsaCompositeSignaturePublicKey ::= SEQUENCE {
@@ -681,16 +681,16 @@ EcCompositeSignaturePublicKey ::= SEQUENCE {
 
 EdCompositeSignaturePublicKey ::= SEQUENCE {
         firstPublicKey BIT STRING (ENCODED BY id-raw-key),
-        secondPublicKey BIT STRING (CONTAINING id-raw-key)
+        secondPublicKey BIT STRING (ENCODED BY id-raw-key)
       }
 ~~~
 
 `id-raw-key` is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or
 may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.
 
-This structure is intentionally generic in the first public key slot since ML-DSA, as defined in {{I-D.ietf-lamps-dilithium-certificates}}, does not define any ASN.1 public key structures. For use with this document, the `firstPublicKey` MUST be the BIT STRING representation of an ML-DSA key as specified in {{I-D.ietf-lamps-dilithium-certificates}}. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm. The public key for Edwards curve DSA component is also encoded as a raw key.
+For use with this document, ML-DSA keys MUST be be the raw BIT STRING representation as specified in {{I-D.ietf-lamps-dilithium-certificates}} and Edwards Curve keys MUST be the raw BIT STRING representation as speified in [RFC8410]. Note that here we used BIT STRING rather than OCTET STRING so that these keys can be trivially transcoded into a SubjectPublicKeyInfo as necessary, for example when a crypto library requires this for invoking the component algorithm.
 
-The following ASN.1 Information Object Class is defined to then allow for compact definitions of each composite algorithm.
+The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
 ~~~ ASN.1
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
@@ -878,18 +878,18 @@ Pure Composite-ML-DSA Signature public key types:
 | Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
 | id-MLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.21 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.22 | id-ML-DSA-44  | sha256WithRSAEncryption | 
-| id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.23 | id-ML-DSA-44  | id-Ed25519 | 
-| id-MLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.24 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | 
-| id-MLDSA65-RSA3072-PSS-SHA256           | &lt;CompSig&gt;.26 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 | 
-| id-MLDSA65-RSA3072-PKCS15-SHA256        | &lt;CompSig&gt;.27  | id-ML-DSA-65 | sha256WithRSAEncryption | 
-| id-MLDSA65-RSA4096-PSS-SHA384           | &lt;CompSig&gt;.34 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 | 
-| id-MLDSA65-RSA4096-PKCS15-SHA384        | &lt;CompSig&gt;.35  | id-ML-DSA-65 | sha384WithRSAEncryption | 
-| id-MLDSA65-ECDSA-P384-SHA384            | &lt;CompSig&gt;.28  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 | 
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA256 | &lt;CompSig&gt;.29  | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | 
-| id-MLDSA65-Ed25519                      | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 | 
-| id-MLDSA87-ECDSA-P384-SHA384            | &lt;CompSig&gt;.31  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 | 
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA384 | &lt;CompSig&gt;.32 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | 
+| id-MLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.22 | id-ML-DSA-44  | sha256WithRSAEncryption |
+| id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.23 | id-ML-DSA-44  | id-Ed25519 |
+| id-MLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.24 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 |
+| id-MLDSA65-RSA3072-PSS-SHA256           | &lt;CompSig&gt;.26 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 |
+| id-MLDSA65-RSA3072-PKCS15-SHA256        | &lt;CompSig&gt;.27  | id-ML-DSA-65 | sha256WithRSAEncryption |
+| id-MLDSA65-RSA4096-PSS-SHA384           | &lt;CompSig&gt;.34 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 |
+| id-MLDSA65-RSA4096-PKCS15-SHA384        | &lt;CompSig&gt;.35  | id-ML-DSA-65 | sha384WithRSAEncryption |
+| id-MLDSA65-ECDSA-P384-SHA384            | &lt;CompSig&gt;.28  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 |
+| id-MLDSA65-ECDSA-brainpoolP256r1-SHA256 | &lt;CompSig&gt;.29  | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 |
+| id-MLDSA65-Ed25519                      | &lt;CompSig&gt;.30  | id-ML-DSA-65 | id-Ed25519 |
+| id-MLDSA87-ECDSA-P384-SHA384            | &lt;CompSig&gt;.31  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 |
+| id-MLDSA87-ECDSA-brainpoolP384r1-SHA384 | &lt;CompSig&gt;.32 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 |
 | id-MLDSA87-Ed448                        | &lt;CompSig&gt;.33 | id-ML-DSA-87 | id-Ed448 |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
