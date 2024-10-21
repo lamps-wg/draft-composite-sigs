@@ -950,8 +950,8 @@ Signature Verification Process:
    When an octet string is required, the DER encoding of the composite
    data structure SHALL be used directly.
 
-   CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
-                                   CompositeSignaturePublicKey ENCODED BY der)
+   CompositeSignaturePublicKeyOs ::= OCTET STRING
+                   (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 
    When a bit string is required, the octets of the DER encoded
    composite data structure SHALL be used as the bits of the bit string,
@@ -959,8 +959,8 @@ Signature Verification Process:
    bit, and so on, ending with the least significant bit of the last
    octet becoming the last bit of the bit string.
 
-   CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
-                                   CompositeSignaturePublicKey ENCODED BY der)
+   CompositeSignaturePublicKeyBs ::= BIT STRING
+                   (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 
    In the interests of simplicity and avoiding compatibility issues,
    implementations that parse these structures MAY accept both BER and

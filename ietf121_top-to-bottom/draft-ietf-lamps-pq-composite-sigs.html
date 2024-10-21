@@ -2190,15 +2190,15 @@ CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OCTET STRING
 <p id="section-5.3-2">When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-3">
 <pre>
-CompositeSignaturePublicKeyOs ::= OCTET STRING (CONTAINING
-                                CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyOs ::= OCTET STRING
+                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 </pre><a href="#section-5.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-4">When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-5">
 <pre>
-CompositeSignaturePublicKeyBs ::= BIT STRING (CONTAINING
-                                CompositeSignaturePublicKey ENCODED BY der)
+CompositeSignaturePublicKeyBs ::= BIT STRING
+                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
 </pre><a href="#section-5.3-5" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-6">In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
