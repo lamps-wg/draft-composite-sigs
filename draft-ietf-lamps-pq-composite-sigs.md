@@ -283,11 +283,11 @@ The following process is used to generate composite keypair values:
 ~~~
 KeyGen() -> (pk, sk)
 
-Explicit Inputs:
+Explicit inputs:
 
   None
 
-Implicit Input:
+Implicit inputs:
 
   ML-DSA     A placeholder for the specific ML-DSA algorithm and
              parameter set to use, for example, could be "ML-DSA-65".
@@ -304,22 +304,22 @@ Key Generation Process:
 
   1. Generate component keys
 
-    (mldsaPK, mldsaSK) = ML-DSA.KeyGen()
-    (tradPK, tradSK)   = Trad.KeyGen()
+      (mldsaPK, mldsaSK) = ML-DSA.KeyGen()
+      (tradPK, tradSK)   = Trad.KeyGen()
 
   2. Check for component key gen failure
 
-    if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
-      output "Key generation error"
+      if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
+        output "Key generation error"
 
   3. Encode the component keys into composite structures
 
-    pk = CompositeSignaturePublicKey(mldsaPK, tradPK)
-    sk = CompositeSignaturePrivateKey(mldsaSK, tradSK)
+      pk = CompositeSignaturePublicKey(mldsaPK, tradPK)
+      sk = CompositeSignaturePrivateKey(mldsaSK, tradSK)
 
   4. Output the composite keys
 
-    return (pk, sk)
+      return (pk, sk)
 
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
@@ -345,7 +345,8 @@ This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 2 in Section 5.
 
 ~~~
 Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
-Explicit Input:
+
+Explicit inputs:
 
   sk    Composite private key conisting of signing private keys for
         each component.
@@ -374,27 +375,27 @@ Output:
 Signature Generation Process:
 
   1. If |ctx| > 255:
-    return error
+      return error
 
   2. Compute the Message M'.
 
-    M' = Domain || len(ctx) || ctx || M
+      M' = Domain || len(ctx) || ctx || M
 
   3. Separate the private key into component keys.
 
-    (mldsaSK, tradSK) = Unmarshal(sk)
+      (mldsaSK, tradSK) = sk
 
   4. Generate the 2 component signatures independently, by calculating
      the signature over M' according to their algorithm specifications.
 
-    mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
-    tradSig = Trad.Sign( tradSK, M' )
+      mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+      tradSig = Trad.Sign( tradSK, M' )
 
   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
      process must return an error.
 
-    if NOT mldsaSig or NOT tradSig:
-      output "Signature generation error"
+      if NOT mldsaSig or NOT tradSig:
+        output "Signature generation error"
 
    6. Encode each component signature into a CompositeSignatureValue.
 
@@ -402,9 +403,9 @@ Signature Generation Process:
 
   7. Output signature
 
-    return signature
+      return signature
 ~~~
-{: # title="Composite-ML-DSA-Sign(sk, M, ctx)"}
+{: # title="Composite-ML-DSA.Sign(sk, M, ctx)"}
 
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
 
@@ -418,7 +419,9 @@ Compliant applications MUST output "Valid signature" (true) if and only if all c
 
 ~~~
 Composite-ML-DSA.Verify(pk, M, signature, ctx)
-Explicit Inputs:
+
+Explicit inputs:
+
   pk          Composite public key conisting of verification public keys
               for each component.
 
@@ -451,37 +454,37 @@ Output:
 
 Signature Verification Process:
 
-   1. If |ctx| > 255
-        return error
+  1. If |ctx| > 255
+      return error
 
-   2. Separate the keys and signatures
+  2. Separate the keys and signatures
 
-          (pk1, pk2) = pk
-          (s1, s2)   = signature
+        (pk1, pk2) = pk
+        (s1, s2)   = signature
 
-      If Error during Desequencing, or if any of the component
-      keys or signature values are not of the correct key type or
-      length for the given component algorithm then output
-      "Invalid signature" and stop.
+    If Error during Desequencing, or if any of the component
+    keys or signature values are not of the correct key type or
+    length for the given component algorithm then output
+    "Invalid signature" and stop.
 
-   3. Compute the Message M'.
+  3. Compute the Message M'.
 
-         M' = Domain || len(ctx) || ctx || M
+        M' = Domain || len(ctx) || ctx || M
 
-   4. Check each component signature individually, according to its
-       algorithm specification.
-       If any fail, then the entire signature validation fails.
+  4. Check each component signature individually, according to its
+     algorithm specification.
+     If any fail, then the entire signature validation fails.
 
-       if not ML-DSA.Verify( pk1, M', s1, ctx=Domain) then
-            output "Invalid signature"
+        if not ML-DSA.Verify( pk1, M', s1, ctx=Domain) then
+          output "Invalid signature"
 
-       if not Trad.Verify( pk2, M', s2) then
-            output "Invalid signature"
+        if not Trad.Verify( pk2, M', s2) then
+          output "Invalid signature"
 
-       if all succeeded, then
-        output "Valid signature"
+        if all succeeded, then
+          output "Valid signature"
 ~~~
-{: #alg-composite-verify title="Composite-ML-DSA-Verify(pk, Message, signature, Context)"}
+{: #alg-composite-verify title="Composite-ML-DSA.Verify(pk, Message, signature, Context)"}
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
@@ -503,7 +506,8 @@ In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatendated
 ~~~
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
 
-Explicit Input:
+Explicit inputs:
+
   sk    Composite private key consisting of signing private keys for
         each component.
 
@@ -534,38 +538,38 @@ Output:
 
 Signature Generation Process:
 
-   1. If |ctx| > 255:
-        return error
+  1. If |ctx| > 255:
+      return error
 
-   2. Compute the Message format M'.
+  2. Compute the Message format M'.
 
-         M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
+        M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
 
-   3. Separate the private key into component keys.
+  3. Separate the private key into component keys.
 
-         (mldsaSK, tradSK) := Unmarshal(sk)
+       (mldsaSK, tradSK) = sk
 
-   4. Generate the 2 component signatures independently, by calculating
-      the signature over M' according to their algorithm specifications.
+  4. Generate the 2 component signatures independently, by calculating
+     the signature over M' according to their algorithm specifications.
 
-         mldsaSig := ML-DSA.Sign( mldsaSK, M', ctx=Domain )
-         tradSig := Trad.Sign( tradSK, M' )
+       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+       tradSig = Trad.Sign( tradSK, M' )
 
   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
      process must return an error.
 
-    if NOT mldsaSig or NOT tradSig:
-      output "Signature generation error"
+      if NOT mldsaSig or NOT tradSig:
+        output "Signature generation error"
 
-   6. Encode each component signature into a CompositeSignatureValue.
+  6. Encode each component signature into a CompositeSignatureValue.
 
       signature := CompositeSignatureValue(mldsaSig, tradSig)
 
-   7. Output signature
+  7. Output signature
 
-        return signature
+      return signature
 ~~~
-{: #alg-hash-composite-sign title="HashComposite-ML-DSA-Sign(sk, M, ctx, PH)"}
+{: #alg-hash-composite-sign title="HashComposite-ML-DSA.Sign(sk, M, ctx, PH)"}
 
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
 
@@ -580,7 +584,8 @@ Compliant applications MUST output "Valid signature" (true) if and only if all c
 ~~~
 HashComposite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
-Explicit Inputs:
+Explicit inputs:
+
   pk          Composite public key consisting of verification public
               keys for each component.
 
@@ -619,37 +624,37 @@ Output:
 
 Signature Verification Process:
 
-   1. If |ctx| > 255
-        return error
+  1. If |ctx| > 255
+       return error
 
-   2. Separate the keys and signatures
+  2. Separate the keys and signatures
 
-          (pk1, pk2) = pk
-          (s1, s2) = signature
+     (pk1, pk2) = pk
+      (s1, s2) = signature
 
-      If Error during Desequencing, or if any of the component
-      keys or signature values are not of the correct key type or
-      length for the given component algorithm then output
-      "Invalid signature" and stop.
+   If Error during Desequencing, or if any of the component
+   keys or signature values are not of the correct key type or
+   length for the given component algorithm then output
+   "Invalid signature" and stop.
 
-   3. Compute a Hash of the Message.
+  3. Compute a Hash of the Message.
 
-         M' = Domain || len(ctx) || ctx || HashOID || PH(M)
+      M' = Domain || len(ctx) || ctx || HashOID || PH(M)
 
-   4. Check each component signature individually, according to its
-       algorithm specification.
-       If any fail, then the entire signature validation fails.
+  4. Check each component signature individually, according to its
+     algorithm specification.
+     If any fail, then the entire signature validation fails.
 
-       if not ML-DSA.Verify( pk1, M', s1, ctx=Domain ) then
-            output "Invalid signature"
+      if not ML-DSA.Verify( pk1, M', s1, ctx=Domain ) then
+          output "Invalid signature"
 
-       if not Trad.Verify( pk2, M', s2 ) then
-            output "Invalid signature"
+      if not Trad.Verify( pk2, M', s2 ) then
+          output "Invalid signature"
 
-       if all succeeded, then
-        output "Valid signature"
+      if all succeeded, then
+         output "Valid signature"
 ~~~
-{: #alg-hash-composite-verify title="Hash-Composite-ML-DSA-Verify(pk, M, signature, ctx, PH)"}
+{: #alg-hash-composite-verify title="HashComposite-ML-DSA.Verify(pk, M, signature, ctx, PH)"}
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
