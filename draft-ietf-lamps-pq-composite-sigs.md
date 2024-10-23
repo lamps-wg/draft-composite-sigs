@@ -1382,11 +1382,11 @@ For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the sam
 ~~~
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-44   -- (1 3 6 1 4 1 2 267 12 4 4)
+    algorithm id-ML-DSA-44   -- (2 16 840 1 101 3 4 3 17)
    }
 
 DER:
-  30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 04 04
+  30 0B 06 09 60 86 48 01 65 03 04 03 11
 ~~~
 
 
@@ -1395,11 +1395,11 @@ DER:
 ~~~
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-65   -- (1 3 6 1 4 1 2 267 12 6 5)
+    algorithm id-ML-DSA-65   -- (2 16 840 1 101 3 4 3 18)
    }
 
 DER:
-  30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 06 05
+  30 0B 06 09 60 86 48 01 65 03 04 03 12
 ~~~
 
 
@@ -1408,11 +1408,11 @@ DER:
 ~~~
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
-    algorithm id-ML-DSA-87   -- (1 3 6 1 4 1 2 267 12 8 7)
+    algorithm id-ML-DSA-87   -- (2 16 840 1 101 3 4 3 19)
    }
 
 DER:
-  30 0D 06 0B 2B 06 01 04 01 02 82 0B 0C 08 07
+  30 0B 06 09 60 86 48 01 65 03 04 03 13
 ~~~
 
 
