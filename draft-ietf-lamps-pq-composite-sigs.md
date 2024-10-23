@@ -1138,147 +1138,147 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
 
--  id-raw-key
+- id-raw-key
   - Decimal: IANA Assigned
   - Description: Designates a public key BIT STRING with no ASN.1 structure.
   - References: This Document
 
--  id-MLDSA44-RSA2048-PSS-SHA256
+- id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PSS-SHA256
   - References: This Document
 
--  id-MLDSA44-RSA2048-PKCS15-SHA256
+- id-MLDSA44-RSA2048-PKCS15-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-RSA2048-PKCS15-SHA256
   - References: This Document
 
--  id-MLDSA44-Ed25519
+- id-MLDSA44-Ed25519
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-Ed25519
   - References: This Document
 
--  id-MLDSA44-ECDSA-P256-SHA256
+- id-MLDSA44-ECDSA-P256-SHA256
   - Decimal: IANA Assigned
   - Description:  id-MLDSA44-ECDSA-P256-SHA256
   - References: This Document
 
--  id-MLDSA65-RSA3072-PSS-SHA512
+- id-MLDSA65-RSA3072-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PSS-SHA512
   - References: This Document
 
--  id-MLDSA65-RSA3072-PKCS15-SHA512
+- id-MLDSA65-RSA3072-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA3072-PKCS15-SHA512
   - References: This Document
 
--  id-MLDSA65-RSA4096-PSS-SHA512
+- id-MLDSA65-RSA4096-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA4096-PSS-SHA512
   - References: This Document
 
--  id-MLDSA65-RSA4096-PKCS15-SHA512
+- id-MLDSA65-RSA4096-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-RSA4096-PKCS15-SHA512
   - References: This Document
 
--  id-MLDSA65-ECDSA-P384-SHA512
+- id-MLDSA65-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-ECDSA-P384-SHA512
   - References: This Document
 
--  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
+- id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - References: This Document
 
--  id-MLDSA65-Ed25519
+- id-MLDSA65-Ed25519
   - Decimal: IANA Assigned
   - Description:  id-MLDSA65-Ed25519
   - References: This Document
 
--  id-MLDSA87-ECDSA-P384-SHA512
+- id-MLDSA87-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-ECDSA-P384-SHA512
   - References: This Document
 
--  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
+- id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - References: This Document
 
--  id-MLDSA87-Ed448
+- id-MLDSA87-Ed448
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-Ed448
   - References: This Document
 
--  id-HashMLDSA44-RSA2048-PSS-SHA256
+- id-HashMLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-RSA2048-PSS-SHA256
   - References: This Document
 
--  id-HashMLDSA44-RSA2048-PKCS15-SHA256
+- id-HashMLDSA44-RSA2048-PKCS15-SHA256
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-RSA2048-PKCS15-SHA256
   - References: This Document
 
--  id-HashMLDSA44-Ed25519-SHA512
+- id-HashMLDSA44-Ed25519-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-Ed25519-SHA512
   - References: This Document
 
--  id-HashMLDSA44-ECDSA-P256-SHA256
+- id-HashMLDSA44-ECDSA-P256-SHA256
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-ECDSA-P256-SHA256
   - References: This Document
 
--  id-HashMLDSA65-RSA3072-PSS-SHA512
+- id-HashMLDSA65-RSA3072-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-RSA3072-PSS-SHA512
   - References: This Document
 
--  id-HashMLDSA65-RSA3072-PKCS15-SHA512
+- id-HashMLDSA65-RSA3072-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-RSA3072-PKCS15-SHA512
   - References: This Document
 
--  id-HashMLDSA65-RSA4096-PSS-SHA512
+- id-HashMLDSA65-RSA4096-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-RSA4096-PSS-SHA512
   - References: This Document
 
--  id-HashMLDSA65-RSA4096-PKCS15-SHA512
+- id-HashMLDSA65-RSA4096-PKCS15-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-RSA4096-PKCS15-SHA512
   - References: This Document
 
--  id-HashMLDSA65-ECDSA-P384-SHA512
+- id-HashMLDSA65-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-ECDSA-P384-SHA512
   - References: This Document
 
--  id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512
+- id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512
   - References: This Document
 
--  id-HashMLDSA65-Ed25519-SHA512
+- id-HashMLDSA65-Ed25519-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA65-Ed25519-SHA512
   - References: This Document
 
--  id-HashMLDSA87-ECDSA-P384-SHA512
+- id-HashMLDSA87-ECDSA-P384-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA87-ECDSA-P384-SHA512
   - References: This Document
 
--  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512
+- id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512
   - References: This Document
 
--  id-HashMLDSA87-Ed448-SHA512
+- id-HashMLDSA87-Ed448-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA87-Ed448-SHA512
   - References: This Document
