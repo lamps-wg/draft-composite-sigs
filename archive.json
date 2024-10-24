@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-22T00:50:58.107214+00:00",
+  "timestamp": "2024-10-24T00:50:12.677533+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1799,6 +1799,38 @@
           "updatedAt": "2024-10-21T19:44:48Z"
         }
       ]
+    },
+    {
+      "number": 73,
+      "id": "I_kwDOL5eEDM6bU0OT",
+      "title": "The ML-DSA OIDS in Appendix C are the old prototype OIDS and need to be updated",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/73",
+      "state": "CLOSED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The ML-DSA OIDS in Appendix C are incorrect and the encodings need to be updated to the following:\r\n\r\n     id-ML-DSA-44            2.16.840.1.101.3.4.3.17\r\n     id-ML-DSA-65            2.16.840.1.101.3.4.3.18  \r\n     id-ML-DSA-87            2.16.840.1.101.3.4.3.19 \r\n\r\nThanks to Amador Cervera for pointing this out the day after we published the latest update!\r\n\r\n",
+      "createdAt": "2024-10-22T16:24:31Z",
+      "updatedAt": "2024-10-23T14:54:59Z",
+      "closedAt": "2024-10-23T14:54:59Z",
+      "comments": []
+    },
+    {
+      "number": 75,
+      "id": "I_kwDOL5eEDM6bgNsV",
+      "title": "Fix the IANA indents",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/75",
+      "state": "CLOSED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Somehow they lost their indents and look messy.",
+      "createdAt": "2024-10-23T14:54:25Z",
+      "updatedAt": "2024-10-23T18:45:25Z",
+      "closedAt": "2024-10-23T18:45:25Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -3180,6 +3212,62 @@
       "mergedBy": "johngray-dev",
       "mergeCommit": {
         "oid": "5475fda1ac94b11bb4b35a6e27bef806a65bb5ac"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 74,
+      "id": "PR_kwDOL5eEDM5_nq-T",
+      "title": "Update draft-ietf-lamps-pq-composite-sigs.md",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/74",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixed the missed and older ML-DSA Algorithm Identifier\r\nresolves #73 ",
+      "createdAt": "2024-10-23T13:42:58Z",
+      "updatedAt": "2024-10-23T14:54:59Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "5475fda1ac94b11bb4b35a6e27bef806a65bb5ac",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "73-Fix-AppendixC-OIDS",
+      "headRefOid": "519e539ad5d231a176404afe69ceb555420a4667",
+      "closedAt": "2024-10-23T14:54:58Z",
+      "mergedAt": "2024-10-23T14:54:58Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "2e3945e7b13c3b2afa701f66e17eecb7de5ebef6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 76,
+      "id": "PR_kwDOL5eEDM5_qCPh",
+      "title": "Update draft-ietf-lamps-pq-composite-sigs.md",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/76",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix the IANA section indents\r\nresolves #75 ",
+      "createdAt": "2024-10-23T17:59:34Z",
+      "updatedAt": "2024-10-23T18:45:28Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "2e3945e7b13c3b2afa701f66e17eecb7de5ebef6",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "75-FixIanaIndents",
+      "headRefOid": "a3c0166ca9a3a9a3429715d5d8cb55e2ef7a686e",
+      "closedAt": "2024-10-23T18:45:24Z",
+      "mergedAt": "2024-10-23T18:45:24Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "bee5e67ac708bfa8dd5e4f44ae8ff566c131d537"
       },
       "comments": [],
       "reviews": []
