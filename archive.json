@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-24T00:50:12.677533+00:00",
+  "timestamp": "2024-10-27T00:54:23.198932+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1664,15 +1664,15 @@
       "id": "I_kwDOL5eEDM6agUH3",
       "title": "Should we use the context String for the underlying ED448 and X25519 algorithms",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/64",
-      "state": "CLOSED",
+      "state": "OPEN",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We are using the Domain as a context String for ML-DSA,\r\n\r\nWe can't use the Domain as the context for RSA or ECDSA as they algorithms don't take a context string.\r\n\r\nHowever, ED448 and X25519 do use a context String and could be used.  \r\n\r\nThat would likely give us SUF security for those algorithm combinations.  ",
       "createdAt": "2024-10-16T14:59:16Z",
-      "updatedAt": "2024-10-21T19:48:40Z",
-      "closedAt": "2024-10-21T19:47:33Z",
+      "updatedAt": "2024-10-24T21:49:59Z",
+      "closedAt": null,
       "comments": [
         {
           "author": "johngray-dev",
@@ -1687,6 +1687,13 @@
           "body": "Both RFC8410 (EdDSA in X.509) and RFC8419 (EdDSA in CMS) say explicitly that the context string is not used. Since currently X.509 and CMS do not use the context string of EdDSA, then the most backwards compatible thing is to maintain that behaviour for the EdDSA component. I think that maintaining the backwards compat on the traditional component is more important than increasing its security above the security that EdDSA has today.",
           "createdAt": "2024-10-21T19:47:33Z",
           "updatedAt": "2024-10-21T19:48:40Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Re-opening issue in light of #79 ",
+          "createdAt": "2024-10-24T21:49:58Z",
+          "updatedAt": "2024-10-24T21:49:58Z"
         }
       ]
     },
@@ -1831,6 +1838,101 @@
       "updatedAt": "2024-10-23T18:45:25Z",
       "closedAt": "2024-10-23T18:45:25Z",
       "comments": []
+    },
+    {
+      "number": 77,
+      "id": "I_kwDOL5eEDM6bowUq",
+      "title": "Confusing text in EUF-CMA section",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/77",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This sentence in section 11.1 is confusing, in particular the part in bold.\r\n\r\n   The latter\r\n   version bears a resemblance to a stripping attack, which parallel\r\n   signatures are subject to, but is slightly different in that the\r\n   cross-protocol EUF-CMA game **also considers modification message\r\n   definition as signed differs from the message the verifier accepts**.\r\n\r\nI don't even have a suggestion on how to fix that, so I'll leave it to the authors.\r\n\r\nAlso I suggest this text to fix the next sentence:\r\n\r\n   In contrast, stripping attacks consider removing one component signature and attempting to verify the remaining signature with the\r\n   same message.\r\n",
+      "createdAt": "2024-10-24T10:29:54Z",
+      "updatedAt": "2024-10-24T10:29:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 78,
+      "id": "I_kwDOL5eEDM6bo1pm",
+      "title": "Inconsistent normative language regarding key reuse ",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/78",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.1 says:\r\n\r\n   In order to ensure fresh keys, the key generation functions MUST be\r\n   executed for both component algorithms.  Compliant parties MUST NOT\r\n   use or import component keys that are used in other contexts,\r\n   combinations, or by themselves as keys for standalone algorithm use.\r\n\r\nAlso I suggest \"use, import, **or export** component keys...\"\r\n\r\nSection 11.2 says:\r\n\r\n   Therefore, it is\r\n   RECOMMENDED to avoid key reuse and always generate fresh component\r\n   keys for a new composite.  It is also RECOMMENDED that CAs performing\r\n   revocation checks on a composite key should also check both component\r\n   keys independently.\r\n\r\nThe normative language needs to be consistent; these should either be MUST/REQUIRED, or SHOULD/RECOMMENDED.",
+      "createdAt": "2024-10-24T10:40:42Z",
+      "updatedAt": "2024-10-24T21:36:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree.  We will make the language consistent.  We will change it to MUST/REQUIRED.  ",
+          "createdAt": "2024-10-24T21:36:30Z",
+          "updatedAt": "2024-10-24T21:36:30Z"
+        }
+      ]
+    },
+    {
+      "number": 79,
+      "id": "I_kwDOL5eEDM6bpY68",
+      "title": "More about key reuse",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/79",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "So, I think I have a use case for key reuse for composite signatures.  To allow the use of the native and alternative private and public keys of Catalyst (hssss) certificates to generate composite signatures.  Composite private and public keys for the certificate wouldn't exist in the wild, but the native and alternative private keys of a certificate could be used to generate a composite signature.\r\n\r\nDue to the flexibility of these certificates, this means that a signature could be generated corresponding to the native key, the alternative key, or a composite of the native+alternative key.\r\n\r\nSome of you authors already know that I'm not generally in favour of Catalyst certificates, but there are those out there who still want to use them, so I'm coming at this from a harm-reduction perspective.  And also from a forward-looking perspective, this draft is setting the standard for composite signatures.  It would be easier if future composite signatures, for example PQ/PQ, could use the framework of this draft (and implementation) to define other composites (obviously with specific security considerations for the component algorithms involved). At that point, both component algorithms may take a context and key reuse could be done safely.\r\n\r\nTo that end, I wonder if it would be worth considering enabling key reuse of the component algorithms which take a context parameter by changing the context from:\r\n\r\nctx = Domain\r\n\r\nto:\r\n\r\nctx = Domain || Hash(PublicKey1 || PublicKey2)\r\n\r\nThis would provide domain separation for a key, ML-DSA for example, to be used standalone or as part of multiple composite keys (even multiple composite keys with the same Domain, because the key hash achieves the separation).  I don't claim it's a good idea to reuse a key in multiple composite keys with the same Domain, just that this idea would protect the key if that happened.\r\n\r\nI'm interested in your opinions.",
+      "createdAt": "2024-10-24T11:46:02Z",
+      "updatedAt": "2024-10-24T21:52:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "danvangeest",
+          "authorAssociation": "NONE",
+          "body": "As Scott says elsewhere, 'belt and suspenders` but this is belt and suspenders and superglue.",
+          "createdAt": "2024-10-24T11:52:22Z",
+          "updatedAt": "2024-10-24T11:52:22Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "My first thought is what if the signer doesn't have access to the public key?   My second thought is this works great to obtain what you want for ML-DSA or other component algorithms that take a context, but not at all for the ones that don't (which is RSA and most EC combinations except the Edwards ones).  So at best in the context of the current draft it would give us separation for 1 of the components, but not the others, which would foil our security claim of EUF-CMA as long as one of them is EUF-CMA.   My third thought is that we had thought about this property a few years ago (For instance, it would work with multiple independent certs as well), and there probably are lots of interesting use cases where keys could be joined to make a composite signature.  After lots of discussions it seems this property wasn't desired in lieu of the security implications it brought to composite.   \r\n\r\nPerhaps for combinations where a context string is used in BOTH algorithms this could make sense...  We had talked about using context strings for other components that could support it.  See  https://github.com/lamps-wg/draft-composite-sigs/issues/64  but it was mostly decided against because the most compatible way is to use no context String...    \r\n\r\nSo in summary for cases where both components take contexts, I would say it is interesting.    For cases where some components don't take a context String, i don't think we want to go there. ",
+          "createdAt": "2024-10-24T21:52:09Z",
+          "updatedAt": "2024-10-24T21:52:09Z"
+        }
+      ]
+    },
+    {
+      "number": 80,
+      "id": "I_kwDOL5eEDM6bqicv",
+      "title": "Composite vs component context",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/80",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I've been going through all the closed context related issues. #42 says that you decided on `ML-DSA.Sign( K1, A1, M', ctx )`, `ctx` being what was passed into the composite Sign function (https://github.com/lamps-wg/draft-composite-sigs/issues/42#issuecomment-2374284632). I haven't seen any more recent comments that update that.  However, draft -03 says `ML-DSA.Sign( mldsaSK, M', ctx=Domain )`.  Here the context is `Domain`.\r\n\r\nI just want to verify that this was an intended change between that commend and the draft, and not a mistake.\r\n\r\nFWIW, I think that the draft is correct and `Domain` is the way to go because it protects against (signature collisions) / (EUF-CMA attacks) / (I don't know the terminology) where Composite.Sign(M, ctx) would have the same signature as ML-DSA.Sign(Domain || len(ctx) || ctx || M, ctx).  Changing the latter context to `Domain` avoids the collision.\r\n\r\nI also feel in the back of my head that using `Domain || HASH(ctx)` would be even better, but I can't express why.  It just feels safer to mix the application context in all the way down.  But perhaps because the application context is already in M' this doesn't matter.",
+      "createdAt": "2024-10-24T13:26:56Z",
+      "updatedAt": "2024-10-24T21:58:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, that change was made on purpose, based on comments in the mailing list.  We had a marathon weekend working on issues.  Sorry if the reasons for the change weren't entirely clear, but they were specifically added to protect against the attacks you mention.  \r\n\r\nAs for using Domain || HASH(ctx), we can discuss if this strengthens it at all.  I think since it is in M' it shouldn't be needed.  Originally we didn't think we needed in the ML-DSA context since ctx was in M', but it turns out having it as something different does strengthen it.   Adding it would also add another HASH to the computation... probably not a big if we thought it added value.   ",
+          "createdAt": "2024-10-24T21:57:36Z",
+          "updatedAt": "2024-10-24T21:58:33Z"
+        }
+      ]
     }
   ],
   "pulls": [
