@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-27T00:54:23.198932+00:00",
+  "timestamp": "2024-10-29T00:51:47.710179+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1933,6 +1933,22 @@
           "updatedAt": "2024-10-24T21:58:33Z"
         }
       ]
+    },
+    {
+      "number": 81,
+      "id": "I_kwDOL5eEDM6cIsai",
+      "title": "Typo in algs list table:",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/81",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The column \"Composite Signature AlgorithmID\" should just be \"Composite Signature Algorithm\" because the thing in this column is an algorithm OID, not a full AlgorithmID structure.",
+      "createdAt": "2024-10-28T20:52:50Z",
+      "updatedAt": "2024-10-28T20:52:50Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
