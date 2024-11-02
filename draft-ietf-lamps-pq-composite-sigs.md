@@ -329,7 +329,7 @@ Note that in step 2 above, both component key generation processes are invoked, 
 
 ## Pure Signature Mode {#sec-comp-sig-gen}
 
-This mode mirrors `HashML-DSA` defined in Sections 5.2 and 5.3 of [FIPS.204].
+This mode mirrors `ML-DSA` defined in Sections 5.2 and 5.3 of [FIPS.204].
 
 In the pure mode the Domain separator value is concatenated with the length of the context in bytes, the context, and the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
 
