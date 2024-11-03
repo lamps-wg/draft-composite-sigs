@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-31T00:51:20.125628+00:00",
+  "timestamp": "2024-11-03T00:54:27.174180+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1891,7 +1891,7 @@
       "labels": [],
       "body": "So, I think I have a use case for key reuse for composite signatures.  To allow the use of the native and alternative private and public keys of Catalyst (hssss) certificates to generate composite signatures.  Composite private and public keys for the certificate wouldn't exist in the wild, but the native and alternative private keys of a certificate could be used to generate a composite signature.\r\n\r\nDue to the flexibility of these certificates, this means that a signature could be generated corresponding to the native key, the alternative key, or a composite of the native+alternative key.\r\n\r\nSome of you authors already know that I'm not generally in favour of Catalyst certificates, but there are those out there who still want to use them, so I'm coming at this from a harm-reduction perspective.  And also from a forward-looking perspective, this draft is setting the standard for composite signatures.  It would be easier if future composite signatures, for example PQ/PQ, could use the framework of this draft (and implementation) to define other composites (obviously with specific security considerations for the component algorithms involved). At that point, both component algorithms may take a context and key reuse could be done safely.\r\n\r\nTo that end, I wonder if it would be worth considering enabling key reuse of the component algorithms which take a context parameter by changing the context from:\r\n\r\nctx = Domain\r\n\r\nto:\r\n\r\nctx = Domain || Hash(PublicKey1 || PublicKey2)\r\n\r\nThis would provide domain separation for a key, ML-DSA for example, to be used standalone or as part of multiple composite keys (even multiple composite keys with the same Domain, because the key hash achieves the separation).  I don't claim it's a good idea to reuse a key in multiple composite keys with the same Domain, just that this idea would protect the key if that happened.\r\n\r\nI'm interested in your opinions.",
       "createdAt": "2024-10-24T11:46:02Z",
-      "updatedAt": "2024-10-24T21:52:10Z",
+      "updatedAt": "2024-11-02T17:28:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -1907,6 +1907,13 @@
           "body": "My first thought is what if the signer doesn't have access to the public key?   My second thought is this works great to obtain what you want for ML-DSA or other component algorithms that take a context, but not at all for the ones that don't (which is RSA and most EC combinations except the Edwards ones).  So at best in the context of the current draft it would give us separation for 1 of the components, but not the others, which would foil our security claim of EUF-CMA as long as one of them is EUF-CMA.   My third thought is that we had thought about this property a few years ago (For instance, it would work with multiple independent certs as well), and there probably are lots of interesting use cases where keys could be joined to make a composite signature.  After lots of discussions it seems this property wasn't desired in lieu of the security implications it brought to composite.   \r\n\r\nPerhaps for combinations where a context string is used in BOTH algorithms this could make sense...  We had talked about using context strings for other components that could support it.  See  https://github.com/lamps-wg/draft-composite-sigs/issues/64  but it was mostly decided against because the most compatible way is to use no context String...    \r\n\r\nSo in summary for cases where both components take contexts, I would say it is interesting.    For cases where some components don't take a context String, i don't think we want to go there. ",
           "createdAt": "2024-10-24T21:52:09Z",
           "updatedAt": "2024-10-24T21:52:09Z"
+        },
+        {
+          "author": "danvangeest",
+          "authorAssociation": "NONE",
+          "body": "Here is someone trying to combine separate keys using the composite signature construct.  Check out IPSECME on Monday to see/influence how that goes.\r\nhttps://datatracker.ietf.org/doc/draft-hu-ipsecme-pqt-hybrid-auth/\r\n\r\nRegarding your second thought, yes it protects ML-DSA but not the trad key.  My point is if someone is going to end up doing this anyways, better to protect only the ML-DSA key than neither key.",
+          "createdAt": "2024-11-02T17:28:38Z",
+          "updatedAt": "2024-11-02T17:28:38Z"
         }
       ]
     },
@@ -1981,6 +1988,30 @@
       "updatedAt": "2024-10-30T14:32:31Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 84,
+      "id": "I_kwDOL5eEDM6cmBnW",
+      "title": "Discussion: Reconsider move to abandon sequence of OAKs for private key",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/84",
+      "state": "CLOSED",
+      "author": "codespree",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Moving to \r\n`CompositeSignaturePrivateKey ::= SEQUENCE SIZE (2) OF OctetString`\r\nis not a good idea in my opinion. \r\n\r\nThe reason for this is because this breaks compatibility with the composite KEM key formats:\r\n\r\nFrom the KEM draft:\r\n```\r\n            However, the public key of the traditional component, RSA or Elliptic Curve, is\r\n            required as input to the KEM Combiner function, and is not typically carried\r\n            within an RSA or Elliptic Curve private key. Therefore the publicKey field of\r\n            the second OneAsymmetricKey MUST contain the corresponding\r\n            public key. See Appendix C.3:\r\n            https://lamps-wg.github.io/draft-composite-kem/draft-ietf-lamps-pq-composite-kem.html#impl-cons-decaps-pubkey\r\n```\r\n\r\nWith the older sequence of OAKs structure, it was possible to include the trad public key in the traditional secret key OAK (for composite KEMs)\r\n\r\nBut this is no longer possible with the new structure. \r\n\r\nWhich now means there need to be two different implementations of composite private keys (one with a sequence of bitstrings for ML-DSA composites and one with a sequence of OAKs for KEM).\r\n\r\nI would prefer if there was a common format for this.\r\n\r\nLet me know your thoughts on this and I will modify my code accordingly.\r\n\r\nBy the way, apart from the private key difference, [QuantCrypt](https://github.com/codespree/quantcrypt) is updated with an implementation of your new draft.\r\n\r\nI will also opened an issue in the PQC certificate hackathon repository with the artifacts:\r\nhttps://github.com/IETF-Hackathon/pqc-certificates/issues/149\r\n\r\n@ounsworth ",
+      "createdAt": "2024-10-31T15:53:13Z",
+      "updatedAt": "2024-11-01T13:52:48Z",
+      "closedAt": "2024-11-01T13:52:48Z",
+      "comments": [
+        {
+          "author": "codespree",
+          "authorAssociation": "NONE",
+          "body": "After some more thought. I guess it doesn't matter that much. Closing this issue.",
+          "createdAt": "2024-11-01T13:52:48Z",
+          "updatedAt": "2024-11-01T13:52:48Z"
+        }
+      ]
     }
   ],
   "pulls": [
