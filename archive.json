@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-05T00:51:27.650236+00:00",
+  "timestamp": "2024-11-07T00:49:41.136725+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2012,6 +2012,22 @@
           "updatedAt": "2024-11-01T13:52:48Z"
         }
       ]
+    },
+    {
+      "number": 85,
+      "id": "I_kwDOL5eEDM6dOWIj",
+      "title": "Remove ASN.1 wrapping in signature, public and private key encodings",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/85",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It has been suggested that we remove the ASN.1 in the signature, public and private key encodings.    This will make composite signatures easier to use in other protocols.\r\n\r\nsomething like:\r\n\r\npk =  pk1 || pk2\r\nsk = sk1 || sk2\r\n\r\nComposite signature value =  sig1 || sig2\r\n\r\n\r\nNo ASN1 anywhere.\r\n\r\nSo version -04 will be another breaking change.  ",
+      "createdAt": "2024-11-06T11:12:30Z",
+      "updatedAt": "2024-11-06T11:13:42Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
