@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-07T00:49:41.136725+00:00",
+  "timestamp": "2024-11-10T00:52:55.278294+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2028,6 +2028,30 @@
       "updatedAt": "2024-11-06T11:13:42Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 86,
+      "id": "I_kwDOL5eEDM6dXwmh",
+      "title": "Prefix constant string to M' and add statement about attack detection",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/86",
+      "state": "OPEN",
+      "author": "falko-strenzke",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
+      "createdAt": "2024-11-07T08:28:20Z",
+      "updatedAt": "2024-11-07T10:13:36Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ilaril",
+          "authorAssociation": "NONE",
+          "body": "Alternatively, since RSA and ECDSA actually sign a hash, and everything else relevant has context inputs, one could do something like the follows to get actual strong non-separability (even for RSA and ECDSA):\r\n\r\nPure:\r\n\r\n`M' = Domain | 0 | len(ctx) | ctx | M`\r\n\r\nPrehashed:\r\n\r\n`M' = Domain | 1 | len(ctx) | ctx | HashOID | PH(M)`\r\n\r\nRSA:\r\n\r\n`RSA_signhash(cSHAKE256(M', ctx=\"sig-composite\"))`\r\n\r\nECDSA:\r\n\r\n`ECDSA_signhash(bytes2bits_be(cSHAKE256(M', ctx=\"sig-composite\")))`\r\n\r\nEd25519:\r\n\r\n`Ed25519ctx_sign(M', ctx=\"sig-composite\")`\r\n\r\nEd448:\r\n\r\n`Ed448_sign(M', ctx=\"sig-composite\")`\r\n\r\nML-DSA:\r\n\r\n`MLDSA_sign(M', ctx=\"sig-composite\")`\r\n\r\n\r\nSome notes:\r\n\r\n- The bytes2bits_be() is to ensure that ECDSA interprets the hash in the expected way.\r\n- This aligns with the model presented in the meeting.",
+          "createdAt": "2024-11-07T10:13:35Z",
+          "updatedAt": "2024-11-07T10:13:35Z"
+        }
+      ]
     }
   ],
   "pulls": [
