@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-12T00:48:37.348428+00:00",
+  "timestamp": "2024-11-14T00:50:07.475502+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2052,6 +2052,22 @@
           "updatedAt": "2024-11-07T10:13:35Z"
         }
       ]
+    },
+    {
+      "number": 87,
+      "id": "I_kwDOL5eEDM6eYPqF",
+      "title": "Change the key reuse from NOT RECOMMENDED to MUST NOT",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/87",
+      "state": "OPEN",
+      "author": "sophieschmieg",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The current key reuse sections merely does NOT RECOMMEND reusing old key material, citing the domain separators added as a defense against out of context (signature stripping) attacks.\r\n\r\nHowever, a domain separator MUST be chosen from a prefix-free set, and in this case we are trying to domain separate against the classical use, which does not include a domain separator at all, i.e. has the empty string as a domain prefix.\r\n\r\nThe empty string is a prefix of every string, therefore there is no secure way of domain separating the hybrid.\r\n\r\nThe only alternative I see to a MUST NOT on key reuse is including a domain separator for the classical use case as well, but this will be a breaking change for old clients, and if you introduce a breaking change, you might as well just use a new key instead.\r\n\r\nTherefore, I would like us to step up the language from RECOMMEND to MUST.",
+      "createdAt": "2024-11-14T00:00:32Z",
+      "updatedAt": "2024-11-14T00:00:32Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
