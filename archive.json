@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-19T00:53:04.714995+00:00",
+  "timestamp": "2024-11-21T00:52:39.505872+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2066,6 +2066,22 @@
       "body": "The current key reuse sections merely does NOT RECOMMEND reusing old key material, citing the domain separators added as a defense against out of context (signature stripping) attacks.\r\n\r\nHowever, a domain separator MUST be chosen from a prefix-free set, and in this case we are trying to domain separate against the classical use, which does not include a domain separator at all, i.e. has the empty string as a domain prefix.\r\n\r\nThe empty string is a prefix of every string, therefore there is no secure way of domain separating the hybrid.\r\n\r\nThe only alternative I see to a MUST NOT on key reuse is including a domain separator for the classical use case as well, but this will be a breaking change for old clients, and if you introduce a breaking change, you might as well just use a new key instead.\r\n\r\nTherefore, I would like us to step up the language from RECOMMEND to MUST.",
       "createdAt": "2024-11-14T00:00:32Z",
       "updatedAt": "2024-11-14T00:00:32Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 88,
+      "id": "I_kwDOL5eEDM6fN2Xc",
+      "title": "Editorial changes to version 3",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/88",
+      "state": "OPEN",
+      "author": "PiotrPopis",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I have the following proposed editing changes to\r\n[draft-ietf-lamps-pq-composite-sigs-03.txt]:\r\n1. Title\r\n> Composite ML-DSA For use in X.509 Public Key Infrastructure and CMS\r\n\r\nComposite ML-DSA for use in X.509 Public Key Infrastructure and CMS\r\n2. Section 3\r\n> separablity\r\n\r\nseparability\r\n3. Section 4.2.2\r\n> conisting\r\n\r\nconsisting\r\n4. Section 4.2.2 and 4.3.2\r\n> A placeholder for the specific ML-DSA algorithm and\r\n           parameter set to use, for example \"RSASA-PSS with id-sha256\"\r\n           or \"Ed25519\".\r\n\r\nA placeholder for the specific traditional algorithm and\r\n           parameter set to use, for example \"RSASA-PSS with id-sha256\"\r\n           or \"Ed25519\".\r\n5. Section 4.3 and 4.3.1\r\n> In the pre-hash mode the Domain separator Section 7.3 is concatenated\r\n> (...)\r\n\r\nIn the pre-hash mode the Domain separator (see Section 7.3) is concatenated\r\n(...)\r\n6. Section 4.3.1\r\n> This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in Section 5.4.1\r\n> of [FIPS.204].\r\n\r\nThis mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in Algorithm 4\r\n   in Section 5.4.1 of [FIPS.204].\r\nRationale: similar to Section 4.2.2.\r\n7. Section 5.1\r\n> For use with this document, ML-DSA keys MUST be be the raw BIT STRING\r\n   representation as specified in (...)\r\n\r\nFor use with this document, ML-DSA keys MUST be the raw BIT STRING\r\n   representation as specified in (...)\r\n8. Section 5.4\r\nI suggest considering changing nonRepudiation to contentCommitment as it is\r\nmore in line with the current version of RFC 5280.\r\n9. Section 6.2\r\n> encoing\r\n\r\nencoding\r\n10. Section 7.1\r\n> Composite-ML-DSA Algorithm Identifiers\r\n\r\nPureComposite-ML-DSA Algorithm Identifiers\r\nRationale: similar to Section 7.2.\r\n11. Section 7.2\r\n> The Pre-Hash algorithm is used as the PH algorithm in and the DER Encoded\r\n> OID value (...)\r\n\r\nThe Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID\r\nvalue (...)\r\n12. Section 7.4\r\n> At the higher security levels of pre-hashed Composite ML-DSA, for\r\n   example id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512, the 384-bit\r\n   elliptic curve component is used with SHA2-384 is its pre-hash (i.e.\r\n   the pre-hash that is considered to be internal to the ECDSA\r\n   component), yet SHA2-512 is used as the pre-hash for the overall\r\n   composite because in this case the pre-hash must not weaken the ML-\r\n   DSA-87 component against a collision attack.\r\n\r\nAt the higher security levels of pre-hashed Composite ML-DSA, for\r\n   example id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512, the 384-bit\r\n   elliptic curve component is used with SHA2-384 which is its pre-hash\r\n(i.e. the pre-hash that is considered to be internal to the ECDSA\r\n   component), yet SHA2-512 is used as the pre-hash for the overall\r\n   composite because in this case the pre-hash must not weaken the ML-\r\n   DSA-87 component against a collision attack.\r\nRationale: adding \"which\" seems reasonable to me, but I'm not a native\r\nEnglish speaker, so maybe my suggestion is inappropriate (I'm not sure).\r\n\r\nRegards - Piotr Popis",
+      "createdAt": "2024-11-19T08:08:45Z",
+      "updatedAt": "2024-11-19T08:08:45Z",
       "closedAt": null,
       "comments": []
     }
