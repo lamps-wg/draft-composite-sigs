@@ -800,9 +800,6 @@ EdCompositeSignaturePublicKey ::=  BIT STRING
     RsaCompositeSignaturePublicKey ::=   BIT STRING (ENCODED BY id-raw-key) || BIT STRING (ENCODED BY id-raw-key)
 ~~~
 
-
-`id-raw-key` is defined by this document. It signifies that the public key has no ASN.1 wrapping and the raw bits are placed here according to the encoding of the underlying algorithm specification. In some situations and protocols, the key might be wrapped in ASN.1 or may have some other additional decoration or encoding. If so, such wrapping MUST be removed prior to encoding the key itself as a BIT STRING.
-
 For use with this document, ML-DSA keys MUST be the raw BIT STRING representation as specified in {{I-D.ietf-lamps-dilithium-certificates}} and Edwards Curve keys MUST be the raw BIT STRING representation as specified in [RFC8410].
 
 Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of `BIT STRING` instead of `OCTET STRING`; using `BIT STRING` allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.
@@ -844,7 +841,7 @@ CompositeSignaturePrivateKey ::= OCTET STRING
 ~~~
 {: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
 
-Each element of the `CompositeSignaturePrivateKey` is an `OCTET STRING` according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in {{sec-composite-pub-keys}}. This document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.
+Each element of the `CompositeSignaturePrivateKey` is an `OCTET STRING` according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in {{sec-composite-pub-keys}}. The ASN.1 module in this document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.
 
 
 Use cases that require an interoperable encoding for composite private keys will often need to place a `CompositeSignaturePrivateKey` inside a `OneAsymmetricKey` structure defined in [RFC5958], such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211]. The definition of `OneAsymmetricKey` is copied here for convenience:
@@ -944,7 +941,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 The output of a Composite ML-DSA algorithm is the DER encoding of the following structure:
 
 
-The `CompositeSignatureValue` is the DER encoing of a concatendation of the signature values from the
+The `CompositeSignatureValue` is the DER encoding of a concatenation of the signature values from the
 underlying component algorithms.  It is represented in ASN.1 as follows:
 
 ~~~ asn.1
@@ -1248,11 +1245,6 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 -  References: This Document
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
-
-- id-raw-key
-  - Decimal: IANA Assigned
-  - Description: Designates a public key BIT STRING with no ASN.1 structure.
-  - References: This Document
 
 - id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
