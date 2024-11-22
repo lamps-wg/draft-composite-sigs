@@ -802,7 +802,7 @@ EdCompositeSignaturePublicKey ::=  BIT STRING
 
 For use with this document, ML-DSA keys MUST be the raw BIT STRING representation as specified in {{I-D.ietf-lamps-dilithium-certificates}} and Edwards Curve keys MUST be the raw BIT STRING representation as specified in [RFC8410].
 
-Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction. This also motivates the design choice of `BIT STRING` instead of `OCTET STRING`; using `BIT STRING` allows for easier transcription between CompositeSignaturePublicKey and SubjectPublicKeyInfo.
+Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
 When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in {{sec-encoding-rules}}.
 
