@@ -741,7 +741,7 @@ Deserialization Process:
 
   2. Parse each constituent encoded key.
        The first 3 bytes encodes the length of mldsaEncodedKey, which MAY 
-       be used to separate the mldsaEncodedKey and tradEncodedKey, and then 
+       be used to separate the mldsaEncodedKey and tradEncodedKey, and then
        is to be discarded.
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
