@@ -268,7 +268,7 @@ We define the following algorithms which we use to serialize and deserialize the
    *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
 We define the following algorithms which are used to serialize and deseralize the compsoite signature value
- 
+
    *  `SerializeSignature(key) -> bytes`: Produce a fixed-length byte string encoding the public or private key.
 
    *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
