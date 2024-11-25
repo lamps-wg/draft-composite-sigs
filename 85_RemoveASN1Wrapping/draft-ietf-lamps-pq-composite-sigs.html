@@ -2035,7 +2035,9 @@ Serialization Process:
           </figcaption></figure>
 </div>
 <p id="section-4.4-3">Deserialization reverses this process, raising an error in the event that the input is malformed.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.4-4">
+<span id="name-composite-deserializekeybyt"></span><div id="alg-composite-deserialize">
+<figure id="figure-7">
+          <div class="alignLeft art-text artwork" id="section-4.4-4.1">
 <pre>
 Composite-ML-DSA.DeserializeKey(bytes) -&gt; pk
 
@@ -2081,10 +2083,14 @@ Deserialization Process:
       if NOT mldsaKey or NOT tradKey:
         output "Deserialization error"
 
-  5. Output the composite ML-DSA public key
+  5. Output the composite ML-DSA key
 
      output (mldsaPK, tradPK)
-</pre><a href="#section-4.4-4" class="pilcrow">¶</a>
+</pre>
+</div>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-composite-deserializekeybyt" class="selfRef">Composite DeserializeKey(bytes)</a>
+          </figcaption></figure>
 </div>
 </section>
 </div>
