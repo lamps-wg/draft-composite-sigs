@@ -710,6 +710,8 @@ Serialization Process:
      bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
      output bytes
 ~~~
+{: #alg-composite-serialize title="Composite SerializeKey(pk)"}
+
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
 
