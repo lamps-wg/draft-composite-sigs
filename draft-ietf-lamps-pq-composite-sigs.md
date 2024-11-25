@@ -760,10 +760,11 @@ Deserialization Process:
       if NOT mldsaKey or NOT tradKey:
         output "Deserialization error"
 
-  5. Output the composite ML-DSA public key
+  5. Output the composite ML-DSA key
 
      output (mldsaPK, tradPK)
 ~~~
+{: #alg-composite-deserialize title="Composite DeserializeKey(bytes)"}
 
 # Composite Key Structures {#sec-composite-structs}
 
