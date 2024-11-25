@@ -824,6 +824,8 @@ Serialization Process:
      bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
      output bytes
 
+                 Figure 6: Composite SerializeKey(pk)
+
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.
 

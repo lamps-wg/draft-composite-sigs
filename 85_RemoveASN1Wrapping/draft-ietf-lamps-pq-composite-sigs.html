@@ -1987,7 +1987,9 @@ Signature Verification Process:
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-serializekey-and-deserializ" class="section-name selfRef">SerializeKey and DeserializeKey</a>
         </h3>
 <p id="section-4.4-1">The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.4-2">
+<span id="name-composite-serializekeypk"></span><div id="alg-composite-serialize">
+<figure id="figure-6">
+          <div class="alignLeft art-text artwork" id="section-4.4-2.1">
 <pre>
 Composite-ML-DSA.SerializeKey(key) -&gt; bytes
 
@@ -2026,7 +2028,11 @@ Serialization Process:
 
      bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
      output bytes
-</pre><a href="#section-4.4-2" class="pilcrow">¶</a>
+</pre>
+</div>
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<a href="#name-composite-serializekeypk" class="selfRef">Composite SerializeKey(pk)</a>
+          </figcaption></figure>
 </div>
 <p id="section-4.4-3">Deserialization reverses this process, raising an error in the event that the input is malformed.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.4-4">
