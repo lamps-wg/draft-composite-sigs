@@ -670,6 +670,7 @@ Note that in step 4 above, the function fails early if the first component fails
 ## SerializeKey and DeserializeKey
 
 The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:
+
 ~~~
 Composite-ML-DSA.SerializeKey(key) -> bytes
 
@@ -709,7 +710,6 @@ Serialization Process:
      bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
      output bytes
 ~~~
-{: #alg-composite-serialize title="Composite SerializeKey(pk)"}
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
 
@@ -762,8 +762,6 @@ Deserialization Process:
 
      output (mldsaPK, tradPK)
 ~~~
-{: #alg-composite-deserialize title="Composite DeserializeKey(bytes)"}
-
 
 # Composite Key Structures {#sec-composite-structs}
 
