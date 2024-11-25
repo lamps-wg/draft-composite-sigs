@@ -1998,6 +1998,57 @@ Serialization Process:
 </pre><a href="#section-4.4-2" class="pilcrow">¶</a>
 </div>
 <p id="section-4.4-3">Deserialization reverses this process, raising an error in the event that the input is malformed.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.4-4">
+<pre>
+Composite-ML-DSA.DeserializeKey(bytes) -&gt; pk
+
+Explicit Input:
+
+  bytes   An encoded public key or private key
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  key     The composite ML-DSA public key or private key
+
+Deserialization Process:
+
+  1. Validate the length of the the input byte string
+
+     if bytes is not the correct length:
+      output "Deserialization error"
+
+  2. Parse each constituent encoded key.
+       The first 3 bytes encodes the length of mldsaEncodedKey, which MAY
+       be used to separate the mldsaEncodedKey and tradEncodedKey, and then
+       is to be discarded.
+
+     (mldsaEncodedKey, tradEncodedKey) = bytes
+
+  3. Deserialize the constituent public or private keys
+
+     mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
+     tradKey = Trad.DeserializeKey(tradEncodedKey)
+
+  4. If either ML-DSA.DeserializeKey() or
+     Trad.DeserializeKey() return an error,
+     then this process must return an error.
+
+      if NOT mldsaKey or NOT tradKey:
+        output "Deserialization error"
+
+  5. Output the composite ML-DSA public key
+
+     output (mldsaPK, tradPK)
+</pre><a href="#section-4.4-4" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
