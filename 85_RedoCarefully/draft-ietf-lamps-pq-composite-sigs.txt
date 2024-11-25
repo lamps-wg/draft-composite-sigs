@@ -91,6 +91,7 @@ Table of Contents
      4.3.  PreHash-Signature Mode
        4.3.1.  HashComposite-ML-DSA-Sign signature mode
        4.3.2.  HashComposite-ML-DSA-Verify
+     4.4.  SerializeKey and DeserializeKey
    5.  Composite Key Structures
      5.1.  CompositeSignaturePublicKey
      5.2.  CompositeSignaturePrivateKey
@@ -749,6 +750,12 @@ Signature Verification Process:
    component fails to verify.  Since no private keys are involved in a
    signature verification, there are no timing attacks to consider, so
    this is ok.
+
+4.4.  SerializeKey and DeserializeKey
+
+   The serialization routine for keys simply concatenates the fixed-
+   length public or private keys of the component signatures, as defined
+   below:
 
 5.  Composite Key Structures
 
