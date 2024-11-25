@@ -757,6 +757,11 @@ Signature Verification Process:
    length public or private keys of the component signatures, as defined
    below:
 
+   Composite-ML-DSA.SerializeKey(key) -> bytes
+
+   Deserialization reverses this process, raising an error in the event
+   that the input is malformed.
+
 5.  Composite Key Structures
 
    In order to form composite public keys and signature values, we
