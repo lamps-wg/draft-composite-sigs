@@ -757,7 +757,43 @@ Signature Verification Process:
    length public or private keys of the component signatures, as defined
    below:
 
-   Composite-ML-DSA.SerializeKey(key) -> bytes
+Composite-ML-DSA.SerializeKey(key) -> bytes
+
+Explicit Input:
+
+  key    Composite ML-DSA public key or private key
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  bytes   The encoded public key
+
+Serialization Process:
+
+  1. Separate the  keys
+
+     (mldsaKey, tradKey) = key
+
+  2. Serialize each of the constituent public keys
+
+     mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
+     tradEncodedKey = Trad.SerializeKey(tradKey)
+
+  3. Calculate the length encoding of the mldsaEncodedPK (or use the value from table )
+
+     encodedLength = IntegerToBytes(mldsaEncodePK.length, 3)
+
+  4. Combine and output the encoded public key
+
+     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     output bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.
