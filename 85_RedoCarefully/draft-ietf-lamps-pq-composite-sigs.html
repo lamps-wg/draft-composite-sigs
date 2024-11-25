@@ -1956,7 +1956,11 @@ Signature Verification Process:
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-serializekey-and-deserializ" class="section-name selfRef">SerializeKey and DeserializeKey</a>
         </h3>
 <p id="section-4.4-1">The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.4-2">Composite-ML-DSA.SerializeKey(key) -&gt; bytes<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.4-2">
+<pre>
+Composite-ML-DSA.SerializeKey(key) -&gt; bytes
+</pre><a href="#section-4.4-2" class="pilcrow">¶</a>
+</div>
 <p id="section-4.4-3">Deserialization reverses this process, raising an error in the event that the input is malformed.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
