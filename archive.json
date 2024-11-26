@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-24T00:57:22.963572+00:00",
+  "timestamp": "2024-11-26T00:53:29.026178+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -3553,13 +3553,13 @@
       "labels": [],
       "body": "First stab at removing SEQUENCE ASN.1 encodings",
       "createdAt": "2024-11-22T18:53:01Z",
-      "updatedAt": "2024-11-22T22:57:25Z",
+      "updatedAt": "2024-11-25T22:48:45Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "bd4d0ed01d744a0c9c05c7b41612f141c4b23be3",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "85_RemoveASN1Wrapping",
-      "headRefOid": "f928720f5a45341b517b3c5a57414b1e4da43793",
+      "headRefOid": "e5ae1ecd064dc4e3f89b5c9adb92d5c7ac499af5",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
