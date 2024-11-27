@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 30 May 2025</td>
+<td class="center">Expires 31 May 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-26" class="published">26 November 2024</time>
+<time datetime="2024-11-27" class="published">27 November 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-05-30">30 May 2025</time></dd>
+<dd class="expires"><time datetime="2025-05-31">31 May 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1136,7 +1136,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1166,7 +1166,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         </h2>
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
-            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-03" class="internal xref">Changes in -03</a></p>
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-04" class="internal xref">Changes in -04</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
@@ -1218,16 +1218,22 @@ svg :is([fill="white"], [fill^="#fff"]) {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
                 <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-serializekey-and-deserializ" class="internal xref">SerializeKey and DeserializeKey</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5">
+                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="auto internal xref">4.5</a>.  <a href="#name-serializesignaturevalue-and" class="internal xref">SerializeSignatureValue and DeSerializeSignatureValue</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.6">
+                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="auto internal xref">4.6</a>.  <a href="#name-ml-dsa-public-key-private-k" class="internal xref">ML-DSA public key, private key and Signature sizes for serialization and deserialization</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-composite-key-structures" class="internal xref">Composite Key Structures</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-compositesignaturepublickey" class="internal xref">CompositeSignaturePublicKey</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-compositemldsapublickey" class="internal xref">CompositeMLDSAPublicKey</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-compositesignatureprivateke" class="internal xref">CompositeSignaturePrivateKey</a></p>
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-compositemldsaprivatekey" class="internal xref">CompositeMLDSAPrivateKey</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
                 <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-encoding-rules" class="internal xref">Encoding Rules</a></p>
@@ -1388,49 +1394,21 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </nav>
 </section>
 </div>
-<div id="changes-in-03">
+<div id="changes-in-04">
 <section id="section-1">
-      <h2 id="name-changes-in-03">
-<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-03" class="section-name selfRef">Changes in -03</a>
+      <h2 id="name-changes-in-04">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-04" class="section-name selfRef">Changes in -04</a>
       </h2>
 <p id="section-1-1">Interop-affecting changes:<a href="#section-1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-2.1">
-          <p id="section-1-2.1.1">Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundancy<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.1.1">Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private Keys and Composite Signature Value<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.2">
-          <p id="section-1-2.2.1">Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.3">
-          <p id="section-1-2.3.1">Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility with all previous versions.<a href="#section-1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.4">
-          <p id="section-1-2.4.1">Updated the OID table for new Pre-Hash OIDs and added them to the IANA section.<a href="#section-1-2.4.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.5">
-          <p id="section-1-2.5.1">Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.<a href="#section-1-2.5.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.2.1">TODO Remove the HashComposite-ML-DSA algorithms in favour of the external Mu hashing<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-3">Editorial changes:<a href="#section-1-3" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">Added the ASN.1 encodings for the component public keys and signature algorithm identifiers<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1">ASN.1 Module changes:<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-4.2.2.1">
-              <p id="section-1-4.2.2.1.1">Renamed the module from Composite-Signatures-2023 -&gt; Composite-MLDSA-2024<a href="#section-1-4.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-1-4.2.2.2">
-              <p id="section-1-4.2.2.2.1">Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.<a href="#section-1-4.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-</li>
-        <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">Updated Security Considerations about Non-separability, EUF-CMA and key reuse.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
 </section>
 </div>
 <div id="sec-intro">
@@ -1534,13 +1512,13 @@ it returns false.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
           <p id="section-3-4.2.1"><code>DeserializeKey(bytes) -&gt; pk</code>: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.<a href="#section-3-4.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-5">We define the following algorithms which are used to serialize and deseralize the compsoite signature value<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-5">We define the following algorithms which are used to serialize and deseralize the composite signature value<a href="#section-3-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-6.1">
-          <p id="section-3-6.1.1"><code>SerializeSignature(key) -&gt; bytes</code>: Produce a fixed-length byte string encoding the public or private key.<a href="#section-3-6.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-6.1.1"><code>SerializeSignatureValue(CompositeSignatureValue) -&gt; bytes</code>: Produce a fixed-length byte string encoding the CompositeSignatureValue.<a href="#section-3-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-6.2">
-          <p id="section-3-6.2.1"><code>DeserializeKey(bytes) -&gt; pk</code>: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-6.2.1"><code>DeserializeSignatureValue(bytes) -&gt; pk</code>: Parse a fixed-length byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-7">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations <code>Sign()</code> and <code>Verify()</code>.<a href="#section-3-7" class="pilcrow">¶</a></p>
@@ -1694,7 +1672,7 @@ Signature Generation Process:
 
    6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := CompositeSignatureValue(mldsaSig, tradSig)
+      signature = CompositeSignatureValue(mldsaSig, tradSig)
 
   7. Output signature
 
@@ -2020,13 +1998,9 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Calculate the length encoding of the mldsaEncodedPK (or use the value from table )
+  3. Combine and output the encoded public key
 
-     encodedLength = IntegerToBytes(mldsaEncodePK.length, 3)
-
-  4. Combine and output the encoded public key
-
-     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     bytes = mldsaEncodedPK || tradEncodedPK
      output bytes
 </pre>
 </div>
@@ -2065,9 +2039,8 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded key.
-       The first 3 bytes encodes the length of mldsaEncodedKey, which MAY
-       be used to separate the mldsaEncodedKey and tradEncodedKey, and then
-       is to be discarded.
+       The length of the mldsaEncodedKey is known based on the size of
+       the ML-DSA component key length specified by the Object ID
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
@@ -2094,6 +2067,166 @@ Deserialization Process:
 </div>
 </section>
 </div>
+<div id="serializesignaturevalue-and-deserializesignaturevalue">
+<section id="section-4.5">
+        <h3 id="name-serializesignaturevalue-and">
+<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-serializesignaturevalue-and" class="section-name selfRef">SerializeSignatureValue and DeSerializeSignatureValue</a>
+        </h3>
+<p id="section-4.5-1">The serialization routine for the CompositeSignatureValue simply concatenates the fixed-length
+ML-DSA signature value with the signature value from the traditional algorithm, as defined below:<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<span id="name-composite-serializesignatur"></span><div id="alg-composite-serialize-sig">
+<figure id="figure-8">
+          <div class="alignLeft art-text artwork" id="section-4.5-2.1">
+<pre>
+Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -&gt; bytes
+
+Explicit Input:
+
+  CompositeSignatureValue    The Composite Signature Value obtained from Composite-ML-DSA.Sign()
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  bytes   The encoded CompositeSignatureValue
+
+Serialization Process:
+
+  1. Separate the signatures
+
+     (mldsaSig, tradSig) = CompositeSignatureValue
+
+  2. Serialize each of the constituent signatures
+
+     mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
+     tradEncodedSignature = Trad.SerializeSignature(tradSig)
+
+  3. Combine and output the encoded public key
+
+     bytes = mldsaEncodedSignature || tradEncodedSignature
+     output bytes
+</pre>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-composite-serializesignatur" class="selfRef">Composite SerializeSignatureValue(CompositeSignatureValue)</a>
+          </figcaption></figure>
+</div>
+<p id="section-4.5-3">Deserialization reverses this process, raising an error in the event that the input is malformed.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
+<span id="name-composite-deserializesignat"></span><div id="alg-composite-deserialize-sig">
+<figure id="figure-9">
+          <div class="alignLeft art-text artwork" id="section-4.5-4.1">
+<pre>
+Composite-ML-DSA.DeserializeSignatureValue(bytes) -&gt; CompositeSignatureValue
+
+Explicit Input:
+
+  bytes   An encoded CompositeSignatureValue
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  CompositeSignatureValue  The CompositeSignatureValue
+
+Deserialization Process:
+
+  1. Validate the length of the the input byte string
+
+     if bytes is not the correct length:
+      output "Deserialization error"
+
+  2. Parse each constituent encoded signature.
+       The length of the mldsaEncodedSignature is known based on the size of
+       the ML-DSA component signature length specified by the Object ID
+
+     (mldsaEncodedSignature, tradEncodedSignature) = bytes
+
+  3. Deserialize the constituent public or private keys
+
+     mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
+     tradSig = Trad.DeserializeSignature(tradEncodedSignature)
+
+  4. If either ML-DSA.DeserializeSignature() or
+     Trad.DeserializeSignature() return an error,
+     then this process must return an error.
+
+      if NOT mldsaSig or NOT tradSig:
+        output "Deserialization error"
+
+  5. Output the CompositeSignatureValue
+
+     output (mldsaPK, tradPK)
+</pre>
+</div>
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<a href="#name-composite-deserializesignat" class="selfRef">Composite DeserializeSignatureValue(bytes)</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="ml-dsa-public-key-private-key-and-signature-sizes-for-serialization-and-deserialization">
+<section id="section-4.6">
+        <h3 id="name-ml-dsa-public-key-private-k">
+<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-ml-dsa-public-key-private-k" class="section-name selfRef">ML-DSA public key, private key and Signature sizes for serialization and deserialization</a>
+        </h3>
+<p id="section-4.6-1">As noted above in the public key, private key and CompositeSignatureValue serialization and deserializations
+methods, ML-DSA uses fixed-length values for all of these components.  This means the length encoding of the
+first component is known and NOT needed to be encoded into the serialization and deserialization process which
+simplifies the encoding.  If future composite combinations make use of algorithms where the first component uses
+variable length keys or signatures, then that specification will need to ensure the length is encoded in a
+fixed-length prefix so the components can be correctly deserialized.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-2">The following table shows the fixed length values for the public, private and signature
+sizes for ML-DSA which can be used to deserialzie the components.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
+<span id="name-ml-dsa-key-and-signature-si"></span><div id="tab-mldsa-sizes">
+<table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-ml-dsa-key-and-signature-si" class="selfRef">ML-DSA Key and Signature Sizes</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Algorithm</th>
+              <th class="text-left" rowspan="1" colspan="1">Public Key Size</th>
+              <th class="text-left" rowspan="1" colspan="1">Private Key Size</th>
+              <th class="text-left" rowspan="1" colspan="1">Signature Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
+              <td class="text-left" rowspan="1" colspan="1">1312</td>
+              <td class="text-left" rowspan="1" colspan="1">2560</td>
+              <td class="text-left" rowspan="1" colspan="1">2420</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
+              <td class="text-left" rowspan="1" colspan="1">1952</td>
+              <td class="text-left" rowspan="1" colspan="1">4032</td>
+              <td class="text-left" rowspan="1" colspan="1">3309</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
+              <td class="text-left" rowspan="1" colspan="1">2592</td>
+              <td class="text-left" rowspan="1" colspan="1">4896</td>
+              <td class="text-left" rowspan="1" colspan="1">4627</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-composite-structs">
@@ -2104,41 +2237,24 @@ Deserialization Process:
 <p id="section-5-1">In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="sec-composite-pub-keys">
 <section id="section-5.1">
-        <h3 id="name-compositesignaturepublickey">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-compositesignaturepublickey" class="section-name selfRef">CompositeSignaturePublicKey</a>
+        <h3 id="name-compositemldsapublickey">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-compositemldsapublickey" class="section-name selfRef">CompositeMLDSAPublicKey</a>
         </h3>
 <p id="section-5.1-1">The wire encoding of a Composite ML-DSA public key is:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.1-2">
 <pre>
-CompositeSignaturePublicKey ::= BIT STRING
+CompositeMLDSAPublicKey ::= BIT STRING
 </pre><a href="#section-5.1-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.1-3">Since RSA and ECDSA component public keys are themselves in a DER encoding, the following show the internal structure of the various public key types used in this specification:<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-5.1-4">
-<pre>
-RsaCompositeSignaturePublicKey ::= BIT STRING
-
-   The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}, and an RSAPublicKey (which is a DER encoded RSAPublicKey).
-
-
-
-EcCompositeSignaturePublicKey ::=  BIT STRING
-
-    The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and an ECDSAPublicKey (which is a DER encoded ECPoint).
-
-
-
-EdCompositeSignaturePublicKey ::=  BIT STRING
-
-    The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and a raw Edwards public key according to [RFC8410].
-
-</pre><a href="#section-5.1-4" class="pilcrow">¶</a>
-</div>
-<p id="section-5.1-5">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 1</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 2</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1-6">When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in <a href="#sec-encoding-rules" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1-7">Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
-<p id="section-5.1-8">The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-5.1-9">
+<p id="section-5.1-4">When a CompositeMLDSAPublicKey is used with an RSA public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>, and an RSAPublicKey (which is a DER encoded RSAPublicKey).<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-5">When a CompositeMLDSAPublicKey is used with an EC public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and an ECDSAPublicKey (which is a DER encoded ECPoint).<a href="#section-5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1-6">When a CompositeMLDSAPublicKey is used with an Edwards public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> and a raw Edwards public key according to <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.1-7">Some applications may need to reconstruct the <code>SubjectPublicKeyInfo</code> objects corresponding to each component public key. <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> or <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a> in <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<p id="section-5.1-8">When the CompositeMLDSAPublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in <a href="#sec-encoding-rules" class="auto internal xref">Section 5.3</a>.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
+<p id="section-5.1-9">Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.1-9" class="pilcrow">¶</a></p>
+<p id="section-5.1-10">The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-5.1-10" class="pilcrow">¶</a></p>
+<div class="lang-ASN.1 sourcecode" id="section-5.1-11">
 <pre>
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     PUBLIC-KEY ::= {
@@ -2147,33 +2263,33 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
     }
-</pre><a href="#section-5.1-9" class="pilcrow">¶</a>
+</pre><a href="#section-5.1-11" class="pilcrow">¶</a>
 </div>
-<p id="section-5.1-10">As an example, the public key type <code>id-MLDSA44-ECDSA-P256</code> is defined as:<a href="#section-5.1-10" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1-11">
+<p id="section-5.1-12">As an example, the public key type <code>id-MLDSA44-ECDSA-P256</code> is defined as:<a href="#section-5.1-12" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1-13">
 <pre>
 id-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
   pk-CompositeSignature{
     id-MLDSA44-ECDSA-P256,
-    EcCompositeSignaturePublicKey }
-</pre><a href="#section-5.1-11" class="pilcrow">¶</a>
+    CompositeMLDSAPublicKey }
+</pre><a href="#section-5.1-13" class="pilcrow">¶</a>
 </div>
-<p id="section-5.1-12">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 9</a>.<a href="#section-5.1-12" class="pilcrow">¶</a></p>
+<p id="section-5.1-14">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 9</a>.<a href="#section-5.1-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-priv-key">
 <section id="section-5.2">
-        <h3 id="name-compositesignatureprivateke">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-compositesignatureprivateke" class="section-name selfRef">CompositeSignaturePrivateKey</a>
+        <h3 id="name-compositemldsaprivatekey">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-compositemldsaprivatekey" class="section-name selfRef">CompositeMLDSAPrivateKey</a>
         </h3>
 <p id="section-5.2-1">When a Composite ML-DSA private key is to be exported from a cryptographic module, it uses an analogous definition to the public keys:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.2-2">
 <pre>
-CompositeSignaturePrivateKey ::= OCTET STRING
+CompositeMLDSAPrivateKey ::= OCTET STRING
 </pre><a href="#section-5.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-3">Each element of the <code>CompositeSignaturePrivateKey</code> is an <code>OCTET STRING</code> according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a>. The ASN.1 module in this document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">Use cases that require an interoperable encoding for composite private keys will often need to place a <code>CompositeSignaturePrivateKey</code> inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">Each element of the <code>CompositeMLDSAPrivateKey</code> is an <code>OCTET STRING</code> according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a>. The ASN.1 module in this document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in <a href="#sec-composite-pub-keys" class="auto internal xref">Section 5.1</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">Use cases that require an interoperable encoding for composite private keys will often need to place a <code>CompositeMLDSAPrivateKey</code> inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.2-5">
 <pre>
  OneAsymmetricKey ::= SEQUENCE {
@@ -2192,9 +2308,9 @@ CompositeSignaturePrivateKey ::= OCTET STRING
                         -- the key.
 </pre><a href="#section-5.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-6">When a <code>CompositeSignaturePrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent. The privateKey field SHALL contain the <code>CompositeSignaturePrivateKey</code>, and the <code>publicKey</code> field remains OPTIONAL.  If the <code>publicKey</code> field is present, it MUST be a <code>CompositeSignaturePublicKey</code>.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">When a <code>CompositeMLDSAPrivateKey</code> is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent. The privateKey field SHALL contain the <code>CompositeMLDSAPrivateKey</code>, and the <code>publicKey</code> field remains OPTIONAL.  If the <code>publicKey</code> field is present, it MUST be a <code>CompositeMLDSAPublicKey</code>.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 <p id="section-5.2-7">Some applications may need to reconstruct the <code>OneAsymmetricKey</code> objects corresponding to each component private key. <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-5.2-7" class="pilcrow">¶</a></p>
-<p id="section-5.2-8">Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.2-8" class="pilcrow">¶</a></p>
+<p id="section-5.2-8">Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 11.2</a>.<a href="#section-5.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-encoding-rules">
@@ -2206,15 +2322,15 @@ CompositeSignaturePrivateKey ::= OCTET STRING
 <p id="section-5.3-2">When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-3">
 <pre>
-CompositeSignaturePublicKeyOs ::= OCTET STRING
-                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeMLDSAPublicKeyOs ::= OCTET STRING
+                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
 </pre><a href="#section-5.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-4">When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <div class="lang-ASN.1 sourcecode" id="section-5.3-5">
 <pre>
-CompositeSignaturePublicKeyBs ::= BIT STRING
-                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeMLDSAPublicKeyBs ::= BIT STRING
+                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
 </pre><a href="#section-5.3-5" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-6">In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
@@ -2308,9 +2424,9 @@ CompositeSignatureValue ::= BIT STRING
         </h3>
 <p id="section-7.1-1">Pure Composite-ML-DSA Signature public key types:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <span id="name-pure-ml-dsa-composite-signa"></span><div id="tab-sig-algs">
-<table class="center" id="table-1">
+<table class="center" id="table-2">
           <caption>
-<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-pure-ml-dsa-composite-signa" class="selfRef">Pure ML-DSA Composite Signature Algorithms</a>
           </caption>
 <thead>
@@ -2420,9 +2536,9 @@ CompositeSignatureValue ::= BIT STRING
         </h3>
 <p id="section-7.2-1">HashComposite-ML-DSA Signature public key types:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <span id="name-hash-ml-dsa-composite-signa"></span><div id="tab-hash-sig-algs">
-<table class="center" id="table-2">
+<table class="center" id="table-3">
           <caption>
-<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#table-3" class="selfRef">Table 3</a>:
 <a href="#name-hash-ml-dsa-composite-signa" class="selfRef">Hash ML-DSA Composite Signature Algorithms</a>
           </caption>
 <thead>
@@ -2548,9 +2664,9 @@ CompositeSignatureValue ::= BIT STRING
         </h3>
 <p id="section-7.3-1">As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <span id="name-pure-ml-dsa-composite-signat"></span><div id="tab-sig-alg-oids">
-<table class="center" id="table-3">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-pure-ml-dsa-composite-signat" class="selfRef">Pure ML-DSA Composite Signature Domain Separators</a>
           </caption>
 <thead>
@@ -2620,9 +2736,9 @@ CompositeSignatureValue ::= BIT STRING
         </table>
 </div>
 <span id="name-hash-ml-dsa-composite-signat"></span><div id="tab-hash-sig-alg-oids">
-<table class="center" id="table-4">
+<table class="center" id="table-5">
           <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-hash-ml-dsa-composite-signat" class="selfRef">Hash ML-DSA Composite Signature Domain Separators</a>
           </caption>
 <thead>
@@ -2727,9 +2843,9 @@ CompositeSignatureValue ::= BIT STRING
 <p id="section-7.5.1-1">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.5.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.5.1-2">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.1-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
-<table class="center" id="table-5">
+<table class="center" id="table-6">
             <caption>
-<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#table-6" class="selfRef">Table 6</a>:
 <a href="#name-rsa-pss-2048-parameters" class="selfRef">RSA-PSS 2048 Parameters</a>
             </caption>
 <thead>
@@ -2777,9 +2893,9 @@ CompositeSignatureValue ::= BIT STRING
 <p id="section-7.5.2-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.5.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.5.2-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.2-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
-<table class="center" id="table-6">
+<table class="center" id="table-7">
             <caption>
-<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#table-7" class="selfRef">Table 7</a>:
 <a href="#name-rsa-pss-3072-parameters" class="selfRef">RSA-PSS 3072 Parameters</a>
             </caption>
 <thead>
@@ -2827,9 +2943,9 @@ CompositeSignatureValue ::= BIT STRING
 <p id="section-7.5.3-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.5.3-1" class="pilcrow">¶</a></p>
 <p id="section-7.5.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.3-2" class="pilcrow">¶</a></p>
 <span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
-<table class="center" id="table-7">
+<table class="center" id="table-8">
             <caption>
-<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#table-8" class="selfRef">Table 8</a>:
 <a href="#name-rsa-pss-4096-parameters" class="selfRef">RSA-PSS 4096 Parameters</a>
             </caption>
 <thead>
@@ -2889,9 +3005,9 @@ CompositeSignatureValue ::= BIT STRING
         </h3>
 <p id="section-8.1-1">A compliant implementation MUST support the following algorithms for the SignerInfo <code>digestAlgorithm</code> field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo <code>signatureAlgorithm</code> field.  Implementations MAY also support other algorithms for the SignerInfo <code>digestAlgorithm</code> and SHOULD use algorithms of equivalent strength or greater.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <span id="name-recommended-composite-signa"></span><div id="tab-cms-shas">
-<table class="center" id="table-8">
+<table class="center" id="table-9">
           <caption>
-<a href="#table-8" class="selfRef">Table 8</a>:
+<a href="#table-9" class="selfRef">Table 9</a>:
 <a href="#name-recommended-composite-signa" class="selfRef">Recommended Composite Signature Digest Algorithms</a>
           </caption>
 <thead>
@@ -2975,7 +3091,7 @@ CompositeSignatureValue ::= BIT STRING
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-signeddata-conventions" class="section-name selfRef">SignedData Conventions</a>
         </h3>
 <p id="section-8.2-1">As specified in CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.2-2">When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a>, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in <a href="#tab-cms-shas" class="auto internal xref">Table 9</a>, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:<a href="#section-8.2-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-8.2-3">
 <pre>
 IF (signed attributes are absent)
@@ -2991,7 +3107,7 @@ ELSE message-digest attribute = Hash(content);
     value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA
     component algorithm of the Composite Signature.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.2-6">signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 8</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
+    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in <a href="#tab-cms-shas" class="auto internal xref">Table 9</a><a href="#section-8.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.2-7">signature:
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
 </section>
@@ -3021,7 +3137,7 @@ cRLSign
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
         </h3>
 <p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 8</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#tab-cms-shas" class="auto internal xref">Table 9</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3623,7 +3739,7 @@ END
         <h3 id="name-object-identifier-allocatio">
 <a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-object-identifier-allocatio" class="section-name selfRef">Object Identifier Allocations</a>
         </h3>
-<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 1</a> and <a href="#tab-hash-sig-algs" class="auto internal xref">Table 2</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.1-1">EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in <a href="#tab-sig-algs" class="auto internal xref">Table 2</a> and <a href="#tab-hash-sig-algs" class="auto internal xref">Table 3</a>.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <div id="module-registration-smi-security-for-pkix-module-identifier">
 <section id="section-10.1.1">
           <h4 id="name-module-registration-smi-sec">
@@ -4287,9 +4403,9 @@ END
       </h2>
 <p id="appendix-B-1">This section provides references to the full specification of the algorithms used in the composite constructions.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-component-signature-algorit"></span><div id="tab-component-sig-algs">
-<table class="center" id="table-9">
+<table class="center" id="table-10">
         <caption>
-<a href="#table-9" class="selfRef">Table 9</a>:
+<a href="#table-10" class="selfRef">Table 10</a>:
 <a href="#name-component-signature-algorit" class="selfRef">Component Signature Algorithms used in Composite Constructions</a>
         </caption>
 <thead>
@@ -4374,9 +4490,9 @@ END
       </table>
 </div>
 <span id="name-elliptic-curves-used-in-com"></span><div id="tab-component-curve-algs">
-<table class="center" id="table-10">
+<table class="center" id="table-11">
         <caption>
-<a href="#table-10" class="selfRef">Table 10</a>:
+<a href="#table-11" class="selfRef">Table 11</a>:
 <a href="#name-elliptic-curves-used-in-com" class="selfRef">Elliptic Curves used in Composite Constructions</a>
         </caption>
 <thead>
@@ -4419,9 +4535,9 @@ END
       </table>
 </div>
 <span id="name-hash-algorithms-used-in-com"></span><div id="tab-component-hash">
-<table class="center" id="table-11">
+<table class="center" id="table-12">
         <caption>
-<a href="#table-11" class="selfRef">Table 11</a>:
+<a href="#table-12" class="selfRef">Table 12</a>:
 <a href="#name-hash-algorithms-used-in-com" class="selfRef">Hash algorithms used in Composite Constructions</a>
         </caption>
 <thead>
