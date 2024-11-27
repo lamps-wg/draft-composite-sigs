@@ -792,7 +792,7 @@ Serialization Process:
      bytes = mldsaEncodedSignature || tradEncodedSignature
      output bytes
 ~~~
-{: #alg-composite-serialize title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
+{: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
@@ -845,7 +845,7 @@ Deserialization Process:
 
      output (mldsaPK, tradPK)
 ~~~
-{: #alg-composite-deserialize title="Composite DeserializeSignatureValue(bytes)"}
+{: #alg-composite-deserialize-sig title="Composite DeserializeSignatureValue(bytes)"}
 
 ## ML-DSA public key, private key and Signature sizes for serialization and deserialization
 
