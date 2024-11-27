@@ -849,11 +849,13 @@ Deserialization Process:
 
 ## ML-DSA public key, private key and Signature sizes for serialization and deserialization
 
-As noted above in the public key, private key and CompositeSignatureValue serialization and deserializations
-methods, ML-DSA uses fixed-length values for all of these components.  This means the length encoding of the
-first component is known and NOT needed to be encoded into the serialization and deserialization process which
-simplifies the encoding.  If future composite combinations make use of algorithms where the first component uses
-variable length keys or signatures, then that specification will need to ensure the length is encoded in a
+As noted above in the public key, private key and CompositeSignatureValue
+serialization and deserialization methods, ML-DSA uses fixed-length values for
+all of these components.  This means the length encoding of the first component is
+known and does NOT need to be encoded into the serialization and deserialization process
+which simplifies the encoding.  If future composite combinations make use of
+algorithms where the first component uses variable length keys or signatures, then
+that specification will need to ensure the length is encoded in a
 fixed-length prefix so the components can be correctly deserialized.
 
 The following table shows the fixed length values in bytes for the public, private and signature
