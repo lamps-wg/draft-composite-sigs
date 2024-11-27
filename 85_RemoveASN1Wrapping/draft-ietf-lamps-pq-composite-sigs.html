@@ -2187,7 +2187,7 @@ first component is known and NOT needed to be encoded into the serialization and
 simplifies the encoding.  If future composite combinations make use of algorithms where the first component uses
 variable length keys or signatures, then that specification will need to ensure the length is encoded in a
 fixed-length prefix so the components can be correctly deserialized.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
-<p id="section-4.6-2">The following table shows the fixed length values for the public, private and signature
+<p id="section-4.6-2">The following table shows the fixed length values in bytes for the public, private and signature
 sizes for ML-DSA which can be used to deserialzie the components.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
 <span id="name-ml-dsa-key-and-signature-si"></span><div id="tab-mldsa-sizes">
 <table class="center" id="table-1">
@@ -2198,28 +2198,28 @@ sizes for ML-DSA which can be used to deserialzie the components.<a href="#secti
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Algorithm</th>
-              <th class="text-left" rowspan="1" colspan="1">Public Key Size</th>
-              <th class="text-left" rowspan="1" colspan="1">Private Key Size</th>
-              <th class="text-left" rowspan="1" colspan="1">Signature Size</th>
+              <th class="text-left" rowspan="1" colspan="1">Public Key</th>
+              <th class="text-left" rowspan="1" colspan="1">Private Key</th>
+              <th class="text-left" rowspan="1" colspan="1">Signature</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
               <td class="text-left" rowspan="1" colspan="1">1312</td>
-              <td class="text-left" rowspan="1" colspan="1">2560</td>
+              <td class="text-left" rowspan="1" colspan="1">32</td>
               <td class="text-left" rowspan="1" colspan="1">2420</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
               <td class="text-left" rowspan="1" colspan="1">1952</td>
-              <td class="text-left" rowspan="1" colspan="1">4032</td>
+              <td class="text-left" rowspan="1" colspan="1">32</td>
               <td class="text-left" rowspan="1" colspan="1">3309</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
               <td class="text-left" rowspan="1" colspan="1">2592</td>
-              <td class="text-left" rowspan="1" colspan="1">4896</td>
+              <td class="text-left" rowspan="1" colspan="1">32</td>
               <td class="text-left" rowspan="1" colspan="1">4627</td>
             </tr>
           </tbody>
@@ -2320,20 +2320,8 @@ CompositeMLDSAPrivateKey ::= OCTET STRING
         </h3>
 <p id="section-5.3-1">Many protocol specifications will require that the composite public key and composite private key data structures be represented by an octet string or bit string.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <p id="section-5.3-2">When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-5.3-3">
-<pre>
-CompositeMLDSAPublicKeyOs ::= OCTET STRING
-                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
-</pre><a href="#section-5.3-3" class="pilcrow">¶</a>
-</div>
-<p id="section-5.3-4">When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-5.3-5">
-<pre>
-CompositeMLDSAPublicKeyBs ::= BIT STRING
-                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
-</pre><a href="#section-5.3-5" class="pilcrow">¶</a>
-</div>
-<p id="section-5.3-6">In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="key-usage-bits">
