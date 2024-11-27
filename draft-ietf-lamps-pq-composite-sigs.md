@@ -856,14 +856,14 @@ simplifies the encoding.  If future composite combinations make use of algorithm
 variable length keys or signatures, then that specification will need to ensure the length is encoded in a
 fixed-length prefix so the components can be correctly deserialized.
 
-The following table shows the fixed length values for the public, private and signature
+The following table shows the fixed length values in bytes for the public, private and signature
 sizes for ML-DSA which can be used to deserialzie the components.
 
-| Algorithm | Public Key Size| Private Key Size | Signature Size |
+| Algorithm | Public Key  | Private Key  | Signature |
 | ----------- | ----------- | ----------- |  ----------- |
-| ML-DSA-44 |      1312     |    2560     |  2420        |
-| ML-DSA-65 |      1952     |    4032     |  3309  |
-| ML-DSA-87 |      2592     |    4896     |  4627   |
+| ML-DSA-44 |      1312     |    32     |  2420        |
+| ML-DSA-65 |      1952     |    32     |  3309  |
+| ML-DSA-87 |      2592     |    32     |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes"}
 
 
@@ -966,17 +966,7 @@ Many protocol specifications will require that the composite public key and comp
 
 When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.
 
-~~~ ASN.1
-CompositeMLDSAPublicKeyOs ::= OCTET STRING
-                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
-~~~
-
 When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
-
-~~~ ASN.1
-CompositeMLDSAPublicKeyBs ::= BIT STRING
-                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
-~~~
 
 In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.
 
