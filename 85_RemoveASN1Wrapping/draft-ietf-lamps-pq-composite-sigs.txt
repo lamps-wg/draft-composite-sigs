@@ -93,7 +93,7 @@ Table of Contents
        4.3.2.  HashComposite-ML-DSA-Verify
      4.4.  SerializeKey and DeserializeKey
      4.5.  SerializeSignatureValue and DeSerializeSignatureValue
-     4.6.  ML-DSA public key, private key and Signature sizes for
+     4.6.  ML-DSA public key, private key and signature sizes for
            serialization and deserialization
    5.  Composite Key Structures
      5.1.  CompositeMLDSAPublicKey
@@ -887,7 +887,7 @@ Serialization Process:
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
 
-  3. Combine and output the encoded public key
+  3. Combine and output the encoded composite signature
 
      bytes = mldsaEncodedSignature || tradEncodedSignature
      output bytes
@@ -928,7 +928,7 @@ Deserialization Process:
 
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
-  3. Deserialize the constituent public or private keys
+  3. Deserialize the constituent signature values
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
@@ -946,7 +946,7 @@ Deserialization Process:
 
          Figure 9: Composite DeserializeSignatureValue(bytes)
 
-4.6.  ML-DSA public key, private key and Signature sizes for
+4.6.  ML-DSA public key, private key and signature sizes for
       serialization and deserialization
 
    As noted above in the public key, private key and
@@ -965,7 +965,7 @@ Deserialization Process:
    deserialzie the components.
 
            +===========+============+=============+===========+
-           | Algorithm | Public Key | Private Key | Signature |
+           | Algorithm | Public key | Private key | Signature |
            +===========+============+=============+===========+
            | ML-DSA-44 | 1312       | 32          | 2420      |
            +-----------+------------+-------------+-----------+
