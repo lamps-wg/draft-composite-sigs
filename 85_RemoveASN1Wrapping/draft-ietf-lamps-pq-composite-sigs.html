@@ -2181,11 +2181,13 @@ Deserialization Process:
         <h3 id="name-ml-dsa-public-key-private-k">
 <a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-ml-dsa-public-key-private-k" class="section-name selfRef">ML-DSA public key, private key and Signature sizes for serialization and deserialization</a>
         </h3>
-<p id="section-4.6-1">As noted above in the public key, private key and CompositeSignatureValue serialization and deserializations
-methods, ML-DSA uses fixed-length values for all of these components.  This means the length encoding of the
-first component is known and NOT needed to be encoded into the serialization and deserialization process which
-simplifies the encoding.  If future composite combinations make use of algorithms where the first component uses
-variable length keys or signatures, then that specification will need to ensure the length is encoded in a
+<p id="section-4.6-1">As noted above in the public key, private key and CompositeSignatureValue
+serialization and deserialization methods, ML-DSA uses fixed-length values for
+all of these components.  This means the length encoding of the first component is
+known and does NOT need to be encoded into the serialization and deserialization process
+which simplifies the encoding.  If future composite combinations make use of
+algorithms where the first component uses variable length keys or signatures, then
+that specification will need to ensure the length is encoded in a
 fixed-length prefix so the components can be correctly deserialized.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
 <p id="section-4.6-2">The following table shows the fixed length values in bytes for the public, private and signature
 sizes for ML-DSA which can be used to deserialzie the components.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
