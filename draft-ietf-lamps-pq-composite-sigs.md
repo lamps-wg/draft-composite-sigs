@@ -787,7 +787,7 @@ Serialization Process:
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
 
-  3. Combine and output the encoded public key
+  3. Combine and output the encoded composite signature
 
      bytes = mldsaEncodedSignature || tradEncodedSignature
      output bytes
@@ -829,7 +829,7 @@ Deserialization Process:
 
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
-  3. Deserialize the constituent public or private keys
+  3. Deserialize the constituent signature values
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
@@ -847,7 +847,7 @@ Deserialization Process:
 ~~~
 {: #alg-composite-deserialize-sig title="Composite DeserializeSignatureValue(bytes)"}
 
-## ML-DSA public key, private key and Signature sizes for serialization and deserialization
+## ML-DSA public key, private key and signature sizes for serialization and deserialization
 
 As noted above in the public key, private key and CompositeSignatureValue
 serialization and deserialization methods, ML-DSA uses fixed-length values for
@@ -861,7 +861,7 @@ fixed-length prefix so the components can be correctly deserialized.
 The following table shows the fixed length values in bytes for the public, private and signature
 sizes for ML-DSA which can be used to deserialzie the components.
 
-| Algorithm | Public Key  | Private Key  | Signature |
+| Algorithm | Public key  | Private key  | Signature |
 | ----------- | ----------- | ----------- |  ----------- |
 | ML-DSA-44 |      1312     |    32     |  2420        |
 | ML-DSA-65 |      1952     |    32     |  3309  |
