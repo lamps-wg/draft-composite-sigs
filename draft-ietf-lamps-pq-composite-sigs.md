@@ -164,23 +164,14 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 --- middle
 
 
-# Changes in -03
+# Changes in -04
 
 Interop-affecting changes:
 
-* Compacted CompositeSignaturePrivateKey to SEQUENCE SIZE (2) OF OCTET STRING instead of OneAsymmetricKey to remove redundancy
-* Added support for the ML-DSA context String, and use the Composite Domain as the context for the underlying ML-DSA component algorithm.
-* Added Pre-Hash and Pure modes and changed the Message format to align with FIPS-204.  This breaks backwards compatibility with all previous versions.
-* Updated the OID table for new Pre-Hash OIDs and added them to the IANA section.
-* Updated Use in CMS section to reflect content is hashed and pure Composite ML-DSA should be used.
+* Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private Keys and Composite Signature Value
+* TODO Remove the HashComposite-ML-DSA algorithms in favour of the external Mu hashing
 
 Editorial changes:
-
-* Added the ASN.1 encodings for the component public keys and signature algorithm identifiers
-* ASN.1 Module changes:
-  * Renamed the module from Composite-Signatures-2023 -> Composite-MLDSA-2024
-  * Simplified the ASN.1 module to make it more compiler-friendly (thanks Carl!) -- should not affect wire encodings.
-* Updated Security Considerations about Non-separability, EUF-CMA and key reuse.
 
 
 # Introduction {#sec-intro}
@@ -267,11 +258,11 @@ We define the following algorithms which we use to serialize and deserialize the
 
    *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
-We define the following algorithms which are used to serialize and deseralize the compsoite signature value
+We define the following algorithms which are used to serialize and deseralize the composite signature value
 
-   *  `SerializeSignature(key) -> bytes`: Produce a fixed-length byte string encoding the public or private key.
+   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a fixed-length byte string encoding the CompositeSignatureValue.
 
-   *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
+   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a fixed-length byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
@@ -408,7 +399,7 @@ Signature Generation Process:
 
    6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := CompositeSignatureValue(mldsaSig, tradSig)
+      signature = CompositeSignatureValue(mldsaSig, tradSig)
 
   7. Output signature
 
@@ -701,13 +692,9 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Calculate the length encoding of the mldsaEncodedPK (or use the value from table )
+  3. Combine and output the encoded public key
 
-     encodedLength = IntegerToBytes(mldsaEncodePK.length, 3)
-
-  4. Combine and output the encoded public key
-
-     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     bytes = mldsaEncodedPK || tradEncodedPK
      output bytes
 ~~~
 {: #alg-composite-serialize title="Composite SerializeKey(pk)"}
@@ -742,9 +729,8 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded key.
-       The first 3 bytes encodes the length of mldsaEncodedKey, which MAY
-       be used to separate the mldsaEncodedKey and tradEncodedKey, and then
-       is to be discarded.
+       The length of the mldsaEncodedKey is known based on the size of
+       the ML-DSA component key length specified by the Object ID
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
@@ -766,47 +752,148 @@ Deserialization Process:
 ~~~
 {: #alg-composite-deserialize title="Composite DeserializeKey(bytes)"}
 
+## SerializeSignatureValue and DeSerializeSignatureValue
+
+The serialization routine for the CompositeSignatureValue simply concatenates the fixed-length
+ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
+
+~~~
+Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
+
+Explicit Input:
+
+  CompositeSignatureValue    The Composite Signature Value obtained from Composite-ML-DSA.Sign()
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  bytes   The encoded CompositeSignatureValue
+
+Serialization Process:
+
+  1. Separate the signatures
+
+     (mldsaSig, tradSig) = CompositeSignatureValue
+
+  2. Serialize each of the constituent signatures
+
+     mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
+     tradEncodedSignature = Trad.SerializeSignature(tradSig)
+
+  3. Combine and output the encoded public key
+
+     bytes = mldsaEncodedSignature || tradEncodedSignature
+     output bytes
+~~~
+{: #alg-composite-serialize title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
+
+
+Deserialization reverses this process, raising an error in the event that the input is malformed.
+
+~~~
+Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
+
+Explicit Input:
+
+  bytes   An encoded CompositeSignatureValue
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
+
+Output:
+
+  CompositeSignatureValue  The CompositeSignatureValue
+
+Deserialization Process:
+
+  1. Validate the length of the the input byte string
+
+     if bytes is not the correct length:
+      output "Deserialization error"
+
+  2. Parse each constituent encoded signature.
+       The length of the mldsaEncodedSignature is known based on the size of
+       the ML-DSA component signature length specified by the Object ID
+
+     (mldsaEncodedSignature, tradEncodedSignature) = bytes
+
+  3. Deserialize the constituent public or private keys
+
+     mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
+     tradSig = Trad.DeserializeSignature(tradEncodedSignature)
+
+  4. If either ML-DSA.DeserializeSignature() or
+     Trad.DeserializeSignature() return an error,
+     then this process must return an error.
+
+      if NOT mldsaSig or NOT tradSig:
+        output "Deserialization error"
+
+  5. Output the CompositeSignatureValue
+
+     output (mldsaPK, tradPK)
+~~~
+{: #alg-composite-deserialize title="Composite DeserializeSignatureValue(bytes)"}
+
+## ML-DSA public key, private key and Signature sizes for serialization and deserialization
+
+As noted above in the public key, private key and CompositeSignatureValue serialization and deserializations
+methods, ML-DSA uses fixed-length values for all of these components.  This means the length encoding of the
+first component is known and NOT needed to be encoded into the serialization and deserialization process which
+simplifies the encoding.  If future composite combinations make use of algorithms where the first component uses
+variable length keys or signatures, then that specification will need to ensure the length is encoded in a
+fixed-length prefix so the components can be correctly deserialized.
+
+The following table shows the fixed length values for the public, private and signature
+sizes for ML-DSA which can be used to deserialzie the components.
+
+| Algorithm | Public Key Size| Private Key Size | Signature Size |
+| ----------- | ----------- | ----------- |  ----------- |
+| ML-DSA-44 |      1312     |    2560     |  2420        |
+| ML-DSA-65 |      1952     |    4032     |  3309  |
+| ML-DSA-87 |      2592     |    4896     |  4627   |
+{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes"}
+
+
 # Composite Key Structures {#sec-composite-structs}
 
 In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
 
-## CompositeSignaturePublicKey {#sec-composite-pub-keys}
+## CompositeMLDSAPublicKey {#sec-composite-pub-keys}
 
 The wire encoding of a Composite ML-DSA public key is:
 
 ~~~ ASN.1
-CompositeSignaturePublicKey ::= BIT STRING
+CompositeMLDSAPublicKey ::= BIT STRING
 ~~~
-{: artwork-name="CompositeSignaturePublicKey-asn.1-structures"}
+{: artwork-name="CompositeMLDSAPublicKey-asn.1-structures"}
 
 Since RSA and ECDSA component public keys are themselves in a DER encoding, the following show the internal structure of the various public key types used in this specification:
 
-~~~ ASN.1
-RsaCompositeSignaturePublicKey ::= BIT STRING
+When a CompositeMLDSAPublicKey is used with an RSA public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}, and an RSAPublicKey (which is a DER encoded RSAPublicKey).
 
-   The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}, and an RSAPublicKey (which is a DER encoded RSAPublicKey).
+When a CompositeMLDSAPublicKey is used with an EC public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and an ECDSAPublicKey (which is a DER encoded ECPoint).
 
-
-
-EcCompositeSignaturePublicKey ::=  BIT STRING
-
-    The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and an ECDSAPublicKey (which is a DER encoded ECPoint).
-
-
-
-EdCompositeSignaturePublicKey ::=  BIT STRING
-
-    The BIT STRING itself is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and a raw Edwards public key according to [RFC8410].
-
-~~~
-
+When a CompositeMLDSAPublicKey is used with an Edwards public key, the BIT STRING is generated by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}} and a raw Edwards public key according to [RFC8410].
 
 Some applications may need to reconstruct the `SubjectPublicKeyInfo` objects corresponding to each component public key. {{tab-sig-algs}} or {{tab-hash-sig-algs}} in {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
-When the CompositeSignaturePublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in {{sec-encoding-rules}}.
+When the CompositeMLDSAPublicKey must be provided in octet string or bit string format, the data structure is encoded as specified in {{sec-encoding-rules}}.
 
-Component keys of a CompositeSignaturePublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any other type of key or as a standalone key. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
 The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
@@ -826,25 +913,25 @@ As an example, the public key type `id-MLDSA44-ECDSA-P256` is defined as:
 id-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
   pk-CompositeSignature{
     id-MLDSA44-ECDSA-P256,
-    EcCompositeSignaturePublicKey }
+    CompositeMLDSAPublicKey }
 ~~~
 
 The full set of key types defined by this specification can be found in the ASN.1 Module in {{sec-asn1-module}}.
 
 
-## CompositeSignaturePrivateKey {#sec-priv-key}
+## CompositeMLDSAPrivateKey {#sec-priv-key}
 
 When a Composite ML-DSA private key is to be exported from a cryptographic module, it uses an analogous definition to the public keys:
 
 ~~~ ASN.1
-CompositeSignaturePrivateKey ::= OCTET STRING
+CompositeMLDSAPrivateKey ::= OCTET STRING
 ~~~
-{: artwork-name="CompositeSignaturePrivateKey-asn.1-structures"}
+{: artwork-name="CompositeMLDSAPrivateKey-asn.1-structures"}
 
-Each element of the `CompositeSignaturePrivateKey` is an `OCTET STRING` according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in {{sec-composite-pub-keys}}. The ASN.1 module in this document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.
+Each element of the `CompositeMLDSAPrivateKey` is an `OCTET STRING` according to the encoding of the underlying algorithm specification and will decode into the respective private key structures in an analogous way to the public key structures defined in {{sec-composite-pub-keys}}. The ASN.1 module in this document does not provide helper classes for private keys.  The PrivateKey for each component algorithm MUST be in the same order as defined in {{sec-composite-pub-keys}}.
 
 
-Use cases that require an interoperable encoding for composite private keys will often need to place a `CompositeSignaturePrivateKey` inside a `OneAsymmetricKey` structure defined in [RFC5958], such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211]. The definition of `OneAsymmetricKey` is copied here for convenience:
+Use cases that require an interoperable encoding for composite private keys will often need to place a `CompositeMLDSAPrivateKey` inside a `OneAsymmetricKey` structure defined in [RFC5958], such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF [RFC4211]. The definition of `OneAsymmetricKey` is copied here for convenience:
 
 ~~~ ASN.1
  OneAsymmetricKey ::= SEQUENCE {
@@ -865,11 +952,11 @@ Use cases that require an interoperable encoding for composite private keys will
 {: artwork-name="RFC5958-OneAsymmetricKey-asn.1-structure"}
 
 
-When a `CompositeSignaturePrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent. The privateKey field SHALL contain the `CompositeSignaturePrivateKey`, and the `publicKey` field remains OPTIONAL.  If the `publicKey` field is present, it MUST be a `CompositeSignaturePublicKey`.
+When a `CompositeMLDSAPrivateKey` is conveyed inside a OneAsymmetricKey structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent. The privateKey field SHALL contain the `CompositeMLDSAPrivateKey`, and the `publicKey` field remains OPTIONAL.  If the `publicKey` field is present, it MUST be a `CompositeMLDSAPublicKey`.
 
 Some applications may need to reconstruct the `OneAsymmetricKey` objects corresponding to each component private key. {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
-Component keys of a CompositeSignaturePrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
 
 ## Encoding Rules {#sec-encoding-rules}
@@ -880,15 +967,15 @@ Many protocol specifications will require that the composite public key and comp
 When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyOs ::= OCTET STRING
-                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeMLDSAPublicKeyOs ::= OCTET STRING
+                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
 ~~~
 
 When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
 
 ~~~ ASN.1
-CompositeSignaturePublicKeyBs ::= BIT STRING
-                (CONTAINING CompositeSignaturePublicKey ENCODED BY der)
+CompositeMLDSAPublicKeyBs ::= BIT STRING
+                (CONTAINING CompositeMLDSAPublicKey ENCODED BY der)
 ~~~
 
 In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.
