@@ -843,7 +843,7 @@ Deserialization Process:
 
   5. Output the CompositeSignatureValue
 
-     output (mldsaPK, tradPK)
+     output (mldsaSig, tradSig)
 ~~~
 {: #alg-composite-deserialize-sig title="Composite DeserializeSignatureValue(bytes)"}
 
