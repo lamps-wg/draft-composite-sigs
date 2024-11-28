@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-26T00:53:29.026178+00:00",
+  "timestamp": "2024-11-28T00:54:10.057610+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2018,16 +2018,24 @@
       "id": "I_kwDOL5eEDM6dOWIj",
       "title": "Remove ASN.1 wrapping in signature, public and private key encodings",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/85",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "It has been suggested that we remove the ASN.1 in the signature, public and private key encodings.    This will make composite signatures easier to use in other protocols.\r\n\r\nsomething like:\r\n\r\npk =  pk1 || pk2\r\nsk = sk1 || sk2\r\n\r\nComposite signature value =  sig1 || sig2\r\n\r\n\r\nNo ASN1 anywhere.\r\n\r\nSo version -04 will be another breaking change.  ",
       "createdAt": "2024-11-06T11:12:30Z",
-      "updatedAt": "2024-11-06T11:13:42Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-11-27T20:55:52Z",
+      "closedAt": "2024-11-27T20:55:52Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Issue was resolved in #89  ",
+          "createdAt": "2024-11-27T20:55:52Z",
+          "updatedAt": "2024-11-27T20:55:52Z"
+        }
+      ]
     },
     {
       "number": 86,
@@ -3546,25 +3554,35 @@
       "id": "PR_kwDOL5eEDM6C2030",
       "title": "Removing DER wrapper",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/89",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "First stab at removing SEQUENCE ASN.1 encodings",
       "createdAt": "2024-11-22T18:53:01Z",
-      "updatedAt": "2024-11-25T22:48:45Z",
+      "updatedAt": "2024-11-27T20:55:02Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "bd4d0ed01d744a0c9c05c7b41612f141c4b23be3",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "85_RemoveASN1Wrapping",
-      "headRefOid": "e5ae1ecd064dc4e3f89b5c9adb92d5c7ac499af5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "6b1326bcd6a10b153de57d40929c6c375c7c69e6",
+      "closedAt": "2024-11-27T20:55:02Z",
+      "mergedAt": "2024-11-27T20:55:02Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "d606485559e47442442cc369b1a22d127b3a5221"
+      },
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "#closes 85",
+          "createdAt": "2024-11-26T15:55:48Z",
+          "updatedAt": "2024-11-26T15:55:48Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOL5eEDM6SYEha",
