@@ -1,5 +1,5 @@
 ---
-title: Composite ML-DSA For use in X.509 Public Key Infrastructure and CMS
+title: Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
 abbrev: Composite ML-DSA
 docname: draft-ietf-lamps-pq-composite-sigs-latest
 
@@ -266,7 +266,7 @@ We define the following algorithms which are used to serialize and deseralize th
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
-This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separablity.
+This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
 
 ## Pure vs Pre-hashed modes
 
@@ -422,7 +422,7 @@ Composite-ML-DSA.Verify(pk, M, signature, ctx)
 
 Explicit inputs:
 
-  pk          Composite public key conisting of verification public keys
+  pk          Composite public key consisting of verification public keys
               for each component.
 
   M           Message whose signature is to be verified,
@@ -439,7 +439,7 @@ Implicit inputs:
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific ML-DSA algorithm and
+  Trad     A placeholder for the specific traditional algorithm and
            parameter set to use, for example "RSASA-PSS with id-sha256"
            or "Ed25519".
 
@@ -499,9 +499,9 @@ A composite signature's value MUST include two signature components and MUST be 
 
 ### HashComposite-ML-DSA-Sign signature mode {#sec-hash-comp-sig-sign}
 
-This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
+This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Algorithm 4 Section 5.4.1 of [FIPS.204].
 
-In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
+In the pre-hash mode the Domain separator (see {{sec-domsep-values}}) is concatenated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
 
 ~~~
 HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
@@ -523,7 +523,7 @@ Implicit inputs:
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific ML-DSA algorithm and
+  Trad     A placeholder for the specific traditional algorithm and
            parameter set to use, for example "RSASA-PSS with id-sha256"
            or "Ed25519".
 
@@ -606,7 +606,7 @@ Implicit inputs:
   ML-DSA    A placeholder for the specific ML-DSA algorithm and
             parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad      A placeholder for the specific ML-DSA algorithm and
+  Trad      A placeholder for the specific traditional algorithm and
             parameter set to use, for example "RSASA-PSS with id-sha256"
             or "Ed25519".
 
@@ -1039,7 +1039,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
 &lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
 
-## Composite-ML-DSA Algorithm Identifiers
+## PureComposite-ML-DSA Algorithm Identifiers
 
 Pure Composite-ML-DSA Signature public key types:
 
@@ -1090,7 +1090,7 @@ HashComposite-ML-DSA Signature public key types:
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
-The Pre-Hash algorithm is used as the PH algorithm in and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `HashComposite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `HashComposite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
+The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `HashComposite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `HashComposite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1142,7 +1142,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 
 SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.
 
-At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
+At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
 
 ## RSA-PSS Parameters
 
