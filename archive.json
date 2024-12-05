@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-03T00:55:29.468170+00:00",
+  "timestamp": "2024-12-05T00:55:11.444417+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2049,7 +2049,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2024-11-07T10:13:36Z",
+      "updatedAt": "2024-12-04T15:50:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -2058,6 +2058,20 @@
           "body": "Alternatively, since RSA and ECDSA actually sign a hash, and everything else relevant has context inputs, one could do something like the follows to get actual strong non-separability (even for RSA and ECDSA):\r\n\r\nPure:\r\n\r\n`M' = Domain | 0 | len(ctx) | ctx | M`\r\n\r\nPrehashed:\r\n\r\n`M' = Domain | 1 | len(ctx) | ctx | HashOID | PH(M)`\r\n\r\nRSA:\r\n\r\n`RSA_signhash(cSHAKE256(M', ctx=\"sig-composite\"))`\r\n\r\nECDSA:\r\n\r\n`ECDSA_signhash(bytes2bits_be(cSHAKE256(M', ctx=\"sig-composite\")))`\r\n\r\nEd25519:\r\n\r\n`Ed25519ctx_sign(M', ctx=\"sig-composite\")`\r\n\r\nEd448:\r\n\r\n`Ed448_sign(M', ctx=\"sig-composite\")`\r\n\r\nML-DSA:\r\n\r\n`MLDSA_sign(M', ctx=\"sig-composite\")`\r\n\r\n\r\nSome notes:\r\n\r\n- The bytes2bits_be() is to ensure that ECDSA interprets the hash in the expected way.\r\n- This aligns with the model presented in the meeting.",
           "createdAt": "2024-11-07T10:13:35Z",
           "updatedAt": "2024-11-07T10:13:35Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Falko, the current version of composite signatures all use DER Encoded OIDs that start with HEX 060B6086480186FA6B50080 which could be considered the magic String you are talking about.   So we think this already meets the requirement you are asking about.   We acknowledge that the current OIDs will change, and will be assigned by IANA so it is likely they will become shorter.  For example in the IANA registry, it would be something like 1.2.840.113549.1.9.16.3.xx (where xx is the composite algorithms).   So 1.2.840.113549.1.9.16.3 can be considered the MAGIC string (DER encoded of course).  See https://www.iana.org/assignments/smi-numbers/smi-numbers.xhtml#security-smime-3  .   Does this satisfy your concern?",
+          "createdAt": "2024-12-04T15:39:06Z",
+          "updatedAt": "2024-12-04T15:39:06Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@falko-strenzke  I do not understand this sentence:\r\n> Prefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string.\r\n\r\nThis magic prefix that you are talking about is only added by the construction of `M'` inside the Composite Sign(). This would not be carried over the wire in a CMS message because equally the Composite Verify() will add it while constructing `M'`. So I do not understand this suggestion.\r\n\r\n\r\n\r\n@ilaril we have considered this. Thank you for writing out what this would look like. \r\n\r\nWe decided against using the EdDSA ctx because many crypto libraries do not support this, and one of the design goals is to be able to use your existing (potentially certified / change-controlled) legacy crypto code as-is without modification. See #64 \r\n\r\nWe could add a wrapper to RSA and ECDSA as you suggest to bind a ctx, but since we are already adding `Domain` into `M'`, it's not clear to me that this is actually adding any new binding properties.",
+          "createdAt": "2024-12-04T15:49:06Z",
+          "updatedAt": "2024-12-04T15:50:29Z"
         }
       ]
     },
@@ -2113,7 +2127,31 @@
       "labels": [],
       "body": "Much discussion has happened at IETF around making use of the external mu in ML-DSA (Algorithm 7, line 6 of FIPS 204).   This allows the hash of the message to be calculated externally while producing the same output as in Algorithm 4 of FIPS 204.   This means we no longer have a need to support the Hash ML-DSA...   This will reduce the number of OIDS by half which is good.   \r\n\r\nQuestion is do we actually need to do anything other than remove Hash Composite ML-DSA?    Probably a paragraph explaining that it can be used could be added.  ",
       "createdAt": "2024-11-22T22:29:43Z",
-      "updatedAt": "2024-11-22T22:29:43Z",
+      "updatedAt": "2024-12-04T16:01:24Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ed448 and X25519 use pre-hash modes controlled by OIDs, so if HashComposite-ML-DSA is removed, there will not be a way to use pre-hashing with Ed448 and X25519.    \r\n",
+          "createdAt": "2024-12-04T16:01:22Z",
+          "updatedAt": "2024-12-04T16:01:22Z"
+        }
+      ]
+    },
+    {
+      "number": 92,
+      "id": "I_kwDOL5eEDM6iARI7",
+      "title": "Extra example for key reuse",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/92",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The question then is whether an attacker could take a messages signed by {PQ, RSA} and by simply dropping a signature make it appear to have been signed by either the {RSA} or {PQ} cert, and thus be processed under a different verifier policy?  The obvious counter-argument is that if you can break RSA then why do you need to tamper with an originally-valid message, why not just forge a completely new message? An example would be that you can't yet fully break RSA, but you want to force a downgrade so that an S/MIME reply is only encrypted with RSA instead of the hybrid and thus you can file it away for eventual harvest-now-decrypt-later.",
+      "createdAt": "2024-12-04T14:44:47Z",
+      "updatedAt": "2024-12-04T14:44:47Z",
       "closedAt": null,
       "comments": []
     }
