@@ -849,11 +849,16 @@ Deserialization Process:
 
 ## ML-DSA public key, private key and signature sizes for serialization and deserialization
 
-As noted above in the public key, private key and CompositeSignatureValue
+As noted above in the composite public key, composite private key and composite signature value
 serialization and deserialization methods, ML-DSA uses fixed-length values for
 all of these components.  This means the length encoding of the first component is
 known and does NOT need to be encoded into the serialization and deserialization process
-which simplifies the encoding.  If future composite combinations make use of
+which simplifies the encoding.  The second traditional component may be variable-length but 
+can still be parsed correctly by taking the rest of the value after the specified offset
+as the traditional component.
+
+This encoding is optimized for the fact that all values related to ML-DSA are fixed-length.
+If future composite combinations make use of
 algorithms where the first component uses variable length keys or signatures, then
 that specification will need to ensure the length is encoded in a
 fixed-length prefix so the components can be correctly deserialized.
@@ -868,7 +873,6 @@ sizes for ML-DSA which can be used to deserialzie the components.
 | ML-DSA-87 |      2592     |    32     |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
-These values represent offset indices to use when separating a combined composite BIT STRING value back into an ML-DSA and a traditional component. The parsing logic should be to treat the first X bytes as per the table above as the ML-DSA component and the rest as the traditional component. The traditional component may be variable length but this is ok since it appears second in the concatenation.
 
 # Composite Key Structures {#sec-composite-structs}
 
