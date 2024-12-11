@@ -980,7 +980,7 @@ Deserialization Process:
    combined composite BIT STRING value back into an ML-DSA and a
    traditional component.  The parsing logic should be to treat the
    first X bytes as per the table above as the ML-DSA component and the
-   rest is the traditional component.  The traditional component may be
+   rest as the traditional component.  The traditional component may be
    variable length but this is ok since it appears second in the
    concatenation.
 
