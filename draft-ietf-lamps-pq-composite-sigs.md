@@ -853,7 +853,7 @@ As noted above in the composite public key, composite private key and composite 
 serialization and deserialization methods, ML-DSA uses fixed-length values for
 all of these components.  This means the length encoding of the first component is
 known and does NOT need to be encoded into the serialization and deserialization process
-which simplifies the encoding.  The second traditional component may be variable-length but 
+which simplifies the encoding.  The second traditional component may be variable-length but
 can still be parsed correctly by taking the rest of the value after the specified offset
 as the traditional component.
 
@@ -872,7 +872,6 @@ sizes for ML-DSA which can be used to deserialzie the components.
 | ML-DSA-65 |      1952     |    32     |  3309  |
 | ML-DSA-87 |      2592     |    32     |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
-
 
 # Composite Key Structures {#sec-composite-structs}
 
