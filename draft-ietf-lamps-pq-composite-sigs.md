@@ -866,8 +866,9 @@ sizes for ML-DSA which can be used to deserialzie the components.
 | ML-DSA-44 |      1312     |    32     |  2420        |
 | ML-DSA-65 |      1952     |    32     |  3309  |
 | ML-DSA-87 |      2592     |    32     |  4627   |
-{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes"}
+{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
+These values represent offset indices to use when separating a combined composite BIT STRING value back into an ML-DSA and a traditional component. The parsing logic should be to treat the first X bytes as per the table above as the ML-DSA component and the rest is the traditional component. The traditional component may be variable length but this is ok since it appears second in the concatenation.
 
 # Composite Key Structures {#sec-composite-structs}
 
