@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-10T00:56:07.539130+00:00",
+  "timestamp": "2024-12-12T00:54:52.305768+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1847,11 +1847,13 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "johngray-dev"
+      ],
       "labels": [],
       "body": "This sentence in section 11.1 is confusing, in particular the part in bold.\r\n\r\n   The latter\r\n   version bears a resemblance to a stripping attack, which parallel\r\n   signatures are subject to, but is slightly different in that the\r\n   cross-protocol EUF-CMA game **also considers modification message\r\n   definition as signed differs from the message the verifier accepts**.\r\n\r\nI don't even have a suggestion on how to fix that, so I'll leave it to the authors.\r\n\r\nAlso I suggest this text to fix the next sentence:\r\n\r\n   In contrast, stripping attacks consider removing one component signature and attempting to verify the remaining signature with the\r\n   same message.\r\n",
       "createdAt": "2024-10-24T10:29:54Z",
-      "updatedAt": "2024-10-24T10:29:54Z",
+      "updatedAt": "2024-12-11T15:38:24Z",
       "closedAt": null,
       "comments": []
     },
@@ -2049,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2024-12-05T15:28:56Z",
+      "updatedAt": "2024-12-11T15:08:17Z",
       "closedAt": null,
       "comments": [
         {
@@ -2086,6 +2088,20 @@
           "body": "> Falko, the current version of composite signatures all use DER Encoded OIDs that start with HEX 060B6086480186FA6B50080 which could be considered the magic String you are talking about. So we think this already meets the requirement you are asking about. We acknowledge that the current OIDs will change, and will be assigned by IANA so it is likely they will become shorter. For example in the IANA registry, it would be something like 1.2.840.113549.1.9.16.3.xx (where xx is the composite algorithms). So 1.2.840.113549.1.9.16.3 can be considered the MAGIC string (DER encoded of course). See https://www.iana.org/assignments/smi-numbers/smi-numbers.xhtml#security-smime-3 . Does this satisfy your concern?\r\n\r\nI don't think it does because\r\na) the prefix seems to be too short (currently 11 byte and you say could get shorter)\r\nb) it is not chosen at random (anyone signing an OID with this prefix would run into an error)\r\nc) I don't think there is any control that prevents the registration of OIDs with a different prefix in the future, e.g., proprietary OIDs",
           "createdAt": "2024-12-05T15:28:09Z",
           "updatedAt": "2024-12-05T15:28:56Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> If M' starts with the magic sequence, that can be detected by the verifier.\r\n\r\nThis comment makes no sense to me.\r\n\r\nThe verifier takes as input `Composite-ML-DSA.Sign (sk, M, ctx)`, and it has `Domain` hard-coded.\r\n\r\nThen the verifier itself constructs `M' = Domain || len(ctx) || ctx || M`. `Domain` is a value hard-coded in the source code of the verifier, and pre-fixed to the message by the verifier. What possibly value is there in the verifier detecting something that it itself added? `M'` never goes over the wire.",
+          "createdAt": "2024-12-11T15:07:13Z",
+          "updatedAt": "2024-12-11T15:07:13Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ok. Thanks Falko.  In regards to your comments:\r\na)  What is your recommended length (16 or 32 bytes or anything in between?).  Would using the byte representation of something like \"CompositeAlgorithmSignatures2025\" as a prefix be sufficient?  It is 32 bytes.  So we would have\r\n\r\nM' =  prefix || Domain || ctx.length || ctx || M\r\n\r\nb)  I'm not sure I understand.  You mention using a magic constant, so where does the randomness come into play?  If we used a random prefix, it would have to be stored as part of the signature itself so it could be verified.  \r\n\r\nc)  Yes, I agree, different OIDs with a different prefix could be registered in the future.   So having a prefix of specific length would prevent this.  \r\n\r\nSo I think I agree that a prefix at least guarantees a constant value that is of a specific length (you say 16 - 32 bytes) which I guess is 128 bits to 256 bits.   The only remaining question is why do we need this property?   Can you give a detailed example to help us understand please?",
+          "createdAt": "2024-12-11T15:08:16Z",
+          "updatedAt": "2024-12-11T15:08:16Z"
         }
       ]
     },
@@ -3784,6 +3800,34 @@
       "mergedBy": "johngray-dev",
       "mergeCommit": {
         "oid": "63f0cfe7463ac718f2cc67eec6a439114905ad4c"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 93,
+      "id": "PR_kwDOL5eEDM6E4PEX",
+      "title": "added a sentence to offset table",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/93",
+      "state": "MERGED",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-12-11T15:43:49Z",
+      "updatedAt": "2024-12-11T16:00:00Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "63f0cfe7463ac718f2cc67eec6a439114905ad4c",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "ounsworth-patch-1",
+      "headRefOid": "9d17a4dddae485afe9a9db77e6a793ac73ec28b1",
+      "closedAt": "2024-12-11T16:00:00Z",
+      "mergedAt": "2024-12-11T16:00:00Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "40b8aef94ed90d884a4255dbbaf54f658fc55b88"
       },
       "comments": [],
       "reviews": []
