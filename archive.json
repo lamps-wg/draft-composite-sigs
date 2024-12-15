@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-12T00:54:52.305768+00:00",
+  "timestamp": "2024-12-15T00:59:28.987850+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2182,6 +2182,22 @@
       "body": "The question then is whether an attacker could take a messages signed by {PQ, RSA} and by simply dropping a signature make it appear to have been signed by either the {RSA} or {PQ} cert, and thus be processed under a different verifier policy?  The obvious counter-argument is that if you can break RSA then why do you need to tamper with an originally-valid message, why not just forge a completely new message? An example would be that you can't yet fully break RSA, but you want to force a downgrade so that an S/MIME reply is only encrypted with RSA instead of the hybrid and thus you can file it away for eventual harvest-now-decrypt-later.",
       "createdAt": "2024-12-04T14:44:47Z",
       "updatedAt": "2024-12-04T14:44:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 94,
+      "id": "I_kwDOL5eEDM6jHTjY",
+      "title": "ML-DSA Private key sizes 32bytes or expanded?",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/94",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I think more discussion is needed about whether the private key format should allow the expanded format as well as the seed.   If an implementation only had access to the expanded format, and needed to export the key, then it may not have access to the seed.   If there is no way to support this in a reasonable way, then there WILL be operational issues down the road.\r\n\r\n- Max suggests we could have a separate section for the private key.   For the traditional component, if we know the keysize, we can look for 32+trad or expanded mldsa+ trad and know which one to use.   That would be more efficient than using the first 32 bytes, expanding them (which will work even if the key is already expanded).\r\n\r\n",
+      "createdAt": "2024-12-12T18:21:28Z",
+      "updatedAt": "2024-12-12T18:21:29Z",
       "closedAt": null,
       "comments": []
     }
