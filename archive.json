@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-15T00:59:28.987850+00:00",
+  "timestamp": "2024-12-17T00:55:27.301451+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2051,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2024-12-11T15:08:17Z",
+      "updatedAt": "2024-12-16T09:08:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -2102,6 +2102,13 @@
           "body": "Ok. Thanks Falko.  In regards to your comments:\r\na)  What is your recommended length (16 or 32 bytes or anything in between?).  Would using the byte representation of something like \"CompositeAlgorithmSignatures2025\" as a prefix be sufficient?  It is 32 bytes.  So we would have\r\n\r\nM' =  prefix || Domain || ctx.length || ctx || M\r\n\r\nb)  I'm not sure I understand.  You mention using a magic constant, so where does the randomness come into play?  If we used a random prefix, it would have to be stored as part of the signature itself so it could be verified.  \r\n\r\nc)  Yes, I agree, different OIDs with a different prefix could be registered in the future.   So having a prefix of specific length would prevent this.  \r\n\r\nSo I think I agree that a prefix at least guarantees a constant value that is of a specific length (you say 16 - 32 bytes) which I guess is 128 bits to 256 bits.   The only remaining question is why do we need this property?   Can you give a detailed example to help us understand please?",
           "createdAt": "2024-12-11T15:08:16Z",
           "updatedAt": "2024-12-11T15:08:16Z"
+        },
+        {
+          "author": "falko-strenzke",
+          "authorAssociation": "NONE",
+          "body": "> > If M' starts with the magic sequence, that can be detected by the verifier.\r\n> \r\n> This comment makes no sense to me.\r\n> \r\n> The verifier takes as input `Composite-ML-DSA.Sign (sk, M, ctx)`, and it has `Domain` hard-coded.\r\n> \r\n> Then the verifier itself constructs `M' = Domain || len(ctx) || ctx || M`. `Domain` is a value hard-coded in the source code of the verifier, and pre-fixed to the message by the verifier. What possibly value is there in the verifier detecting something that it itself added? `M'` never goes over the wire.\r\n\r\nI wrote \"... and changes the message to `M'`\". This is why M' goes over the wire. Please look at the description I have given above. You are trying to map it to the verification of the composite algorithm, which is not relevant here.  The relevant case is the alteration to a message-signature pair that is valid under the standalone-scheme verification. In that case the forged message `M'` starts with the \"magic prefix\" which can be detected by the verifier.\r\n\r\n@ounsworth \r\n",
+          "createdAt": "2024-12-16T09:08:16Z",
+          "updatedAt": "2024-12-16T09:08:43Z"
         }
       ]
     },
