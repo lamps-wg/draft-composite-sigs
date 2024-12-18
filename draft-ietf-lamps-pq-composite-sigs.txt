@@ -1768,7 +1768,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PSS OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 21 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 60 }
 
    pk-MLDSA44-RSA2048-PSS PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS,
@@ -1782,7 +1782,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PKCS15 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 22 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 61 }
 
    pk-MLDSA44-RSA2048-PKCS15 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15,
@@ -1797,7 +1797,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-Ed25519 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 23 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 62 }
 
    pk-MLDSA44-Ed25519 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-Ed25519,
@@ -1812,7 +1812,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-ECDSA-P256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 24 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 63 }
 
    pk-MLDSA44-ECDSA-P256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-ECDSA-P256,
@@ -1827,7 +1827,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PSS OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 26 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 64 }
 
    pk-MLDSA65-RSA3072-PSS PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS,
@@ -1842,7 +1842,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PKCS15 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 27 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 65 }
 
    pk-MLDSA65-RSA3072-PKCS15 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15,
@@ -1856,7 +1856,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA4096-PSS OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 34 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 66 }
 
    pk-MLDSA65-RSA4096-PSS PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS,
@@ -1871,7 +1871,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA4096-PKCS15 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 35 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 67 }
 
    pk-MLDSA65-RSA4096-PKCS15 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15,
@@ -1885,7 +1885,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-P384 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 28 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 68 }
 
    pk-MLDSA65-ECDSA-P384 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-P384,
@@ -1900,7 +1900,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-brainpoolP256r1 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 29 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 69 }
 
    pk-MLDSA65-ECDSA-brainpoolP256r1 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1,
@@ -1915,7 +1915,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-Ed25519 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 30 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 70 }
 
    pk-MLDSA65-Ed25519 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-Ed25519,
@@ -1930,7 +1930,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-P384 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 31 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 71 }
 
    pk-MLDSA87-ECDSA-P384 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-P384,
@@ -1945,7 +1945,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-brainpoolP384r1 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 32 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 72 }
 
    pk-MLDSA87-ECDSA-brainpoolP384r1 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1,
@@ -1960,7 +1960,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-Ed448 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 33 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 73 }
 
    pk-MLDSA87-Ed448 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-Ed448,
@@ -1977,7 +1977,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 40 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 74 }
 
    pk-HashMLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA44-RSA2048-PSS-SHA256,
@@ -1991,7 +1991,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 41 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 75 }
 
    pk-HashMLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA44-RSA2048-PKCS15-SHA256,
@@ -2006,7 +2006,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 42 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 76 }
 
    pk-HashMLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA44-Ed25519-SHA512,
@@ -2021,7 +2021,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 43 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 77 }
 
    pk-HashMLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA44-ECDSA-P256-SHA256,
@@ -2036,7 +2036,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 44 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 78 }
 
    pk-HashMLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-RSA3072-PSS-SHA512,
@@ -2051,7 +2051,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 45 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 79 }
 
    pk-HashMLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-RSA3072-PKCS15-SHA512,
@@ -2065,7 +2065,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 46 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 80 }
 
    pk-HashMLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-RSA4096-PSS-SHA512,
@@ -2080,7 +2080,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 47 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 81 }
 
    pk-HashMLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-RSA4096-PKCS15-SHA512,
@@ -2094,7 +2094,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 48 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 82 }
 
    pk-HashMLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-ECDSA-P384-SHA512,
@@ -2109,7 +2109,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 49 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 83 }
 
    pk-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512,
@@ -2124,7 +2124,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 50 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 84 }
 
    pk-HashMLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA65-Ed25519-SHA512,
@@ -2139,7 +2139,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 51 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 85 }
 
    pk-HashMLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA87-ECDSA-P384-SHA512,
@@ -2154,7 +2154,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 52 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 86 }
 
    pk-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512,
@@ -2169,7 +2169,7 @@ Deserialization Process:
    -- TODO: OID to be replaced by IANA
    id-HashMLDSA87-Ed448-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 53 }
+      entrust(114027) algorithm(80) composite(8) signature(1) 87 }
 
    pk-HashMLDSA87-Ed448-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-HashMLDSA87-Ed448-SHA512,
