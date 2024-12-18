@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 14 June 2025                                            M. Pala
+Expires: 21 June 2025                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        11 December 2024
+                                                        18 December 2024
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 June 2025.
+   This Internet-Draft will expire on 21 June 2025.
 
 Copyright Notice
 
@@ -1203,46 +1203,46 @@ Deserialization Process:
    |Composite Signature   |OID         |First      |Second AlgorithmID     |
    |AlgorithmID           |            |AlgorithmID|                       |
    +======================+============+===========+=======================+
-   |id-MLDSA44-RSA2048-PSS|<CompSig>.21|id-ML-     |id-RSASA-PSS with id-  |
+   |id-MLDSA44-RSA2048-PSS|<CompSig>.60|id-ML-     |id-RSASA-PSS with id-  |
    |                      |            |DSA-44     |sha256                 |
    +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.22|id-ML-     |sha256WithRSAEncryption|
+   |id-                   |<CompSig>.61|id-ML-     |sha256WithRSAEncryption|
    |MLDSA44-RSA2048-PKCS15|            |DSA-44     |                       |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA44-Ed25519    |<CompSig>.23|id-ML-     |id-Ed25519             |
+   |id-MLDSA44-Ed25519    |<CompSig>.62|id-ML-     |id-Ed25519             |
    |                      |            |DSA-44     |                       |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA44-ECDSA-P256 |<CompSig>.24|id-ML-     |ecdsa-with-SHA256 with |
+   |id-MLDSA44-ECDSA-P256 |<CompSig>.63|id-ML-     |ecdsa-with-SHA256 with |
    |                      |            |DSA-44     |secp256r1              |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-RSA3072-PSS|<CompSig>.26|id-ML-     |id-RSASA-PSS with id-  |
+   |id-MLDSA65-RSA3072-PSS|<CompSig>.64|id-ML-     |id-RSASA-PSS with id-  |
    |                      |            |DSA-65     |sha256                 |
    +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.27|id-ML-     |sha256WithRSAEncryption|
+   |id-                   |<CompSig>.65|id-ML-     |sha256WithRSAEncryption|
    |MLDSA65-RSA3072-PKCS15|            |DSA-65     |                       |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-RSA4096-PSS|<CompSig>.34|id-ML-     |id-RSASA-PSS with id-  |
+   |id-MLDSA65-RSA4096-PSS|<CompSig>.66|id-ML-     |id-RSASA-PSS with id-  |
    |                      |            |DSA-65     |sha384                 |
    +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.35|id-ML-     |sha384WithRSAEncryption|
+   |id-                   |<CompSig>.67|id-ML-     |sha384WithRSAEncryption|
    |MLDSA65-RSA4096-PKCS15|            |DSA-65     |                       |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-ECDSA-P384 |<CompSig>.28|id-ML-     |ecdsa-with-SHA384 with |
+   |id-MLDSA65-ECDSA-P384 |<CompSig>.68|id-ML-     |ecdsa-with-SHA384 with |
    |                      |            |DSA-65     |secp384r1              |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-ECDSA-     |<CompSig>.29|id-ML-     |ecdsa-with-SHA256 with |
+   |id-MLDSA65-ECDSA-     |<CompSig>.69|id-ML-     |ecdsa-with-SHA256 with |
    |brainpoolP256r1       |            |DSA-65     |brainpoolP256r1        |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-Ed25519    |<CompSig>.30|id-ML-     |id-Ed25519             |
+   |id-MLDSA65-Ed25519    |<CompSig>.70|id-ML-     |id-Ed25519             |
    |                      |            |DSA-65     |                       |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-ECDSA-P384 |<CompSig>.31|id-ML-     |ecdsa-with-SHA384 with |
+   |id-MLDSA87-ECDSA-P384 |<CompSig>.71|id-ML-     |ecdsa-with-SHA384 with |
    |                      |            |DSA-87     |secp384r1              |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-ECDSA-     |<CompSig>.32|id-ML-     |ecdsa-with-SHA384 with |
+   |id-MLDSA87-ECDSA-     |<CompSig>.72|id-ML-     |ecdsa-with-SHA384 with |
    |brainpoolP384r1       |            |DSA-87     |brainpoolP384r1        |
    +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-Ed448      |<CompSig>.33|id-ML-     |id-Ed448               |
+   |id-MLDSA87-Ed448      |<CompSig>.73|id-ML-     |id-Ed448               |
    |                      |            |DSA-87     |                       |
    +----------------------+------------+-----------+-----------------------+
 
@@ -1262,46 +1262,46 @@ Deserialization Process:
    |Composite Signature AlgorithmID  |OID         |First      |Second AlgorithmID     |Pre-  |
    |                                 |            |AlgorithmID|                       |Hash  |
    +=================================+============+===========+=======================+======+
-   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.40|id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.74|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                                 |            |DSA-44     |sha256                 |sha256|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.41|id-ML-     |sha256WithRSAEncryption|id-   |
+   |id-                              |<CompSig>.75|id-ML-     |sha256WithRSAEncryption|id-   |
    |HashMLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44     |                       |sha256|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.42|id-ML-     |id-Ed25519             |id-   |
+   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.76|id-ML-     |id-Ed25519             |id-   |
    |                                 |            |DSA-44     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.43|id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.77|id-ML-     |ecdsa-with-SHA256 with |id-   |
    |                                 |            |DSA-44     |secp256r1              |sha256|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.44|id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.78|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                                 |            |DSA-65     |sha256                 |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.45|id-ML-     |sha256WithRSAEncryption|id-   |
+   |id-                              |<CompSig>.79|id-ML-     |sha256WithRSAEncryption|id-   |
    |HashMLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.46|id-ML-     |id-RSASA-PSS with id-  |id-   |
+   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.80|id-ML-     |id-RSASA-PSS with id-  |id-   |
    |                                 |            |DSA-65     |sha384                 |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.47|id-ML-     |sha384WithRSAEncryption|id-   |
+   |id-                              |<CompSig>.81|id-ML-     |sha384WithRSAEncryption|id-   |
    |HashMLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.48|id-ML-     |ecdsa-with-SHA384 with |id-   |
+   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.82|id-ML-     |ecdsa-with-SHA384 with |id-   |
    |                                 |            |DSA-65     |secp384r1              |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-ECDSA-            |<CompSig>.49|id-ML-     |ecdsa-with-SHA256 with |id-   |
+   |id-HashMLDSA65-ECDSA-            |<CompSig>.83|id-ML-     |ecdsa-with-SHA256 with |id-   |
    |brainpoolP256r1-SHA512           |            |DSA-65     |brainpoolP256r1        |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.50|id-ML-     |id-Ed25519             |id-   |
+   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.84|id-ML-     |id-Ed25519             |id-   |
    |                                 |            |DSA-65     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.51|id-ML-     |ecdsa-with-SHA384 with |id-   |
+   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.85|id-ML-     |ecdsa-with-SHA384 with |id-   |
    |                                 |            |DSA-87     |secp384r1              |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-ECDSA-            |<CompSig>.52|id-ML-     |ecdsa-with-SHA384 with |id-   |
+   |id-HashMLDSA87-ECDSA-            |<CompSig>.86|id-ML-     |ecdsa-with-SHA384 with |id-   |
    |brainpoolP384r1-SHA512           |            |DSA-87     |brainpoolP384r1        |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-Ed448-SHA512      |<CompSig>.53|id-ML-     |id-Ed448               |id-   |
+   |id-HashMLDSA87-Ed448-SHA512      |<CompSig>.87|id-ML-     |id-Ed448               |id-   |
    |                                 |            |DSA-87     |                       |sha512|
    +---------------------------------+------------+-----------+-----------------------+------+
 
@@ -1329,33 +1329,33 @@ Deserialization Process:
      | Composite Signature AlgorithmID  | Domain Separator (in Hex   |
      |                                  | encoding)                  |
      +==================================+============================+
-     | id-MLDSA44-RSA2048-PSS           | 060B6086480186FA6B50080115 |
+     | id-MLDSA44-RSA2048-PSS           | 060B6086480186FA6B5008013C |
      +----------------------------------+----------------------------+
-     | id-MLDSA44-RSA2048-PKCS15        | 060B6086480186FA6B50080116 |
+     | id-MLDSA44-RSA2048-PKCS15        | 060B6086480186FA6B5008013D |
      +----------------------------------+----------------------------+
-     | id-MLDSA44-Ed25519               | 060B6086480186FA6B50080117 |
+     | id-MLDSA44-Ed25519               | 060B6086480186FA6B5008013E |
      +----------------------------------+----------------------------+
-     | id-MLDSA44-ECDSA-P256            | 060B6086480186FA6B50080118 |
+     | id-MLDSA44-ECDSA-P256            | 060B6086480186FA6B5008013F |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-RSA3072-PSS           | 060B6086480186FA6B5008011A |
+     | id-MLDSA65-RSA3072-PSS           | 060B6086480186FA6B50080140 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-RSA3072-PKCS15        | 060B6086480186FA6B5008011B |
+     | id-MLDSA65-RSA3072-PKCS15        | 060B6086480186FA6B50080141 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-RSA4096-PSS           | 060B6086480186FA6B50080122 |
+     | id-MLDSA65-RSA4096-PSS           | 060B6086480186FA6B50080142 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-RSA4096-PKCS15        | 060B6086480186FA6B50080123 |
+     | id-MLDSA65-RSA4096-PKCS15        | 060B6086480186FA6B50080143 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-ECDSA-P384            | 060B6086480186FA6B5008011C |
+     | id-MLDSA65-ECDSA-P384            | 060B6086480186FA6B50080144 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-ECDSA-brainpoolP256r1 | 060B6086480186FA6B5008011D |
+     | id-MLDSA65-ECDSA-brainpoolP256r1 | 060B6086480186FA6B50080145 |
      +----------------------------------+----------------------------+
-     | id-MLDSA65-Ed25519               | 060B6086480186FA6B5008011E |
+     | id-MLDSA65-Ed25519               | 060B6086480186FA6B50080146 |
      +----------------------------------+----------------------------+
-     | id-MLDSA87-ECDSA-P384            | 060B6086480186FA6B5008011F |
+     | id-MLDSA87-ECDSA-P384            | 060B6086480186FA6B50080147 |
      +----------------------------------+----------------------------+
-     | id-MLDSA87-ECDSA-brainpoolP384r1 | 060B6086480186FA6B50080120 |
+     | id-MLDSA87-ECDSA-brainpoolP384r1 | 060B6086480186FA6B50080148 |
      +----------------------------------+----------------------------+
-     | id-MLDSA87-Ed448                 | 060B6086480186FA6B50080121 |
+     | id-MLDSA87-Ed448                 | 060B6086480186FA6B50080149 |
      +----------------------------------+----------------------------+
 
          Table 4: Pure ML-DSA Composite Signature Domain Separators
@@ -1364,38 +1364,38 @@ Deserialization Process:
     | Composite Signature AlgorithmID   | Domain Separator (in Hex   |
     |                                   | encoding)                  |
     +===================================+============================+
-    | id-HashMLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B50080128 |
+    | id-HashMLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B5008014A |
     +-----------------------------------+----------------------------+
-    | id-                               | 060B6086480186FA6B50080129 |
+    | id-                               | 060B6086480186FA6B5008014B |
     | HashMLDSA44-RSA2048-PKCS15-SHA256 |                            |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA44-Ed25519-SHA512     | 060B6086480186FA6B5008012A |
+    | id-HashMLDSA44-Ed25519-SHA512     | 060B6086480186FA6B5008014C |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA44-ECDSA-P256-SHA256  | 060B6086480186FA6B5008012B |
+    | id-HashMLDSA44-ECDSA-P256-SHA256  | 060B6086480186FA6B5008014D |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA65-RSA3072-PSS-SHA512 | 060B6086480186FA6B5008012C |
+    | id-HashMLDSA65-RSA3072-PSS-SHA512 | 060B6086480186FA6B5008014E |
     +-----------------------------------+----------------------------+
-    | id-                               | 060B6086480186FA6B5008012D |
+    | id-                               | 060B6086480186FA6B5008014F |
     | HashMLDSA65-RSA3072-PKCS15-SHA512 |                            |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA65-RSA4096-PSS-SHA512 | 060B6086480186FA6B5008012E |
+    | id-HashMLDSA65-RSA4096-PSS-SHA512 | 060B6086480186FA6B50080150 |
     +-----------------------------------+----------------------------+
-    | id-                               | 060B6086480186FA6B5008012F |
+    | id-                               | 060B6086480186FA6B50080151 |
     | HashMLDSA65-RSA4096-PKCS15-SHA512 |                            |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA65-ECDSA-P384-SHA512  | 060B6086480186FA6B50080130 |
+    | id-HashMLDSA65-ECDSA-P384-SHA512  | 060B6086480186FA6B50080152 |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA65-ECDSA-             | 060B6086480186FA6B50080131 |
+    | id-HashMLDSA65-ECDSA-             | 060B6086480186FA6B50080153 |
     | brainpoolP256r1-SHA512            |                            |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA65-Ed25519-SHA512     | 060B6086480186FA6B50080132 |
+    | id-HashMLDSA65-Ed25519-SHA512     | 060B6086480186FA6B50080154 |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA87-ECDSA-P384-SHA512  | 060B6086480186FA6B50080133 |
+    | id-HashMLDSA87-ECDSA-P384-SHA512  | 060B6086480186FA6B50080155 |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA87-ECDSA-             | 060B6086480186FA6B50080134 |
+    | id-HashMLDSA87-ECDSA-             | 060B6086480186FA6B50080156 |
     | brainpoolP384r1-SHA512            |                            |
     +-----------------------------------+----------------------------+
-    | id-HashMLDSA87-Ed448-SHA512       | 060B6086480186FA6B50080135 |
+    | id-HashMLDSA87-Ed448-SHA512       | 060B6086480186FA6B50080157 |
     +-----------------------------------+----------------------------+
 
         Table 5: Hash ML-DSA Composite Signature Domain Separators
