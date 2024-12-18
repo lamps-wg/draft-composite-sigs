@@ -1104,7 +1104,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 
 | Composite Signature AlgorithmID | Domain Separator (in Hex encoding)|
 | ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS | 060B6086480186FA6B5008013C| 
+| id-MLDSA44-RSA2048-PSS | 060B6086480186FA6B5008013C|
 | id-MLDSA44-RSA2048-PKCS15 |060B6086480186FA6B5008013D|
 | id-MLDSA44-Ed25519 |060B6086480186FA6B5008013E|
 | id-MLDSA44-ECDSA-P256 |060B6086480186FA6B5008013F|
