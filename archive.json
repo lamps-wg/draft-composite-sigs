@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-17T00:55:27.301451+00:00",
+  "timestamp": "2024-12-19T00:53:41.150324+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2051,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2024-12-16T09:08:43Z",
+      "updatedAt": "2024-12-18T15:25:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -2109,6 +2109,13 @@
           "body": "> > If M' starts with the magic sequence, that can be detected by the verifier.\r\n> \r\n> This comment makes no sense to me.\r\n> \r\n> The verifier takes as input `Composite-ML-DSA.Sign (sk, M, ctx)`, and it has `Domain` hard-coded.\r\n> \r\n> Then the verifier itself constructs `M' = Domain || len(ctx) || ctx || M`. `Domain` is a value hard-coded in the source code of the verifier, and pre-fixed to the message by the verifier. What possibly value is there in the verifier detecting something that it itself added? `M'` never goes over the wire.\r\n\r\nI wrote \"... and changes the message to `M'`\". This is why M' goes over the wire. Please look at the description I have given above. You are trying to map it to the verification of the composite algorithm, which is not relevant here.  The relevant case is the alteration to a message-signature pair that is valid under the standalone-scheme verification. In that case the forged message `M'` starts with the \"magic prefix\" which can be detected by the verifier.\r\n\r\n@ounsworth \r\n",
           "createdAt": "2024-12-16T09:08:16Z",
           "updatedAt": "2024-12-16T09:08:43Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi Falko, I think the confusion is because you mention M' .   In Composite M' is defined as the message format of the Composite. \r\n\r\nM' = Domain || len(ctx) || ctx || M\r\n\r\nIt seems you are using M' to mean something slightly different.  I've  re-read you comment multiple times and am still trying to figure out what you mean.\r\n\r\n  \"Here the case of a stripping attack is relevant where the attacker removes the PQ signatures and leaves the traditional signature and changes the message to M'. The signature is then valid for M'. If M' starts with the magic sequence, that can be detected by the verifier.:\r\n\r\nSo I'm trying to follow what you are saying..  You say the attacker removes the PQ signatures and leaves the traditional signature.  So I think you mean:\r\n\r\ninstead of:\r\n mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )\r\n tradSig = Trad.Sign( tradSK, M' )\r\n\r\nPQ is stripped out and we just have the following traditional component:\r\n  tradSig = Trad.Sign( tradSK, M' )\r\n\r\nSo I think you are saying a regular traditional verifier would verify the stripped traditional signature by having an attacker compute M' (from M) and handing the traditional stripped signature and the constructed message:\r\nif not Trad.Verify( pk2, M', s2) then\r\n          output \"Invalid signature\"\r\n\r\nThe same thing could NOT be done with the ML-DSA PQ component because of the context.\r\n\r\n  \"If M' starts with the magic sequence, that can be detected by the verifier\"\r\n\r\n- I don't understand how the traditional verifier would detect this, it would know nothing about the composite magic sequence (unless you are advocating that traditional verifiers be updated with this knowledge to detect this kind of attack?).   The composite verifier would already fail because it would be expected 2 signature components and would only have 1.  \r\n\r\nSo please help me understand if I'm on the right track, or give us a more detailed explanation of how this works.  I am obviously missing something important that isn't obvious to me.  \r\n",
+          "createdAt": "2024-12-18T14:49:56Z",
+          "updatedAt": "2024-12-18T15:25:00Z"
         }
       ]
     },
