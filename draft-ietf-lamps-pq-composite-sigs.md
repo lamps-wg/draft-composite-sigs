@@ -361,7 +361,7 @@ Implicit inputs:
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific ML-DSA algorithm and
+  Trad     A placeholder for the specific traditional algorithm and
            parameter set to use, for example "RSASA-PSS with id-sha256"
            or "Ed25519".
 
