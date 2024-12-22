@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-19T00:53:41.150324+00:00",
+  "timestamp": "2024-12-22T00:55:00.278244+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2051,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2024-12-18T15:25:00Z",
+      "updatedAt": "2024-12-19T06:21:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -2116,6 +2116,13 @@
           "body": "Hi Falko, I think the confusion is because you mention M' .   In Composite M' is defined as the message format of the Composite. \r\n\r\nM' = Domain || len(ctx) || ctx || M\r\n\r\nIt seems you are using M' to mean something slightly different.  I've  re-read you comment multiple times and am still trying to figure out what you mean.\r\n\r\n  \"Here the case of a stripping attack is relevant where the attacker removes the PQ signatures and leaves the traditional signature and changes the message to M'. The signature is then valid for M'. If M' starts with the magic sequence, that can be detected by the verifier.:\r\n\r\nSo I'm trying to follow what you are saying..  You say the attacker removes the PQ signatures and leaves the traditional signature.  So I think you mean:\r\n\r\ninstead of:\r\n mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )\r\n tradSig = Trad.Sign( tradSK, M' )\r\n\r\nPQ is stripped out and we just have the following traditional component:\r\n  tradSig = Trad.Sign( tradSK, M' )\r\n\r\nSo I think you are saying a regular traditional verifier would verify the stripped traditional signature by having an attacker compute M' (from M) and handing the traditional stripped signature and the constructed message:\r\nif not Trad.Verify( pk2, M', s2) then\r\n          output \"Invalid signature\"\r\n\r\nThe same thing could NOT be done with the ML-DSA PQ component because of the context.\r\n\r\n  \"If M' starts with the magic sequence, that can be detected by the verifier\"\r\n\r\n- I don't understand how the traditional verifier would detect this, it would know nothing about the composite magic sequence (unless you are advocating that traditional verifiers be updated with this knowledge to detect this kind of attack?).   The composite verifier would already fail because it would be expected 2 signature components and would only have 1.  \r\n\r\nSo please help me understand if I'm on the right track, or give us a more detailed explanation of how this works.  I am obviously missing something important that isn't obvious to me.  \r\n",
           "createdAt": "2024-12-18T14:49:56Z",
           "updatedAt": "2024-12-18T15:25:00Z"
+        },
+        {
+          "author": "falko-strenzke",
+          "authorAssociation": "NONE",
+          "body": "> Hi Falko, I think the confusion is because you mention M' . In Composite M' is defined as the message format of the Composite.\r\n> \r\n> M' = Domain || len(ctx) || ctx || M\r\n> \r\n> It seems you are using M' to mean something slightly different. I've re-read you comment multiple times and am still trying to figure out what you mean.\r\n\r\nNo, the `M'` I refer to is the same one as you give above.\r\n> \r\n> \"Here the case of a stripping attack is relevant where the attacker removes the PQ signatures and leaves the traditional signature and changes the message to M'. The signature is then valid for M'. If M' starts with the magic sequence, that can be detected by the verifier.:\r\n> \r\n> So I'm trying to follow what you are saying.. You say the attacker removes the PQ signatures and leaves the traditional signature. So I think you mean:\r\n> \r\n> instead of: mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain ) tradSig = Trad.Sign( tradSK, M' )\r\n> \r\n> PQ is stripped out and we just have the following traditional component: tradSig = Trad.Sign( tradSK, M' )\r\n\r\nYes, that is the attack I am referring to.\r\n\r\n> So I think you are saying a regular traditional verifier would verify the stripped traditional signature by having an attacker compute M' (from M) and handing the traditional stripped signature and the constructed message: if not Trad.Verify( pk2, M', s2) then output \"Invalid signature\"\r\n\r\nYes, the attacker replaces `M` with `M'` in the message.\r\n\r\n> \r\n> The same thing could NOT be done with the ML-DSA PQ component because of the context.\r\n\r\nExactly.\r\n\r\n> \r\n> \"If M' starts with the magic sequence, that can be detected by the verifier\"\r\n> \r\n> *  I don't understand how the traditional verifier would detect this, it would know nothing about the composite magic sequence (unless you are advocating that traditional verifiers be updated with this knowledge to detect this kind of attack?). \r\n\r\nExaclty, the implementation of the verifier would have to be updated to know the magic sequence and classify a message starting with it as an attack message.\r\n\r\n> The composite verifier would already fail because it would be expected 2 signature components and would only have 1.\r\n\r\nFor the verifier of a composite signature, in principle the inverse attack was possible: The attacker lets the signer sign two messages `M'_pq` and `M'_trad` with the PQ and the traditional scheme standalone, respectively. He makes up these two message exactly in the way so that they will later be valid messages when the two signatures are interpreted as component signatures of the composite scheme. Now, for the traditional scheme there is no hinderance to have `M'_trad` signed. For the PQ scheme, having `M'_pq` signed  is hindered by the fact that it would need to set a specific value of the context parameter, which the current version of draft-ietf-lamps-cms-ml-dsa does not allow: \"When using ML-DSA as described in this document, the context string is not used.\" So this attack is not applicable if draft-ietf-lamps-cms-ml-dsa is not changed in this respect. If the draft would be changed to allow the arbitrary values of the context parameter for standalone ML-DSA, the magic prefix could also be used to detect fadulent messages during signing, since the two `M'_...` messages of the component signatures would have to start with that magic prefix.\r\n\r\n",
+          "createdAt": "2024-12-19T06:18:11Z",
+          "updatedAt": "2024-12-19T06:21:54Z"
         }
       ]
     },
@@ -2212,6 +2219,22 @@
       "body": "I think more discussion is needed about whether the private key format should allow the expanded format as well as the seed.   If an implementation only had access to the expanded format, and needed to export the key, then it may not have access to the seed.   If there is no way to support this in a reasonable way, then there WILL be operational issues down the road.\r\n\r\n- Max suggests we could have a separate section for the private key.   For the traditional component, if we know the keysize, we can look for 32+trad or expanded mldsa+ trad and know which one to use.   That would be more efficient than using the first 32 bytes, expanding them (which will work even if the key is already expanded).\r\n\r\n",
       "createdAt": "2024-12-12T18:21:28Z",
       "updatedAt": "2024-12-12T18:21:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 96,
+      "id": "I_kwDOL5eEDM6kH_c6",
+      "title": "Many of the composite signatures lower the security of ML-DSA from SUF-CMA to EUF-CMA",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/96",
+      "state": "OPEN",
+      "author": "emanjon",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "**John Preu\u00df Mattsson:**\r\nI dislike that the document creates EUF-CMA composites of the SUF-CMA ML-DSA and makes is sound like the composites are better. The abstract states:\r\n\r\n\"These combinations are tailored to meet security best practices\"\r\n\"where the operator wants extra protection\"\r\n\r\nWhile there has been a lot of PQC discussions regarding new exotic security properties of debatable practical value, SUF-CMA is not a new exotic property. It is best practice and the IETF standardized version of EdDSA and the NIST standardized ML-DSA are both SUF-CMA. Users and developers are known to expect signatures to be SUF-CMA and developers believing EUF-CMA signatures to be SUF-CMA have caused significant vulnerabilities in the past.  https://en.bitcoin.it/wiki/Transaction_malleability\r\n\r\nMy preference would be that IETF does not standardize any EUF-CMA composites of the SUF-CMA ML-DSA. If this is done anyway, the fact that some of the composites weakens security properties compared to standalone ML-DSA must be very clear and mentioned together with any claims of improved security, which would currently be in the abstract. Wheater a composite is SUF-CMA and EUF-CMA should be clearly marked.\r\n\r\n**Bas Westerbaan:**\r\nAgreed.\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/f9yHqaXnze4qNubvDa0OkVUcoNY/\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/GzjPEaNgKDb9_trgeFkvXLc-Cho/\r\n",
+      "createdAt": "2024-12-20T22:15:23Z",
+      "updatedAt": "2024-12-20T22:15:23Z",
       "closedAt": null,
       "comments": []
     }
@@ -3859,6 +3882,32 @@
       "mergeCommit": {
         "oid": "40b8aef94ed90d884a4255dbbaf54f658fc55b88"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 95,
+      "id": "PR_kwDOL5eEDM6F5SNd",
+      "title": "Fix typo",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/95",
+      "state": "OPEN",
+      "author": "jiep",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-12-20T10:06:00Z",
+      "updatedAt": "2024-12-20T10:06:00Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "bdd1e2f389f37ca31c26944f8d98d612a9cc7bb7",
+      "headRepository": "jiep/draft-composite-sigs",
+      "headRefName": "main",
+      "headRefOid": "1d3ffaf6d0c569b1caa11e579685f289bd583e19",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
