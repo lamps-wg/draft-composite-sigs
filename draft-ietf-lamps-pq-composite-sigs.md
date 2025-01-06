@@ -1084,7 +1084,7 @@ HashComposite-ML-DSA Signature public key types:
 | id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.79  | id-ML-DSA-65 | sha256WithRSAEncryption | id-sha512 |
 | id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.80 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 | id-sha512 |
 | id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.81  | id-ML-DSA-65 | sha384WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.XX  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |
+| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.XX  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |
 | id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.82  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 | id-sha512 |
 | id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.83  | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha512 |
 | id-HashMLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.84  | id-ML-DSA-65 | id-Ed25519 | id-sha512 |
@@ -1233,21 +1233,21 @@ A compliant implementation MUST support the following algorithms for the SignerI
 
 | Composite Signature AlgorithmID | digestAlgorithm |
 | ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15 | SHA256 |
-| id-MLDSA44-Ed25519 | SHA512 |
-| id-MLDSA44-ECDSA-P256         | SHA256 |
+| id-MLDSA44-RSA2048-PSS           | SHA256 |
+| id-MLDSA44-RSA2048-PKCS15        | SHA256 |
+| id-MLDSA44-Ed25519               | SHA512 |
+| id-MLDSA44-ECDSA-P256            | SHA256 |
 | id-MLDSA65-RSA3072-PSS           | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15         | SHA512 |
+| id-MLDSA65-RSA3072-PKCS15        | SHA512 |
 | id-MLDSA65-RSA4096-PSS           | SHA512 |
 | id-MLDSA65-RSA4096-PKCS15        | SHA512 |
 | id-MLDSA65-ECDSA-P256            | SHA512 |
 | id-MLDSA65-ECDSA-P384            | SHA512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519              | SHA512 |
-| id-MLDSA87-ECDSA-P384            | SHA512|
-| id-MLDSA87-ECDSA-brainpoolP384r1 |  SHA512 |
-| id-MLDSA87-Ed448              | SHA512 |
+| id-MLDSA65-Ed25519               | SHA512 |
+| id-MLDSA87-ECDSA-P384            | SHA512 |
+| id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512 |
+| id-MLDSA87-Ed448                 | SHA512 |
 {: #tab-cms-shas title="Recommended Composite Signature Digest Algorithms"}
 
 where:

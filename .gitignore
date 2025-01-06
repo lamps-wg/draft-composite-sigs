@@ -3,3 +3,4 @@
 *.html
 *~
 lib/
+.includes.mk
