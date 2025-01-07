@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-05T00:55:11.258884+00:00",
+  "timestamp": "2025-01-07T00:51:29.521432+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2051,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2025-01-03T21:54:34Z",
+      "updatedAt": "2025-01-06T09:06:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -2130,6 +2130,13 @@
           "body": "Thanks for the update Falco!  Now we have the same understanding.  So you want us to add the prefix to help mitigate a stripping attacked that will require an update to the classical verifier to do this detection.   We would do this for all composite signature combinations (as well as any future combinations).  \r\n\r\nSo if we add this:\r\n\r\nM' = prefix || Domain || len(ctx) || ctx || M\r\n\r\nwhere:\r\nprefix = \"CompositeAlgorithmSignatures2025\" (encoded as 32 ASCII bytes)\r\n\r\nAs well as a couple sentences explaining why this has been added, I believe it will mitigate the issue and make you happy.  \r\n\r\n\r\n",
           "createdAt": "2025-01-03T21:54:04Z",
           "updatedAt": "2025-01-03T21:54:34Z"
+        },
+        {
+          "author": "falko-strenzke",
+          "authorAssociation": "NONE",
+          "body": "> So if we add this:\r\n> \r\n> M' = prefix || Domain || len(ctx) || ctx || M\r\n> \r\n> where: prefix = \"CompositeAlgorithmSignatures2025\" (encoded as 32 ASCII bytes)\r\n\r\nI am basically OK with this solution. The prefix string has sufficient entropy. To achieve even some degree of protocol domain separation, we could make the prefix \"IetfCmsCompositeAlgorithmSignatures2025\".\r\n\r\nIn my view, there is no need for an obligation to apply the detection of this prefix in verified message (this cannot be enforced for existing implementations anyway), but should be presented as an optional measure to prevent the theoretical forgeries. So in my view the draft should incorporate a sentence mentioning the possibility of the attack detection via prefix detection.\r\n\r\n> As well as a couple sentences explaining why this has been added, I believe it will mitigate the issue and make you happy.\r\n\r\nYes, a short discussion of the principal forgery attacks and the role of the prefix detection (for instance in the security considerations section) would be good.",
+          "createdAt": "2025-01-06T09:02:45Z",
+          "updatedAt": "2025-01-06T09:06:27Z"
         }
       ]
     },
@@ -2185,7 +2192,7 @@
       "labels": [],
       "body": "Much discussion has happened at IETF around making use of the external mu in ML-DSA (Algorithm 7, line 6 of FIPS 204).   This allows the hash of the message to be calculated externally while producing the same output as in Algorithm 4 of FIPS 204.   This means we no longer have a need to support the Hash ML-DSA...   This will reduce the number of OIDS by half which is good.   \r\n\r\nQuestion is do we actually need to do anything other than remove Hash Composite ML-DSA?    Probably a paragraph explaining that it can be used could be added.  ",
       "createdAt": "2024-11-22T22:29:43Z",
-      "updatedAt": "2024-12-04T16:01:24Z",
+      "updatedAt": "2025-01-06T20:17:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -2194,6 +2201,20 @@
           "body": "Ed448 and X25519 use pre-hash modes controlled by OIDs, so if HashComposite-ML-DSA is removed, there will not be a way to use pre-hashing with Ed448 and X25519.    \r\n",
           "createdAt": "2024-12-04T16:01:22Z",
           "updatedAt": "2024-12-04T16:01:22Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Here is what I imagine is the variant of the signature algorithm if you do the ExternalMu thing (note that only Steps 4a and 4b have changed)\r\n\r\n```\r\nPRE-HASHED MODE\r\n\r\n\r\n1. If |ctx| > 255:\r\n      return error\r\n\r\n  2. Compute the Message M'.\r\n\r\n      M' = Domain || len(ctx) || ctx || M\r\n\r\n  3. Separate the private key into component keys.\r\n\r\n      (mldsaSK, tradSK) = sk\r\n\r\n\r\n  4a. Pre-hash prior to calling the component signature algorithms\r\n  \r\n      mldsa-mu = ExternalMu-ML-DSA.Prehash(mldsapk, M', ctx=Domain)\r\n      trad-ph  = HASH(M')\r\n\r\n\r\n  4b. Generate the 2 component signatures independently, by calculating\r\n     the signature over M' according to their algorithm specifications.\r\n\r\n      mldsaSig = ExternalMu-ML-DSA.Sign( mldsaSK, mldsa-mu )\r\n      tradSig = Trad.SignNoPrehash( tradSK, trad-ph )\r\n\r\n\r\n  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this\r\n     process must return an error.\r\n\r\n      if NOT mldsaSig or NOT tradSig:\r\n        output \"Signature generation error\"\r\n\r\n   6. Encode each component signature into a CompositeSignatureValue.\r\n\r\n      signature = CompositeSignatureValue(mldsaSig, tradSig)\r\n\r\n  7. Output signature\r\n\r\n      return signature\r\n```\r\n\r\nWe should present this to LAMPS with Pros / Cons and see if this is good enough to rip out all the HashComposite variants.",
+          "createdAt": "2025-01-06T19:59:14Z",
+          "updatedAt": "2025-01-06T19:59:42Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\r\nArguments for removal of HashComposite-ML-DSA:\r\n - Remove the 14 HashComposite combinations (makes the draft shorter and simpler)\r\n - Client software can hash or not hash based on application needs as the same verifier is used for both (just like in existing RSA/ECDSA implementations today).\r\n - Retains strong collision resistance and public key binding.\r\n\r\nArguments against removal of HashComposite-ML-DSA:\r\n- Agility of using whatever Hashing algorithm is available to the implementor is not available.  With external mu SHAKE has to be used.\r\n- The CA now needs to decide ahead of time whether it will always hash, or not support hashing.  \r\n- Hash Composite ML-DSA aligns with FIPS 204 (NIST has created the Hash ML-DSA mode, the same should exist for composite ML-DSA).\r\n",
+          "createdAt": "2025-01-06T20:17:18Z",
+          "updatedAt": "2025-01-06T20:17:18Z"
         }
       ]
     },
@@ -2252,6 +2273,22 @@
           "updatedAt": "2025-01-03T22:07:54Z"
         }
       ]
+    },
+    {
+      "number": 98,
+      "id": "I_kwDOL5eEDM6lM8Zi",
+      "title": "Problems with the \"Use in CMS > Underlying Components\" section",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/98",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I'm just making a note here so I can come back and clean this up later.\r\n\r\nProblems I see:\r\n\r\n1. Why is id-MLDSA44-Ed25519 using SHA512 as the digest? Shouldn't that be SHA256?\r\n2. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\r\n3. Do we need an equivalent table for the HashComposite variants?",
+      "createdAt": "2025-01-06T23:47:30Z",
+      "updatedAt": "2025-01-06T23:47:30Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -3939,6 +3976,113 @@
           "createdAt": "2025-01-03T22:10:18Z",
           "updatedAt": "2025-01-03T22:10:18Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDOL5eEDM6Gvhx8",
+      "title": "Added a P256 variant",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/97",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "To do before merge:\r\n\r\n- [ ] Assign a prototyping OID for `id-MLKEM768-ECDH-P256` from the Entrust OID arc -- update all the places in the draft that need it.\r\n- [ ] Once the OID is assigned, compute the domain separator for it.\r\n\r\n\r\n@johngray-dev I also fixed some typos in the IANA Considerations section (the non-prehashed OIDs still had a hash function in them), do you agree?",
+      "createdAt": "2025-01-05T04:10:37Z",
+      "updatedAt": "2025-01-06T23:53:11Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_p256",
+      "headRefOid": "304a347098f486e621127026a55ad6d2104b11c8",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6W2u3A",
+          "commit": {
+            "abbreviatedOid": "bec5538"
+          },
+          "author": "ilaril",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-05T16:27:58Z",
+          "updatedAt": "2025-01-05T16:27:58Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Should this be ML-DSA-65 instead of ML-DSA-87? The other changes seem to be for ML-DSA-65+ECDSA-P256 combo (e.g., id-HashMLDSA65-ECDSA-P256-SHA512).",
+              "createdAt": "2025-01-05T16:27:58Z",
+              "updatedAt": "2025-01-05T16:28:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6W2vEQ",
+          "commit": {
+            "abbreviatedOid": "bec5538"
+          },
+          "author": "ilaril",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-05T16:34:08Z",
+          "updatedAt": "2025-01-05T16:34:08Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Is it intentional to use SHA-512 with ECDSA P-256 (which usually uses P-256)?\r\n\r\nThe SHA-512 hash will be truncated to 32 bytes (This is not the same as SHA-512/256).\r\n\r\nRegarding speed of SHA-256 versus SHA-512, on 32-bit SHA-256 is faster, and on 64-bit SHA-512 is faster, unless there is hardware SHA-256, in which case SHA-256 is faster.",
+              "createdAt": "2025-01-05T16:34:08Z",
+              "updatedAt": "2025-01-05T16:37:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6W_JsL",
+          "commit": {
+            "abbreviatedOid": "bec5538"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-06T23:28:29Z",
+          "updatedAt": "2025-01-06T23:28:29Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Oops. I must have been tired or drunk when I wrote this. Good catch.",
+              "createdAt": "2025-01-06T23:28:29Z",
+              "updatedAt": "2025-01-06T23:28:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOL5eEDM6W_POD",
+          "commit": {
+            "abbreviatedOid": "304a347"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-06T23:53:11Z",
+          "updatedAt": "2025-01-06T23:53:11Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "This is intentional. The full specification of this cipher suite is:\r\n\r\n```\r\n| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.XX  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |\r\n```\r\n\r\nSo the EC part is `ecdsa-with-SHA256 with secp256r1`. The SHA512 is a pre-hash common to both components, and since MLDSA65 is a NIST Level 3, this must be at least SHA384. We received feedback that SHA384 is not well supported so we should only use SHA256 and SHA512, so then this has to be SHA512.\r\n\r\nComplicated, but that's how we got here. This is intentional.",
+              "createdAt": "2025-01-06T23:53:11Z",
+              "updatedAt": "2025-01-06T23:54:42Z"
+            }
+          ]
         }
       ]
     }
