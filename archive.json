@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-07T00:51:29.521432+00:00",
+  "timestamp": "2025-01-09T00:50:57.448129+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2051,7 +2051,7 @@
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2025-01-06T09:06:27Z",
+      "updatedAt": "2025-01-07T16:16:14Z",
       "closedAt": null,
       "comments": [
         {
@@ -2134,9 +2134,9 @@
         {
           "author": "falko-strenzke",
           "authorAssociation": "NONE",
-          "body": "> So if we add this:\r\n> \r\n> M' = prefix || Domain || len(ctx) || ctx || M\r\n> \r\n> where: prefix = \"CompositeAlgorithmSignatures2025\" (encoded as 32 ASCII bytes)\r\n\r\nI am basically OK with this solution. The prefix string has sufficient entropy. To achieve even some degree of protocol domain separation, we could make the prefix \"IetfCmsCompositeAlgorithmSignatures2025\".\r\n\r\nIn my view, there is no need for an obligation to apply the detection of this prefix in verified message (this cannot be enforced for existing implementations anyway), but should be presented as an optional measure to prevent the theoretical forgeries. So in my view the draft should incorporate a sentence mentioning the possibility of the attack detection via prefix detection.\r\n\r\n> As well as a couple sentences explaining why this has been added, I believe it will mitigate the issue and make you happy.\r\n\r\nYes, a short discussion of the principal forgery attacks and the role of the prefix detection (for instance in the security considerations section) would be good.",
+          "body": "> So if we add this:\r\n> \r\n> M' = prefix || Domain || len(ctx) || ctx || M\r\n> \r\n> where: prefix = \"CompositeAlgorithmSignatures2025\" (encoded as 32 ASCII bytes)\r\n\r\nI am basically OK with this solution. The prefix string has sufficient entropy. To achieve even some degree of protocol domain separation, we could make the prefix \"IetfCmsCompositeAlgorithmSignatures2025\".\r\n\r\nIn my view, there is no need for an obligation to apply the detection of this prefix in a verified message (this cannot be enforced for existing implementations anyway), but should be presented as an optional measure to prevent the theoretical forgeries. So in my view the draft should incorporate a sentence mentioning the possibility of the attack detection via prefix detection.\r\n\r\n> As well as a couple sentences explaining why this has been added, I believe it will mitigate the issue and make you happy.\r\n\r\nYes, a short discussion of the principal forgery attacks and the role of the prefix detection (for instance in the security considerations section) would be good.",
           "createdAt": "2025-01-06T09:02:45Z",
-          "updatedAt": "2025-01-06T09:06:27Z"
+          "updatedAt": "2025-01-07T16:16:14Z"
         }
       ]
     },
@@ -2192,7 +2192,7 @@
       "labels": [],
       "body": "Much discussion has happened at IETF around making use of the external mu in ML-DSA (Algorithm 7, line 6 of FIPS 204).   This allows the hash of the message to be calculated externally while producing the same output as in Algorithm 4 of FIPS 204.   This means we no longer have a need to support the Hash ML-DSA...   This will reduce the number of OIDS by half which is good.   \r\n\r\nQuestion is do we actually need to do anything other than remove Hash Composite ML-DSA?    Probably a paragraph explaining that it can be used could be added.  ",
       "createdAt": "2024-11-22T22:29:43Z",
-      "updatedAt": "2025-01-06T20:17:19Z",
+      "updatedAt": "2025-01-08T15:20:49Z",
       "closedAt": null,
       "comments": [
         {
@@ -2212,9 +2212,16 @@
         {
           "author": "johngray-dev",
           "authorAssociation": "COLLABORATOR",
-          "body": "\r\nArguments for removal of HashComposite-ML-DSA:\r\n - Remove the 14 HashComposite combinations (makes the draft shorter and simpler)\r\n - Client software can hash or not hash based on application needs as the same verifier is used for both (just like in existing RSA/ECDSA implementations today).\r\n - Retains strong collision resistance and public key binding.\r\n\r\nArguments against removal of HashComposite-ML-DSA:\r\n- Agility of using whatever Hashing algorithm is available to the implementor is not available.  With external mu SHAKE has to be used.\r\n- The CA now needs to decide ahead of time whether it will always hash, or not support hashing.  \r\n- Hash Composite ML-DSA aligns with FIPS 204 (NIST has created the Hash ML-DSA mode, the same should exist for composite ML-DSA).\r\n",
+          "body": "Arguments for removal of HashComposite-ML-DSA:\r\n - Remove the 14 HashComposite combinations (makes the draft shorter and simpler)\r\n - Client software can hash or not hash based on application needs as the same verifier is used for both (just like in existing RSA/ECDSA implementations today).\r\n - Retains strong collision resistance and public key binding.\r\n\r\nArguments against removal of HashComposite-ML-DSA:\r\n- Retains more crypto agility as the implementor gets to choose the hash function (good or bad).   With external mu pre-hashing the SHAKE algorithm must be used.\r\n- With external mu pre-hash, tr (the hash of the public key) is now required\r\n- The CA now needs to decide ahead of time whether it will always hash, or not support hashing.  \r\n- Hash Composite ML-DSA aligns with FIPS 204 (NIST has created the Hash ML-DSA mode, the same should exist for composite ML-DSA).\r\n\r\n",
           "createdAt": "2025-01-06T20:17:18Z",
-          "updatedAt": "2025-01-06T20:17:18Z"
+          "updatedAt": "2025-01-08T15:20:49Z"
+        },
+        {
+          "author": "PiotrPopis",
+          "authorAssociation": "NONE",
+          "body": "I also support the removal of HashComposite-ML-DSA. \r\nAlthough NIST has defined two modes of ML-DSA operation: Pre-Hash and PURE, FIPS 204 contains inconsistent provisions in this matter, as Sophie Schmieg aptly pointed out on Nov 5, 2024. Conformity of RFC standards with NIST is desirable, but due to this inconsistency we should make an exception, but at the same time include an appropriate explanation in the document.",
+          "createdAt": "2025-01-08T10:40:33Z",
+          "updatedAt": "2025-01-08T10:40:33Z"
         }
       ]
     },
@@ -2284,9 +2291,9 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "I'm just making a note here so I can come back and clean this up later.\r\n\r\nProblems I see:\r\n\r\n1. Why is id-MLDSA44-Ed25519 using SHA512 as the digest? Shouldn't that be SHA256?\r\n2. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\r\n3. Do we need an equivalent table for the HashComposite variants?",
+      "body": "I'm just making a note here so I can come back and clean this up later.\r\n\r\nProblems I see:\r\n\r\n1. Why is id-MLDSA44-Ed25519 using SHA512 as the digest? Shouldn't that be SHA256?\r\n   - Actually, SHA512 is correct since this aligns with phEd25519 as per RFC8032. We should probably add a footnote so that I don't ask this question again :P \r\n3. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\r\n4. Do we need an equivalent table for the HashComposite variants?\r\n  - Answer: no because they are not allowed in CMS.",
       "createdAt": "2025-01-06T23:47:30Z",
-      "updatedAt": "2025-01-06T23:47:30Z",
+      "updatedAt": "2025-01-07T18:48:55Z",
       "closedAt": null,
       "comments": []
     }
@@ -3989,9 +3996,9 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "To do before merge:\r\n\r\n- [ ] Assign a prototyping OID for `id-MLKEM768-ECDH-P256` from the Entrust OID arc -- update all the places in the draft that need it.\r\n- [ ] Once the OID is assigned, compute the domain separator for it.\r\n\r\n\r\n@johngray-dev I also fixed some typos in the IANA Considerations section (the non-prehashed OIDs still had a hash function in them), do you agree?",
+      "body": "To do before merge:\r\n\r\n- [ ] Assign a prototyping OIDs for `id-MLDSA65-ECDSA-P256` and `id-HashMLDSA65-ECDSA-P256-SHA512` from the Entrust OID arc -- update all the places in the draft that need it.\r\n- [ ] Once the OID is assigned, compute the domain separator for it.\r\n\r\n\r\n@johngray-dev I also fixed some typos in the IANA Considerations section (the non-prehashed OIDs still had a hash function in them), do you agree?",
       "createdAt": "2025-01-05T04:10:37Z",
-      "updatedAt": "2025-01-06T23:53:11Z",
+      "updatedAt": "2025-01-07T18:40:55Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
