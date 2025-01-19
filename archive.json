@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-16T00:49:02.581649+00:00",
+  "timestamp": "2025-01-19T00:53:18.143143+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2294,6 +2294,22 @@
       "body": "I'm just making a note here so I can come back and clean this up later.\r\n\r\nProblems I see:\r\n\r\n1. Why is id-MLDSA44-Ed25519 using SHA512 as the digest? Shouldn't that be SHA256?\r\n   - Actually, SHA512 is correct since this aligns with phEd25519 as per RFC8032. We should probably add a footnote so that I don't ask this question again :P \r\n3. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\r\n4. Do we need an equivalent table for the HashComposite variants?\r\n  - Answer: no because they are not allowed in CMS.",
       "createdAt": "2025-01-06T23:47:30Z",
       "updatedAt": "2025-01-07T18:48:55Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 99,
+      "id": "I_kwDOL5eEDM6mp3nY",
+      "title": "Add ML-DSA 87 with RSA 4096",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/99",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Microsoft is interested in using RSA 4096 with ML-DSA-87 due to use of RSA 4096 root requirements.  ",
+      "createdAt": "2025-01-17T17:44:48Z",
+      "updatedAt": "2025-01-17T17:44:48Z",
       "closedAt": null,
       "comments": []
     }
