@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-19T00:53:18.143143+00:00",
+  "timestamp": "2025-01-21T00:48:42.754303+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -2310,6 +2310,22 @@
       "body": "Microsoft is interested in using RSA 4096 with ML-DSA-87 due to use of RSA 4096 root requirements.  ",
       "createdAt": "2025-01-17T17:44:48Z",
       "updatedAt": "2025-01-17T17:44:48Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 100,
+      "id": "I_kwDOL5eEDM6m5y5F",
+      "title": "Add Example of Message for with a context, and without a context",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/100",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "When implementing the specification, I made a mistake of calculating the message encoding as following:\n\nFor Hash-MLDSA44-ECDSA-P256-SHA256:\n06:0B:60:86:48:01:86:FA:6B:50:08:01:2B:  (The DER encoded Digest as specified in the draft)\n00:  (The context length which is 0)\n00:  (The context value which is 0)\n06:09:60:86:48:01:65:03:04:02:01 (The DER Encoded HASH OID of SHA-256)\n21:BE:2D:B1:01:23:3F:07:69:5E:01:07:F0:5C:54:A1:D0:C2:09:7B:EF:9D:24:03:E7:68:46:8C:45:D8:0A:5E  (The SHA-256 hash of the message)\n\nThe draft actually says this in section 4.2 of version -03\n\nIn the pure mode the Domain separator value is concatenated with the\n   length of the context in bytes, the context, and the message to be\n   signed.  After that, the signature process for each component\n   algorithm is invoked and the values are then placed in the...\n\nSo the correct encoding of the message format is this:\n\nHash-MLDSA44-ECDSA-P256-SHA256:\n06:0B:60:86:48:01:86:FA:6B:50:08:01:2B:  (The DER encoded Digest as specified in the draft)\n00:  (The context length which is 0)\n06:09:60:86:48:01:65:03:04:02:01 (The DER Encoded HASH OID of SHA-256)\n21:BE:2D:B1:01:23:3F:07:69:5E:01:07:F0:5C:54:A1:D0:C2:09:7B:EF:9D:24:03:E7:68:46:8C:45:D8:0A:5E  (The SHA-256 hash of the message)\n\nWe should add at least an example of an encoding of each type (Pure and Hash) with a context of 0, and a context with an actual value.\n\n",
+      "createdAt": "2025-01-20T19:43:21Z",
+      "updatedAt": "2025-01-20T19:43:21Z",
       "closedAt": null,
       "comments": []
     }
