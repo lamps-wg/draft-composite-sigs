@@ -1047,7 +1047,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
 Pure Composite-ML-DSA Signature public key types:
 
-| Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID |
+| Composite Signature Algorithm | OID | First Algorithm | Second Algorithm |
 | ----------- | ----------- | ----------- |  ----------- |
 | id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.60 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 |
 | id-MLDSA44-RSA2048-PKCS15    | &lt;CompSig&gt;.61 | id-ML-DSA-44  | sha256WithRSAEncryption |
@@ -1073,7 +1073,7 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 HashComposite-ML-DSA Signature public key types:
 
-| Composite Signature AlgorithmID | OID | First AlgorithmID | Second AlgorithmID | Pre-Hash |
+| Composite Signature Algorithm | OID | First Algorithm | Second Algorithm | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
 | id-HashMLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.74 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 | id-sha256 |
 | id-HashMLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.75 | id-ML-DSA-44  | sha256WithRSAEncryption | id-sha256 |
@@ -1100,9 +1100,9 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 ## Domain Separators {#sec-domsep-values}
 
-As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature AlgorithmID.
+As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.
 
-| Composite Signature AlgorithmID | Domain Separator (in Hex encoding)|
+| Composite Signature Algorithm | Domain Separator (in Hex encoding)|
 | ----------- | ----------- |
 | id-MLDSA44-RSA2048-PSS | 060B6086480186FA6B5008013C|
 | id-MLDSA44-RSA2048-PKCS15 |060B6086480186FA6B5008013D|
@@ -1120,7 +1120,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA87-Ed448 |060B6086480186FA6B50080149|
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
-| Composite Signature AlgorithmID | Domain Separator (in Hex encoding)|
+| Composite Signature Algorithm | Domain Separator (in Hex encoding)|
 | ----------- | ----------- |
 | id-HashMLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B5008014A|
 | id-HashMLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B5008014B|
@@ -1227,7 +1227,7 @@ All recommendations for using Composite ML-DSA in CMS are fully aligned with the
 
 A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms of equivalent strength or greater.
 
-| Composite Signature AlgorithmID | digestAlgorithm |
+| Composite Signature Algorithm | digestAlgorithm |
 | ----------- | ----------- |
 | id-MLDSA44-RSA2048-PSS | SHA256 |
 | id-MLDSA44-RSA2048-PKCS15 | SHA256 |
