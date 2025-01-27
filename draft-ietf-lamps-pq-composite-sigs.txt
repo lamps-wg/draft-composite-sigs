@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 7 July 2025                                             M. Pala
+Expires: 31 July 2025                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                          3 January 2025
+                                                         27 January 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 July 2025.
+   This Internet-Draft will expire on 31 July 2025.
 
 Copyright Notice
 
@@ -1401,6 +1401,11 @@ Deserialization Process:
         Table 5: Hash ML-DSA Composite Signature Domain Separators
 
 7.4.  Rationale for choices
+
+   In generating the list of Composite algorithms, the following general
+   guidance was used, however during development of this specification
+   several algorithms were added by direct request even though they do
+   not fit this guidance.
 
    *  Pair equivalent levels.
 
