@@ -1140,6 +1140,8 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 
 ## Rationale for choices
 
+In generating the list of Composite algorithms, the following general guidance was used, however during development of this specification several algorithms were added by direct request even though they do not fit this guidance.
+
 * Pair equivalent levels.
 * NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.
 * 521 bit curve not widely used.
