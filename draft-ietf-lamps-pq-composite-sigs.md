@@ -1218,7 +1218,7 @@ where:
 
 # Use in CMS
 
-\[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a standalone document.\]
+\[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a stand-alone document.\]
 
 Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
 
@@ -1250,6 +1250,8 @@ A compliant implementation MUST support the following algorithms for the SignerI
 where:
 
 * SHA2 instantiations are defined in [FIPS180].
+
+Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm for Ed25519.
 
 Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.
 
