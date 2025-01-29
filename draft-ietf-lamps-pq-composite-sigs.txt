@@ -129,6 +129,7 @@ Table of Contents
      11.2.  Non-separability and EUF-CMA
      11.3.  Key Reuse
      11.4.  Policy for Deprecated and Acceptable Algorithms
+     11.5.  Use of Prefix to for attack mitigation
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -411,68 +412,73 @@ Table of Contents
    This mode mirrors ML-DSA.Sign(sk, M, ctx) defined in Algorithm 2 in
    Section 5.2 of [FIPS.204].
 
- Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
+Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
 
- Explicit inputs:
+Explicit inputs:
 
-   sk    Composite private key consisting of signing private keys for
-         each component.
+  sk    Composite private key consisting of signing private keys for
+        each component.
 
-   M     The Message to be signed, an octet string.
+  M     The Message to be signed, an octet string.
 
-   ctx   The Message context string, which defaults to the empty string.
+  ctx   The Message context string, which defaults to the empty string.
 
 
- Implicit inputs:
 
-   ML-DSA   A placeholder for the specific ML-DSA algorithm and
-            parameter set to use, for example, could be "ML-DSA-65".
+Implicit inputs:
 
-   Trad     A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASA-PSS with id-sha256"
-            or "Ed25519".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-   Domain   Domain separator value for binding the signature to the
-            Composite OID. See section on Domain Separators below.
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSASA-PSS with id-sha256"
+           or "Ed25519".
 
- Output:
+  Domain   Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
 
-   signature   The composite signature, a CompositeSignatureValue.
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
- Signature Generation Process:
+Output:
 
-   1. If |ctx| > 255:
-       return error
+  signature   The composite signature, a CompositeSignatureValue.
 
-   2. Compute the Message M'.
+Signature Generation Process:
 
-       M' = Domain || len(ctx) || ctx || M
+  1. If |ctx| > 255:
+      return error
 
-   3. Separate the private key into component keys.
+  2. Compute the Message M'.
 
-       (mldsaSK, tradSK) = sk
+      M' = Prefix || Domain || len(ctx) || ctx || M
 
-   4. Generate the 2 component signatures independently, by calculating
-      the signature over M' according to their algorithm specifications.
+  3. Separate the private key into component keys.
 
-       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
-       tradSig = Trad.Sign( tradSK, M' )
+      (mldsaSK, tradSK) = sk
 
-   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
-      process must return an error.
+  4. Generate the 2 component signatures independently, by calculating
+     the signature over M' according to their algorithm specifications.
 
-       if NOT mldsaSig or NOT tradSig:
-         output "Signature generation error"
+      mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+      tradSig = Trad.Sign( tradSK, M' )
 
-    6. Encode each component signature into a CompositeSignatureValue.
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
+     process must return an error.
 
-       signature = CompositeSignatureValue(mldsaSig, tradSig)
+      if NOT mldsaSig or NOT tradSig:
+        output "Signature generation error"
 
-   7. Output signature
+   6. Encode each component signature into a CompositeSignatureValue.
 
-       return signature
+      signature = CompositeSignatureValue(mldsaSig, tradSig)
 
-              Figure 2: Composite-ML-DSA.Sign(sk, M, ctx)
+  7. Output signature
+
+      return signature
+
+             Figure 2: Composite-ML-DSA.Sign(sk, M, ctx)
 
    It is possible to use component private keys stored in separate
    software or hardware keystores.  Variations in the process to
@@ -522,6 +528,10 @@ Implicit inputs:
   Domain   Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -545,7 +555,7 @@ Signature Verification Process:
 
   3. Compute the Message M'.
 
-        M' = Domain || len(ctx) || ctx || M
+        M' = Prefix || Domain || len(ctx) || ctx || M
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -593,72 +603,76 @@ Signature Verification Process:
    additional DER encoded value that indicates which Hash function was
    used for the pre-hash and finally the pre-hashed message PH(M).
 
- HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
+HashComposite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
 
- Explicit inputs:
+Explicit inputs:
 
-   sk    Composite private key consisting of signing private keys for
-         each component.
+  sk    Composite private key consisting of signing private keys for
+        each component.
 
-   M     The Message to be signed, an octet string.
+  M     The Message to be signed, an octet string.
 
-   ctx   The Message context string, which defaults to the empty string
+  ctx   The Message context string, which defaults to the empty string
 
-   PH    The Message Digest Algorithm for pre-hashing.  See
-         section on pre-hashing the message below.
+  PH    The Message Digest Algorithm for pre-hashing.  See
+        section on pre-hashing the message below.
 
- Implicit inputs:
+Implicit inputs:
 
-   ML-DSA   A placeholder for the specific ML-DSA algorithm and
-            parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-   Trad     A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASA-PSS with id-sha256"
-            or "Ed25519".
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSASA-PSS with id-sha256"
+           or "Ed25519".
 
-  Domain    Domain separator value for binding the signature to the
-            Composite OID. See section on Domain Separators below.
+ Prefix    The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  HashOID   The DER Encoding of the Object Identifier of the
-            PreHash algorithm (PH) which is passed into the function.
+ Domain    Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
 
- Output:
-   signature   The composite signature, a CompositeSignatureValue.
+ HashOID   The DER Encoding of the Object Identifier of the
+           PreHash algorithm (PH) which is passed into the function.
 
- Signature Generation Process:
+Output:
+  signature   The composite signature, a CompositeSignatureValue.
 
-   1. If |ctx| > 255:
-       return error
+Signature Generation Process:
 
-   2. Compute the Message format M'.
+  1. If |ctx| > 255:
+      return error
 
-         M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
+  2. Compute the Message format M'.
 
-   3. Separate the private key into component keys.
+        M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
-        (mldsaSK, tradSK) = sk
+  3. Separate the private key into component keys.
 
-   4. Generate the 2 component signatures independently, by calculating
-      the signature over M' according to their algorithm specifications.
+       (mldsaSK, tradSK) = sk
 
-        mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
-        tradSig = Trad.Sign( tradSK, M' )
+  4. Generate the 2 component signatures independently, by calculating
+     the signature over M' according to their algorithm specifications.
 
-   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
-      process must return an error.
+       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+       tradSig = Trad.Sign( tradSK, M' )
 
-       if NOT mldsaSig or NOT tradSig:
-         output "Signature generation error"
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
+     process must return an error.
 
-   6. Encode each component signature into a CompositeSignatureValue.
+      if NOT mldsaSig or NOT tradSig:
+        output "Signature generation error"
 
-       signature := CompositeSignatureValue(mldsaSig, tradSig)
+  6. Encode each component signature into a CompositeSignatureValue.
 
-   7. Output signature
+      signature := CompositeSignatureValue(mldsaSig, tradSig)
 
-       return signature
+  7. Output signature
 
-          Figure 4: HashComposite-ML-DSA.Sign(sk, M, ctx, PH)
+      return signature
+
+         Figure 4: HashComposite-ML-DSA.Sign(sk, M, ctx, PH)
 
    It is possible to use component private keys stored in separate
    software or hardware keystores.  Variations in the process to
@@ -708,6 +722,10 @@ Implicit inputs:
             parameter set to use, for example "RSASA-PSS with id-sha256"
             or "Ed25519".
 
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
   Domain    Domain separator value for binding the signature to the
             Composite OID. See section on Domain Separators below.
 
@@ -737,7 +755,7 @@ Signature Verification Process:
 
   3. Compute a Hash of the Message.
 
-      M' = Domain || len(ctx) || ctx || HashOID || PH(M)
+      M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -2747,6 +2765,19 @@ Deserialization Process:
    of implementers to ensure that trusted composite keys are distributed
    in a way that is tamper-resistant and does not allow the component
    keys to be trusted independently.
+
+11.5.  Use of Prefix to for attack mitigation
+
+   The Prefix value specified in the message format calculated in
+   Section 4 can be used by a traditional verifier to detect if the
+   composite signature has been stripped apart.  An attacker would need
+   to compute M' = Prefix || Domain || len(ctx) || ctx || M or M' :=
+   Prefix || Domain || len(ctx) || ctx || HashOID || PH(M).  Since the
+   Prefix is the constant String "CompositeAlgorithmSignatures2025"
+   (Byte encoding
+   436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a
+   traditional verifier can check if the Message starts with this prefix
+   and reject the message.
 
 12.  References
 

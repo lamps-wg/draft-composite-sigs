@@ -1340,6 +1340,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4">
                 <p id="section-toc.1-1.11.2.4.1"><a href="#section-11.4" class="auto internal xref">11.4</a>.  <a href="#name-policy-for-deprecated-and-a" class="internal xref">Policy for Deprecated and Acceptable Algorithms</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.5">
+                <p id="section-toc.1-1.11.2.5.1"><a href="#section-11.5" class="auto internal xref">11.5</a>.  <a href="#name-use-of-prefix-to-for-attack" class="internal xref">Use of Prefix to for attack mitigation</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
@@ -1636,6 +1639,7 @@ Explicit inputs:
   ctx   The Message context string, which defaults to the empty string.
 
 
+
 Implicit inputs:
 
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
@@ -1648,6 +1652,10 @@ Implicit inputs:
   Domain   Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
 Output:
 
   signature   The composite signature, a CompositeSignatureValue.
@@ -1659,7 +1667,7 @@ Signature Generation Process:
 
   2. Compute the Message M'.
 
-      M' = Domain || len(ctx) || ctx || M
+      M' = Prefix || Domain || len(ctx) || ctx || M
 
   3. Separate the private key into component keys.
 
@@ -1732,6 +1740,10 @@ Implicit inputs:
   Domain   Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -1755,7 +1767,7 @@ Signature Verification Process:
 
   3. Compute the Message M'.
 
-        M' = Domain || len(ctx) || ctx || M
+        M' = Prefix || Domain || len(ctx) || ctx || M
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -1822,6 +1834,10 @@ Implicit inputs:
            parameter set to use, for example "RSASA-PSS with id-sha256"
            or "Ed25519".
 
+ Prefix    The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
  Domain    Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
@@ -1838,7 +1854,7 @@ Signature Generation Process:
 
   2. Compute the Message format M'.
 
-        M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
+        M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
   3. Separate the private key into component keys.
 
@@ -1912,6 +1928,10 @@ Implicit inputs:
             parameter set to use, for example "RSASA-PSS with id-sha256"
             or "Ed25519".
 
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
   Domain    Domain separator value for binding the signature to the
             Composite OID. See section on Domain Separators below.
 
@@ -1941,7 +1961,7 @@ Signature Verification Process:
 
   3. Compute a Hash of the Message.
 
-      M' = Domain || len(ctx) || ctx || HashOID || PH(M)
+      M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -4290,6 +4310,14 @@ END
 </li>
         </ol>
 <p id="section-11.4-7">There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.<a href="#section-11.4-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="use-of-prefix-to-for-attack-mitigation">
+<section id="section-11.5">
+        <h3 id="name-use-of-prefix-to-for-attack">
+<a href="#section-11.5" class="section-number selfRef">11.5. </a><a href="#name-use-of-prefix-to-for-attack" class="section-name selfRef">Use of Prefix to for attack mitigation</a>
+        </h3>
+<p id="section-11.5-1">The Prefix value specified in the message format calculated in <a href="#sec-sigs" class="auto internal xref">Section 4</a> can be used by a traditional verifier to detect if the composite signature has been stripped apart.  An attacker would need to compute <code>M' = Prefix || Domain || len(ctx) || ctx || M</code>  or  <code>M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)</code>.  Since the Prefix is the constant String "CompositeAlgorithmSignatures2025" (Byte encoding 436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a traditional verifier can check if the Message starts with this prefix and reject the message.<a href="#section-11.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
