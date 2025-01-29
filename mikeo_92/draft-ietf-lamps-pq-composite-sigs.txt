@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 August 2025                                           M. Pala
+Expires: 2 August 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         28 January 2025
+                                                         29 January 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 August 2025.
+   This Internet-Draft will expire on 2 August 2025.
 
 Copyright Notice
 
@@ -2515,11 +2515,11 @@ Deserialization Process:
    Consider that an organization has today a mature, validated,
    certified, hardened implementation of RSA or ECC.  Composites allow
    them to add to this an ML-DSA implementation which immediately starts
-   providing benefits against harvest-now-decrypt-later or long-term
-   document integrity attacks even if that ML-DSA implemtation is still
-   experimental, non-validated, non-certified, non-hardened
-   implementation.  More details of obtaining FIPS certification of a
-   composite algorithm can be found in Appendix D.1.
+   providing benefits against long-term document integrity attacks even
+   if that ML-DSA implemtation is still experimental, non-validated,
+   non-certified, non-hardened implementation.  More details of
+   obtaining FIPS certification of a composite algorithm can be found in
+   Appendix D.1.
 
 11.2.  Non-separability and EUF-CMA
 
