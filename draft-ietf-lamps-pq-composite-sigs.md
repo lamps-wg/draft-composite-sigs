@@ -272,7 +272,7 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" and "HashComposite-ML-DSA" which mirror the external functions defined in [FIPS.204].
 
-# Composite ML-DSA Functions
+# Composite ML-DSA Functions {#sec-sigs}
 
 ## Key Generation
 
@@ -370,7 +370,8 @@ Implicit inputs:
            Composite OID. See section on Domain Separators below.
 
   Prefix   The prefix String which is the byte encoding of the String
-           "CompositeAlgorithmSignatures2025"
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
 Output:
 
@@ -451,7 +452,8 @@ Implicit inputs:
            Composite OID. See section on Domain Separators below.
 
   Prefix   The prefix String which is the byte encoding of the String
-           "CompositeAlgorithmSignatures2025"
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
 
 Output:
@@ -535,7 +537,8 @@ Implicit inputs:
            or "Ed25519".
 
  Prefix    The prefix String which is the byte encoding of the String
-           "CompositeAlgorithmSignatures2025"
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
  Domain    Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
@@ -621,7 +624,8 @@ Implicit inputs:
             or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
-            "CompositeAlgorithmSignatures2025"
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
   Domain    Domain separator value for binding the signature to the
             Composite OID. See section on Domain Separators below.
@@ -1528,7 +1532,7 @@ There are mechanisms within Internet PKI where trusted public keys do not appear
 
 ## Use of Prefix to for attack mitigation
 
-The Prefix value specified in the message format calculated in {{{sec-sigs}} can be used by a traditional verifier to detect if the composite signature has been stripped apart.  An attacker would need to compute M' = Prefix || Domain || len(ctx) || ctx || M  or  M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M).  Since the Prefix is the constant String "CompositeAlgorithmSignatures2025" (Byte encoding 436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a traditional verifier can check if the Message starts with this prefix and reject the message.
+The Prefix value specified in the message format calculated in {{sec-sigs}} can be used by a traditional verifier to detect if the composite signature has been stripped apart.  An attacker would need to compute M' = Prefix || Domain || len(ctx) || ctx || M  or  M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M).  Since the Prefix is the constant String "CompositeAlgorithmSignatures2025" (Byte encoding 436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a traditional verifier can check if the Message starts with this prefix and reject the message.
 
 <!-- End of Security Considerations section -->
 
