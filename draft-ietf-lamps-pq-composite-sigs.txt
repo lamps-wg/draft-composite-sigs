@@ -125,9 +125,10 @@ Table of Contents
        10.1.2.  Object Identifier Registrations - SMI Security for
                PKIX Algorithms
    11. Security Considerations
-     11.1.  Non-separability and EUF-CMA
-     11.2.  Key Reuse
-     11.3.  Policy for Deprecated and Acceptable Algorithms
+     11.1.  Why Hybrids?
+     11.2.  Non-separability and EUF-CMA
+     11.3.  Key Reuse
+     11.4.  Policy for Deprecated and Acceptable Algorithms
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -383,7 +384,7 @@ Table of Contents
    use or import component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
-   section Section 11.2.
+   section Section 11.3.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
@@ -1026,7 +1027,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.2.
+   security considerations around key reuse, see section Section 11.3.
 
    The following ASN.1 Information Object Class is defined to allow for
    compact definitions of each composite algorithm, leading to a smaller
@@ -1105,7 +1106,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.2.
+   security considerations around key reuse, see section Section 11.3.
 
 5.3.  Encoding Rules
 
@@ -2487,14 +2488,51 @@ Deserialization Process:
 
 11.  Security Considerations
 
-11.1.  Non-separability and EUF-CMA
+11.1.  Why Hybrids?
+
+   In broad terms, a PQ/T Hybrid can be used either to provide dual-
+   algorithm security or to provide migration flexibility.  Let's
+   quickly explore both.
+
+   Dual-algorithm security.  The general idea is that the data is
+   proctected by two algorithms such that an attacker would need to
+   break both in order to compromise the data.  As with most of
+   cryptography, this property is easy to state in general terms, but
+   becomes more complicated when expressed in formalisms.  Section 11.2
+   goes into more detail here.  One common counter-argument against PQ/T
+   hybrid signatures is that if an attacker can forge one of the
+   component algorithms, then why attack the hybrid-signed message at
+   all when they could simply forge a completely new message?  The
+   answer to this question must be found outside the cryptographic
+   primitives themselves, and instead in policy; once an algorithm is
+   known to be broken it ought to be disallowed for single-algorithm use
+   by cryptographic policy, while hybrids involving that algorithm may
+   continue to be used and to provide value.
+
+   Migration flexibility.  Some PQ/T hybrids exist to provide a sort of
+   "OR" mode where the client can choose to use one algorithm or the
+   other or both.  The intention is that the PQ/T hybrid mechanism
+   builds in backwards compatibility to allow legacy and upgraded
+   clients to co-exist and communicate.  The Composites presented in
+   this specification do not provide this since they operate in a strict
+   "AND" mode, but they do provide codebase migration flexibility.
+   Consider that an organization has today a mature, validated,
+   certified, hardened implementation of RSA or ECC.  Composites allow
+   them to add to this an ML-DSA implementation which immediately starts
+   providing benefits against long-term document integrity attacks even
+   if that ML-DSA implemtation is still experimental, non-validated,
+   non-certified, non-hardened implementation.  More details of
+   obtaining FIPS certification of a composite algorithm can be found in
+   Appendix D.1.
+
+11.2.  Non-separability and EUF-CMA
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
    M’ will include the composite domain separator as evidence.  The
    prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 11.2 further strengthens the non-
+   contexts discussed in Section 11.3 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
@@ -2551,14 +2589,14 @@ Deserialization Process:
    a reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.2 since then there cannot exist simultaneously composite
+   Section 11.3 since then there cannot exist simultaneously composite
    and non-composite signers and verifiers for the same keys.
    Consequently, following the specification and verification of the
    policy mechanism, such as a composite X.509 certificate which defines
    the bound keys, is essential when using keys intended for use with a
    CompositeML-DSA signing algorithm.
 
-11.2.  Key Reuse
+11.3.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
@@ -2577,7 +2615,7 @@ Deserialization Process:
    key pair and combine it with an ML-DSA key pair to form a hybrid key
    pair for use in a hybrid algorithm.  Within a hybrid signature
    context this leads to a class of attacks referred to as "stripping
-   attacks" discussed in Section 11.1 and may also open up risks from
+   attacks" discussed in Section 11.2 and may also open up risks from
    further cross-protocol attacks.  Despite the weak non-separability
    property offered by the composite signature combiner, it is still
    RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
@@ -2596,7 +2634,7 @@ Deserialization Process:
    revocation checks on a composite key should also check both component
    keys independently.
 
-11.3.  Policy for Deprecated and Acceptable Algorithms
+11.4.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
