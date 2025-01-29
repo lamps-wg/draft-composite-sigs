@@ -1591,7 +1591,8 @@ Deserialization Process:
    *  SHA2 instantiations are defined in [FIPS180].
 
    Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that
-   RFC8032 explicitly defines SHA512 as hash algorithm for Ed25519.
+   Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm
+   for Ed25519.
 
    Note: The Hash ML-DSA Composite identifiers are not included in this
    list because the message content is already digested before being
