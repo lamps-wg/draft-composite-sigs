@@ -272,7 +272,7 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" and "HashComposite-ML-DSA" which mirror the external functions defined in [FIPS.204].
 
-# Composite ML-DSA Functions {#sec-sigs}
+# Composite ML-DSA Functions
 
 ## Key Generation
 
@@ -356,6 +356,7 @@ Explicit inputs:
   ctx   The Message context string, which defaults to the empty string.
 
 
+
 Implicit inputs:
 
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
@@ -368,6 +369,9 @@ Implicit inputs:
   Domain   Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025"
+
 Output:
 
   signature   The composite signature, a CompositeSignatureValue.
@@ -379,7 +383,7 @@ Signature Generation Process:
 
   2. Compute the Message M'.
 
-      M' = Domain || len(ctx) || ctx || M
+      M' = Prefix || Domain || len(ctx) || ctx || M
 
   3. Separate the private key into component keys.
 
@@ -446,6 +450,9 @@ Implicit inputs:
   Domain   Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025"
+
 
 Output:
     Validity (bool)    "Valid signature" (true) if the composite
@@ -469,7 +476,7 @@ Signature Verification Process:
 
   3. Compute the Message M'.
 
-        M' = Domain || len(ctx) || ctx || M
+        M' = Prefix || Domain || len(ctx) || ctx || M
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -527,6 +534,9 @@ Implicit inputs:
            parameter set to use, for example "RSASA-PSS with id-sha256"
            or "Ed25519".
 
+ Prefix    The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025"
+
  Domain    Domain separator value for binding the signature to the
            Composite OID. See section on Domain Separators below.
 
@@ -543,7 +553,7 @@ Signature Generation Process:
 
   2. Compute the Message format M'.
 
-        M' :=  Domain || len(ctx) || ctx || HashOID || PH(M)
+        M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
   3. Separate the private key into component keys.
 
@@ -610,6 +620,9 @@ Implicit inputs:
             parameter set to use, for example "RSASA-PSS with id-sha256"
             or "Ed25519".
 
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025"
+
   Domain    Domain separator value for binding the signature to the
             Composite OID. See section on Domain Separators below.
 
@@ -639,7 +652,7 @@ Signature Verification Process:
 
   3. Compute a Hash of the Message.
 
-      M' = Domain || len(ctx) || ctx || HashOID || PH(M)
+      M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -1513,6 +1526,9 @@ Specifically, in order to achieve this non-separability property, this specifica
 
 There are mechanisms within Internet PKI where trusted public keys do not appear within signed structures -- such as the Trust Anchor format defined in [RFC5914]. In such cases, it is the responsibility of implementers to ensure that trusted composite keys are distributed in a way that is tamper-resistant and does not allow the component keys to be trusted independently.
 
+## Use of Prefix to for attack mitigation
+
+The Prefix value specified in the message format calculated in {{{sec-sigs}} can be used by a traditional verifier to detect if the composite signature has been stripped apart.  An attacker would need to compute M' = Prefix || Domain || len(ctx) || ctx || M  or  M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M).  Since the Prefix is the constant String "CompositeAlgorithmSignatures2025" (Byte encoding 436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a traditional verifier can check if the Message starts with this prefix and reject the message.
 
 <!-- End of Security Considerations section -->
 
