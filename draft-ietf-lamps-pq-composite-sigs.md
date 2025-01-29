@@ -1333,14 +1333,14 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
 
-- id-MLDSA44-RSA2048-PSS-SHA256
+- id-MLDSA44-RSA2048-PSS
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA44-RSA2048-PSS-SHA256
+  - Description:  id-MLDSA44-RSA2048-PSS
   - References: This Document
 
-- id-MLDSA44-RSA2048-PKCS15-SHA256
+- id-MLDSA44-RSA2048-PKCS15
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA44-RSA2048-PKCS15-SHA256
+  - Description:  id-MLDSA44-RSA2048-PKCS15
   - References: This Document
 
 - id-MLDSA44-Ed25519
@@ -1348,39 +1348,39 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA44-Ed25519
   - References: This Document
 
-- id-MLDSA44-ECDSA-P256-SHA256
+- id-MLDSA44-ECDSA-P256
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA44-ECDSA-P256-SHA256
+  - Description:  id-MLDSA44-ECDSA-P256
   - References: This Document
 
-- id-MLDSA65-RSA3072-PSS-SHA512
+- id-MLDSA65-RSA3072-PSS
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-RSA3072-PSS-SHA512
+  - Description:  id-MLDSA65-RSA3072-PSS
   - References: This Document
 
-- id-MLDSA65-RSA3072-PKCS15-SHA512
+- id-MLDSA65-RSA3072-PKCS15
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-RSA3072-PKCS15-SHA512
+  - Description:  id-MLDSA65-RSA3072-PKCS15
   - References: This Document
 
-- id-MLDSA65-RSA4096-PSS-SHA512
+- id-MLDSA65-RSA4096-PSS
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-RSA4096-PSS-SHA512
+  - Description:  id-MLDSA65-RSA4096-PSS
   - References: This Document
 
-- id-MLDSA65-RSA4096-PKCS15-SHA512
+- id-MLDSA65-RSA4096-PKCS15
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-RSA4096-PKCS15-SHA512
+  - Description:  id-MLDSA65-RSA4096-PKCS15
   - References: This Document
 
-- id-MLDSA65-ECDSA-P384-SHA512
+- id-MLDSA65-ECDSA-P384
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-ECDSA-P384-SHA512
+  - Description:  id-MLDSA65-ECDSA-P384
   - References: This Document
 
-- id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
+- id-MLDSA65-ECDSA-brainpoolP256r1
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
+  - Description:  id-MLDSA65-ECDSA-brainpoolP256r1
   - References: This Document
 
 - id-MLDSA65-Ed25519
@@ -1388,14 +1388,14 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA65-Ed25519
   - References: This Document
 
-- id-MLDSA87-ECDSA-P384-SHA512
+- id-MLDSA87-ECDSA-P384
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA87-ECDSA-P384-SHA512
+  - Description:  id-MLDSA87-ECDSA-P384
   - References: This Document
 
-- id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
+- id-MLDSA87-ECDSA-brainpoolP384r1
   - Decimal: IANA Assigned
-  - Description:  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
+  - Description:  id-MLDSA87-ECDSA-brainpoolP384r1
   - References: This Document
 
 - id-MLDSA87-Ed448
