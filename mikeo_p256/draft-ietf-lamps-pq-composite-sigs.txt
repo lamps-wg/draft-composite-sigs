@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 10 July 2025                                            M. Pala
+Expires: 2 August 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                          6 January 2025
+                                                         29 January 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 July 2025.
+   This Internet-Draft will expire on 2 August 2025.
 
 Copyright Notice
 
@@ -125,9 +125,10 @@ Table of Contents
        10.1.2.  Object Identifier Registrations - SMI Security for
                PKIX Algorithms
    11. Security Considerations
-     11.1.  Non-separability and EUF-CMA
-     11.2.  Key Reuse
-     11.3.  Policy for Deprecated and Acceptable Algorithms
+     11.1.  Why Hybrids?
+     11.2.  Non-separability and EUF-CMA
+     11.3.  Key Reuse
+     11.4.  Policy for Deprecated and Acceptable Algorithms
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -383,7 +384,7 @@ Table of Contents
    use or import component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
-   section Section 11.2.
+   section Section 11.3.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
@@ -1026,7 +1027,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.2.
+   security considerations around key reuse, see section Section 11.3.
 
    The following ASN.1 Information Object Class is defined to allow for
    compact definitions of each composite algorithm, leading to a smaller
@@ -1105,7 +1106,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.2.
+   security considerations around key reuse, see section Section 11.3.
 
 5.3.  Encoding Rules
 
@@ -1199,55 +1200,55 @@ Deserialization Process:
 
    Pure Composite-ML-DSA Signature public key types:
 
-   +======================+============+===========+=======================+
-   |Composite Signature   |OID         |First      |Second AlgorithmID     |
-   |AlgorithmID           |            |AlgorithmID|                       |
-   +======================+============+===========+=======================+
-   |id-MLDSA44-RSA2048-PSS|<CompSig>.60|id-ML-     |id-RSASA-PSS with id-  |
-   |                      |            |DSA-44     |sha256                 |
-   +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.61|id-ML-     |sha256WithRSAEncryption|
-   |MLDSA44-RSA2048-PKCS15|            |DSA-44     |                       |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA44-Ed25519    |<CompSig>.62|id-ML-     |id-Ed25519             |
-   |                      |            |DSA-44     |                       |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA44-ECDSA-P256 |<CompSig>.63|id-ML-     |ecdsa-with-SHA256 with |
-   |                      |            |DSA-44     |secp256r1              |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-RSA3072-PSS|<CompSig>.64|id-ML-     |id-RSASA-PSS with id-  |
-   |                      |            |DSA-65     |sha256                 |
-   +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.65|id-ML-     |sha256WithRSAEncryption|
-   |MLDSA65-RSA3072-PKCS15|            |DSA-65     |                       |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-RSA4096-PSS|<CompSig>.66|id-ML-     |id-RSASA-PSS with id-  |
-   |                      |            |DSA-65     |sha384                 |
-   +----------------------+------------+-----------+-----------------------+
-   |id-                   |<CompSig>.67|id-ML-     |sha384WithRSAEncryption|
-   |MLDSA65-RSA4096-PKCS15|            |DSA-65     |                       |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-ECDSA-P256 |<CompSig>.68|id-ML-     |ecdsa-with-SHA256 with |
-   |                      |            |DSA-65     |secp256r1              |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-ECDSA-P384 |<CompSig>.68|id-ML-     |ecdsa-with-SHA384 with |
-   |                      |            |DSA-65     |secp384r1              |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-ECDSA-     |<CompSig>.69|id-ML-     |ecdsa-with-SHA256 with |
-   |brainpoolP256r1       |            |DSA-65     |brainpoolP256r1        |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA65-Ed25519    |<CompSig>.70|id-ML-     |id-Ed25519             |
-   |                      |            |DSA-65     |                       |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-ECDSA-P384 |<CompSig>.71|id-ML-     |ecdsa-with-SHA384 with |
-   |                      |            |DSA-87     |secp384r1              |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-ECDSA-     |<CompSig>.72|id-ML-     |ecdsa-with-SHA384 with |
-   |brainpoolP384r1       |            |DSA-87     |brainpoolP384r1        |
-   +----------------------+------------+-----------+-----------------------+
-   |id-MLDSA87-Ed448      |<CompSig>.73|id-ML-     |id-Ed448               |
-   |                      |            |DSA-87     |                       |
-   +----------------------+------------+-----------+-----------------------+
+   +======================+============+=========+=======================+
+   |Composite Signature   |OID         |First    |Second Algorithm       |
+   |Algorithm             |            |Algorithm|                       |
+   +======================+============+=========+=======================+
+   |id-MLDSA44-RSA2048-PSS|<CompSig>.60|id-ML-   |id-RSASA-PSS with id-  |
+   |                      |            |DSA-44   |sha256                 |
+   +----------------------+------------+---------+-----------------------+
+   |id-                   |<CompSig>.61|id-ML-   |sha256WithRSAEncryption|
+   |MLDSA44-RSA2048-PKCS15|            |DSA-44   |                       |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA44-Ed25519    |<CompSig>.62|id-ML-   |id-Ed25519             |
+   |                      |            |DSA-44   |                       |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA44-ECDSA-P256 |<CompSig>.63|id-ML-   |ecdsa-with-SHA256 with |
+   |                      |            |DSA-44   |secp256r1              |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-RSA3072-PSS|<CompSig>.64|id-ML-   |id-RSASA-PSS with id-  |
+   |                      |            |DSA-65   |sha256                 |
+   +----------------------+------------+---------+-----------------------+
+   |id-                   |<CompSig>.65|id-ML-   |sha256WithRSAEncryption|
+   |MLDSA65-RSA3072-PKCS15|            |DSA-65   |                       |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-RSA4096-PSS|<CompSig>.66|id-ML-   |id-RSASA-PSS with id-  |
+   |                      |            |DSA-65   |sha384                 |
+   +----------------------+------------+---------+-----------------------+
+   |id-                   |<CompSig>.67|id-ML-   |sha384WithRSAEncryption|
+   |MLDSA65-RSA4096-PKCS15|            |DSA-65   |                       |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-ECDSA-P256 |<CompSig>.68|id-ML-   |ecdsa-with-SHA256 with |
+   |                      |            |DSA-65   |secp256r1              |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-ECDSA-P384 |<CompSig>.68|id-ML-   |ecdsa-with-SHA384 with |
+   |                      |            |DSA-65   |secp384r1              |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-ECDSA-     |<CompSig>.69|id-ML-   |ecdsa-with-SHA256 with |
+   |brainpoolP256r1       |            |DSA-65   |brainpoolP256r1        |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA65-Ed25519    |<CompSig>.70|id-ML-   |id-Ed25519             |
+   |                      |            |DSA-65   |                       |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA87-ECDSA-P384 |<CompSig>.71|id-ML-   |ecdsa-with-SHA384 with |
+   |                      |            |DSA-87   |secp384r1              |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA87-ECDSA-     |<CompSig>.72|id-ML-   |ecdsa-with-SHA384 with |
+   |brainpoolP384r1       |            |DSA-87   |brainpoolP384r1        |
+   +----------------------+------------+---------+-----------------------+
+   |id-MLDSA87-Ed448      |<CompSig>.73|id-ML-   |id-Ed448               |
+   |                      |            |DSA-87   |                       |
+   +----------------------+------------+---------+-----------------------+
 
             Table 2: Pure ML-DSA Composite Signature Algorithms
 
@@ -1261,55 +1262,55 @@ Deserialization Process:
 
    HashComposite-ML-DSA Signature public key types:
 
-   +=================================+============+===========+=======================+======+
-   |Composite Signature AlgorithmID  |OID         |First      |Second AlgorithmID     |Pre-  |
-   |                                 |            |AlgorithmID|                       |Hash  |
-   +=================================+============+===========+=======================+======+
-   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.74|id-ML-     |id-RSASA-PSS with id-  |id-   |
-   |                                 |            |DSA-44     |sha256                 |sha256|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.75|id-ML-     |sha256WithRSAEncryption|id-   |
-   |HashMLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44     |                       |sha256|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.76|id-ML-     |id-Ed25519             |id-   |
-   |                                 |            |DSA-44     |                       |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.77|id-ML-     |ecdsa-with-SHA256 with |id-   |
-   |                                 |            |DSA-44     |secp256r1              |sha256|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.78|id-ML-     |id-RSASA-PSS with id-  |id-   |
-   |                                 |            |DSA-65     |sha256                 |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.79|id-ML-     |sha256WithRSAEncryption|id-   |
-   |HashMLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65     |                       |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.80|id-ML-     |id-RSASA-PSS with id-  |id-   |
-   |                                 |            |DSA-65     |sha384                 |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-                              |<CompSig>.81|id-ML-     |sha384WithRSAEncryption|id-   |
-   |HashMLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65     |                       |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-ECDSA-P256-SHA512 |<CompSig>.XX|id-ML-     |ecdsa-with-SHA256 with |id-   |
-   |                                 |            |DSA-65     |secp256r1              |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.82|id-ML-     |ecdsa-with-SHA384 with |id-   |
-   |                                 |            |DSA-65     |secp384r1              |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-ECDSA-            |<CompSig>.83|id-ML-     |ecdsa-with-SHA256 with |id-   |
-   |brainpoolP256r1-SHA512           |            |DSA-65     |brainpoolP256r1        |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.84|id-ML-     |id-Ed25519             |id-   |
-   |                                 |            |DSA-65     |                       |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.85|id-ML-     |ecdsa-with-SHA384 with |id-   |
-   |                                 |            |DSA-87     |secp384r1              |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-ECDSA-            |<CompSig>.86|id-ML-     |ecdsa-with-SHA384 with |id-   |
-   |brainpoolP384r1-SHA512           |            |DSA-87     |brainpoolP384r1        |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
-   |id-HashMLDSA87-Ed448-SHA512      |<CompSig>.87|id-ML-     |id-Ed448               |id-   |
-   |                                 |            |DSA-87     |                       |sha512|
-   +---------------------------------+------------+-----------+-----------------------+------+
+   +=================================+============+=========+=======================+======+
+   |Composite Signature Algorithm    |OID         |First    |Second Algorithm       |Pre-  |
+   |                                 |            |Algorithm|                       |Hash  |
+   +=================================+============+=========+=======================+======+
+   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.74|id-ML-   |id-RSASA-PSS with id-  |id-   |
+   |                                 |            |DSA-44   |sha256                 |sha256|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-                              |<CompSig>.75|id-ML-   |sha256WithRSAEncryption|id-   |
+   |HashMLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44   |                       |sha256|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.76|id-ML-   |id-Ed25519             |id-   |
+   |                                 |            |DSA-44   |                       |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.77|id-ML-   |ecdsa-with-SHA256 with |id-   |
+   |                                 |            |DSA-44   |secp256r1              |sha256|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.78|id-ML-   |id-RSASA-PSS with id-  |id-   |
+   |                                 |            |DSA-65   |sha256                 |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-                              |<CompSig>.79|id-ML-   |sha256WithRSAEncryption|id-   |
+   |HashMLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65   |                       |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.80|id-ML-   |id-RSASA-PSS with id-  |id-   |
+   |                                 |            |DSA-65   |sha384                 |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-                              |<CompSig>.81|id-ML-   |sha384WithRSAEncryption|id-   |
+   |HashMLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65   |                       |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-ECDSA-P256-SHA512 |<CompSig>.XX|id-ML-   |ecdsa-with-SHA256 with |id-   |
+   |                                 |            |DSA-65   |secp256r1              |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.82|id-ML-   |ecdsa-with-SHA384 with |id-   |
+   |                                 |            |DSA-65   |secp384r1              |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-ECDSA-            |<CompSig>.83|id-ML-   |ecdsa-with-SHA256 with |id-   |
+   |brainpoolP256r1-SHA512           |            |DSA-65   |brainpoolP256r1        |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.84|id-ML-   |id-Ed25519             |id-   |
+   |                                 |            |DSA-65   |                       |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.85|id-ML-   |ecdsa-with-SHA384 with |id-   |
+   |                                 |            |DSA-87   |secp384r1              |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA87-ECDSA-            |<CompSig>.86|id-ML-   |ecdsa-with-SHA384 with |id-   |
+   |brainpoolP384r1-SHA512           |            |DSA-87   |brainpoolP384r1        |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA87-Ed448-SHA512      |<CompSig>.87|id-ML-   |id-Ed448               |id-   |
+   |                                 |            |DSA-87   |                       |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
 
             Table 3: Hash ML-DSA Composite Signature Algorithms
 
@@ -1329,10 +1330,10 @@ Deserialization Process:
    As mentioned above, the OID input value is used as a domain separator
    for the Composite Signature Generation and verification process and
    is the DER encoding of the OID.  The following table shows the HEX
-   encoding for each Signature AlgorithmID.
+   encoding for each Signature Algorithm.
 
      +==================================+============================+
-     | Composite Signature AlgorithmID  | Domain Separator (in Hex   |
+     | Composite Signature Algorithm    | Domain Separator (in Hex   |
      |                                  | encoding)                  |
      +==================================+============================+
      | id-MLDSA44-RSA2048-PSS           | 060B6086480186FA6B5008013C |
@@ -1369,7 +1370,7 @@ Deserialization Process:
          Table 4: Pure ML-DSA Composite Signature Domain Separators
 
     +===================================+============================+
-    | Composite Signature AlgorithmID   | Domain Separator (in Hex   |
+    | Composite Signature Algorithm     | Domain Separator (in Hex   |
     |                                   | encoding)                  |
     +===================================+============================+
     | id-HashMLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B5008014A |
@@ -1411,6 +1412,11 @@ Deserialization Process:
         Table 5: Hash ML-DSA Composite Signature Domain Separators
 
 7.4.  Rationale for choices
+
+   In generating the list of Composite algorithms, the following general
+   guidance was used, however during development of this specification
+   several algorithms were added by direct request even though they do
+   not fit this guidance.
 
    *  Pair equivalent levels.
 
@@ -1533,7 +1539,7 @@ Deserialization Process:
    [EDNOTE: The convention in LAMPS is to specify algorithms and their
    CMS conventions in separate documents.  Here we have presented them
    in the same document, but this section has been written so that it
-   can easily be moved to a standalone document.]
+   can easily be moved to a stand-alone document.]
 
    Composite Signature algorithms MAY be employed for one or more
    recipients in the CMS signed-data content type [RFC5652].
@@ -1557,7 +1563,7 @@ Deserialization Process:
    strength or greater.
 
           +==================================+=================+
-          | Composite Signature AlgorithmID  | digestAlgorithm |
+          | Composite Signature Algorithm    | digestAlgorithm |
           +==================================+=================+
           | id-MLDSA44-RSA2048-PSS           | SHA256          |
           +----------------------------------+-----------------+
@@ -1596,6 +1602,10 @@ Deserialization Process:
    where:
 
    *  SHA2 instantiations are defined in [FIPS180].
+
+   Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that
+   Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm
+   for Ed25519.
 
    Note: The Hash ML-DSA Composite identifiers are not included in this
    list because the message content is already digested before being
@@ -2539,14 +2549,51 @@ Deserialization Process:
 
 11.  Security Considerations
 
-11.1.  Non-separability and EUF-CMA
+11.1.  Why Hybrids?
+
+   In broad terms, a PQ/T Hybrid can be used either to provide dual-
+   algorithm security or to provide migration flexibility.  Let's
+   quickly explore both.
+
+   Dual-algorithm security.  The general idea is that the data is
+   proctected by two algorithms such that an attacker would need to
+   break both in order to compromise the data.  As with most of
+   cryptography, this property is easy to state in general terms, but
+   becomes more complicated when expressed in formalisms.  Section 11.2
+   goes into more detail here.  One common counter-argument against PQ/T
+   hybrid signatures is that if an attacker can forge one of the
+   component algorithms, then why attack the hybrid-signed message at
+   all when they could simply forge a completely new message?  The
+   answer to this question must be found outside the cryptographic
+   primitives themselves, and instead in policy; once an algorithm is
+   known to be broken it ought to be disallowed for single-algorithm use
+   by cryptographic policy, while hybrids involving that algorithm may
+   continue to be used and to provide value.
+
+   Migration flexibility.  Some PQ/T hybrids exist to provide a sort of
+   "OR" mode where the client can choose to use one algorithm or the
+   other or both.  The intention is that the PQ/T hybrid mechanism
+   builds in backwards compatibility to allow legacy and upgraded
+   clients to co-exist and communicate.  The Composites presented in
+   this specification do not provide this since they operate in a strict
+   "AND" mode, but they do provide codebase migration flexibility.
+   Consider that an organization has today a mature, validated,
+   certified, hardened implementation of RSA or ECC.  Composites allow
+   them to add to this an ML-DSA implementation which immediately starts
+   providing benefits against long-term document integrity attacks even
+   if that ML-DSA implemtation is still experimental, non-validated,
+   non-certified, non-hardened implementation.  More details of
+   obtaining FIPS certification of a composite algorithm can be found in
+   Appendix D.1.
+
+11.2.  Non-separability and EUF-CMA
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
    M’ will include the composite domain separator as evidence.  The
    prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 11.2 further strengthens the non-
+   contexts discussed in Section 11.3 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
@@ -2603,14 +2650,14 @@ Deserialization Process:
    a reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.2 since then there cannot exist simultaneously composite
+   Section 11.3 since then there cannot exist simultaneously composite
    and non-composite signers and verifiers for the same keys.
    Consequently, following the specification and verification of the
    policy mechanism, such as a composite X.509 certificate which defines
    the bound keys, is essential when using keys intended for use with a
    CompositeML-DSA signing algorithm.
 
-11.2.  Key Reuse
+11.3.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
@@ -2629,7 +2676,7 @@ Deserialization Process:
    key pair and combine it with an ML-DSA key pair to form a hybrid key
    pair for use in a hybrid algorithm.  Within a hybrid signature
    context this leads to a class of attacks referred to as "stripping
-   attacks" discussed in Section 11.1 and may also open up risks from
+   attacks" discussed in Section 11.2 and may also open up risks from
    further cross-protocol attacks.  Despite the weak non-separability
    property offered by the composite signature combiner, it is still
    RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
@@ -2648,7 +2695,7 @@ Deserialization Process:
    revocation checks on a composite key should also check both component
    keys independently.
 
-11.3.  Policy for Deprecated and Acceptable Algorithms
+11.4.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
