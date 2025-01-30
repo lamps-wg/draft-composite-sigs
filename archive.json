@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-28T00:49:42.863644+00:00",
+  "timestamp": "2025-01-30T00:48:11.308640+00:00",
   "repo": "lamps-wg/draft-composite-sigs",
   "labels": [
     {
@@ -1948,7 +1948,7 @@
       "id": "I_kwDOL5eEDM6cIsai",
       "title": "Typo in algs list table:",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/81",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1957,8 +1957,8 @@
       "labels": [],
       "body": "The column \"Composite Signature AlgorithmID\" should just be \"Composite Signature Algorithm\" because the thing in this column is an algorithm OID, not a full AlgorithmID structure.",
       "createdAt": "2024-10-28T20:52:50Z",
-      "updatedAt": "2025-01-22T15:31:27Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-29T15:38:01Z",
+      "closedAt": "2025-01-29T15:38:01Z",
       "comments": []
     },
     {
@@ -2048,15 +2048,17 @@
       "id": "I_kwDOL5eEDM6dXwmh",
       "title": "Prefix constant string to M' and add statement about attack detection",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/86",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "falko-strenzke",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "johngray-dev"
+      ],
       "labels": [],
       "body": "In the current proposal M' is starting with the OID. My suggestion is to prefix a \"magic\" constant of length of 16 or 32 bytes to the OID.\r\n\r\nThe reason is the following: In the case that a signature stripping attack is executed where the PQ signature is stipped of, the reamaining traditional signature is valid for the message M'. This amounts to a EUF-CMA violation (under consideration of cross-algorithm chosen message oracle queries).\r\nPrefixing the magic constant allows CMS implementations of the signature verification to perform attack detection by checking the start of the signed data to be equal to the magic string. Otherwise, the forged message cannot be detected and may cause harm in the receiving system.\r\n\r\nThe value of the attack detection mechanism should be mentioned in the text as well. In my view, it should be specified as a \"SHOULD\" feature.",
       "createdAt": "2024-11-07T08:28:20Z",
-      "updatedAt": "2025-01-07T16:16:14Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-29T18:45:52Z",
+      "closedAt": "2025-01-29T18:45:50Z",
       "comments": [
         {
           "author": "ilaril",
@@ -2141,6 +2143,13 @@
           "body": "> So if we add this:\r\n> \r\n> M' = prefix || Domain || len(ctx) || ctx || M\r\n> \r\n> where: prefix = \"CompositeAlgorithmSignatures2025\" (encoded as 32 ASCII bytes)\r\n\r\nI am basically OK with this solution. The prefix string has sufficient entropy. To achieve even some degree of protocol domain separation, we could make the prefix \"IetfCmsCompositeAlgorithmSignatures2025\".\r\n\r\nIn my view, there is no need for an obligation to apply the detection of this prefix in a verified message (this cannot be enforced for existing implementations anyway), but should be presented as an optional measure to prevent the theoretical forgeries. So in my view the draft should incorporate a sentence mentioning the possibility of the attack detection via prefix detection.\r\n\r\n> As well as a couple sentences explaining why this has been added, I believe it will mitigate the issue and make you happy.\r\n\r\nYes, a short discussion of the principal forgery attacks and the role of the prefix detection (for instance in the security considerations section) would be good.",
           "createdAt": "2025-01-06T09:02:45Z",
           "updatedAt": "2025-01-07T16:16:14Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Added prefix into the draft and added a note about it in the security considerations section",
+          "createdAt": "2025-01-29T18:45:50Z",
+          "updatedAt": "2025-01-29T18:45:50Z"
         }
       ]
     },
@@ -2234,15 +2243,15 @@
       "id": "I_kwDOL5eEDM6iARI7",
       "title": "Extra example for key reuse",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/92",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The question then is whether an attacker could take a messages signed by {PQ, RSA} and by simply dropping a signature make it appear to have been signed by either the {RSA} or {PQ} cert, and thus be processed under a different verifier policy?  The obvious counter-argument is that if you can break RSA then why do you need to tamper with an originally-valid message, why not just forge a completely new message? An example would be that you can't yet fully break RSA, but you want to force a downgrade so that an S/MIME reply is only encrypted with RSA instead of the hybrid and thus you can file it away for eventual harvest-now-decrypt-later.",
       "createdAt": "2024-12-04T14:44:47Z",
-      "updatedAt": "2024-12-04T14:44:47Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-29T15:30:29Z",
+      "closedAt": "2025-01-29T15:30:29Z",
       "comments": []
     },
     {
@@ -2273,7 +2282,7 @@
       "labels": [],
       "body": "**John Preu\u00df Mattsson:**\r\nI dislike that the document creates EUF-CMA composites of the SUF-CMA ML-DSA and makes is sound like the composites are better. The abstract states:\r\n\r\n\"These combinations are tailored to meet security best practices\"\r\n\"where the operator wants extra protection\"\r\n\r\nWhile there has been a lot of PQC discussions regarding new exotic security properties of debatable practical value, SUF-CMA is not a new exotic property. It is best practice and the IETF standardized version of EdDSA and the NIST standardized ML-DSA are both SUF-CMA. Users and developers are known to expect signatures to be SUF-CMA and developers believing EUF-CMA signatures to be SUF-CMA have caused significant vulnerabilities in the past.  https://en.bitcoin.it/wiki/Transaction_malleability\r\n\r\nMy preference would be that IETF does not standardize any EUF-CMA composites of the SUF-CMA ML-DSA. If this is done anyway, the fact that some of the composites weakens security properties compared to standalone ML-DSA must be very clear and mentioned together with any claims of improved security, which would currently be in the abstract. Wheater a composite is SUF-CMA and EUF-CMA should be clearly marked.\r\n\r\n**Bas Westerbaan:**\r\nAgreed.\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/f9yHqaXnze4qNubvDa0OkVUcoNY/\r\nhttps://mailarchive.ietf.org/arch/msg/spasm/GzjPEaNgKDb9_trgeFkvXLc-Cho/\r\n",
       "createdAt": "2024-12-20T22:15:23Z",
-      "updatedAt": "2025-01-03T22:07:55Z",
+      "updatedAt": "2025-01-29T18:30:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -2282,6 +2291,13 @@
           "body": "Thanks John for your comment.  I agree with you!  The problem of course is that most of the older stuff (RSA and ECDSA) are not SUF-CMA so when combined with SUF-CMA ML-DSA lowers the combined/black-box property of the composite.   I had opened issue #64 a while ago to propose that we make use of the context String in EdDSA and Ed448.  I believe that should give the overall composite SUF-CMA.  If we did that then I think we would want to add a table that clearly stated the security properties of the composite (EUF-CMA for combinations with RSA and ECDSA) and SUF-CMA for the EdDSA and Ed448 version.  Would you be okay with that suggestion?\r\n\r\nThe reason we didn't add them yet is that most crypto libraries today don't support the context APIs... However perhaps that shouldn't hinder us from suggesting its use as implementations are all going to need to be updated to support the ML-DSA contexts anyway, so maybe people will finally start using EdDSA contexts as well...",
           "createdAt": "2025-01-03T22:07:54Z",
           "updatedAt": "2025-01-03T22:07:54Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@emanjon I am unclear about what change you are suggesting here?\n\nDo you have a suggestion for how to make the composite combiner maintain SUF-CMA of ML-DSA?\n\nOr is this not possible, then you just want the text to correctly reflect this? But then you also say that IETF should not standardize this, so you want to kill the whole draft?\n\nI am not sure how to interpret your comment and what you want to be changed in the draft.",
+          "createdAt": "2025-01-29T18:30:12Z",
+          "updatedAt": "2025-01-29T18:30:12Z"
         }
       ]
     },
@@ -2290,16 +2306,33 @@
       "id": "I_kwDOL5eEDM6lM8Zi",
       "title": "Problems with the \"Use in CMS > Underlying Components\" section",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/98",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "janklaussner"
+      ],
       "labels": [],
       "body": "I'm just making a note here so I can come back and clean this up later.\r\n\r\nProblems I see:\r\n\r\n1. Why is id-MLDSA44-Ed25519 using SHA512 as the digest? Shouldn't that be SHA256?\r\n   - Actually, SHA512 is correct since this aligns with phEd25519 as per RFC8032. We should probably add a footnote so that I don't ask this question again :P \r\n3. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\r\n4. Do we need an equivalent table for the HashComposite variants?\r\n  - Answer: no because they are not allowed in CMS.",
       "createdAt": "2025-01-06T23:47:30Z",
-      "updatedAt": "2025-01-07T18:48:55Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-01-29T15:20:15Z",
+      "closedAt": "2025-01-29T15:20:15Z",
+      "comments": [
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> 2\\. Shouldn't this list the digestAlgorithm as an OID -- ie `id-sha256` rather than `SHA256`? Go check what other CMS documents do.\n\nThey use names like 'SHA-256', no OIDs. Question is if we adopt the spelling with the dash, too. But there is no unified spelling throughout the RFCs.\n\n> 3\\. Do we need an equivalent table for the HashComposite variants?\n\nThere is already a note like that in this section...",
+          "createdAt": "2025-01-29T10:20:38Z",
+          "updatedAt": "2025-01-29T10:32:55Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Ok. I retract 2 because even the CMS RFC RFC 5652) does not reference the `digestAlgorithms` by OID. So what we have here is consistent.\n\nAbout 3 -- oops. I retract this also.",
+          "createdAt": "2025-01-29T15:20:07Z",
+          "updatedAt": "2025-01-29T15:20:07Z"
+        }
+      ]
     },
     {
       "number": 99,
@@ -2315,9 +2348,17 @@
       "labels": [],
       "body": "Microsoft is interested in using RSA 4096 with ML-DSA-87 due to use of RSA 4096 root requirements.  ",
       "createdAt": "2025-01-17T17:44:48Z",
-      "updatedAt": "2025-01-22T15:15:29Z",
+      "updatedAt": "2025-01-29T15:36:29Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "John will update the Hash OIDs starting at .80 so that there is a little room to add extra algorithms (so we can have a nice incremental list)..  We know these will all change anyway once we get OIDs from IANA.  ",
+          "createdAt": "2025-01-29T15:36:29Z",
+          "updatedAt": "2025-01-29T15:36:29Z"
+        }
+      ]
     },
     {
       "number": 100,
@@ -2340,7 +2381,7 @@
       "id": "I_kwDOL5eEDM6nSi3d",
       "title": "Remove prehash suffix from algorithm names in IANA section.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/102",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2349,9 +2390,40 @@
       "labels": [],
       "body": "All non pre-hash algorithm names still have a hash at the end of their name in the IANA setion. This is a leftover from the time the prehash was mandatory for all composites. Should be removed.",
       "createdAt": "2025-01-23T11:28:27Z",
-      "updatedAt": "2025-01-23T11:28:31Z",
-      "closedAt": null,
+      "updatedAt": "2025-01-29T15:32:09Z",
+      "closedAt": "2025-01-29T15:32:09Z",
       "comments": []
+    },
+    {
+      "number": 106,
+      "id": "I_kwDOL5eEDM6ny53L",
+      "title": "Be more specific on component signature and public key serialization.",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/issues/106",
+      "state": "OPEN",
+      "author": "janklaussner",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A colleague of mine struggled to find the correct way for serializing the component signatures and public keys.\nWe want bytes to conacatenate both components. While its quite clear for ML-DSA since the FIPS-204 defines the byte encoding. But for e.g. ECDSA its unclear. \nOr do I miss something?\n@ounsworth @johngray-dev @feventura ",
+      "createdAt": "2025-01-28T09:53:24Z",
+      "updatedAt": "2025-01-28T18:18:37Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The appendix has the encoding section that you added right?  Doesn't that make it clear?    For example, Around Page 62: we have this description:\n\n *ECDSA NIST 256 -- AlgorithmIdentifier of Public Key*\n\n   ASN.1:\n     algorithm AlgorithmIdentifier ::= {\n       algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)\n       parameters ANY ::= {\n         AlgorithmIdentifier ::= {\n           algorithm secp256r1   -- (1.2.840.10045.3.1.7)\n           }\n         }\n       }\n\n   DER:\n     30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07\n\n   *ECDSA NIST 256 -- AlgorithmIdentifier of Signature*\n\nOunsworth, et al.         Expires 24 April 2025                [Page 63]\nInternet-Draft              Composite ML-DSA                October 2024\n\n   ASN.1:\n     signature AlgorithmIdentifier ::= {\n       algorithm ecdsa-with-SHA256   -- (1.2.840.10045.4.3.2)\n       }\n\n   DER:\n     30 0A 06 08 2A 86 48 CE 3D 04 03 02\n\nAppendix B has this table that shows where the specification comes from:\n\n +=========================+=========================+=============+\n    | Component Signature     | OID                     |Specification|\n    | Algorithm ID            |                         |             |\n    +=========================+=========================+=============+\n    | id-ML-DSA-44            | 2.16.840.1.101.3.4.3.17 |[FIPS.204]   |\n    +-------------------------+-------------------------+-------------+\n    | id-ML-DSA-65            | 2.16.840.1.101.3.4.3.18 |[FIPS.204]   |\n    +-------------------------+-------------------------+-------------+\n    | id-ML-DSA-87            | 2.16.840.1.101.3.4.3.19 |[FIPS.204]   |\n    +-------------------------+-------------------------+-------------+\n    | id-Ed25519              | 1.3.101.112             |[RFC8410]    |\n    +-------------------------+-------------------------+-------------+\n    | id-Ed448                | 1.3.101.113             |[RFC8410]    |\n    +-------------------------+-------------------------+-------------+\n    | ecdsa-with-SHA256       | 1.2.840.10045.4.3.2     |[RFC5758]    |\n    +-------------------------+-------------------------+-------------+\n    | ecdsa-with-SHA512       | 1.2.840.10045.4.3.4     |[RFC5758]    |\n    +-------------------------+-------------------------+-------------+\n    | sha256WithRSAEncryption | 1.2.840.113549.1.1.11   |[RFC8017]    |\n    +-------------------------+-------------------------+-------------+\n    | sha512WithRSAEncryption | 1.2.840.113549.1.1.13   |[RFC8017]    |\n    +-------------------------+-------------------------+-------------+\n    | id-RSASA-PSS            | 1.2.840.113549.1.1.10   |[RFC8017]    |\n    +-------------------------+-------------------------+-------------+\n\nSo RFC 5758 should specify what he is looking for, does it not?   I looked at 5758 and it says this:\n\nEncoding rules for ECDSA signature values are specified in [RFC 3279](https://datatracker.ietf.org/doc/html/rfc3279)\n   [[RFC3279], Section 2.2.3](https://datatracker.ietf.org/doc/html/rfc3279#section-2.2.3), and [RFC 5480](https://datatracker.ietf.org/doc/html/rfc5480) [[RFC5480](https://datatracker.ietf.org/doc/html/rfc5480)].\n\nAnd RFC 5480 contains the ASN.1 needed to encode ECDSA keys (for example).   \n\nI guess we could pull the encodings from 5480 into our already huge document if we think it is helpful.",
+          "createdAt": "2025-01-28T14:54:50Z",
+          "updatedAt": "2025-01-28T14:54:50Z"
+        },
+        {
+          "author": "janklaussner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "OK, thanks.\nI had the impression we get rid of ASN.1 encondings altogether, but it seems I was mistaken.\nAnyway I think we need to add some more guidance here. \nFirst some hint to the appendix B where the references are stated.\nSecond some hint for the encoding: The ECDSA example is quite good: an ASN.1 structure is not a byte string, it needs to be encoded, and this is not part of the RFC. At least we should have the standard sentence like \"contains the DER encoding of an ASN.1 value\" or something there. \nDoes this makes sense?",
+          "createdAt": "2025-01-28T18:18:36Z",
+          "updatedAt": "2025-01-28T18:18:36Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -4047,24 +4119,26 @@
       "id": "PR_kwDOL5eEDM6Gvhx8",
       "title": "Added a P256 variant",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/97",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ounsworth",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "To do before merge:\r\n\r\n- [ ] Assign a prototyping OIDs for `id-MLDSA65-ECDSA-P256` and `id-HashMLDSA65-ECDSA-P256-SHA512` from the Entrust OID arc -- update all the places in the draft that need it.\r\n- [ ] Once the OID is assigned, compute the domain separator for it.\r\n\r\n\r\n@johngray-dev I also fixed some typos in the IANA Considerations section (the non-prehashed OIDs still had a hash function in them), do you agree?",
       "createdAt": "2025-01-05T04:10:37Z",
-      "updatedAt": "2025-01-07T18:40:55Z",
+      "updatedAt": "2025-01-29T18:20:19Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "mikeo_p256",
-      "headRefOid": "304a347098f486e621127026a55ad6d2104b11c8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "46fd923e15e97789e1d3fad449382c8031769b26",
+      "closedAt": "2025-01-29T18:20:08Z",
+      "mergedAt": "2025-01-29T18:20:08Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "d5b36d4705f9faca41f1b28c2d3f1c40a53a9d86"
+      },
       "comments": [],
       "reviews": [
         {
@@ -4154,24 +4228,26 @@
       "id": "PR_kwDOL5eEDM6Ipc8v",
       "title": "Fixes header of algorithm column in all tables.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/101",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "It said AlgorithmID while it is actually only the algorithm name. AlgorithmID would by an ASN.1 structure.\r\n\r\nFixes #81",
       "createdAt": "2025-01-22T15:51:46Z",
-      "updatedAt": "2025-01-22T15:51:46Z",
+      "updatedAt": "2025-01-29T15:38:00Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "81-typo-in-algs-list-table",
       "headRefOid": "54e95c7a07f0611cd815b0ca0620a624e0b86007",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-01-29T15:38:00Z",
+      "mergedAt": "2025-01-29T15:38:00Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "7aa667fb534e959c6a0e27d610ff4abe3139efbe"
+      },
       "comments": [],
       "reviews": []
     },
@@ -4187,7 +4263,7 @@
       "labels": [],
       "body": "Request by Microsoft.\r\n\r\nCloses #99",
       "createdAt": "2025-01-23T11:43:47Z",
-      "updatedAt": "2025-01-23T12:33:39Z",
+      "updatedAt": "2025-01-29T14:28:36Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
@@ -4199,31 +4275,152 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6Z2oQn",
+          "commit": {
+            "abbreviatedOid": "b004953"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-01-29T14:28:36Z",
+          "updatedAt": "2025-01-29T14:28:36Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Now we have two different composites with the same number (ending with .74).    Should we re-number the hash ones and maybe start at 80 and up (to leave room)... ?",
+              "createdAt": "2025-01-29T14:28:36Z",
+              "updatedAt": "2025-01-29T14:28:36Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 104,
       "id": "PR_kwDOL5eEDM6IwH_d",
       "title": "Removes prehash from algorithm names in IANA section.",
       "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/104",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "janklaussner",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This applies to all non-PreHash names only.\r\n\r\nCloses #102",
       "createdAt": "2025-01-23T11:53:52Z",
-      "updatedAt": "2025-01-23T11:53:52Z",
+      "updatedAt": "2025-01-29T15:32:18Z",
       "baseRepository": "lamps-wg/draft-composite-sigs",
       "baseRefName": "main",
       "baseRefOid": "441ffbdede92c8e6abdfffa5ba6ac873af5685a2",
       "headRepository": "lamps-wg/draft-composite-sigs",
       "headRefName": "102-remove-prehash-suffix-from-algorithm-names-in-iana-section",
       "headRefOid": "b18ab70f4fd9c4b987205de1a629bd8c1707deb7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-01-29T15:32:08Z",
+      "mergedAt": "2025-01-29T15:32:08Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "c7cce41e6b3911a036e50de2835f19b3f683ee42"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 105,
+      "id": "PR_kwDOL5eEDM6JKiAP",
+      "title": "Added a \"Why Hybrids?\" security consideration.",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/105",
+      "state": "MERGED",
+      "author": "ounsworth",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #92",
+      "createdAt": "2025-01-28T02:55:56Z",
+      "updatedAt": "2025-01-29T15:30:28Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "6d0a5b8bcc01d0784d1a03c19eebeb473f3aa740",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "mikeo_92",
+      "headRefOid": "4e6541a7f67c37a34f263b2705391b269b02ac22",
+      "closedAt": "2025-01-29T15:30:27Z",
+      "mergedAt": "2025-01-29T15:30:27Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "3d86dbedf56579501b89b63fd3f96f546eb919f9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL5eEDM6Z2luZ",
+          "commit": {
+            "abbreviatedOid": "d01af43"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Harvest-now decrypt later would apply to ML-KEM, so maybe just take that part out and leave the long term signature in there.",
+          "createdAt": "2025-01-29T14:25:11Z",
+          "updatedAt": "2025-01-29T14:25:11Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "PR_kwDOL5eEDM6JVw9a",
+      "title": "Adds rationale for use of SHA512 with MLDSA-44 in CMS section.",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/107",
+      "state": "MERGED",
+      "author": "janklaussner",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #98",
+      "createdAt": "2025-01-29T10:31:47Z",
+      "updatedAt": "2025-01-29T15:20:14Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "6d0a5b8bcc01d0784d1a03c19eebeb473f3aa740",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "98-problems-with-the-use-in-cms-underlying-components-section",
+      "headRefOid": "64aed9de0adf2916131fccd0b4c564ba3b31f97f",
+      "closedAt": "2025-01-29T15:20:14Z",
+      "mergedAt": "2025-01-29T15:20:14Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "0206e3324b10b7363bcec71f3aa3adf4456ccb7d"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 108,
+      "id": "PR_kwDOL5eEDM6JYBhE",
+      "title": "Add support for the prefix",
+      "url": "https://github.com/lamps-wg/draft-composite-sigs/pull/108",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "First attempt at adding the Prefix for #86",
+      "createdAt": "2025-01-29T14:59:31Z",
+      "updatedAt": "2025-01-29T18:45:10Z",
+      "baseRepository": "lamps-wg/draft-composite-sigs",
+      "baseRefName": "main",
+      "baseRefOid": "6d0a5b8bcc01d0784d1a03c19eebeb473f3aa740",
+      "headRepository": "lamps-wg/draft-composite-sigs",
+      "headRefName": "jg_86_addPrefixAttackMitigation",
+      "headRefOid": "9dd00528ae2e71295dab955c5a15c7bdea2d3322",
+      "closedAt": "2025-01-29T18:45:05Z",
+      "mergedAt": "2025-01-29T18:45:05Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "5c49dab0db6bbabbb5d926cd1b8443e51846a064"
+      },
       "comments": [],
       "reviews": []
     }
