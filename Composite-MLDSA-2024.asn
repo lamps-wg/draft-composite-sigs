@@ -312,6 +312,19 @@ sa-MLDSA87-Ed448 SIGNATURE-ALGORITHM ::=
        id-MLDSA87-Ed448,
        pk-MLDSA87-Ed448 }
 
+-- TODO: OID to be replaced by IANA
+id-MLDSA87- OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 75 }
+
+pk-MLDSA87-RSA4096-PSS PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS,
+  CompositeMLDSAPublicKey}
+
+sa-MLDSA87-RSA4096-PSS SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA87-RSA4096-PSS,
+       pk-MLDSA87-RSA4096-PSS }
 
 -- PreHash Version of the OIDs
 
@@ -539,6 +552,22 @@ sa-HashMLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
        id-HashMLDSA87-Ed448-SHA512,
        pk-HashMLDSA87-Ed448-SHA512 }
 
+
+-- TODO: OID to be replaced by IANA
+id-HashMLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 95 }
+
+pk-HashMLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-HashMLDSA87-RSA4096-PSS-SHA512,
+  CompositeMLDSAPublicKey}
+
+sa-HashMLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-HashMLDSA87-RSA4096-PSS-SHA512,
+       pk-HashMLDSA87-RSA4096-PSS-SHA512 }
+	   
+
 SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA44-RSA2048-PSS |
   sa-MLDSA44-RSA2048-PKCS15 |
@@ -549,11 +578,29 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA65-RSA4096-PSS |
   sa-MLDSA65-RSA4096-PKCS15 |
   sa-MLDSA65-ECDSA-P256 |
+  sa-MLDSA65-ECDSA-P384 |
   sa-MLDSA65-ECDSA-brainpoolP256r1 |
   sa-MLDSA65-Ed25519 |
   sa-MLDSA87-ECDSA-P384 |
   sa-MLDSA87-ECDSA-brainpoolP384r1 |
-  sa-MLDSA87-Ed448,
+  sa-MLDSA87-Ed448 |
+  sa-MLDSA87-RSA4096-PSS |  
+  sa-HashMLDSA44-RSA2048-PSS-SHA256 |
+  sa-HashMLDSA44-RSA2048-PKCS15-SHA256 |
+  sa-HashMLDSA44-Ed25519-SHA512 |
+  sa-HashMLDSA44-ECDSA-P256-SHA256 |
+  sa-HashMLDSA65-RSA3072-PSS-SHA512 |
+  sa-HashMLDSA65-RSA3072-PKCS15-SHA512 |
+  sa-HashMLDSA65-RSA4096-PSS-SHA512 |
+  sa-HashMLDSA65-RSA4096-PKCS15-SHA512 |
+  sa-HashMLDSA65-ECDSA-P256-SHA512 |
+  sa-HashMLDSA65-ECDSA-P384-SHA512 |
+  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 |
+  sa-HashMLDSA65-Ed25519-SHA512 |
+  sa-HashMLDSA87-ECDSA-P384-SHA512 |
+  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |
+  sa-HashMLDSA87-Ed448-SHA512 |
+  sa-HashMLDSA87-RSA4096-PSS-SHA512,
   ... }
 
 
@@ -576,11 +623,29 @@ SMimeCaps SMIME-CAPS ::= {
   sa-MLDSA65-RSA4096-PSS.&smimeCaps |
   sa-MLDSA65-RSA4096-PKCS15.&smimeCaps |
   sa-MLDSA65-ECDSA-P256.&smimeCaps |
+  sa-MLDSA65-ECDSA-P384.&smimeCaps |
   sa-MLDSA65-ECDSA-brainpoolP256r1.&smimeCaps |
   sa-MLDSA65-Ed25519.&smimeCaps |
   sa-MLDSA87-ECDSA-P384.&smimeCaps |
   sa-MLDSA87-ECDSA-brainpoolP384r1.&smimeCaps |
-  sa-MLDSA87-Ed448.&smimeCaps,
+  sa-MLDSA87-Ed448.&smimeCaps |
+  sa-MLDSA87-RSA4096-PSS.&smimeCaps |  
+  sa-HashMLDSA44-RSA2048-PSS-SHA256.&smimeCaps |
+  sa-HashMLDSA44-RSA2048-PKCS15-SHA256.&smimeCaps |
+  sa-HashMLDSA44-Ed25519-SHA512.&smimeCaps |
+  sa-HashMLDSA44-ECDSA-P256-SHA256.&smimeCaps |
+  sa-HashMLDSA65-RSA3072-PSS-SHA512.&smimeCaps |
+  sa-HashMLDSA65-RSA3072-PKCS15-SHA512.&smimeCaps |
+  sa-HashMLDSA65-RSA4096-PSS-SHA512.&smimeCaps |
+  sa-HashMLDSA65-RSA4096-PKCS15-SHA512.&smimeCaps |
+  sa-HashMLDSA65-ECDSA-P256-SHA512.&smimeCaps |
+  sa-HashMLDSA65-ECDSA-P384-SHA512.&smimeCaps |
+  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512.&smimeCaps |
+  sa-HashMLDSA65-Ed25519-SHA512.&smimeCaps |
+  sa-HashMLDSA87-ECDSA-P384-SHA512.&smimeCaps |
+  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512.&smimeCaps |
+  sa-HashMLDSA87-Ed448-SHA512.&smimeCaps |
+  sa-HashMLDSA87-RSA4096-PSS-SHA512.&smimeCaps,
   ... }
 
 END

@@ -1081,6 +1081,7 @@ Pure Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P384            | &lt;CompSig&gt;.72  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 |
 | id-MLDSA87-ECDSA-brainpoolP384r1 | &lt;CompSig&gt;.73 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 |
 | id-MLDSA87-Ed448                        | &lt;CompSig&gt;.74 | id-ML-DSA-87 | id-Ed448 |
+| id-MLDSA87-RSA4096-PSS           | &lt;CompSig&gt;.75 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
 See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
@@ -1108,6 +1109,7 @@ HashComposite-ML-DSA Signature public key types:
 | id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 | id-sha512|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
 | id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.94 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
+| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
 
@@ -1138,6 +1140,8 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA87-ECDSA-P384 |060B6086480186FA6B50080148|
 | id-MLDSA87-ECDSA-brainpoolP384r1 |060B6086480186FA6B50080149|
 | id-MLDSA87-Ed448 |060B6086480186FA6B5008014A|
+| id-MLDSA87-RSA4096-PSS |060B6086480186FA6B5008014B|
+
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
 | Composite Signature Algorithm | Domain Separator (in Hex encoding)|
@@ -1157,6 +1161,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008015C|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008015D|
 | id-HashMLDSA87-Ed448-SHA512 |060B6086480186FA6B5008015E|
+| id-HashMLDSA87-RSA4096-PSS-SHA512 |060B6086480186FA6B5008015F|
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
 ## Rationale for choices
@@ -1430,6 +1435,11 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA87-Ed448
   - References: This Document
 
+- id-MLDSA87-RSA4096-PSS
+  - Decimal: IANA Assigned
+  - Description:  id-MLDSA87-RSA4096-PSS
+  - References: This Document
+
 - id-HashMLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-RSA2048-PSS-SHA256
@@ -1503,6 +1513,11 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 - id-HashMLDSA87-Ed448-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA87-Ed448-SHA512
+  - References: This Document
+
+- id-HashMLDSA87-RSA4096-PSS-SHA512
+  - Decimal: IANA Assigned
+  - Description:  id-HashMLDSA87-RSA4096-PSS-SHA512
   - References: This Document
 
 <!-- End of IANA Considerations section -->
