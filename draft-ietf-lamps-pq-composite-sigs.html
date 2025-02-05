@@ -17,11 +17,11 @@
 
 
     " name="description">
-<meta content="xml2rfc 3.25.0" name="generator">
+<meta content="xml2rfc 3.26.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-lamps-pq-composite-sigs-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.25.0
+  xml2rfc 3.26.0
     Python 3.12.8
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
@@ -1052,11 +1052,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">January 2025</td>
+<td class="right">February 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 2 August 2025</td>
+<td class="center">Expires 9 August 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-01-29" class="published">29 January 2025</time>
+<time datetime="2025-02-05" class="published">5 February 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-02">2 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-08-09">9 August 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2549,6 +2549,12 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
               <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
             </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS</td>
+              <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.75</td>
+              <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+            </tr>
           </tbody>
         </table>
 </div>
@@ -2683,6 +2689,13 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
               <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
             </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA87-RSA4096-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.95</td>
+              <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+              <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
+            </tr>
           </tbody>
         </table>
 </div>
@@ -2697,12 +2710,8 @@ CompositeSignatureValue ::= BIT STRING
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-domain-separators" class="section-name selfRef">Domain Separators</a>
         </h3>
 <p id="section-7.3-1">As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<span id="name-pure-ml-dsa-composite-signat"></span><div id="tab-sig-alg-oids">
 <table class="center" id="table-4">
-          <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
-<a href="#name-pure-ml-dsa-composite-signat" class="selfRef">Pure ML-DSA Composite Signature Domain Separators</a>
-          </caption>
+          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Composite Signature Algorithm</th>
@@ -2770,9 +2779,12 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-Ed448</td>
               <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008014A</td>
             </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008014B</td>
+            </tr>
           </tbody>
         </table>
-</div>
 <span id="name-hash-ml-dsa-composite-signat"></span><div id="tab-hash-sig-alg-oids">
 <table class="center" id="table-5">
           <caption>
@@ -2845,6 +2857,10 @@ CompositeSignatureValue ::= BIT STRING
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA87-Ed448-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008015E</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA87-RSA4096-PSS-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008015F</td>
             </tr>
           </tbody>
         </table>
@@ -3513,6 +3529,19 @@ sa-MLDSA87-Ed448 SIGNATURE-ALGORITHM ::=
        id-MLDSA87-Ed448,
        pk-MLDSA87-Ed448 }
 
+-- TODO: OID to be replaced by IANA
+id-MLDSA87- OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 75 }
+
+pk-MLDSA87-RSA4096-PSS PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS,
+  CompositeMLDSAPublicKey}
+
+sa-MLDSA87-RSA4096-PSS SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA87-RSA4096-PSS,
+       pk-MLDSA87-RSA4096-PSS }
 
 -- PreHash Version of the OIDs
 
@@ -3740,6 +3769,22 @@ sa-HashMLDSA87-Ed448-SHA512 SIGNATURE-ALGORITHM ::=
        id-HashMLDSA87-Ed448-SHA512,
        pk-HashMLDSA87-Ed448-SHA512 }
 
+
+-- TODO: OID to be replaced by IANA
+id-HashMLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 95 }
+
+pk-HashMLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-HashMLDSA87-RSA4096-PSS-SHA512,
+  CompositeMLDSAPublicKey}
+
+sa-HashMLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-HashMLDSA87-RSA4096-PSS-SHA512,
+       pk-HashMLDSA87-RSA4096-PSS-SHA512 }
+
+
 SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA44-RSA2048-PSS |
   sa-MLDSA44-RSA2048-PKCS15 |
@@ -3750,11 +3795,29 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA65-RSA4096-PSS |
   sa-MLDSA65-RSA4096-PKCS15 |
   sa-MLDSA65-ECDSA-P256 |
+  sa-MLDSA65-ECDSA-P384 |
   sa-MLDSA65-ECDSA-brainpoolP256r1 |
   sa-MLDSA65-Ed25519 |
   sa-MLDSA87-ECDSA-P384 |
   sa-MLDSA87-ECDSA-brainpoolP384r1 |
-  sa-MLDSA87-Ed448,
+  sa-MLDSA87-Ed448 |
+  sa-MLDSA87-RSA4096-PSS |
+  sa-HashMLDSA44-RSA2048-PSS-SHA256 |
+  sa-HashMLDSA44-RSA2048-PKCS15-SHA256 |
+  sa-HashMLDSA44-Ed25519-SHA512 |
+  sa-HashMLDSA44-ECDSA-P256-SHA256 |
+  sa-HashMLDSA65-RSA3072-PSS-SHA512 |
+  sa-HashMLDSA65-RSA3072-PKCS15-SHA512 |
+  sa-HashMLDSA65-RSA4096-PSS-SHA512 |
+  sa-HashMLDSA65-RSA4096-PKCS15-SHA512 |
+  sa-HashMLDSA65-ECDSA-P256-SHA512 |
+  sa-HashMLDSA65-ECDSA-P384-SHA512 |
+  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 |
+  sa-HashMLDSA65-Ed25519-SHA512 |
+  sa-HashMLDSA87-ECDSA-P384-SHA512 |
+  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |
+  sa-HashMLDSA87-Ed448-SHA512 |
+  sa-HashMLDSA87-RSA4096-PSS-SHA512,
   ... }
 
 
@@ -3777,11 +3840,29 @@ SMimeCaps SMIME-CAPS ::= {
   sa-MLDSA65-RSA4096-PSS.&amp;smimeCaps |
   sa-MLDSA65-RSA4096-PKCS15.&amp;smimeCaps |
   sa-MLDSA65-ECDSA-P256.&amp;smimeCaps |
+  sa-MLDSA65-ECDSA-P384.&amp;smimeCaps |
   sa-MLDSA65-ECDSA-brainpoolP256r1.&amp;smimeCaps |
   sa-MLDSA65-Ed25519.&amp;smimeCaps |
   sa-MLDSA87-ECDSA-P384.&amp;smimeCaps |
   sa-MLDSA87-ECDSA-brainpoolP384r1.&amp;smimeCaps |
-  sa-MLDSA87-Ed448.&amp;smimeCaps,
+  sa-MLDSA87-Ed448.&amp;smimeCaps |
+  sa-MLDSA87-RSA4096-PSS.&amp;smimeCaps |
+  sa-HashMLDSA44-RSA2048-PSS-SHA256.&amp;smimeCaps |
+  sa-HashMLDSA44-RSA2048-PKCS15-SHA256.&amp;smimeCaps |
+  sa-HashMLDSA44-Ed25519-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA44-ECDSA-P256-SHA256.&amp;smimeCaps |
+  sa-HashMLDSA65-RSA3072-PSS-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-RSA3072-PKCS15-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-RSA4096-PSS-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-RSA4096-PKCS15-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-ECDSA-P256-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-ECDSA-P384-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA65-Ed25519-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA87-ECDSA-P384-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA87-Ed448-SHA512.&amp;smimeCaps |
+  sa-HashMLDSA87-RSA4096-PSS-SHA512.&amp;smimeCaps,
   ... }
 
 END
@@ -4039,13 +4120,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.16">
-              <p id="section-10.1.2-1.16.1">id-HashMLDSA44-RSA2048-PSS-SHA256<a href="#section-10.1.2-1.16.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.16.1">id-MLDSA87-RSA4096-PSS<a href="#section-10.1.2-1.16.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.16.2.1">
                   <p id="section-10.1.2-1.16.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.16.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.16.2.2">
-                  <p id="section-10.1.2-1.16.2.2.1">Description:  id-HashMLDSA44-RSA2048-PSS-SHA256<a href="#section-10.1.2-1.16.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.16.2.2.1">Description:  id-MLDSA87-RSA4096-PSS<a href="#section-10.1.2-1.16.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.16.2.3">
                   <p id="section-10.1.2-1.16.2.3.1">References: This Document<a href="#section-10.1.2-1.16.2.3.1" class="pilcrow">¶</a></p>
@@ -4053,13 +4134,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.17">
-              <p id="section-10.1.2-1.17.1">id-HashMLDSA44-RSA2048-PKCS15-SHA256<a href="#section-10.1.2-1.17.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.17.1">id-HashMLDSA44-RSA2048-PSS-SHA256<a href="#section-10.1.2-1.17.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.17.2.1">
                   <p id="section-10.1.2-1.17.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.17.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.17.2.2">
-                  <p id="section-10.1.2-1.17.2.2.1">Description:  id-HashMLDSA44-RSA2048-PKCS15-SHA256<a href="#section-10.1.2-1.17.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.17.2.2.1">Description:  id-HashMLDSA44-RSA2048-PSS-SHA256<a href="#section-10.1.2-1.17.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.17.2.3">
                   <p id="section-10.1.2-1.17.2.3.1">References: This Document<a href="#section-10.1.2-1.17.2.3.1" class="pilcrow">¶</a></p>
@@ -4067,13 +4148,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.18">
-              <p id="section-10.1.2-1.18.1">id-HashMLDSA44-Ed25519-SHA512<a href="#section-10.1.2-1.18.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.18.1">id-HashMLDSA44-RSA2048-PKCS15-SHA256<a href="#section-10.1.2-1.18.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.18.2.1">
                   <p id="section-10.1.2-1.18.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.18.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.18.2.2">
-                  <p id="section-10.1.2-1.18.2.2.1">Description:  id-HashMLDSA44-Ed25519-SHA512<a href="#section-10.1.2-1.18.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.18.2.2.1">Description:  id-HashMLDSA44-RSA2048-PKCS15-SHA256<a href="#section-10.1.2-1.18.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.18.2.3">
                   <p id="section-10.1.2-1.18.2.3.1">References: This Document<a href="#section-10.1.2-1.18.2.3.1" class="pilcrow">¶</a></p>
@@ -4081,13 +4162,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.19">
-              <p id="section-10.1.2-1.19.1">id-HashMLDSA44-ECDSA-P256-SHA256<a href="#section-10.1.2-1.19.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.19.1">id-HashMLDSA44-Ed25519-SHA512<a href="#section-10.1.2-1.19.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.19.2.1">
                   <p id="section-10.1.2-1.19.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.19.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.19.2.2">
-                  <p id="section-10.1.2-1.19.2.2.1">Description:  id-HashMLDSA44-ECDSA-P256-SHA256<a href="#section-10.1.2-1.19.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.19.2.2.1">Description:  id-HashMLDSA44-Ed25519-SHA512<a href="#section-10.1.2-1.19.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.19.2.3">
                   <p id="section-10.1.2-1.19.2.3.1">References: This Document<a href="#section-10.1.2-1.19.2.3.1" class="pilcrow">¶</a></p>
@@ -4095,13 +4176,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.20">
-              <p id="section-10.1.2-1.20.1">id-HashMLDSA65-RSA3072-PSS-SHA512<a href="#section-10.1.2-1.20.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.20.1">id-HashMLDSA44-ECDSA-P256-SHA256<a href="#section-10.1.2-1.20.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.20.2.1">
                   <p id="section-10.1.2-1.20.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.20.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.20.2.2">
-                  <p id="section-10.1.2-1.20.2.2.1">Description:  id-HashMLDSA65-RSA3072-PSS-SHA512<a href="#section-10.1.2-1.20.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.20.2.2.1">Description:  id-HashMLDSA44-ECDSA-P256-SHA256<a href="#section-10.1.2-1.20.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.20.2.3">
                   <p id="section-10.1.2-1.20.2.3.1">References: This Document<a href="#section-10.1.2-1.20.2.3.1" class="pilcrow">¶</a></p>
@@ -4109,13 +4190,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.21">
-              <p id="section-10.1.2-1.21.1">id-HashMLDSA65-RSA3072-PKCS15-SHA512<a href="#section-10.1.2-1.21.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.21.1">id-HashMLDSA65-RSA3072-PSS-SHA512<a href="#section-10.1.2-1.21.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.21.2.1">
                   <p id="section-10.1.2-1.21.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.21.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.21.2.2">
-                  <p id="section-10.1.2-1.21.2.2.1">Description:  id-HashMLDSA65-RSA3072-PKCS15-SHA512<a href="#section-10.1.2-1.21.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.21.2.2.1">Description:  id-HashMLDSA65-RSA3072-PSS-SHA512<a href="#section-10.1.2-1.21.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.21.2.3">
                   <p id="section-10.1.2-1.21.2.3.1">References: This Document<a href="#section-10.1.2-1.21.2.3.1" class="pilcrow">¶</a></p>
@@ -4123,13 +4204,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.22">
-              <p id="section-10.1.2-1.22.1">id-HashMLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.22.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.22.1">id-HashMLDSA65-RSA3072-PKCS15-SHA512<a href="#section-10.1.2-1.22.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.22.2.1">
                   <p id="section-10.1.2-1.22.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.22.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.22.2.2">
-                  <p id="section-10.1.2-1.22.2.2.1">Description:  id-HashMLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.22.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.22.2.2.1">Description:  id-HashMLDSA65-RSA3072-PKCS15-SHA512<a href="#section-10.1.2-1.22.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.22.2.3">
                   <p id="section-10.1.2-1.22.2.3.1">References: This Document<a href="#section-10.1.2-1.22.2.3.1" class="pilcrow">¶</a></p>
@@ -4137,13 +4218,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.23">
-              <p id="section-10.1.2-1.23.1">id-HashMLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.23.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.23.1">id-HashMLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.23.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.23.2.1">
                   <p id="section-10.1.2-1.23.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.23.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.23.2.2">
-                  <p id="section-10.1.2-1.23.2.2.1">Description:  id-HashMLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.23.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.23.2.2.1">Description:  id-HashMLDSA65-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.23.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.23.2.3">
                   <p id="section-10.1.2-1.23.2.3.1">References: This Document<a href="#section-10.1.2-1.23.2.3.1" class="pilcrow">¶</a></p>
@@ -4151,13 +4232,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.24">
-              <p id="section-10.1.2-1.24.1">id-HashMLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.24.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.24.1">id-HashMLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.24.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.24.2.1">
                   <p id="section-10.1.2-1.24.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.24.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.24.2.2">
-                  <p id="section-10.1.2-1.24.2.2.1">Description:  id-HashMLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.24.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.24.2.2.1">Description:  id-HashMLDSA65-RSA4096-PKCS15-SHA512<a href="#section-10.1.2-1.24.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.24.2.3">
                   <p id="section-10.1.2-1.24.2.3.1">References: This Document<a href="#section-10.1.2-1.24.2.3.1" class="pilcrow">¶</a></p>
@@ -4165,13 +4246,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.25">
-              <p id="section-10.1.2-1.25.1">id-HashMLDSA65-ECDSA-P384-SHA512<a href="#section-10.1.2-1.25.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.25.1">id-HashMLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.25.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.25.2.1">
                   <p id="section-10.1.2-1.25.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.25.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.25.2.2">
-                  <p id="section-10.1.2-1.25.2.2.1">Description:  id-HashMLDSA65-ECDSA-P384-SHA512<a href="#section-10.1.2-1.25.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.25.2.2.1">Description:  id-HashMLDSA65-ECDSA-P256-SHA512<a href="#section-10.1.2-1.25.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.25.2.3">
                   <p id="section-10.1.2-1.25.2.3.1">References: This Document<a href="#section-10.1.2-1.25.2.3.1" class="pilcrow">¶</a></p>
@@ -4179,13 +4260,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.26">
-              <p id="section-10.1.2-1.26.1">id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.26.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.26.1">id-HashMLDSA65-ECDSA-P384-SHA512<a href="#section-10.1.2-1.26.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.26.2.1">
                   <p id="section-10.1.2-1.26.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.26.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.26.2.2">
-                  <p id="section-10.1.2-1.26.2.2.1">Description:  id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.26.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.26.2.2.1">Description:  id-HashMLDSA65-ECDSA-P384-SHA512<a href="#section-10.1.2-1.26.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.26.2.3">
                   <p id="section-10.1.2-1.26.2.3.1">References: This Document<a href="#section-10.1.2-1.26.2.3.1" class="pilcrow">¶</a></p>
@@ -4193,13 +4274,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.27">
-              <p id="section-10.1.2-1.27.1">id-HashMLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.27.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.27.1">id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.27.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.27.2.1">
                   <p id="section-10.1.2-1.27.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.27.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.27.2.2">
-                  <p id="section-10.1.2-1.27.2.2.1">Description:  id-HashMLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.27.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.27.2.2.1">Description:  id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512<a href="#section-10.1.2-1.27.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.27.2.3">
                   <p id="section-10.1.2-1.27.2.3.1">References: This Document<a href="#section-10.1.2-1.27.2.3.1" class="pilcrow">¶</a></p>
@@ -4207,13 +4288,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.28">
-              <p id="section-10.1.2-1.28.1">id-HashMLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.28.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.28.1">id-HashMLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.28.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.28.2.1">
                   <p id="section-10.1.2-1.28.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.28.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.28.2.2">
-                  <p id="section-10.1.2-1.28.2.2.1">Description:  id-HashMLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.28.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.28.2.2.1">Description:  id-HashMLDSA65-Ed25519-SHA512<a href="#section-10.1.2-1.28.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.28.2.3">
                   <p id="section-10.1.2-1.28.2.3.1">References: This Document<a href="#section-10.1.2-1.28.2.3.1" class="pilcrow">¶</a></p>
@@ -4221,13 +4302,13 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.29">
-              <p id="section-10.1.2-1.29.1">id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.29.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.29.1">id-HashMLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.29.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.29.2.1">
                   <p id="section-10.1.2-1.29.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.29.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.29.2.2">
-                  <p id="section-10.1.2-1.29.2.2.1">Description:  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.29.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.29.2.2.1">Description:  id-HashMLDSA87-ECDSA-P384-SHA512<a href="#section-10.1.2-1.29.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.29.2.3">
                   <p id="section-10.1.2-1.29.2.3.1">References: This Document<a href="#section-10.1.2-1.29.2.3.1" class="pilcrow">¶</a></p>
@@ -4235,16 +4316,44 @@ END
               </ul>
 </li>
             <li class="normal" id="section-10.1.2-1.30">
-              <p id="section-10.1.2-1.30.1">id-HashMLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.30.1" class="pilcrow">¶</a></p>
+              <p id="section-10.1.2-1.30.1">id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.30.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10.1.2-1.30.2.1">
                   <p id="section-10.1.2-1.30.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.30.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.30.2.2">
-                  <p id="section-10.1.2-1.30.2.2.1">Description:  id-HashMLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.30.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-10.1.2-1.30.2.2.1">Description:  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512<a href="#section-10.1.2-1.30.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-10.1.2-1.30.2.3">
                   <p id="section-10.1.2-1.30.2.3.1">References: This Document<a href="#section-10.1.2-1.30.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-10.1.2-1.31">
+              <p id="section-10.1.2-1.31.1">id-HashMLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.31.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-10.1.2-1.31.2.1">
+                  <p id="section-10.1.2-1.31.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.31.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-10.1.2-1.31.2.2">
+                  <p id="section-10.1.2-1.31.2.2.1">Description:  id-HashMLDSA87-Ed448-SHA512<a href="#section-10.1.2-1.31.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-10.1.2-1.31.2.3">
+                  <p id="section-10.1.2-1.31.2.3.1">References: This Document<a href="#section-10.1.2-1.31.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-10.1.2-1.32">
+              <p id="section-10.1.2-1.32.1">id-HashMLDSA87-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.32.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-10.1.2-1.32.2.1">
+                  <p id="section-10.1.2-1.32.2.1.1">Decimal: IANA Assigned<a href="#section-10.1.2-1.32.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-10.1.2-1.32.2.2">
+                  <p id="section-10.1.2-1.32.2.2.1">Description:  id-HashMLDSA87-RSA4096-PSS-SHA512<a href="#section-10.1.2-1.32.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-10.1.2-1.32.2.3">
+                  <p id="section-10.1.2-1.32.2.3.1">References: This Document<a href="#section-10.1.2-1.32.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>

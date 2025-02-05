@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 2 August 2025                                           M. Pala
+Expires: 9 August 2025                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         29 January 2025
+                                                         5 February 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 August 2025.
+   This Internet-Draft will expire on 9 August 2025.
 
 Copyright Notice
 
@@ -1267,6 +1267,9 @@ Deserialization Process:
    |id-MLDSA87-Ed448      |<CompSig>.74|id-ML-   |id-Ed448               |
    |                      |            |DSA-87   |                       |
    +----------------------+------------+---------+-----------------------+
+   |id-MLDSA87-RSA4096-PSS|<CompSig>.75|id-ML-   |id-RSASA-PSS with id-  |
+   |                      |            |DSA-87   |sha384                 |
+   +----------------------+------------+---------+-----------------------+
 
             Table 2: Pure ML-DSA Composite Signature Algorithms
 
@@ -1329,6 +1332,9 @@ Deserialization Process:
    |id-HashMLDSA87-Ed448-SHA512      |<CompSig>.94|id-ML-   |id-Ed448               |id-   |
    |                                 |            |DSA-87   |                       |sha512|
    +---------------------------------+------------+---------+-----------------------+------+
+   |id-HashMLDSA87-RSA4096-PSS-SHA512|<CompSig>.95|id-ML-   |id-RSASA-PSS with id-  |id-   |
+   |                                 |            |DSA-87   |sha384                 |sha512|
+   +---------------------------------+------------+---------+-----------------------+------+
 
             Table 3: Hash ML-DSA Composite Signature Algorithms
 
@@ -1384,8 +1390,10 @@ Deserialization Process:
      +----------------------------------+----------------------------+
      | id-MLDSA87-Ed448                 | 060B6086480186FA6B5008014A |
      +----------------------------------+----------------------------+
+     | id-MLDSA87-RSA4096-PSS           | 060B6086480186FA6B5008014B |
+     +----------------------------------+----------------------------+
 
-         Table 4: Pure ML-DSA Composite Signature Domain Separators
+                                  Table 4
 
     +===================================+============================+
     | Composite Signature Algorithm     | Domain Separator (in Hex   |
@@ -1425,6 +1433,8 @@ Deserialization Process:
     | brainpoolP384r1-SHA512            |                            |
     +-----------------------------------+----------------------------+
     | id-HashMLDSA87-Ed448-SHA512       | 060B6086480186FA6B5008015E |
+    +-----------------------------------+----------------------------+
+    | id-HashMLDSA87-RSA4096-PSS-SHA512 | 060B6086480186FA6B5008015F |
     +-----------------------------------+----------------------------+
 
         Table 5: Hash ML-DSA Composite Signature Domain Separators
@@ -2026,6 +2036,19 @@ Deserialization Process:
           id-MLDSA87-Ed448,
           pk-MLDSA87-Ed448 }
 
+   -- TODO: OID to be replaced by IANA
+   id-MLDSA87- OBJECT IDENTIFIER ::= {
+      joint-iso-itu-t(2) country(16) us(840) organization(1)
+      entrust(114027) algorithm(80) composite(8) signature(1) 75 }
+
+   pk-MLDSA87-RSA4096-PSS PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS,
+     CompositeMLDSAPublicKey}
+
+   sa-MLDSA87-RSA4096-PSS SIGNATURE-ALGORITHM ::=
+       sa-CompositeSignature{
+          id-MLDSA87-RSA4096-PSS,
+          pk-MLDSA87-RSA4096-PSS }
 
    -- PreHash Version of the OIDs
 
@@ -2253,6 +2276,22 @@ Deserialization Process:
           id-HashMLDSA87-Ed448-SHA512,
           pk-HashMLDSA87-Ed448-SHA512 }
 
+
+   -- TODO: OID to be replaced by IANA
+   id-HashMLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
+      joint-iso-itu-t(2) country(16) us(840) organization(1)
+      entrust(114027) algorithm(80) composite(8) signature(1) 95 }
+
+   pk-HashMLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
+     pk-CompositeSignature{ id-HashMLDSA87-RSA4096-PSS-SHA512,
+     CompositeMLDSAPublicKey}
+
+   sa-HashMLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+       sa-CompositeSignature{
+          id-HashMLDSA87-RSA4096-PSS-SHA512,
+          pk-HashMLDSA87-RSA4096-PSS-SHA512 }
+
+
    SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
      sa-MLDSA44-RSA2048-PSS |
      sa-MLDSA44-RSA2048-PKCS15 |
@@ -2263,11 +2302,29 @@ Deserialization Process:
      sa-MLDSA65-RSA4096-PSS |
      sa-MLDSA65-RSA4096-PKCS15 |
      sa-MLDSA65-ECDSA-P256 |
+     sa-MLDSA65-ECDSA-P384 |
      sa-MLDSA65-ECDSA-brainpoolP256r1 |
      sa-MLDSA65-Ed25519 |
      sa-MLDSA87-ECDSA-P384 |
      sa-MLDSA87-ECDSA-brainpoolP384r1 |
-     sa-MLDSA87-Ed448,
+     sa-MLDSA87-Ed448 |
+     sa-MLDSA87-RSA4096-PSS |
+     sa-HashMLDSA44-RSA2048-PSS-SHA256 |
+     sa-HashMLDSA44-RSA2048-PKCS15-SHA256 |
+     sa-HashMLDSA44-Ed25519-SHA512 |
+     sa-HashMLDSA44-ECDSA-P256-SHA256 |
+     sa-HashMLDSA65-RSA3072-PSS-SHA512 |
+     sa-HashMLDSA65-RSA3072-PKCS15-SHA512 |
+     sa-HashMLDSA65-RSA4096-PSS-SHA512 |
+     sa-HashMLDSA65-RSA4096-PKCS15-SHA512 |
+     sa-HashMLDSA65-ECDSA-P256-SHA512 |
+     sa-HashMLDSA65-ECDSA-P384-SHA512 |
+     sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 |
+     sa-HashMLDSA65-Ed25519-SHA512 |
+     sa-HashMLDSA87-ECDSA-P384-SHA512 |
+     sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |
+     sa-HashMLDSA87-Ed448-SHA512 |
+     sa-HashMLDSA87-RSA4096-PSS-SHA512,
      ... }
 
 
@@ -2290,11 +2347,29 @@ Deserialization Process:
      sa-MLDSA65-RSA4096-PSS.&smimeCaps |
      sa-MLDSA65-RSA4096-PKCS15.&smimeCaps |
      sa-MLDSA65-ECDSA-P256.&smimeCaps |
+     sa-MLDSA65-ECDSA-P384.&smimeCaps |
      sa-MLDSA65-ECDSA-brainpoolP256r1.&smimeCaps |
      sa-MLDSA65-Ed25519.&smimeCaps |
      sa-MLDSA87-ECDSA-P384.&smimeCaps |
      sa-MLDSA87-ECDSA-brainpoolP384r1.&smimeCaps |
-     sa-MLDSA87-Ed448.&smimeCaps,
+     sa-MLDSA87-Ed448.&smimeCaps |
+     sa-MLDSA87-RSA4096-PSS.&smimeCaps |
+     sa-HashMLDSA44-RSA2048-PSS-SHA256.&smimeCaps |
+     sa-HashMLDSA44-RSA2048-PKCS15-SHA256.&smimeCaps |
+     sa-HashMLDSA44-Ed25519-SHA512.&smimeCaps |
+     sa-HashMLDSA44-ECDSA-P256-SHA256.&smimeCaps |
+     sa-HashMLDSA65-RSA3072-PSS-SHA512.&smimeCaps |
+     sa-HashMLDSA65-RSA3072-PKCS15-SHA512.&smimeCaps |
+     sa-HashMLDSA65-RSA4096-PSS-SHA512.&smimeCaps |
+     sa-HashMLDSA65-RSA4096-PKCS15-SHA512.&smimeCaps |
+     sa-HashMLDSA65-ECDSA-P256-SHA512.&smimeCaps |
+     sa-HashMLDSA65-ECDSA-P384-SHA512.&smimeCaps |
+     sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512.&smimeCaps |
+     sa-HashMLDSA65-Ed25519-SHA512.&smimeCaps |
+     sa-HashMLDSA87-ECDSA-P384-SHA512.&smimeCaps |
+     sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512.&smimeCaps |
+     sa-HashMLDSA87-Ed448-SHA512.&smimeCaps |
+     sa-HashMLDSA87-RSA4096-PSS-SHA512.&smimeCaps,
      ... }
 
    END
@@ -2445,6 +2520,14 @@ Deserialization Process:
 
       -  References: This Document
 
+   *  id-MLDSA87-RSA4096-PSS
+
+      -  Decimal: IANA Assigned
+
+      -  Description: id-MLDSA87-RSA4096-PSS
+
+      -  References: This Document
+
    *  id-HashMLDSA44-RSA2048-PSS-SHA256
 
       -  Decimal: IANA Assigned
@@ -2562,6 +2645,14 @@ Deserialization Process:
       -  Decimal: IANA Assigned
 
       -  Description: id-HashMLDSA87-Ed448-SHA512
+
+      -  References: This Document
+
+   *  id-HashMLDSA87-RSA4096-PSS-SHA512
+
+      -  Decimal: IANA Assigned
+
+      -  Description: id-HashMLDSA87-RSA4096-PSS-SHA512
 
       -  References: This Document
 
