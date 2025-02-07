@@ -2802,7 +2802,7 @@ Deserialization Process:
    possibilty of key reuse exists even though forbidden in this
    specification, CAs performing revocation checks on a composite key
    SHOULD also check both component keys independently to verify that
-   the keys have not been revoked.
+   the component keys have not been revoked.
 
 11.4.  Policy for Deprecated and Acceptable Algorithms
 
