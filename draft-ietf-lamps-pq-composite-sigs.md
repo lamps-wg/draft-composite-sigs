@@ -1340,7 +1340,7 @@ The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST i
 
 <CODE STARTS>
 
-{::include Composite-MLDSA-2024.asn}
+{::include Composite-MLDSA-2025.asn}
 
 <CODE ENDS>
 
