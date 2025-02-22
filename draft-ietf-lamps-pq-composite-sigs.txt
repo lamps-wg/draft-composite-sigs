@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 9 August 2025                                           M. Pala
+Expires: 26 August 2025                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         5 February 2025
+                                                        22 February 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 August 2025.
+   This Internet-Draft will expire on 26 August 2025.
 
 Copyright Notice
 
@@ -1722,10 +1722,10 @@ Deserialization Process:
 
    <CODE STARTS>
 
-   Composite-MLDSA-2024
+   Composite-MLDSA-2025
      { iso(1) identified-organization(3) dod(6) internet(1)
            security(5) mechanisms(5) pkix(7) id-mod(0)
-           id-mod-composite-mldsa(TBDMOD) }
+           id-mod-composite-mldsa-2025(TBDMOD) }
 
 
    DEFINITIONS IMPLICIT TAGS ::= BEGIN
