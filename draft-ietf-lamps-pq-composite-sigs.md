@@ -1309,6 +1309,10 @@ signatureAlgorithm:
 signature:
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.
 
+## Signature generation and verification
+
+Composite signatures have a context string input that can be used to ensure that different signatures are generated for different application contexts.  When using composite signatures for CMS, the context string is the empty string.
+
 ## Certificate Conventions
 
 The conventions specified in this section augment RFC 5280 [RFC5280].
