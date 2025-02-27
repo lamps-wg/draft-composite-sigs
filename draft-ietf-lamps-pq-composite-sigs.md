@@ -1176,18 +1176,19 @@ SHA2 is used throughout in order to facilitate implementations that do not have 
 
 At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
 
-## RSASSA-PSS Parameters
+## RSASSA-PSS
 
 Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
 
+Also note that this specification fixes the Public Key OID of RSASSA-PSS to id-RSASSA-PSS (1.2.840.113549.1.1.10), although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1).
 
 ### RSA2048-PSS
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match that of ML-DSA-44.
 
 As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSASSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256           |
@@ -1203,11 +1204,11 @@ where:
 
 ### RSA3072-PSS
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to match that of ML-DSA-65.
 
 As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSASSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256                |
@@ -1222,11 +1223,11 @@ where:
 
 ### RSA4096-PSS
 
-The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65.
 
 As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSASSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-384                |
