@@ -1580,6 +1580,36 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 --- back
 
+# Key and Signature Sizes
+
++----------------------------------+------+-------+---------+
+|   Algorithm                      | Npk  |  Nsk  | Nsig    |
++-----------   --------------------+------+-------+---------+
+| ML-DSA44                         | 1312 | 2560  | 2420    |
+| id-MLDSA44-RSA2048-PSS           | 1596 | <N.A> | 2690    |
+| id-MLDSA44-RSA2048-PKCS15        | 1596 | <N.A> | 2690    |
+| id-MLDSA44-Ed25519               | 1356 | 2602  | 2496    |
+| id-MLDSA44-ECDSA-P256            | 1389 | 2602  | <N.A>   |
+| ML-DSA65                         | 1952 | 4032  | 3309    |
+| id-MLDSA65-RSA3072-PSS           | 2364 | <N.A> | 3707    |
+| id-MLDSA65-RSA3072-PKCS15        | 2364 | <N.A> | 3707    |
+| id-MLDSA65-RSA4096-PSS           | 2492 | <N.A> | 3835    |
+| id-MLDSA65-RSA4096-PKCS15        | 2492 | <N.A> | 3835    |
+| id-MLDSA65-ECDSA-P256            | 2029 | 4074  | TODO    |
+| id-MLDSA65-ECDSA-P384            | 2061 | 4090  | <N.A>   |
+| id-MLDSA65-ECDSA-brainpoolP256r1 | 2029 | 4074  | <N.A>   |
+| id-MLDSA65-Ed25519               | 1996 | 4074  | 3385    |
+| ML-DSA87                         | 2592 | 4896  | 4627    |
+| id-MLDSA87-ECDSA-P384            | 2701 | 4954  | <N.A>   |
+| id-MLDSA87-ECDSA-brainpoolP384r1 | 2701 | 4954  | <N.A>   |
+| id-MLDSA87-Ed448                 | 2523 | 4963  | 4753    |
+| id-MLDSA87-RSA4096-PSS           | 3004 | TODO  | 5025    |
++----------------------------------+------+-------+---------+
+
+EDNOTE: why are there N.A's?
+EDNOTE: fill in TODOs and NA's
+
+Note that the pre-hash variants are not represented here as they have the same key and signature sizes as the equivalent pure versions.
 
 # Samples {#appdx-samples}
 
@@ -1987,7 +2017,9 @@ Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
-林邦曄 (Austin Lin, Chunghwa Telecom) and
+林邦曄 (Austin Lin, Chunghwa Telecom),
+Zhao Peiduo (Seventh Sense AI),
+Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
