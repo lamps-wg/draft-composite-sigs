@@ -120,7 +120,7 @@ informative:
   I-D.draft-pala-klaussner-composite-kofn-00:
   I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
   I-D.draft-ietf-lamps-dilithium-certificates-04:
-  I-D.draft-salter-lamps-cms-ml-dsa-00:
+  I-D.draft-ietf-lamps-cms-ml-dsa-02:
   Bindel2017:
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
@@ -1248,49 +1248,24 @@ where:
 
 Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
 
-All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS {{I-D.salter-lamps-cms-ml-dsa}}.
-\[EDNOTE: at time of writing, this draft is not aligned with {{I-D.salter-lamps-cms-ml-dsa}} because it uses SHAKE for the digest algorithm. We believe that it should use SHA2, and we are sorting this out between authors. See: https://mailarchive.ietf.org/arch/msg/spasm/yM8kS1kCoizWCMjS8pdcV3IFaDg/\]
+All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS {{I-D.ietf-lamps-cms-ml-dsa}}.
 
-## Underlying Components
+## Underlying Components {#cms-underlying-components}
 
-A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms of equivalent strength or greater.
+A compliant implementation MUST support SHA-512 [FIPS180] for all composite variants in this document. Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms that produce a hash value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA.
 
-| Composite Signature Algorithm | digestAlgorithm |
-| ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS           | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15        | SHA256 |
-| id-MLDSA44-Ed25519               | SHA512 |
-| id-MLDSA44-ECDSA-P256            | SHA256 |
-| id-MLDSA65-RSA3072-PSS           | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15        | SHA512 |
-| id-MLDSA65-RSA4096-PSS           | SHA512 |
-| id-MLDSA65-RSA4096-PKCS15        | SHA512 |
-| id-MLDSA65-ECDSA-P256            | SHA512 |
-| id-MLDSA65-ECDSA-P384            | SHA512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519               | SHA512 |
-| id-MLDSA87-ECDSA-P384            | SHA512 |
-| id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448                 | SHA512 |
-{: #tab-cms-shas title="Recommended Composite Signature Digest Algorithms"}
-
-where:
-
-* SHA2 instantiations are defined in [FIPS180].
-
-Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm for Ed25519.
-
-Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.
+Note: The Hash ML-DSA Composite identifiers are relevant here because this algorithm operation mode is not provided in CMS, which is consistent with [I-D.ietf-lamps-cms-ml-dsa].
 
 ## SignedData Conventions
 
 As specified in CMS [RFC5652], the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.
 
-When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in {{tab-cms-shas}}, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
+When signed attributes are absent, the composite signature is computed over the content of the signed-data. The "content" of a signed-data is the value of the encapContentInfo eContent OCTET STRING. The tag and length octets are not included.
+When signed attributes are present, a hash is computed over the content using the hash function specified in {{cms-underlying-components}}, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
 
 ~~~
 IF (signed attributes are absent)
-   THEN Composite-ML-DSA.Sign(Hash(content))
+   THEN Composite-ML-DSA.Sign(content)
 ELSE message-digest attribute = Hash(content);
    Composite-ML-DSA.Sign(DER(SignedAttributes))
 ~~~
@@ -1304,7 +1279,7 @@ digestAlgorithm:
     component algorithm of the Composite Signature.
 
 signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{tab-cms-shas}}
+    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{cms-underlying-components}}}
 
 signature:
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.
@@ -1331,7 +1306,7 @@ The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a 
 
 Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type [RFC5652], a compliant implementation MAY include the SMIMECapabilities attribute.
 
-The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per {{tab-cms-shas}} in the capabilityID field.
+The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per {{cms-underlying-components}} in the capabilityID field.
 
 
 # ASN.1 Module {#sec-asn1-module}
