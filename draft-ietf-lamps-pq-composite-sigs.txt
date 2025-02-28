@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 26 August 2025                                          M. Pala
+Expires: 1 September 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        22 February 2025
+                                                        28 February 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 August 2025.
+   This Internet-Draft will expire on 1 September 2025.
 
 Copyright Notice
 
@@ -1573,71 +1573,20 @@ Deserialization Process:
    recipients in the CMS signed-data content type [RFC5652].
 
    All recommendations for using Composite ML-DSA in CMS are fully
-   aligned with the use of ML-DSA in CMS [I-D.salter-lamps-cms-ml-dsa].
-   [EDNOTE: at time of writing, this draft is not aligned with
-   [I-D.salter-lamps-cms-ml-dsa] because it uses SHAKE for the digest
-   algorithm.  We believe that it should use SHA2, and we are sorting
-   this out between authors.  See:
-   https://mailarchive.ietf.org/arch/msg/spasm/
-   yM8kS1kCoizWCMjS8pdcV3IFaDg/]
+   aligned with the use of ML-DSA in CMS [I-D.ietf-lamps-cms-ml-dsa].
 
 8.1.  Underlying Components
 
-   A compliant implementation MUST support the following algorithms for
-   the SignerInfo digestAlgorithm field when the corresponding Composite
-   ML-DSA algorithm is listed in the SignerInfo signatureAlgorithm
-   field.  Implementations MAY also support other algorithms for the
-   SignerInfo digestAlgorithm and SHOULD use algorithms of equivalent
-   strength or greater.
+   A compliant implementation MUST support SHA-512 [FIPS180] for all
+   composite variants in this document.  Implementations MAY also
+   support other algorithms for the SignerInfo digestAlgorithm and
+   SHOULD use algorithms that produce a hash value of a size that is at
+   least twice the collision strength of the internal commitment hash
+   used by ML-DSA.
 
-          +==================================+=================+
-          | Composite Signature Algorithm    | digestAlgorithm |
-          +==================================+=================+
-          | id-MLDSA44-RSA2048-PSS           | SHA256          |
-          +----------------------------------+-----------------+
-          | id-MLDSA44-RSA2048-PKCS15        | SHA256          |
-          +----------------------------------+-----------------+
-          | id-MLDSA44-Ed25519               | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA44-ECDSA-P256            | SHA256          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-RSA3072-PSS           | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-RSA3072-PKCS15        | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-RSA4096-PSS           | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-RSA4096-PKCS15        | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-ECDSA-P256            | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-ECDSA-P384            | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA65-Ed25519               | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA87-ECDSA-P384            | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512          |
-          +----------------------------------+-----------------+
-          | id-MLDSA87-Ed448                 | SHA512          |
-          +----------------------------------+-----------------+
-
-             Table 9: Recommended Composite Signature Digest
-                                Algorithms
-
-   where:
-
-   *  SHA2 instantiations are defined in [FIPS180].
-
-   Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that
-   Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm
-   for Ed25519.
-
-   Note: The Hash ML-DSA Composite identifiers are not included in this
-   list because the message content is already digested before being
-   passed to the Composite-ML-DSA.Sign() function.
+   Note: The Hash ML-DSA Composite identifiers are relevant here because
+   this algorithm operation mode is not provided in CMS, which is
+   consistent with [I-D.ietf-lamps-cms-ml-dsa].
 
 8.2.  SignedData Conventions
 
@@ -1647,9 +1596,11 @@ Deserialization Process:
    are absent or present.
 
    When signed attributes are absent, the composite signature is
-   computed over the message digest of the content.  When signed
+   computed over the content of the signed-data.  The "content" of a
+   signed-data is the value of the encapContentInfo eContent OCTET
+   STRING.  The tag and length octets are not included.  When signed
    attributes are present, a hash is computed over the content using the
-   hash function specified in Table 9, and then a message-digest
+   hash function specified in Section 8.1, and then a message-digest
    attribute is constructed to contain the resulting hash value, and
    then the result of DER encoding the set of signed attributes, which
    MUST include a content-type attribute and a message-digest attribute,
@@ -1657,7 +1608,7 @@ Deserialization Process:
    output.  In summary:
 
    IF (signed attributes are absent)
-      THEN Composite-ML-DSA.Sign(Hash(content))
+      THEN Composite-ML-DSA.Sign(content)
    ELSE message-digest attribute = Hash(content);
       Composite-ML-DSA.Sign(DER(SignedAttributes))
 
@@ -1672,7 +1623,8 @@ Deserialization Process:
    algorithm of the Composite Signature.
 
    signatureAlgorithm: The signatureAlgorithm MUST contain one of the
-   the Composite Signature algorithm identifiers as specified in Table 9
+   the Composite Signature algorithm identifiers as specified in
+   Section 8.1}
 
    signature: The signature field contains the signature value resulting
    from the composite signing operation of the specified
@@ -1716,7 +1668,7 @@ Deserialization Process:
 
    The SMIMECapability SEQUENCE representing a composite signature
    Algorithm MUST include the appropriate object identifier as per
-   Table 9 in the capabilityID field.
+   Section 8.1 in the capabilityID field.
 
 9.  ASN.1 Module
 
@@ -2998,6 +2950,14 @@ Deserialization Process:
               <https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/
               Publications/Brochure/quantum-safe-cryptography.pdf>.
 
+   [I-D.ietf-lamps-cms-ml-dsa]
+              S, B., R, A., and D. Van Geest, "Use of the ML-DSA
+              Signature Algorithm in the Cryptographic Message Syntax
+              (CMS)", Work in Progress, Internet-Draft, draft-ietf-
+              lamps-cms-ml-dsa-02, 17 January 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-lamps-
+              cms-ml-dsa-02>.
+
    [I-D.ietf-lamps-dilithium-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
               Westerbaan, "Internet X.509 Public Key Infrastructure:
@@ -3026,14 +2986,6 @@ Deserialization Process:
               Internet-Draft, draft-pala-klaussner-composite-kofn-00, 15
               November 2022, <https://datatracker.ietf.org/doc/html/
               draft-pala-klaussner-composite-kofn-00>.
-
-   [I-D.salter-lamps-cms-ml-dsa]
-              S, B., R, A., and D. Van Geest, "Use of the ML-DSA
-              Signature Algorithm in the Cryptographic Message Syntax
-              (CMS)", Work in Progress, Internet-Draft, draft-salter-
-              lamps-cms-ml-dsa-00, 14 October 2024,
-              <https://datatracker.ietf.org/doc/html/draft-salter-lamps-
-              cms-ml-dsa-00>.
 
    [RFC3279]  Bassham, L., Polk, W., and R. Housley, "Algorithms and
               Identifiers for the Internet X.509 Public Key
@@ -3109,7 +3061,7 @@ Appendix B.  Component Algorithm Reference
     | id-RSASA-PSS            | 1.2.840.113549.1.1.10   |[RFC8017]    |
     +-------------------------+-------------------------+-------------+
 
-         Table 10: Component Signature Algorithms used in Composite
+         Table 9: Component Signature Algorithms used in Composite
                                Constructions
 
        +==================+=======================+===============+
@@ -3124,7 +3076,7 @@ Appendix B.  Component Algorithm Reference
        | brainpoolP384r1  | 1.3.36.3.3.2.8.1.1.11 | [RFC5639]     |
        +------------------+-----------------------+---------------+
 
-        Table 11: Elliptic Curves used in Composite Constructions
+        Table 10: Elliptic Curves used in Composite Constructions
 
           +===========+=========================+===============+
           | HashID    | OID                     | Specification |
@@ -3134,7 +3086,7 @@ Appendix B.  Component Algorithm Reference
           | id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234]     |
           +-----------+-------------------------+---------------+
 
-                Table 12: Hash algorithms used in Composite
+                Table 11: Hash algorithms used in Composite
                                Constructions
 
 Appendix C.  Component AlgorithmIdentifiers for Public Keys and
