@@ -1609,6 +1609,8 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 EDNOTE: why are there N.A's?
 EDNOTE: fill in TODOs and NA's
 
+Non-hybrid ML-DSA is included for reference.
+
 Note that the pre-hash variants are not represented here as they have the same key and signature sizes as the equivalent pure versions.
 
 # Samples {#appdx-samples}
