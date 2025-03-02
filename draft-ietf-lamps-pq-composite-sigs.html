@@ -1299,10 +1299,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-signeddata-conventions" class="internal xref">SignedData Conventions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
-                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-certificate-conventions" class="internal xref">Certificate Conventions</a></p>
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-signature-generation-and-ve" class="internal xref">Signature generation and verification</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
-                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-smimecapabilities-attribute" class="internal xref">SMIMECapabilities Attribute Conventions</a></p>
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-certificate-conventions" class="internal xref">Certificate Conventions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-smimecapabilities-attribute" class="internal xref">SMIMECapabilities Attribute Conventions</a></p>
 </li>
             </ul>
 </li>
@@ -3093,32 +3096,40 @@ ELSE message-digest attribute = Hash(content);
     The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="certificate-conventions">
+<div id="signature-generation-and-verification">
 <section id="section-8.3">
-        <h3 id="name-certificate-conventions">
-<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-certificate-conventions" class="section-name selfRef">Certificate Conventions</a>
+        <h3 id="name-signature-generation-and-ve">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-signature-generation-and-ve" class="section-name selfRef">Signature generation and verification</a>
         </h3>
-<p id="section-8.3-1">The conventions specified in this section augment RFC 5280 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.3-2">The willingness to accept a composite Signature Algorithm MAY be signaled by the use of the SMIMECapabilities Attribute as specified in Section 2.5.2. of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> or the SMIMECapabilities certificate extension as specified in [RFC4262].<a href="#section-8.3-2" class="pilcrow">¶</a></p>
-<p id="section-8.3-3">The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:<a href="#section-8.3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.3-4">
+<p id="section-8.3-1">Composite signatures have a context string input that can be used to ensure that different signatures are generated for different application contexts.  When using composite signatures for CMS, the context string is the empty string.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="certificate-conventions">
+<section id="section-8.4">
+        <h3 id="name-certificate-conventions">
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-certificate-conventions" class="section-name selfRef">Certificate Conventions</a>
+        </h3>
+<p id="section-8.4-1">The conventions specified in this section augment RFC 5280 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">The willingness to accept a composite Signature Algorithm MAY be signaled by the use of the SMIMECapabilities Attribute as specified in Section 2.5.2. of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> or the SMIMECapabilities certificate extension as specified in [RFC4262].<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.4-3">The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.4-4">
 <pre>
 digitalSignature
 nonRepudiation
 keyCertSign
 cRLSign
-</pre><a href="#section-8.3-4" class="pilcrow">¶</a>
+</pre><a href="#section-8.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-8.3-5">The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign' key usages.<a href="#section-8.3-5" class="pilcrow">¶</a></p>
+<p id="section-8.4-5">The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign' key usages.<a href="#section-8.4-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="smimecapabilities-attribute-conventions">
-<section id="section-8.4">
+<section id="section-8.5">
         <h3 id="name-smimecapabilities-attribute">
-<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-smimecapabilities-attribute" class="section-name selfRef">SMIMECapabilities Attribute Conventions</a>
         </h3>
-<p id="section-8.4-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
-<p id="section-8.4-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#cms-underlying-components" class="auto internal xref">Section 8.1</a> in the capabilityID field.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+<p id="section-8.5-1">Section 2.5.2 of <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span> defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, a compliant implementation MAY include the SMIMECapabilities attribute.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
+<p id="section-8.5-2">The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per <a href="#cms-underlying-components" class="auto internal xref">Section 8.1</a> in the capabilityID field.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

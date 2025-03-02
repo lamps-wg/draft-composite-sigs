@@ -115,8 +115,9 @@ Table of Contents
    8.  Use in CMS
      8.1.  Underlying Components
      8.2.  SignedData Conventions
-     8.3.  Certificate Conventions
-     8.4.  SMIMECapabilities Attribute Conventions
+     8.3.  Signature generation and verification
+     8.4.  Certificate Conventions
+     8.5.  SMIMECapabilities Attribute Conventions
    9.  ASN.1 Module
    10. IANA Considerations
      10.1.  Object Identifier Allocations
@@ -1630,7 +1631,14 @@ Deserialization Process:
    from the composite signing operation of the specified
    signatureAlgorithm.
 
-8.3.  Certificate Conventions
+8.3.  Signature generation and verification
+
+   Composite signatures have a context string input that can be used to
+   ensure that different signatures are generated for different
+   application contexts.  When using composite signatures for CMS, the
+   context string is the empty string.
+
+8.4.  Certificate Conventions
 
    The conventions specified in this section augment RFC 5280 [RFC5280].
 
@@ -1658,7 +1666,7 @@ Deserialization Process:
    with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign'
    key usages.
 
-8.4.  SMIMECapabilities Attribute Conventions
+8.5.  SMIMECapabilities Attribute Conventions
 
    Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to
    announce a partial list of algorithms that an S/MIME implementation
