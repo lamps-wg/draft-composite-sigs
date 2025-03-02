@@ -713,7 +713,7 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Calculate the length encoding of the mldsaEncodedPK 
+  3. Calculate the length encoding of the mldsaEncodedPK
 
      encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
 
@@ -754,8 +754,8 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded key.
-       The first 4 bytes encodes the length of mldsaEncodedKey, which MAY 
-       be used to separate the mldsaEncodedKey and tradEncodedKey, and then 
+       The first 4 bytes encodes the length of mldsaEncodedKey, which MAY
+       be used to separate the mldsaEncodedKey and tradEncodedKey, and then
        is to be discarded.
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
@@ -780,7 +780,7 @@ Deserialization Process:
 
 ## SerializeSignatureValue and DeSerializeSignatureValue
 
-The serialization routine for the CompositeSignatureValue simply concatenates the 
+The serialization routine for the CompositeSignatureValue simply concatenates the
 ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
@@ -817,7 +817,7 @@ Serialization Process:
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
 
-  3. Calculate the length encoding of the mldsaEncodedSignature 
+  3. Calculate the length encoding of the mldsaEncodedSignature
 
      encodedLength = IntegerToBytes(mldsaEncodedSignature.length, 4)
 
@@ -858,7 +858,7 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded signature.
-       The first 4 bytes encodes the length of mldsaEncodedSignature, which MAY 
+       The first 4 bytes encodes the length of mldsaEncodedSignature, which MAY
        be used to separate the mldsaEncodedSignature and tradEncodedSignature,
        and then is to be discarded.
 
@@ -886,7 +886,7 @@ Deserialization Process:
 
 As noted above, the composite public key, composite private key and composite signature value
 serialization and deserialization methods use a fixed 4-byte length value to indicate the size of
-the first component.  This is to allow the separation of the first component from the second 
+the first component.  This is to allow the separation of the first component from the second
 component.  It is RECOMMENDED that the length specified for the first component be checked against
 the values from the table below to ensure the encoding has been done propertly.
 
@@ -899,7 +899,7 @@ sizes for ML-DSA which can be used to deserialzie the components.
 
 | Algorithm | Public key  | Private key  | Signature |
 | ----------- | ----------- | ----------- |  ----------- |
-| ML-DSA-44 |      1312     |    32 or 2560 or 2592    |  2420        |
+| ML-DSA-44 |      1312     |    32 or 2560 or 2592    |  2420  |
 | ML-DSA-65 |      1952     |    32 or 4032 or 4064    |  3309  |
 | ML-DSA-87 |      2592     |    32 or 4896 or 4928    |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
