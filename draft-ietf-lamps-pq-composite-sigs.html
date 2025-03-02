@@ -11,7 +11,7 @@
 <meta content="Jan Klaussner" name="author">
 <meta content="Scott Fluhrer" name="author">
 <meta content="
-       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA. 
+       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA. 
        
 
 
@@ -1103,7 +1103,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1274,7 +1274,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-rationale-for-choices" class="internal xref">Rationale for choices</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-rsa-pss-parameters" class="internal xref">RSA-PSS Parameters</a></p>
+                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-rsassa-pss" class="internal xref">RSASSA-PSS</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5.2.1">
                     <p id="section-toc.1-1.7.2.5.2.1.1"><a href="#section-7.5.1" class="auto internal xref">7.5.1</a>.  <a href="#name-rsa2048-pss" class="internal xref">RSA2048-PSS</a></p>
@@ -1535,7 +1535,7 @@ it returns false.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-7">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations <code>Sign()</code> and <code>Verify()</code>.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<p id="section-3-8">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-8">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div id="pure-vs-pre-hashed-modes">
 <section id="section-3.1">
         <h3 id="name-pure-vs-pre-hashed-modes">
@@ -1574,7 +1574,7 @@ Implicit inputs:
              parameter set to use, for example, could be "ML-DSA-65".
 
   Trad       A placeholder for the specific traditional algorithm and
-             parameter set to use, for example "RSASA-PSS"
+             parameter set to use, for example "RSASSA-PSS"
              or "Ed25519".
 
 Output:
@@ -1649,7 +1649,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -1737,7 +1737,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -1834,7 +1834,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
  Prefix    The prefix String which is the byte encoding of the String
@@ -1928,7 +1928,7 @@ Implicit inputs:
             parameter set to use, for example, could be "ML-DSA-65".
 
   Trad      A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASA-PSS with id-sha256"
+            parameter set to use, for example "RSASSA-PSS with id-sha256"
             or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
@@ -2466,7 +2466,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.60</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-44</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha256</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PKCS15</td>
@@ -2490,7 +2490,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.64</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha256</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15</td>
@@ -2502,7 +2502,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.66</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha384</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15</td>
@@ -2556,7 +2556,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.75</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha384</td>
             </tr>
           </tbody>
         </table>
@@ -2591,7 +2591,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA44-RSA2048-PSS-SHA256</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.80</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-44</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha256</td>
               <td class="text-left" rowspan="1" colspan="1">id-sha256</td>
             </tr>
             <tr>
@@ -2619,7 +2619,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA65-RSA3072-PSS-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.84</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha256</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha256</td>
               <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
             </tr>
             <tr>
@@ -2633,7 +2633,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA65-RSA4096-PSS-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.86</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-65</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha384</td>
               <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
             </tr>
             <tr>
@@ -2696,7 +2696,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA87-RSA4096-PSS-SHA512</td>
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.95</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
-              <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS with id-sha384</td>
+              <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS with id-sha384</td>
               <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
             </tr>
           </tbody>
@@ -2891,28 +2891,29 @@ CompositeSignatureValue ::= BIT STRING
 <p id="section-7.4-4">At the higher security levels of pre-hashed Composite ML-DSA, for example <code>id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512</code>, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.<a href="#section-7.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="rsa-pss-parameters">
+<div id="rsassa-pss">
 <section id="section-7.5">
-        <h3 id="name-rsa-pss-parameters">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-rsa-pss-parameters" class="section-name selfRef">RSA-PSS Parameters</a>
+        <h3 id="name-rsassa-pss">
+<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-rsassa-pss" class="section-name selfRef">RSASSA-PSS</a>
         </h3>
-<p id="section-7.5-1">Use of RSA-PSS <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> requires extra parameters to be specified, which differ for each security level.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
+<p id="section-7.5-1">Use of RSASSA-PSS <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> requires extra parameters to be specified, which differ for each security level.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
+<p id="section-7.5-2">Also note that this specification fixes the Public Key OID of RSASSA-PSS to id-RSASSA-PSS (1.2.840.113549.1.1.10), although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1).<a href="#section-7.5-2" class="pilcrow">¶</a></p>
 <div id="rsa2048-pss">
 <section id="section-7.5.1">
           <h4 id="name-rsa2048-pss">
 <a href="#section-7.5.1" class="section-number selfRef">7.5.1. </a><a href="#name-rsa2048-pss" class="section-name selfRef">RSA2048-PSS</a>
           </h4>
-<p id="section-7.5.1-1">The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44<a href="#section-7.5.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.5.1-2">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.1-2" class="pilcrow">¶</a></p>
-<span id="name-rsa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
+<p id="section-7.5.1-1">The RSA component keys MUST be generated at the 2048-bit security level in order to match that of ML-DSA-44.<a href="#section-7.5.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.1-2">As with the other composite signature algorithms, when <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA44-RSA2048-PSS</code> and <code>id-HashMLDSA44-RSA2048-PSS-SHA256</code> SHALL instantiate RSASSA-PSS with the following parameters:<a href="#section-7.5.1-2" class="pilcrow">¶</a></p>
+<span id="name-rsassa-pss-2048-parameters"></span><div id="rsa-pss-params2048">
 <table class="center" id="table-6">
             <caption>
 <a href="#table-6" class="selfRef">Table 6</a>:
-<a href="#name-rsa-pss-2048-parameters" class="selfRef">RSA-PSS 2048 Parameters</a>
+<a href="#name-rsassa-pss-2048-parameters" class="selfRef">RSASSA-PSS 2048 Parameters</a>
             </caption>
 <thead>
               <tr>
-                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">RSASSA-PSS Parameter</th>
                 <th class="text-left" rowspan="1" colspan="1">Value</th>
               </tr>
             </thead>
@@ -2952,17 +2953,17 @@ CompositeSignatureValue ::= BIT STRING
           <h4 id="name-rsa3072-pss">
 <a href="#section-7.5.2" class="section-number selfRef">7.5.2. </a><a href="#name-rsa3072-pss" class="section-name selfRef">RSA3072-PSS</a>
           </h4>
-<p id="section-7.5.2-1">The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.<a href="#section-7.5.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.5.2-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.2-2" class="pilcrow">¶</a></p>
-<span id="name-rsa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
+<p id="section-7.5.2-1">The RSA component keys MUST be generated at the 3072-bit security level in order to match that of ML-DSA-65.<a href="#section-7.5.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.2-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA3072-PSS</code> or <code>id-HashMLDSA65-RSA3072-PSS-SHA512</code> SHALL instantiate RSASSA-PSS with the following parameters:<a href="#section-7.5.2-2" class="pilcrow">¶</a></p>
+<span id="name-rsassa-pss-3072-parameters"></span><div id="rsa-pss-params3072">
 <table class="center" id="table-7">
             <caption>
 <a href="#table-7" class="selfRef">Table 7</a>:
-<a href="#name-rsa-pss-3072-parameters" class="selfRef">RSA-PSS 3072 Parameters</a>
+<a href="#name-rsassa-pss-3072-parameters" class="selfRef">RSASSA-PSS 3072 Parameters</a>
             </caption>
 <thead>
               <tr>
-                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">RSASSA-PSS Parameter</th>
                 <th class="text-left" rowspan="1" colspan="1">Value</th>
               </tr>
             </thead>
@@ -3002,17 +3003,17 @@ CompositeSignatureValue ::= BIT STRING
           <h4 id="name-rsa4096-pss">
 <a href="#section-7.5.3" class="section-number selfRef">7.5.3. </a><a href="#name-rsa4096-pss" class="section-name selfRef">RSA4096-PSS</a>
           </h4>
-<p id="section-7.5.3-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.<a href="#section-7.5.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.5.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSA-PSS with the following parameters:<a href="#section-7.5.3-2" class="pilcrow">¶</a></p>
-<span id="name-rsa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
+<p id="section-7.5.3-1">The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65.<a href="#section-7.5.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.5.3-2">As with the other composite signature algorithms, when <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code>  is used in an AlgorithmIdentifier, the parameters MUST be absent. <code>id-MLDSA65-RSA4096-PSS</code> or <code>id-HashMLDSA65-RSA4096-PSS-SHA384</code> SHALL instantiate RSASSA-PSS with the following parameters:<a href="#section-7.5.3-2" class="pilcrow">¶</a></p>
+<span id="name-rsassa-pss-4096-parameters"></span><div id="rsa-pss-params4096">
 <table class="center" id="table-8">
             <caption>
 <a href="#table-8" class="selfRef">Table 8</a>:
-<a href="#name-rsa-pss-4096-parameters" class="selfRef">RSA-PSS 4096 Parameters</a>
+<a href="#name-rsassa-pss-4096-parameters" class="selfRef">RSASSA-PSS 4096 Parameters</a>
             </caption>
 <thead>
               <tr>
-                <th class="text-left" rowspan="1" colspan="1">RSA-PSS Parameter</th>
+                <th class="text-left" rowspan="1" colspan="1">RSASSA-PSS Parameter</th>
                 <th class="text-left" rowspan="1" colspan="1">Value</th>
               </tr>
             </thead>
@@ -4627,7 +4628,7 @@ END
 </td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">id-RSASA-PSS</td>
+            <td class="text-left" rowspan="1" colspan="1">id-RSASSA-PSS</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.113549.1.1.10</td>
             <td class="text-left" rowspan="1" colspan="1">
               <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>
@@ -4757,7 +4758,7 @@ DER:
   30 0B 06 09 60 86 48 01 65 03 04 03 13
 </pre><a href="#appendix-C-8" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-9"><strong>RSA PSS 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-9" class="pilcrow">¶</a></p>
+<p id="appendix-C-9"><strong>RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-9" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-10">
 <pre>
 ASN.1:
@@ -4769,7 +4770,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 </pre><a href="#appendix-C-10" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-11"><strong>RSA PSS 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-11" class="pilcrow">¶</a></p>
+<p id="appendix-C-11"><strong>RSASSA-PSS 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-11" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-12">
 <pre>
 ASN.1:
@@ -4797,7 +4798,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 </pre><a href="#appendix-C-12" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-13"><strong>RSA PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-13" class="pilcrow">¶</a></p>
+<p id="appendix-C-13"><strong>RSASSA-PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-13" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-14">
 <pre>
 ASN.1:
@@ -4809,7 +4810,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 </pre><a href="#appendix-C-14" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-15"><strong>RSA PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-15" class="pilcrow">¶</a></p>
+<p id="appendix-C-15"><strong>RSASSA-PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-15" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-16">
 <pre>
 ASN.1:
@@ -4837,7 +4838,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 </pre><a href="#appendix-C-16" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-17"><strong>RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-17" class="pilcrow">¶</a></p>
+<p id="appendix-C-17"><strong>RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-17" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-18">
 <pre>
 ASN.1:
@@ -4850,7 +4851,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 </pre><a href="#appendix-C-18" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-19"><strong>RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-19" class="pilcrow">¶</a></p>
+<p id="appendix-C-19"><strong>RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-19" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-20">
 <pre>
 ASN.1:
@@ -4863,7 +4864,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 </pre><a href="#appendix-C-20" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-21"><strong>RSA PKCS 1.5 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-21" class="pilcrow">¶</a></p>
+<p id="appendix-C-21"><strong>RSASSA-PKCS1-v1_5 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-21" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-22">
 <pre>
 ASN.1:
@@ -4876,7 +4877,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 </pre><a href="#appendix-C-22" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-23"><strong>RSA PKCS 1.5 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-23" class="pilcrow">¶</a></p>
+<p id="appendix-C-23"><strong>RSASSA-PKCS1-v1_5 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-23" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-24">
 <pre>
 ASN.1:
