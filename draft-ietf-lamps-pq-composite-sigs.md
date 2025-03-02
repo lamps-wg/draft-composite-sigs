@@ -677,7 +677,7 @@ Note that in step 4 above, the function fails early if the first component fails
 
 ## SerializeKey and DeserializeKey
 
-The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:
+The serialization routine for keys simply concatenates the public or private keys of the component signatures, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializeKey(key) -> bytes
@@ -694,9 +694,13 @@ Implicit inputs:
   Trad     A placeholder for the specific traditional algorithm and
            parameter set to use, for example "RSA" or "ECDSA".
 
+  IntegerToBytes  A function that takes an Integer and converts it to
+           a byte representation of size byteLength.  See definition in
+           [FIPS.204]
+
 Output:
 
-  bytes   The encoded public key
+  bytes   The encoded public key or private key
 
 Serialization Process:
 
@@ -709,9 +713,13 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Combine and output the encoded public key
+  3. Calculate the length encoding of the mldsaEncodedPK 
 
-     bytes = mldsaEncodedPK || tradEncodedPK
+     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
+
+  4. Combine and output the encoded public key
+
+     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
      output bytes
 ~~~
 {: #alg-composite-serialize title="Composite SerializeKey(pk)"}
@@ -746,8 +754,9 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded key.
-       The length of the mldsaEncodedKey is known based on the size of
-       the ML-DSA component key length specified by the Object ID
+       The first 4 bytes encodes the length of mldsaEncodedKey, which MAY 
+       be used to separate the mldsaEncodedKey and tradEncodedKey, and then 
+       is to be discarded.
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
@@ -771,7 +780,7 @@ Deserialization Process:
 
 ## SerializeSignatureValue and DeSerializeSignatureValue
 
-The serialization routine for the CompositeSignatureValue simply concatenates the fixed-length
+The serialization routine for the CompositeSignatureValue simply concatenates the 
 ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
@@ -789,6 +798,10 @@ Implicit inputs:
   Trad     A placeholder for the specific traditional algorithm and
            parameter set to use, for example "RSA" or "ECDSA".
 
+  IntegerToBytes  A function that takes an Integer and converts it to
+           a byte representation of size byteLength.  See definition in
+           [FIPS.204]
+
 Output:
 
   bytes   The encoded CompositeSignatureValue
@@ -804,9 +817,13 @@ Serialization Process:
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
 
-  3. Combine and output the encoded composite signature
+  3. Calculate the length encoding of the mldsaEncodedSignature 
 
-     bytes = mldsaEncodedSignature || tradEncodedSignature
+     encodedLength = IntegerToBytes(mldsaEncodedSignature.length, 4)
+
+  4. Combine and output the encoded composite signature
+
+     bytes = encodedLength || mldsaEncodedSignature || tradEncodedSignature
      output bytes
 ~~~
 {: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
@@ -841,8 +858,9 @@ Deserialization Process:
       output "Deserialization error"
 
   2. Parse each constituent encoded signature.
-       The length of the mldsaEncodedSignature is known based on the size of
-       the ML-DSA component signature length specified by the Object ID
+       The first 4 bytes encodes the length of mldsaEncodedSignature, which MAY 
+       be used to separate the mldsaEncodedSignature and tradEncodedSignature,
+       and then is to be discarded.
 
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
@@ -866,28 +884,24 @@ Deserialization Process:
 
 ## ML-DSA public key, private key and signature sizes for serialization and deserialization
 
-As noted above in the composite public key, composite private key and composite signature value
-serialization and deserialization methods, ML-DSA uses fixed-length values for
-all of these components.  This means the length encoding of the first component is
-known and does NOT need to be encoded into the serialization and deserialization process
-which simplifies the encoding.  The second traditional component may be variable-length but
-can still be parsed correctly by taking the rest of the value after the specified offset
-as the traditional component.
+As noted above, the composite public key, composite private key and composite signature value
+serialization and deserialization methods use a fixed 4-byte length value to indicate the size of
+the first component.  This is to allow the separation of the first component from the second 
+component.  It is RECOMMENDED that the length specified for the first component be checked against
+the values from the table below to ensure the encoding has been done propertly.
 
-This encoding is optimized for the fact that all values related to ML-DSA are fixed-length.
-If future composite combinations make use of
-algorithms where the first component uses variable length keys or signatures, then
-that specification will need to ensure the length is encoded in a
-fixed-length prefix so the components can be correctly deserialized.
+If future composite combinations make use of algorithms where the first component uses variable
+length keys or signatures, then this fixed 4-byte length value can be used to ensure the components
+are correctly deserialized.
 
-The following table shows the fixed length values in bytes for the public, private and signature
+The following table shows the possible length values in bytes for the public, private and signature
 sizes for ML-DSA which can be used to deserialzie the components.
 
 | Algorithm | Public key  | Private key  | Signature |
 | ----------- | ----------- | ----------- |  ----------- |
-| ML-DSA-44 |      1312     |    32     |  2420        |
-| ML-DSA-65 |      1952     |    32     |  3309  |
-| ML-DSA-87 |      2592     |    32     |  4627   |
+| ML-DSA-44 |      1312     |    32 or 2560 or 2592    |  2420        |
+| ML-DSA-65 |      1952     |    32 or 4032 or 4064    |  3309  |
+| ML-DSA-87 |      2592     |    32 or 4896 or 4928    |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
 # Composite Key Structures {#sec-composite-structs}
