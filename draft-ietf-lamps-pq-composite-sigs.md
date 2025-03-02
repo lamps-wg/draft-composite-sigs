@@ -156,7 +156,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 <!-- End of Abstract -->
 
@@ -266,7 +266,7 @@ We define the following algorithms which are used to serialize and deseralize th
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
-This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
+This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
 
 ## Pure vs Pre-hashed modes
 
@@ -293,7 +293,7 @@ Implicit inputs:
              parameter set to use, for example, could be "ML-DSA-65".
 
   Trad       A placeholder for the specific traditional algorithm and
-             parameter set to use, for example "RSASA-PSS"
+             parameter set to use, for example "RSASSA-PSS"
              or "Ed25519".
 
 Output:
@@ -363,7 +363,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -445,7 +445,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -533,7 +533,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
  Prefix    The prefix String which is the byte encoding of the String
@@ -620,7 +620,7 @@ Implicit inputs:
             parameter set to use, for example, could be "ML-DSA-65".
 
   Trad      A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASA-PSS with id-sha256"
+            parameter set to use, for example "RSASSA-PSS with id-sha256"
             or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
@@ -1066,13 +1066,13 @@ Pure Composite-ML-DSA Signature public key types:
 
 | Composite Signature Algorithm | OID | First Algorithm | Second Algorithm |
 | ----------- | ----------- | ----------- |  ----------- |
-| id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.60 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 |
+| id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.60 | id-ML-DSA-44  | id-RSASSA-PSS with id-sha256 |
 | id-MLDSA44-RSA2048-PKCS15    | &lt;CompSig&gt;.61 | id-ML-DSA-44  | sha256WithRSAEncryption |
 | id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.62 | id-ML-DSA-44  | id-Ed25519 |
 | id-MLDSA44-ECDSA-P256        | &lt;CompSig&gt;.63 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 |
-| id-MLDSA65-RSA3072-PSS          | &lt;CompSig&gt;.64 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 |
+| id-MLDSA65-RSA3072-PSS          | &lt;CompSig&gt;.64 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256 |
 | id-MLDSA65-RSA3072-PKCS15       | &lt;CompSig&gt;.65  | id-ML-DSA-65 | sha256WithRSAEncryption |
-| id-MLDSA65-RSA4096-PSS         | &lt;CompSig&gt;.66 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 |
+| id-MLDSA65-RSA4096-PSS         | &lt;CompSig&gt;.66 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384 |
 | id-MLDSA65-RSA4096-PKCS15        | &lt;CompSig&gt;.67  | id-ML-DSA-65 | sha384WithRSAEncryption |
 | id-MLDSA65-ECDSA-P256           | &lt;CompSig&gt;.68  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 |
 | id-MLDSA65-ECDSA-P384           | &lt;CompSig&gt;.69  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 |
@@ -1081,7 +1081,7 @@ Pure Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P384            | &lt;CompSig&gt;.72  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 |
 | id-MLDSA87-ECDSA-brainpoolP384r1 | &lt;CompSig&gt;.73 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 |
 | id-MLDSA87-Ed448                        | &lt;CompSig&gt;.74 | id-ML-DSA-87 | id-Ed448 |
-| id-MLDSA87-RSA4096-PSS           | &lt;CompSig&gt;.75 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 |
+| id-MLDSA87-RSA4096-PSS           | &lt;CompSig&gt;.75 | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384 |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
 See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
@@ -1094,13 +1094,13 @@ HashComposite-ML-DSA Signature public key types:
 
 | Composite Signature Algorithm | OID | First Algorithm | Second Algorithm | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-HashMLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.80 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 | id-sha256 |
+| id-HashMLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.80 | id-ML-DSA-44  | id-RSASSA-PSS with id-sha256 | id-sha256 |
 | id-HashMLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.81 | id-ML-DSA-44  | sha256WithRSAEncryption | id-sha256 |
 | id-HashMLDSA44-Ed25519-SHA512             | &lt;CompSig&gt;.82 | id-ML-DSA-44  | id-Ed25519 | id-sha512 |
 | id-HashMLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.83 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | id-sha256 |
-| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 | id-sha512 |
+| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256 | id-sha512 |
 | id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.85  | id-ML-DSA-65 | sha256WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 | id-sha512 |
+| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384 | id-sha512 |
 | id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.87  | id-ML-DSA-65 | sha384WithRSAEncryption | id-sha512 |
 | id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.88  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |
 | id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.89  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 | id-sha512 |
@@ -1109,7 +1109,7 @@ HashComposite-ML-DSA Signature public key types:
 | id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 | id-sha512|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
 | id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.94 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
-| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 | id-sha512 |
+| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95 | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384 | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
 
@@ -1176,24 +1176,25 @@ SHA2 is used throughout in order to facilitate implementations that do not have 
 
 At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
 
-## RSA-PSS Parameters
+## RSASSA-PSS
 
-Use of RSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
+Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
 
+Also note that this specification fixes the Public Key OID of RSASSA-PSS to id-RSASSA-PSS (1.2.840.113549.1.1.10), although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1).
 
 ### RSA2048-PSS
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match that of ML-DSA-44.
 
-As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256           |
 | Message Digest Algorithm   | SHA-256           |
 | Salt Length in bits        | 256               |
-{: #rsa-pss-params2048 title="RSA-PSS 2048 Parameters"}
+{: #rsa-pss-params2048 title="RSASSA-PSS 2048 Parameters"}
 
 where:
 
@@ -1203,17 +1204,17 @@ where:
 
 ### RSA3072-PSS
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to match that of ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256                |
 | Message Digest Algorithm   | SHA-256                |
 | Salt Length in bits        | 256                    |
-{: #rsa-pss-params3072 title="RSA-PSS 3072 Parameters"}
+{: #rsa-pss-params3072 title="RSASSA-PSS 3072 Parameters"}
 
 where:
 
@@ -1222,17 +1223,17 @@ where:
 
 ### RSA4096-PSS
 
-The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-384                |
 | Message Digest Algorithm   | SHA-384                |
 | Salt Length in bits        | 384                    |
-{: #rsa-pss-params4096 title="RSA-PSS 4096 Parameters"}
+{: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 where:
 
@@ -1581,7 +1582,7 @@ This section provides references to the full specification of the algorithms use
 | ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha512WithRSAEncryption | 1.2.840.113549.1.1.13 | [RFC8017] |
-| id-RSASA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
+| id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
 {: #tab-component-sig-algs title="Component Signature Algorithms used in Composite Constructions"}
 
 | Elliptic CurveID | OID | Specification |
@@ -1643,7 +1644,7 @@ DER:
 ~~~
 
 
-**RSA PSS 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1655,7 +1656,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSA PSS 2048 -- AlgorithmIdentifier of Signature**
+**RSASSA-PSS 2048 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1683,7 +1684,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 ~~~
 
-**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1695,7 +1696,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
+**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1723,7 +1724,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 ~~~
 
-**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1736,7 +1737,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Signature**
+**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1749,7 +1750,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1762,7 +1763,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Signature**
+**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
