@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 September 2025                                        M. Pala
+Expires: 3 September 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        28 February 2025
+                                                            2 March 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 September 2025.
+   This Internet-Draft will expire on 3 September 2025.
 
 Copyright Notice
 
@@ -382,7 +382,7 @@ Table of Contents
 
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
-   use or import component keys that are used in other contexts,
+   use, import or export component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
    section Section 11.3.
@@ -2730,18 +2730,18 @@ Deserialization Process:
 
    Within the broader context of PQ / Traditional hybrids, we need to
    consider new attack surfaces that arise due to the hybrid
-   constructions and did not exist in single-algorithm contexts.  One of
-   these is key reuse where the component keys within a hybrid are also
-   used by themselves within a single-algorithm context.  For example,
-   it might be tempting for an operator to take an already-deployed RSA
-   key pair and combine it with an ML-DSA key pair to form a hybrid key
-   pair for use in a hybrid algorithm.  Within a hybrid signature
-   context this leads to a class of attacks referred to as "stripping
-   attacks" discussed in Section 11.2 and may also open up risks from
-   further cross-protocol attacks.  Despite the weak non-separability
-   property offered by the composite signature combiner, it is still
-   RECOMMENDED to avoid key reuse as key reuse in single-algorithm use
-   cases could introduce EUF-CMA vulnerabilities.
+   constructions that did not exist in single-algorithm contexts.  One
+   of these is key reuse where the component keys within a hybrid are
+   also used by themselves within a single-algorithm context.  For
+   example, it might be tempting for an operator to take an already-
+   deployed RSA key pair and combine it with an ML-DSA key pair to form
+   a hybrid key pair for use in a hybrid algorithm.  Within a hybrid
+   signature context this leads to a class of attacks referred to as
+   "stripping attacks" discussed in Section 11.2 and may also open up
+   risks from further cross-protocol attacks.  Despite the weak non-
+   separability property offered by the composite signature combiner,
+   key reuse MUST be avoided to prevent the introduction of EUF-CMA
+   vulnerabilities.
 
    In addition, there is a further implication to key reuse regarding
    certificate revocation.  Upon receiving a new certificate enrollment
@@ -2750,11 +2750,11 @@ Deserialization Process:
    a CA will perform this check by using the public key hash.
    Therefore, even if both components of a composite have been
    previously revoked, the CA may only check the hash of the combined
-   composite key and not find the revocations.  Therefore, it is
-   RECOMMENDED to avoid key reuse and always generate fresh component
-   keys for a new composite.  It is also RECOMMENDED that CAs performing
-   revocation checks on a composite key should also check both component
-   keys independently.
+   composite key and not find the revocations.  Therefore, because the
+   possibilty of key reuse exists even though forbidden in this
+   specification, CAs performing revocation checks on a composite key
+   SHOULD also check both component keys independently to verify that
+   the component keys have not been revoked.
 
 11.4.  Policy for Deprecated and Acceptable Algorithms
 
