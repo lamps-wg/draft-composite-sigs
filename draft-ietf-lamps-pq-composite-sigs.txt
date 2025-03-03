@@ -293,22 +293,22 @@ Table of Contents
    We define the following algorithms which we use to serialize and
    deserialize the public and private keys
 
-   *  SerializeKey(key) -> bytes: Produce a fixed-length byte string
-      encoding the public or private key.
+   *  SerializeKey(key) -> bytes: Produce a byte string encoding the
+      public or private key.
 
-   *  DeserializeKey(bytes) -> pk: Parse a fixed-length byte string to
-      recover a public or private key.  This function can fail if the
-      input byte string is malformed.
+   *  DeserializeKey(bytes) -> pk: Parse a byte string to recover a
+      public or private key.  This function can fail if the input byte
+      string is malformed.
 
    We define the following algorithms which are used to serialize and
    deseralize the composite signature value
 
    *  SerializeSignatureValue(CompositeSignatureValue) -> bytes: Produce
-      a fixed-length byte string encoding the CompositeSignatureValue.
+      a byte string encoding the CompositeSignatureValue.
 
-   *  DeserializeSignatureValue(bytes) -> pk: Parse a fixed-length byte
-      string to recover a CompositeSignatureValue.  This function can
-      fail if the input byte string is malformed.
+   *  DeserializeSignatureValue(bytes) -> pk: Parse a byte string to
+      recover a CompositeSignatureValue.  This function can fail if the
+      input byte string is malformed.
 
    A composite signature allows the security properties of the two
    underlying algorithms to be combined via standard signature
@@ -793,58 +793,63 @@ Signature Verification Process:
 
 4.4.  SerializeKey and DeserializeKey
 
-   The serialization routine for keys simply concatenates the public or
-   private keys of the component signatures, as defined below:
+   Each component key is serialized according to their respective
+   standard as shown in Appendix B and concatenated together using a
+   fixed 4-byte length field denoting the length in bytes of the first
+   component key, as shown below.
 
- Composite-ML-DSA.SerializeKey(key) -> bytes
+Composite-ML-DSA.SerializeKey(key) -> bytes
 
- Explicit Input:
+Explicit Input:
 
-   key    Composite ML-DSA public key or private key
+  key    Composite ML-DSA public key or private key
 
- Implicit inputs:
+Implicit inputs:
 
-   ML-DSA   A placeholder for the specific ML-DSA algorithm and
-            parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
 
-   Trad     A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSA" or "ECDSA".
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSA" or "ECDSA".
 
-   IntegerToBytes  A function that takes an Integer and converts it to
-            a byte representation of size byteLength.  See definition in
-            [FIPS.204]
+  IntegerToBytes  A function that takes an Integer and converts it to
+           a byte representation of size byteLength.  See definition in
+           [FIPS.204]
 
- Output:
+Output:
 
-   bytes   The encoded public key or private key
+  bytes   The encoded public key or private key
 
- Serialization Process:
+Serialization Process:
 
-   1. Separate the  keys
+  1. Separate the  keys
 
-      (mldsaKey, tradKey) = key
+     (mldsaKey, tradKey) = key
 
-   2. Serialize each of the constituent public keys
+  2. Serialize each of the constituent public keys
+        The component keys are serialized according to their respective standard
+        as shown in the component algorithm appendix.
 
-      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
-      tradEncodedKey = Trad.SerializeKey(tradKey)
+     mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
+     tradEncodedKey = Trad.SerializeKey(tradKey)
 
-   3. Calculate the length encoding of the mldsaEncodedPK
+  3. Calculate the length encoding of the mldsaEncodedPK
 
-      If (mldsaEncodeKey.length) > 2^32
-          then output "message too long" and stop.
+     If (mldsaEncodeKey.length) > 2^32
+         then output "message too long" and stop.
 
-      encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
+     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
 
-   4. Combine and output the encoded public key
+  4. Combine and output the encoded public key
 
-      bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
-      output bytes
+     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     output bytes
 
-                  Figure 6: Composite SerializeKey(pk)
+                 Figure 6: Composite SerializeKey(pk)
 
    Deserialization reverses this process, raising an error in the event
-   that the input is malformed.
+   that the input is malformed.  Each component key is deserialized
+   according to their respective standard as shown in Appendix B.
 
 Composite-ML-DSA.DeserializeKey(bytes) -> pk
 
@@ -880,6 +885,8 @@ Deserialization Process:
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
   3. Deserialize the constituent public or private keys
+        The component keys are deserialized according to their respective standard
+        as shown in the component algorithm appendix.
 
      mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
      tradKey = Trad.DeserializeKey(tradEncodedKey)
@@ -899,9 +906,10 @@ Deserialization Process:
 
 4.5.  SerializeSignatureValue and DeSerializeSignatureValue
 
-   The serialization routine for the CompositeSignatureValue simply
-   concatenates the ML-DSA signature value with the signature value from
-   the traditional algorithm, as defined below:
+   Each component signature is serialized according to their respective
+   standard as shown in Appendix B and concatenated together using a
+   fixed 4-byte length field denoting the length in bytes of the first
+   component signature, as shown below.
 
 Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
 
@@ -932,6 +940,8 @@ Serialization Process:
      (mldsaSig, tradSig) = CompositeSignatureValue
 
   2. Serialize each of the constituent signatures
+       The component signatures are serialized according to their respective standard
+       as shown in the component algorithm appendix.
 
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
@@ -952,7 +962,9 @@ Serialization Process:
  Figure 8: Composite SerializeSignatureValue(CompositeSignatureValue)
 
    Deserialization reverses this process, raising an error in the event
-   that the input is malformed.
+   that the input is malformed.  Each component signature is
+   deserialized according to their respective standard as shown in
+   Appendix B.
 
 Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
 
@@ -988,6 +1000,8 @@ Deserialization Process:
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
   3. Deserialize the constituent signature values
+        The component signatures are deserialized according to their respective standard
+        as shown in the component algorithm appendix.
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
