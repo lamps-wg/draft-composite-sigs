@@ -356,7 +356,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string.
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
 
 
@@ -382,7 +383,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message M'.
@@ -419,6 +420,10 @@ It is possible to use component private keys stored in separate software or hard
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
+
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
 This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Algorithm 3 in Section 5.3 of [FIPS.204].
@@ -439,8 +444,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
 Implicit inputs:
 
@@ -466,7 +471,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
       return error
 
   2. Separate the keys and signatures
@@ -508,6 +513,8 @@ In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated 
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
 
 ### HashComposite-ML-DSA-Sign signature mode {#sec-hash-comp-sig-sign}
 
@@ -525,7 +532,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
   PH    The Message Digest Algorithm for pre-hashing.  See
         section on pre-hashing the message below.
@@ -554,7 +562,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message format M'.
@@ -591,6 +599,10 @@ It is possible to use component private keys stored in separate software or hard
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
+
 ### HashComposite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
 
 This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
@@ -611,8 +623,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
@@ -644,7 +656,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
        return error
 
   2. Separate the keys and signatures
@@ -677,6 +689,10 @@ Signature Verification Process:
 {: #alg-hash-composite-verify title="HashComposite-ML-DSA.Verify(pk, M, signature, ctx, PH)"}
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
+
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
 
 ## SerializeKey and DeserializeKey
 
