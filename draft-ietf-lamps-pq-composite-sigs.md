@@ -169,10 +169,13 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 Interop-affecting changes:
 
 * Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private Keys and Composite Signature Value
-* TODO Remove the HashComposite-ML-DSA algorithms in favour of the external Mu hashing
+* Added a prefix into the message format to allow traditional verifiers to detect if a composite signature has been stripped
+* Added a fixed 4-byte length value to identify the length of the first ML-DSA component so keys and signatures can be separated
+* Issued new prototype OIDs for testing purposes since the above changes break backwards compatiblity with version -03
 
 Editorial changes:
-
+* Added normative language to make it clear that key reuse is prohibited
+* Updated the security considerations section
 
 # Introduction {#sec-intro}
 
