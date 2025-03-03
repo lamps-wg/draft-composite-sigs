@@ -680,7 +680,7 @@ Note that in step 4 above, the function fails early if the first component fails
 
 ## SerializeKey and DeserializeKey
 
-The serialization routine for keys simply concatenates the public or private keys of the component signatures, as defined below:
+Each component key is serialized according to their respective standard as shown in {{appdx_components}} and concatenated together using a fixed 4-byte length field denoting the length in bytes of the first component key, as shown below.
 
 ~~~
 Composite-ML-DSA.SerializeKey(key) -> bytes
@@ -713,7 +713,7 @@ Serialization Process:
 
   2. Serialize each of the constituent public keys
         The component keys are serialized according to their respective standard
-        as show in {{appdx_components}}
+        as shown in the component algorithm appendix.
 
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
@@ -730,7 +730,8 @@ Serialization Process:
 {: #alg-composite-serialize title="Composite SerializeKey(pk)"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
+key is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
 Composite-ML-DSA.DeserializeKey(bytes) -> pk
@@ -767,7 +768,7 @@ Deserialization Process:
 
   3. Deserialize the constituent public or private keys
         The component keys are deserialized according to their respective standard
-        as show in {{appdx_components}}
+        as shown in the component algorithm appendix.
 
      mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
      tradKey = Trad.DeserializeKey(tradEncodedKey)
@@ -787,8 +788,7 @@ Deserialization Process:
 
 ## SerializeSignatureValue and DeSerializeSignatureValue
 
-The serialization routine for the CompositeSignatureValue simply concatenates the
-ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
+Each component signature is serialized according to their respective standard as shown in {{appdx_components}} and concatenated together using a fixed 4-byte length field denoting the length in bytes of the first component signature, as shown below.
 
 ~~~
 Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
@@ -820,8 +820,8 @@ Serialization Process:
      (mldsaSig, tradSig) = CompositeSignatureValue
 
   2. Serialize each of the constituent signatures
-       The component signaturs are serialized according to their respective standard
-       as show in {{appdx_components}}
+       The component signatures are serialized according to their respective standard
+       as shown in the component algorithm appendix.
 
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
@@ -838,7 +838,8 @@ Serialization Process:
 {: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
+signature is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
 Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
@@ -874,8 +875,8 @@ Deserialization Process:
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
   3. Deserialize the constituent signature values
-        The component keys are deserialized according to their respective standard
-        as show in {{appdx_components}}
+        The component signatures are deserialized according to their respective standard
+        as shown in the component algorithm appendix.
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
