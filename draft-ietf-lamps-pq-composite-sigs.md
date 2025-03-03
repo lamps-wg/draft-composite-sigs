@@ -257,15 +257,15 @@ Composite schemes are defined as cryptographic primitives that consist of three 
 
 We define the following algorithms which we use to serialize and deserialize the public and private keys
 
-   *  `SerializeKey(key) -> bytes`: Produce a byte string encoding the public or private key.
+   *  `SerializeKey(key) -> bytes`: Produce a fixed-length byte string encoding the public or private key.
 
-   *  `DeserializeKey(bytes) -> pk`: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.
+   *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
 We define the following algorithms which are used to serialize and deseralize the composite signature value
 
-   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
+   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a fixed-length byte string encoding the CompositeSignatureValue.
 
-   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
+   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a fixed-length byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
@@ -356,7 +356,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string.
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
 
 
@@ -382,7 +383,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message M'.
@@ -419,6 +420,9 @@ It is possible to use component private keys stored in separate software or hard
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and anyway the outer `ctx` is already contained within the `M'` message.
+
+
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
 This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Algorithm 3 in Section 5.3 of [FIPS.204].
@@ -439,8 +443,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
 Implicit inputs:
 
@@ -466,7 +470,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
       return error
 
   2. Separate the keys and signatures
@@ -500,6 +504,8 @@ Signature Verification Process:
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and anyway the outer `ctx` is already contained within the `M'` message.
+
 ## PreHash-Signature Mode {#sec-comp-sig-gen-prehash}
 
 This mode mirrors `HashML-DSA` defined in Section 5.4 of [FIPS.204].
@@ -525,7 +531,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
   PH    The Message Digest Algorithm for pre-hashing.  See
         section on pre-hashing the message below.
@@ -554,7 +561,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message format M'.
@@ -591,6 +598,10 @@ It is possible to use component private keys stored in separate software or hard
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and anyway the outer `ctx` is already contained within the `M'` message.
+
+
+
 ### HashComposite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
 
 This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
@@ -611,8 +622,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
@@ -644,7 +655,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
        return error
 
   2. Separate the keys and signatures
@@ -678,9 +689,13 @@ Signature Verification Process:
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and anyway the outer `ctx` is already contained within the `M'` message.
+
+
+
 ## SerializeKey and DeserializeKey
 
-Each component key is serialized according to their respective standard as shown in {{appdx_components}} and concatenated together using a fixed 4-byte length field denoting the length in bytes of the first component key, as shown below.
+The serialization routine for keys simply concatenates the public or private keys of the component signatures, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializeKey(key) -> bytes
@@ -712,8 +727,6 @@ Serialization Process:
      (mldsaKey, tradKey) = key
 
   2. Serialize each of the constituent public keys
-        The component keys are serialized according to their respective standard
-        as shown in the component algorithm appendix.
 
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
@@ -733,8 +746,7 @@ Serialization Process:
 {: #alg-composite-serialize title="Composite SerializeKey(pk)"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
-key is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process, raising an error in the event that the input is malformed.
 
 ~~~
 Composite-ML-DSA.DeserializeKey(bytes) -> pk
@@ -771,8 +783,6 @@ Deserialization Process:
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
   3. Deserialize the constituent public or private keys
-        The component keys are deserialized according to their respective standard
-        as shown in the component algorithm appendix.
 
      mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
      tradKey = Trad.DeserializeKey(tradEncodedKey)
@@ -792,7 +802,8 @@ Deserialization Process:
 
 ## SerializeSignatureValue and DeSerializeSignatureValue
 
-Each component signature is serialized according to their respective standard as shown in {{appdx_components}} and concatenated together using a fixed 4-byte length field denoting the length in bytes of the first component signature, as shown below.
+The serialization routine for the CompositeSignatureValue simply concatenates the
+ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
@@ -824,8 +835,6 @@ Serialization Process:
      (mldsaSig, tradSig) = CompositeSignatureValue
 
   2. Serialize each of the constituent signatures
-       The component signatures are serialized according to their respective standard
-       as shown in the component algorithm appendix.
 
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
@@ -846,8 +855,7 @@ Serialization Process:
 {: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
-signature is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process, raising an error in the event that the input is malformed.
 
 ~~~
 Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
@@ -884,8 +892,6 @@ Deserialization Process:
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
   3. Deserialize the constituent signature values
-        The component signatures are deserialized according to their respective standard
-        as shown in the component algorithm appendix.
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
@@ -2082,8 +2088,8 @@ Felipe Ventura (Entrust),
 Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
-陳志華 (Abel C. H. Chen, Chunghwa Telecom),
-林邦曄 (Austin Lin, Chunghwa Telecom) and
+??? (Abel C. H. Chen, Chunghwa Telecom),
+??? (Austin Lin, Chunghwa Telecom) and
 Mojtaba Bisheh-Niasar
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
