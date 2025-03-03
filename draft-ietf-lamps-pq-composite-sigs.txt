@@ -127,7 +127,7 @@ Table of Contents
                PKIX Algorithms
    11. Security Considerations
      11.1.  Why Hybrids?
-     11.2.  Non-separability and EUF-CMA
+     11.2.  Non-separability, EUF-CMA and SUF
      11.3.  Key Reuse
      11.4.  Policy for Deprecated and Acceptable Algorithms
      11.5.  Use of Prefix to for attack mitigation
@@ -2680,7 +2680,7 @@ Deserialization Process:
    obtaining FIPS certification of a composite algorithm can be found in
    Appendix D.1.
 
-11.2.  Non-separability and EUF-CMA
+11.2.  Non-separability, EUF-CMA and SUF
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
@@ -2692,23 +2692,33 @@ Deserialization Process:
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
 
-   Unforgeability properties are somewhat more nuanced.  The classic
-   EUF-CMA game is in reference to a pair of algorithms ( Sign(),
-   Verify() ) where the attacker has access to a signing oracle using
-   the Sign() and must produce a signature-message pair (s, m) that is
-   accepted by the verifier using Verify() and where m was never signed
-   by the oracle.  The pair ( CompositeML-DSA.Sign(), CompositeML-
-   DSA.Verify() ) is EUF-CMA secure so long as at least one component
-   algorithm is EUF-CMA secure.  There is a stronger notion of Strong
-   Existential Unforgeability (SUF) in which an attacker is required to
-   produce a new signature to an already-signed message.  CompositeML-
-   DSA only achieves SUF security if both components are SUF secure,
-   which is not a useful property; the argument is that if the first
-   component algorithm is not SUF secure then by definition it admits at
-   least one (s1*, m) pair where s1* was not produced by the honest
-   signer and it then can be combined with an honestly-signed (s2, m)
-   signature over the same message m to create ( (s1*, s2), m) which
-   violates SUF for the composite algorithm.
+   Unforgeability properties are somewhat more nuanced.  We recall first
+   the definitions of Exitential Unforgeability under Chosen Message
+   Attack (EUF-CMA) and Strong Unforgeability (SUF).The classic EUF-CMA
+   game is in reference to a pair of algorithms ( Sign(), Verify() )
+   where the attacker has access to a signing oracle using the Sign()
+   and must produce a message-signature pair (m', s') that is accepted
+   by the verifier using Verify() and where m was never signed by the
+   oracle.  SUF requires that the attacker cannot construct a new
+   signature to an already-signed message.
+
+   The pair ( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() ) is EUF-
+   CMA secure so long as at least one component algorithm is EUF-CMA
+   secure since any attempt to modify the message would cause the EUF-
+   CMA secure component to fail its Verify() which in turn will cause
+   CompositeML-DSA.Verify() to fail.
+
+   CompositeML-DSA only achieves SUF security if both components are SUF
+   secure, which is not a useful property; the argument is that if the
+   first component algorithm is not SUF secure then by definition it
+   admits at least one (m, s1*) pair where s1* was not produced by the
+   honest signer and it then can be combined with an honestly-signed (m,
+   s2) signature over the same message m to create (m, (s1*, s2)) which
+   violates SUF for the composite algorithm.  Of the traditional
+   signature component algorithms used in this specification, only
+   Ed25519 and Ed448 are SUF secure and therefore applications that
+   require SUF security to be maintained even in the event that ML-DSA
+   is broken SHOULD use it in composite with Ed25519 or Ed448.
 
    In addition to the classic EUF-CMA game, we should also consider a
    “cross-protocol” version of the EUF-CMA game that is relevant to
@@ -2718,38 +2728,27 @@ Deserialization Process:
    DSA.Sign(), and attempts to fraudulently present them as a composite,
    or where the attacker has access to a composite oracle for signing
    and then attempts to split the signature back into components and
-   present them to either ML-DSA.Verify() or Trad.Verify().  The latter
-   version bears a resemblance to a stripping attack, which parallel
-   signatures are subject to, but is slightly different in that the
-   cross-protocol EUF-CMA game also considers modification message
-   definition as signed differs from the message the verifier accepts.
-   In contrast stripping attacks consider only removing one component
-   signature and attempting verification under the remaining and the
-   same original message.
+   present them to either ML-DSA.Verify() or Trad.Verify().
 
    In the case of CompositeML-DSA, a specific message forgery exists for
    a cross-protocol EUF-CMA attack, namely introduced by the prefix
-   construction addition to M.  This applies to use of individual
-   component signing oracles with fraudulent presentation of the
-   signature to a composite verification oracle, and use of a composite
-   signing oracle with fraudulent splitting of the signature for
-   presentation to component verification oracle(s) of either ML-
-   DSA.Verify() or Trad.Verify().  In the first case, an attacker with
-   access to signing oracles for the two component algorithms can sign
-   M’ and then trivially assemble a composite.  In the second case, the
-   message M’ (containing the composite domain separator) can be
-   presented as having been signed by a standalone component algorithm.
-   However, use of the context string for domain separation enables Weak
-   Non-Separability and auditable checks on hybrid use, which is deemed
-   a reasonable trade-off.  Moreover and very importantly, the cross-
+   construction added to M.  This applies to use of individual component
+   signing oracles with fraudulent presentation of the signature to a
+   composite verification oracle, and use of a composite signing oracle
+   with fraudulent splitting of the signature for presentation to
+   component verification oracle(s) of either ML-DSA.Verify() or
+   Trad.Verify().  In the first case, an attacker with access to signing
+   oracles for the two component algorithms can sign M’ and then
+   trivially assemble a composite.  In the second case, the message M’
+   (containing the composite domain separator) can be presented as
+   having been signed by a standalone component algorithm.  However, use
+   of the context string for domain separation enables Weak Non-
+   Separability and auditable checks on hybrid use, which is deemed a
+   reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.3 since then there cannot exist simultaneously composite
-   and non-composite signers and verifiers for the same keys.
-   Consequently, following the specification and verification of the
-   policy mechanism, such as a composite X.509 certificate which defines
-   the bound keys, is essential when using keys intended for use with a
-   CompositeML-DSA signing algorithm.
+   Section 11.3 since there cannot exist simultaneously composite and
+   non-composite signers and verifiers for the same keys.
 
 11.3.  Key Reuse
 
