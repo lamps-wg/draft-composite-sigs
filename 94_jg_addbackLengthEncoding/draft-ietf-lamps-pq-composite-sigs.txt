@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 3 September 2025                                        M. Pala
+Expires: 4 September 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            2 March 2025
+                                                            3 March 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 September 2025.
+   This Internet-Draft will expire on 4 September 2025.
 
 Copyright Notice
 
@@ -155,10 +155,17 @@ Table of Contents
    *  Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private
       Keys and Composite Signature Value
 
-   *  TODO Remove the HashComposite-ML-DSA algorithms in favour of the
-      external Mu hashing
+   *  Added a prefix into the message format to allow traditional
+      verifiers to detect if a composite signature has been stripped
 
-   Editorial changes:
+   *  Added a fixed 4-byte length value to identify the length of the
+      first ML-DSA component so keys and signatures can be separated
+
+   *  Issued new prototype OIDs for testing purposes since the above
+      changes break backwards compatiblity with version -03
+
+   Editorial changes: * Added normative language to make it clear that
+   key reuse is prohibited * Updated the security considerations section
 
 2.  Introduction
 
