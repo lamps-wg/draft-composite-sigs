@@ -435,7 +435,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string.
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
 
 
@@ -461,7 +462,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message M'.
@@ -505,6 +506,13 @@ Signature Generation Process:
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
 
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
+
 4.2.2.  Composite-ML-DSA.Verify
 
    This mode mirrors ML-DSA.Verify(pk, M, signature, ctx) defined in
@@ -527,8 +535,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
 Implicit inputs:
 
@@ -554,7 +562,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
       return error
 
   2. Separate the keys and signatures
@@ -607,6 +615,13 @@ Signature Verification Process:
    and MUST be in the same order as the components from the
    corresponding signing key.
 
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
+
 4.3.1.  HashComposite-ML-DSA-Sign signature mode
 
    This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in
@@ -626,7 +641,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
   PH    The Message Digest Algorithm for pre-hashing.  See
         section on pre-hashing the message below.
@@ -655,7 +671,7 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message format M'.
@@ -699,6 +715,13 @@ Signature Generation Process:
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
 
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
+
 4.3.2.  HashComposite-ML-DSA-Verify
 
    This mode mirrors HashML-DSA.Verify(pk, M, signature, ctx, PH)
@@ -721,8 +744,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
@@ -754,7 +777,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
        return error
 
   2. Separate the keys and signatures
@@ -790,6 +813,13 @@ Signature Verification Process:
    component fails to verify.  Since no private keys are involved in a
    signature verification, there are no timing attacks to consider, so
    this is ok.
+
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
 
 4.4.  SerializeKey and DeserializeKey
 
