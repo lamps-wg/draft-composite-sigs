@@ -172,10 +172,15 @@ Interop-affecting changes:
 * Added a prefix into the message format to allow traditional verifiers to detect if a composite signature has been stripped
 * Added a fixed 4-byte length value to identify the length of the first ML-DSA component so keys and signatures can be separated
 * Issued new prototype OIDs for testing purposes since the above changes break backwards compatiblity with version -03
+* Added support for a MLDSA65-ECDSA-P256 combination because P256 is a widely supported EC algorithm
+* Added support for a MLDSA87-RSA4096-PSS combination at the request of Microsoft and because we want a RSA combination complaint with CNSA 2.0
+* When used in CMS, all composite combinations make use of the SHA-512 digest algorithm
 
 Editorial changes:
 * Added normative language to make it clear that key reuse is prohibited
 * Updated the security considerations section
+* Added Message format examples
+* Additional editing changes as needed
 
 # Introduction {#sec-intro}
 
