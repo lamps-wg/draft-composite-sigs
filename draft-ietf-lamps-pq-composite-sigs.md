@@ -257,15 +257,15 @@ Composite schemes are defined as cryptographic primitives that consist of three 
 
 We define the following algorithms which we use to serialize and deserialize the public and private keys
 
-   *  `SerializeKey(key) -> bytes`: Produce a fixed-length byte string encoding the public or private key.
+   *  `SerializeKey(key) -> bytes`: Produce a byte string encoding the public or private key.
 
-   *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
+   *  `DeserializeKey(bytes) -> pk`: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
 We define the following algorithms which are used to serialize and deseralize the composite signature value
 
-   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a fixed-length byte string encoding the CompositeSignatureValue.
+   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
 
-   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a fixed-length byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
+   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
@@ -712,6 +712,8 @@ Serialization Process:
      (mldsaKey, tradKey) = key
 
   2. Serialize each of the constituent public keys
+        The component keys are serialized according to their respective standard
+        as show in {{appdx_components}}
 
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
@@ -764,6 +766,8 @@ Deserialization Process:
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
   3. Deserialize the constituent public or private keys
+        The component keys are deserialized according to their respective standard
+        as show in {{appdx_components}}
 
      mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
      tradKey = Trad.DeserializeKey(tradEncodedKey)
@@ -816,6 +820,8 @@ Serialization Process:
      (mldsaSig, tradSig) = CompositeSignatureValue
 
   2. Serialize each of the constituent signatures
+       The component signaturs are serialized according to their respective standard
+       as show in {{appdx_components}}
 
      mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
      tradEncodedSignature = Trad.SerializeSignature(tradSig)
@@ -868,6 +874,8 @@ Deserialization Process:
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
   3. Deserialize the constituent signature values
+        The component keys are deserialized according to their respective standard
+        as show in {{appdx_components}}
 
      mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
      tradSig = Trad.DeserializeSignature(tradEncodedSignature)
