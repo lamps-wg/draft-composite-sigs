@@ -718,6 +718,9 @@ Serialization Process:
 
   3. Calculate the length encoding of the mldsaEncodedPK
 
+     If (mldsaEncodeKey.length) > 2^32
+         then output "message too long" and stop.
+
      encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
 
   4. Combine and output the encoded public key
@@ -759,7 +762,8 @@ Deserialization Process:
   2. Parse each constituent encoded key.
        The first 4 bytes encodes the length of mldsaEncodedKey, which MAY
        be used to separate the mldsaEncodedKey and tradEncodedKey, and then
-       is to be discarded.
+       is to be discarded.  This length SHOULD be checked against the
+       expected length value as per ML-DSA.
 
      (mldsaEncodedKey, tradEncodedKey) = bytes
 
@@ -822,6 +826,10 @@ Serialization Process:
 
   3. Calculate the length encoding of the mldsaEncodedSignature
 
+     If (mldsaEncodeKey.length) > 2^32
+         then output "message too long" and stop.
+
+     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
      encodedLength = IntegerToBytes(mldsaEncodedSignature.length, 4)
 
   4. Combine and output the encoded composite signature
@@ -863,7 +871,8 @@ Deserialization Process:
   2. Parse each constituent encoded signature.
        The first 4 bytes encodes the length of mldsaEncodedSignature, which MAY
        be used to separate the mldsaEncodedSignature and tradEncodedSignature,
-       and then is to be discarded.
+       and then is to be discarded.  The mldsaEncodedSignature length SHOULD
+       be checked against the expected length value as per ML-DSA.
 
      (mldsaEncodedSignature, tradEncodedSignature) = bytes
 
