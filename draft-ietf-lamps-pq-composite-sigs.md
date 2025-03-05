@@ -739,7 +739,7 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Calculate the length encoding of the mldsaEncodedPK
+  3. Calculate the length encoding of the mldsaEncodedKey
 
      If (mldsaEncodedKey.length) > 2^32
          then output "message too long" and stop.
@@ -748,7 +748,7 @@ Serialization Process:
 
   4. Combine and output the encoded public key
 
-     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     bytes = encodedLength || mldsaEncodedKey || tradEncodedKey
      output bytes
 ~~~
 {: #alg-composite-serialize title="Composite SerializeKey(pk)"}
