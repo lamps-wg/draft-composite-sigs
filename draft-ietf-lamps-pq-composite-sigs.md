@@ -741,10 +741,10 @@ Serialization Process:
 
   3. Calculate the length encoding of the mldsaEncodedPK
 
-     If (mldsaEncodeKey.length) > 2^32
+     If (mldsaEncodedKey.length) > 2^32
          then output "message too long" and stop.
 
-     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
+     encodedLength = IntegerToBytes(mldsaEncodedKey.length, 4)
 
   4. Combine and output the encoded public key
 
