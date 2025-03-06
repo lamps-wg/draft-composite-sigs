@@ -990,10 +990,9 @@ Serialization Process:
 
   3. Calculate the length encoding of the mldsaEncodedSignature
 
-     If (mldsaEncodeKey.length) > 2^32
+     If (mldsaEncodedSignature.length) > 2^32
          then output "message too long" and stop.
 
-     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
      encodedLength = IntegerToBytes(mldsaEncodedSignature.length, 4)
 
   4. Combine and output the encoded composite signature
