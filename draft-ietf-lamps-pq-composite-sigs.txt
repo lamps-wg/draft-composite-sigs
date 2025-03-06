@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 4 September 2025                                        M. Pala
+Expires: 7 September 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            3 March 2025
+                                                            6 March 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2025.
+   This Internet-Draft will expire on 7 September 2025.
 
 Copyright Notice
 
@@ -875,16 +875,16 @@ Serialization Process:
      mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
      tradEncodedKey = Trad.SerializeKey(tradKey)
 
-  3. Calculate the length encoding of the mldsaEncodedPK
+  3. Calculate the length encoding of the mldsaEncodedKey
 
-     If (mldsaEncodeKey.length) > 2^32
+     If (mldsaEncodedKey.length) > 2^32
          then output "message too long" and stop.
 
-     encodedLength = IntegerToBytes(mldsaEncodeKey.length, 4)
+     encodedLength = IntegerToBytes(mldsaEncodedKey.length, 4)
 
   4. Combine and output the encoded public key
 
-     bytes = encodedLength || mldsaEncodedPK || tradEncodedPK
+     bytes = encodedLength || mldsaEncodedKey || tradEncodedKey
      output bytes
 
                  Figure 6: Composite SerializeKey(pk)
