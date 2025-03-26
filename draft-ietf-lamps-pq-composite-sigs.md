@@ -383,6 +383,7 @@ Signature Generation Process:
       return error
 
   2. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || M
 
@@ -477,6 +478,7 @@ Signature Verification Process:
     "Invalid signature" and stop.
 
   3. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
         M' = Prefix || Domain || len(ctx) || ctx || M
 
@@ -555,6 +557,7 @@ Signature Generation Process:
       return error
 
   2. Compute the Message format M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
         M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
@@ -655,6 +658,7 @@ Signature Verification Process:
    "Invalid signature" and stop.
 
   3. Compute a Hash of the Message.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
