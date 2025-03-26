@@ -751,7 +751,7 @@ Deserialization Process:
 
 
   1. Parse each constituent encoded public key.
-       The length of the mldsaEncodedSignature is known based on the size of
+       The length of the mldsaKey is known based on the size of
        the ML-DSA component key length specified by the Object ID
     
      switch ML-DSA do
@@ -801,7 +801,7 @@ Serialization Process:
 
      output mldsaSeed || tradKey
 ~~~
-{: #alg-composite-serialize title="SerializePrivateKey(mldsaKey, tradKey) -> bytes"}
+{: #alg-composite-serialize title="SerializePrivateKey(mldsaSeed, tradKey) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
@@ -813,11 +813,6 @@ Explicit Input:
 
   bytes   An encoded composite private key
 
-Implicit inputs:
-
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
-
 Output:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
@@ -827,7 +822,6 @@ Output:
 
 Deserialization Process:
 
-
   1. Parse each constituent encoded key.
        The length of an ML-DSA private key is always a 32 byte seed
        for all parameter sets.
@@ -835,11 +829,11 @@ Deserialization Process:
       mldsaSeed = bytes[:32]
       tradKey  = bytes[32:]
 
-     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
+     Note that while ML-DSA has fixed-length keys (seeds), RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking is
      not always possible here.
 
-  2. Output the component signature values
+  2. Output the component private keys
 
      output (mldsaSeed, tradKey)
 ~~~
@@ -870,7 +864,7 @@ Serialization Process:
 
   1. Combine and output the encoded composite signature
 
-     output mldsaEncodedSignature || tradEncodedSignature
+     output mldsaSig || tradSig
      
 ~~~
 {: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
@@ -900,17 +894,17 @@ Output:
 Deserialization Process:
 
   1. Parse each constituent encoded signature.
-       The length of the mldsaEncodedSignature is known based on the size of
+       The length of the mldsasig is known based on the size of
        the ML-DSA component signature length specified by the Object ID
     
      switch ML-DSA do
         case ML-DSA-44:
           mldsaSig = bytes[:2420]
           tradSig  = bytes[2420:]
-        case MLDSA65:
+        case ML-DSA-65:
           mldsaSig = bytes[:3309]
           tradSig  = bytes[3309:]
-        case MLDSA87:
+        case ML-DSA-87:
           mldsaSig = bytes[:4627]
           tradSig  = bytes[4627:]
 
