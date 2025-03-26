@@ -314,17 +314,13 @@ class Ed448(Ed25519):
 class MLDSA(SIG):
 
   def keyGen(self):
-    # TODO - change this to use a seed (requires a PR to dilithium-py)
-    # self.sk = secrets.token_bytes(32)
-    # self.pk, _ = self.ML_DSA_class.key_derive(self.sk)
-    self.pk, self.sk = self.ML_DSA_class.keygen()
+    self.sk = secrets.token_bytes(32)
+    self.pk, _ = self.ML_DSA_class.key_derive(self.sk)
 
   def sign(self, m, ctx=b''):    
     assert isinstance(m, bytes)
-    # TODO - change this to use a seed (requires a PR to dilithium-py)
-    # _, signingKey = self.ML_DSA_class.key_derive(self.sk)
-    # return self.ML_DSA_class.sign(signingKey, m)
-    return self.ML_DSA_class.sign(self.sk, m, ctx)
+    _, signingKey = self.ML_DSA_class.key_derive(self.sk)
+    return self.ML_DSA_class.sign(signingKey, m, ctx)
 
   def verify(self, s, m, ctx=b''):
     assert isinstance(s, bytes)
@@ -341,17 +337,17 @@ class MLDSA(SIG):
 
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17))  # TODO check that this is the correct OID
+  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17))
   ML_DSA_class = ML_DSA_44
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18))  # TODO check that this is the correct OID
+  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18))
   ML_DSA_class = ML_DSA_65
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19))  # TODO check that this is the correct OID
+  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19))
   ML_DSA_class = ML_DSA_87
 
 
@@ -985,7 +981,7 @@ def formatResults(sig, s ):
   return jsonTest
 
 
-_m = "The quick brown fox jumps over the lazy dog.".encode()
+_m = b'The quick brown fox jumps over the lazy dog.'
 
 def doSig(sig, PH=None):
   sig.keyGen()
@@ -1011,8 +1007,8 @@ def main():
   # jsonOutput['tests'].append( doSig(RSA3072PKCS1()) )
   # jsonOutput['tests'].append( doSig(RSA4096PSS()) )
   # jsonOutput['tests'].append( doSig(RSA4096PKCS1()) )
-  # jsonOutput['tests'].append( doSig(ECDSAP256()) )
-  jsonOutput['tests'].append( doSig(ECDSABP256()) )
+  jsonOutput['tests'].append( doSig(ECDSAP256()) )
+  # jsonOutput['tests'].append( doSig(ECDSABP256()) )
   # jsonOutput['tests'].append( doSig(ECDSAP384()) )
   # jsonOutput['tests'].append( doSig(ECDSABP384()) )
   jsonOutput['tests'].append( doSig(Ed25519()) )
