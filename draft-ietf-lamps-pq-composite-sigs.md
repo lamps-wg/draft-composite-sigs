@@ -696,7 +696,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 | ML-DSA-87 |      2592     |    32     |  4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
-When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-structs}}.
+When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
 
 
 ## SerializePublicKey and DeserializePublicKey
@@ -926,7 +926,7 @@ Deserialization Process:
 
 
 
-# Composite Key Structures {#sec-composite-structs}
+# Composite Key Structures {#sec-composite-key-structs}
 
 In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
@@ -1056,7 +1056,7 @@ Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if th
 traditional component key supports both signing and encryption,
 the post-quantum algorithms do not and therefore the overall composite algorithm does not.
 
-# Composite Signature Structures
+# Composite Signature Structures {#sec-composite-sigs-structs}
 
 ## sa-CompositeSignature {#sec-composite-sig-structs}
 
