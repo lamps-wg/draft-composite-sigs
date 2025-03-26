@@ -52,6 +52,7 @@ class SIG:
 
   def private_key_bytes(self):
     raise Exception("Not implemented")
+    
 
 
 class RSA2048PSS(SIG):
@@ -368,28 +369,8 @@ class CompositeSig(SIG):
     self.tradsig.keyGen()
 
     self.pk = self.public_key_bytes()
-    self.sk = self.public_key_bytes()
+    self.sk = self.public_key_bytes()  
 
-
-  def compositeEncode(v1, v2):
-    """
-    (v1, v2) -> v
-    """
-    assert isinstance(v1, bytes)
-    assert isinstance(v2, bytes)
-    return len(v1).to_bytes(4, 'big') + v1 + v2
-  
-
-  def compositeDecode(v):
-    """
-    v -> (v1, v2)
-    """
-    assert isinstance(v, bytes)
-    # first 4 bytes is the length tag of ct1
-    v1_len = int.from_bytes(v[0:4], 'big')
-    v1 = v[4:4+v1_len]
-    v2 = v[4+v1_len:]
-    return (v1, v2)
 
   def computeMp(self, m, ctx):
     # M' = Prefix || Domain || len(ctx) || ctx || M
@@ -416,7 +397,7 @@ class CompositeSig(SIG):
     mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
     tradSig = self.tradsig.sign( Mp )
     
-    return CompositeSig.compositeEncode(mldsaSig, tradSig)
+    return self.serializeSignatureValue(mldsaSig, tradSig)
   
 
   # raises cryptography.exceptions.InvalidSignature
@@ -428,7 +409,7 @@ class CompositeSig(SIG):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    (mldsaS, tradS) = CompositeSig.compositeDecode(s)
+    (mldsaS, tradS) = self.deserializeSignatureValue(s)
 
     Mp = self.computeMp(m, ctx)
     
@@ -437,17 +418,77 @@ class CompositeSig(SIG):
     self.tradsig.verify(tradS, Mp)
 
 
-  def public_key_bytes(self):
+  def serializeKey(self):
+    """
+    (pk1, pk2) -> pk
+    """
     mldsaPK = self.mldsa.public_key_bytes()
     tradPK  = self.tradsig.public_key_bytes()
+    return mldsaPK + tradPK
+  
+  def deserializeKey(self, keyBytes):
+    """
+    pk -> (pk1, pk2)
+    """
 
-    return CompositeSig.compositeEncode(mldsaPK, tradPK)
+    assert isinstance(keyBytes, bytes)
+
+    if isinstance(self.mldsa, MLDSA44):
+      return keyBytes[:1312], keyBytes[1312:]
+    elif isinstance(self.mldsa, MLDSA65):
+      return keyBytes[:1952], keyBytes[1952:]
+    elif isinstance(self.mldsa, MLDSA87):
+      return keyBytes[:2592], keyBytes[2592:]
+  
+  
+  def public_key_bytes(self):
+    return self.serializeKey()
 
   def private_key_bytes(self):
     mldsaSK = self.mldsa.private_key_bytes()
     tradSK  = self.tradsig.private_key_bytes()
 
-    return CompositeSig.compositeEncode(mldsaSK, tradSK)
+    return mldsaSK + tradSK
+  
+
+  # def compositeEncode(self, v1, v2):
+  #   """
+  #   (v1, v2) -> v
+  #   """
+  #   assert isinstance(v1, bytes)
+  #   assert isinstance(v2, bytes)
+  #   return len(v1).to_bytes(4, 'big') + v1 + v2
+  
+
+  # def compositeDecode(self, v):
+  #   """
+  #   v -> (v1, v2)
+  #   """
+  #   assert isinstance(v, bytes)
+  #   # first 4 bytes is the length tag of ct1
+  #   v1_len = int.from_bytes(v[0:4], 'big')
+  #   v1 = v[4:4+v1_len]
+  #   v2 = v[4+v1_len:]
+  #   return (v1, v2)
+  
+
+  def serializeSignatureValue(self, s1, s2):
+    assert isinstance(s1, bytes)
+    assert isinstance(s2, bytes)
+    return s1 + s2
+  
+
+  def deserializeSignatureValue(self, s):
+    assert isinstance(s, bytes)
+
+    if isinstance(self.mldsa, MLDSA44):
+      return s[:2420], s[2420:]
+    elif isinstance(self.mldsa, MLDSA65):
+      return s[:3309], s[3309:]
+    elif isinstance(self.mldsa, MLDSA87):
+      return s[:4627], s[4627:]
+    
+
 
 
 
@@ -501,7 +542,7 @@ class HashCompositeSig(CompositeSig):
     mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
     tradSig = self.tradsig.sign( Mp )
     
-    return CompositeSig.compositeEncode(mldsaSig, tradSig)
+    return self.serializeSignatureValue(mldsaSig, tradSig)
   
 
   # raises cryptography.exceptions.InvalidSignature
@@ -513,7 +554,7 @@ class HashCompositeSig(CompositeSig):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    (mldsaS, tradS) = CompositeSig.compositeDecode(s)
+    (mldsaS, tradS) = self.deserializeSignatureValue(s)
 
     Mp = self.computeMp(m, ctx)
     
