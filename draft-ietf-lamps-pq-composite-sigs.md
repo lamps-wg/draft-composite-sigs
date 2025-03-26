@@ -173,6 +173,8 @@ Interop-affecting changes:
 
 Editorial changes:
 
+* Cleaned up the presentation of the serialize and deserialize functions.
+
 
 # Introduction {#sec-intro}
 
@@ -561,9 +563,11 @@ Signature Generation Process:
 
         M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
-  3. Separate the private key into component keys.
+  3. Separate the private key into component keys
+     and re-generate the ML-DSA key from seed.
 
-       (mldsaSK, tradSK) = sk
+       (mldsaSeed, tradSK) = DeserializePrivateKey(sk)
+       mldsaSK = ML-DSA.KeyGen(mldsaSeed)
 
   4. Generate the 2 component signatures independently, by calculating
      the signature over M' according to their algorithm specifications.
@@ -579,7 +583,7 @@ Signature Generation Process:
 
   6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := CompositeSignatureValue(mldsaSig, tradSig)
+      signature := (mldsaSig, tradSig)
 
   7. Output signature
 
@@ -649,8 +653,8 @@ Signature Verification Process:
 
   2. Separate the keys and signatures
 
-     (pk1, pk2) = pk
-      (s1, s2) = signature
+     (pk1, pk2) = DeserializePublicKey(pk)
+     (s1, s2)   = DeserializeSignatureValue(signature)
 
    If Error during Desequencing, or if any of the component
    keys or signature values are not of the correct key type or
@@ -679,99 +683,169 @@ Signature Verification Process:
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
-## SerializeKey and DeserializeKey
 
-The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:
+## Serialization
+
+This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
+Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
+
+| Algorithm | Public key  | Private key  | Signature |
+| ----------- | ----------- | ----------- |  ----------- |
+| ML-DSA-44 |      1312     |    32     |  2420        |
+| ML-DSA-65 |      1952     |    32     |  3309  |
+| ML-DSA-87 |      2592     |    32     |  4627   |
+{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
+
+When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-structs}}.
+
+
+## SerializePublicKey and DeserializePublicKey
+
+The serialization routine for keys simply concatenates the fixed-length public keys of the component signature algorithms, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeKey(key) -> bytes
+Composite-ML-DSA.SerializePublicKey(mldsaKey, tradKey) -> bytes
 
 Explicit Input:
 
-  key    Composite ML-DSA public key or private key
+  mldsaKey  The ML-DSA public key, which is bytes.
 
-Implicit inputs:
-
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
-
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
+  tradKey   The traditional public key in the appropriate 
+            encoding for the underlying component algorithm.
 
 Output:
 
-  bytes   The encoded public key
+  bytes   The encoded composite public key
 
 Serialization Process:
 
-  1. Separate the  keys
+  1. Combine and output the encoded public key
 
-     (mldsaKey, tradKey) = key
-
-  2. Serialize each of the constituent public keys
-
-     mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
-     tradEncodedKey = Trad.SerializeKey(tradKey)
-
-  3. Combine and output the encoded public key
-
-     bytes = mldsaEncodedPK || tradEncodedPK
-     output bytes
+     output mldsaPK || tradPK
 ~~~
-{: #alg-composite-serialize title="Composite SerializeKey(pk)"}
+{: #alg-composite-serialize title="SerializePublicKey(mldsaKey, tradKey) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
 
 ~~~
-Composite-ML-DSA.DeserializeKey(bytes) -> pk
+Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
 
 Explicit Input:
 
-  bytes   An encoded public key or private key
+  bytes   An encoded composite public key
 
 Implicit inputs:
 
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
-
 Output:
 
-  key     The composite ML-DSA public key or private key
+  mldsaKey  The ML-DSA public key, which is bytes.
+
+  tradKey   The traditional public key in the appropriate 
+            encoding for the underlying component algorithm.
 
 Deserialization Process:
 
-  1. Validate the length of the the input byte string
 
-     if bytes is not the correct length:
-      output "Deserialization error"
-
-  2. Parse each constituent encoded key.
-       The length of the mldsaEncodedKey is known based on the size of
+  1. Parse each constituent encoded public key.
+       The length of the mldsaEncodedSignature is known based on the size of
        the ML-DSA component key length specified by the Object ID
+    
+     switch ML-DSA do
+        case ML-DSA-44:
+          mldsaKey = bytes[:1312]
+          tradKey  = bytes[1312:]
+        case MLDSA65:
+          mldsaKey = bytes[:1952]
+          tradKey  = bytes[1952:]
+        case MLDSA87:
+          mldsaKey = bytes[:2592]
+          tradKey  = bytes[2592:]
 
-     (mldsaEncodedKey, tradEncodedKey) = bytes
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
+     may not, depending on encoding, so rigorous length-checking is
+     not always possible here.
 
-  3. Deserialize the constituent public or private keys
+  2. Output the component public keys
 
-     mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
-     tradKey = Trad.DeserializeKey(tradEncodedKey)
-
-  4. If either ML-DSA.DeserializeKey() or
-     Trad.DeserializeKey() return an error,
-     then this process must return an error.
-
-      if NOT mldsaKey or NOT tradKey:
-        output "Deserialization error"
-
-  5. Output the composite ML-DSA key
-
-     output (mldsaPK, tradPK)
+     output (mldsaKey, tradKey)
 ~~~
-{: #alg-composite-deserialize title="Composite DeserializeKey(bytes)"}
+{: #alg-composite-deserialize title="DeserializePublicKey(bytes) -> (mldsaKey, tradKey)"}
+
+
+
+## SerializePrivateKey and DeserializePrivateKey
+
+The serialization routine for keys simply concatenates the fixed-length private keys of the component signature algorithms, as defined below:
+
+~~~
+Composite-ML-DSA.SerializePrivateKey(mldsaKey, tradKey) -> bytes
+
+Explicit Input:
+
+  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+
+  tradKey   The traditional private key in the appropriate 
+            encoding for the underlying component algorithm.
+
+Output:
+
+  bytes   The encoded composite private key
+
+Serialization Process:
+
+  1. Combine and output the encoded private key
+
+     output mldsaSeed || tradKey
+~~~
+{: #alg-composite-serialize title="SerializePrivateKey(mldsaKey, tradKey) -> bytes"}
+
+
+Deserialization reverses this process, raising an error in the event that the input is malformed.
+
+~~~
+Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradKey)
+
+Explicit Input:
+
+  bytes   An encoded composite private key
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+Output:
+
+  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+
+  tradKey   The traditional private key in the appropriate 
+            encoding for the underlying component algorithm.
+
+Deserialization Process:
+
+
+  1. Parse each constituent encoded key.
+       The length of an ML-DSA private key is always a 32 byte seed
+       for all parameter sets.
+    
+      mldsaSeed = bytes[:32]
+      tradKey  = bytes[32:]
+
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
+     may not, depending on encoding, so rigorous length-checking is
+     not always possible here.
+
+  2. Output the component signature values
+
+     output (mldsaSeed, tradKey)
+~~~
+{: #alg-composite-deserialize title="DeserializeKey(bytes) -> (mldsaSeed, tradKey)"}
+
+
 
 ## SerializeSignatureValue and DeSerializeSignatureValue
 
@@ -779,19 +853,14 @@ The serialization routine for the CompositeSignatureValue simply concatenates th
 ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
+Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig) -> bytes
 
-Explicit Input:
+Explicit Inputs:
 
-  CompositeSignatureValue    The Composite Signature Value obtained from Composite-ML-DSA.Sign()
+  mldsaSig  The ML-DSA signature value, which is bytes.
 
-Implicit inputs:
-
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
-
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
+  tradSig   The traditional signature value in the appropriate 
+            encoding for the underlying component algorithm.
 
 Output:
 
@@ -799,27 +868,18 @@ Output:
 
 Serialization Process:
 
-  1. Separate the signatures
+  1. Combine and output the encoded composite signature
 
-     (mldsaSig, tradSig) = CompositeSignatureValue
-
-  2. Serialize each of the constituent signatures
-
-     mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
-     tradEncodedSignature = Trad.SerializeSignature(tradSig)
-
-  3. Combine and output the encoded composite signature
-
-     bytes = mldsaEncodedSignature || tradEncodedSignature
-     output bytes
+     output mldsaEncodedSignature || tradEncodedSignature
+     
 ~~~
-{: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
+{: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
 
 ~~~
-Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
+Composite-ML-DSA.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
 
 Explicit Input:
 
@@ -830,73 +890,46 @@ Implicit inputs:
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
-
 Output:
 
-  CompositeSignatureValue  The CompositeSignatureValue
+  mldsaSig  The ML-DSA signature value, which is bytes.
+
+  tradSig   The traditional signature value in the appropriate 
+            encoding for the underlying component algorithm.
 
 Deserialization Process:
 
-  1. Validate the length of the the input byte string
-
-     if bytes is not the correct length:
-      output "Deserialization error"
-
-  2. Parse each constituent encoded signature.
+  1. Parse each constituent encoded signature.
        The length of the mldsaEncodedSignature is known based on the size of
        the ML-DSA component signature length specified by the Object ID
+    
+     switch ML-DSA do
+        case ML-DSA-44:
+          mldsaSig = bytes[:2420]
+          tradSig  = bytes[2420:]
+        case MLDSA65:
+          mldsaSig = bytes[:3309]
+          tradSig  = bytes[3309:]
+        case MLDSA87:
+          mldsaSig = bytes[:4627]
+          tradSig  = bytes[4627:]
 
-     (mldsaEncodedSignature, tradEncodedSignature) = bytes
+     Note that while ML-DSA has fixed-length signatures, RSA and ECDSA
+     may not, depending on encoding, so rigorous length-checking is
+     not always possible here.
 
-  3. Deserialize the constituent signature values
-
-     mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
-     tradSig = Trad.DeserializeSignature(tradEncodedSignature)
-
-  4. If either ML-DSA.DeserializeSignature() or
-     Trad.DeserializeSignature() return an error,
-     then this process must return an error.
-
-      if NOT mldsaSig or NOT tradSig:
-        output "Deserialization error"
-
-  5. Output the CompositeSignatureValue
+  2. Output the component signature values
 
      output (mldsaSig, tradSig)
 ~~~
-{: #alg-composite-deserialize-sig title="Composite DeserializeSignatureValue(bytes)"}
+{: #alg-composite-deserialize-sig title="DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)"}
 
-## ML-DSA public key, private key and signature sizes for serialization and deserialization
 
-As noted above in the composite public key, composite private key and composite signature value
-serialization and deserialization methods, ML-DSA uses fixed-length values for
-all of these components.  This means the length encoding of the first component is
-known and does NOT need to be encoded into the serialization and deserialization process
-which simplifies the encoding.  The second traditional component may be variable-length but
-can still be parsed correctly by taking the rest of the value after the specified offset
-as the traditional component.
-
-This encoding is optimized for the fact that all values related to ML-DSA are fixed-length.
-If future composite combinations make use of
-algorithms where the first component uses variable length keys or signatures, then
-that specification will need to ensure the length is encoded in a
-fixed-length prefix so the components can be correctly deserialized.
-
-The following table shows the fixed length values in bytes for the public, private and signature
-sizes for ML-DSA which can be used to deserialzie the components.
-
-| Algorithm | Public key  | Private key  | Signature |
-| ----------- | ----------- | ----------- |  ----------- |
-| ML-DSA-44 |      1312     |    32     |  2420        |
-| ML-DSA-65 |      1952     |    32     |  3309  |
-| ML-DSA-87 |      2592     |    32     |  4627   |
-{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
 # Composite Key Structures {#sec-composite-structs}
 
 In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
+
 
 
 ## CompositeMLDSAPublicKey {#sec-composite-pub-keys}
