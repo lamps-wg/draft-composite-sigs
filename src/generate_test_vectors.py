@@ -151,6 +151,7 @@ class RSA2048PKCS15(RSA2048PSS):
 
 class RSA3072PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-3072"
+  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
 
   # returns nothing
   def keyGen(self):
@@ -165,6 +166,7 @@ class RSA3072PSS(RSA2048PSS):
 
 class RSA3072PKCS15(RSA2048PKCS15):
   id = "sha256WithRSAEncryption-3072"
+  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
 
     # returns nothing
   def keyGen(self):
@@ -205,7 +207,7 @@ class RSA4096PKCS15(RSA2048PKCS15):
 
 class ECDSAP256(SIG):
   id = "ecdsa-with-SHA256"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
+  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,2))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP256R1())
@@ -234,7 +236,7 @@ class ECDSAP256(SIG):
 
 class ECDSABP256(ECDSAP256):
   id = "ecdsa-with-SHA256"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
+  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,2))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP256R1())
@@ -243,7 +245,7 @@ class ECDSABP256(ECDSAP256):
 
 
 class ECDSAP384(ECDSAP256):
-  id = "ecdsa-with-SHA384 -- TODO check OID"
+  id = "ecdsa-with-SHA384"
   oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
 
   def keyGen(self):
@@ -259,7 +261,7 @@ class ECDSAP384(ECDSAP256):
   
 
 class ECDSABP384(ECDSAP384):
-  id = "ecdsa-with-SHA384 -- TODO check OID"
+  id = "ecdsa-with-SHA384"
   oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
 
   def keyGen(self):
@@ -268,8 +270,8 @@ class ECDSABP384(ECDSAP384):
 
 
 class Ed25519(SIG):
-  id = "id-Ed25519 -- TODO look up the OID"
-  oid = univ.ObjectIdentifier((1,3,101,108))
+  id = "id-Ed25519"
+  oid = univ.ObjectIdentifier((1,3,101,112))
 
   def keyGen(self):
     self.sk = ed25519.Ed25519PrivateKey.generate()
@@ -302,8 +304,8 @@ class Ed25519(SIG):
                     )
 
 class Ed448(Ed25519):
-  id = "id-Ed448 -- TODO look up the OID"
-  oid = univ.ObjectIdentifier((1,3,101,109))
+  id = "id-Ed448"
+  oid = univ.ObjectIdentifier((1,3,101,113))
 
   def keyGen(self):
     self.sk = ed448.Ed448PrivateKey.generate()
