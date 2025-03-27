@@ -2109,6 +2109,10 @@ Implementers should be able to perform the following tests using the test vector
 
 Test vectors are provided for each underlying component in isolation for the purposes of debugging.
 
+Due to the length of the test vectors, you may prefer to retrieve them from GitHub. The reference implementation that generated them is also available:
+
+https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
+
 ~~~
 {::include src/testvectors_wrapped.json}
 ~~~
