@@ -750,7 +750,7 @@ Serialization Process:
 
      output mldsaPK || tradPK
 ~~~
-{: #alg-composite-serialize title="SerializePublicKey(mldsaKey, tradKey) -> bytes"}
+{: #alg-composite-serialize-pk title="SerializePublicKey(mldsaKey, tradKey) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
@@ -801,7 +801,7 @@ Deserialization Process:
 
      output (mldsaKey, tradKey)
 ~~~
-{: #alg-composite-deserialize title="DeserializePublicKey(bytes) -> (mldsaKey, tradKey)"}
+{: #alg-composite-deserialize-pk title="DeserializePublicKey(bytes) -> (mldsaKey, tradKey)"}
 
 
 
@@ -829,7 +829,7 @@ Serialization Process:
 
      output mldsaSeed || tradKey
 ~~~
-{: #alg-composite-serialize title="SerializePrivateKey(mldsaSeed, tradKey) -> bytes"}
+{: #alg-composite-serialize-sk title="SerializePrivateKey(mldsaSeed, tradKey) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
@@ -869,7 +869,7 @@ Deserialization Process:
 
      output (mldsaSeed, tradKey)
 ~~~
-{: #alg-composite-deserialize title="DeserializeKey(bytes) -> (mldsaSeed, tradKey)"}
+{: #alg-composite-deserialize-sk title="DeserializeKey(bytes) -> (mldsaSeed, tradKey)"}
 
 
 
