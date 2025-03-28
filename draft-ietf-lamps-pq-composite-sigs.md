@@ -1612,12 +1612,6 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 --- back
 
 
-# Samples {#appdx-samples}
-
-## Explicit Composite Signature Examples {#appdx-expComposite-examples}
-
-TODO - Need Samples
-
 # Component Algorithm Reference {#appdx_components}
 
 This section provides references to the full specification of the algorithms used in the composite constructions.
@@ -1992,6 +1986,36 @@ The use of Composite Crypto provides the possibility to process multiple algorit
 
 <!-- End of Implementation Considerations section -->
 
+
+# Test Vectors {#appdx-samples}
+
+The following test vectors are provided in a format similar to the NIST ACVP Known-Answer-Tests (KATs).
+
+The structure is that a global message `m` is signed over in all test cases. `m` is the ASCII string "The quick brown fox jumps over the lazy dog."
+Within each test case there are the following values:
+
+* `tcId` the name of the algorithm.
+* `pk` the verification public key.
+* `x5c` a self-signed X.509 certificate of the public key.
+* `sk` the raw signature private key.
+* `sk_pkcs8` the signature private key in a PKCS#8 object.
+* `s` the signature value.
+
+Implementers should be able to perform the following tests using the test vectors below:
+
+1. Load the public key `pk` or certificate `x5c` and use it to verify the signature `s` over the message `m`.
+2. Validate the self-signed certificate `x5c`.
+3. Load the signing private key `sk` and use it to produce a new signature which can be verified using the provided `pk` or `x5c`.
+
+Test vectors are provided for each underlying component in isolation for the purposes of debugging.
+
+Due to the length of the test vectors, you may prefer to retrieve them from GitHub. The reference implementation that generated them is also available:
+
+https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
+
+~~~
+{::include src/testvectors_wrapped.json}
+~~~
 
 
 # Intellectual Property Considerations
