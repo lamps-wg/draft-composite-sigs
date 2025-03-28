@@ -15,21 +15,66 @@ import datetime
 import base64
 import json
 import textwrap
+from zipfile import ZipFile
 
 from pyasn1.type import univ
-from pyasn1_alt_modules import rfc4055, rfc5280
+from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode
 from pyasn1.codec.der.encoder import encode
 
 
+OID_TABLE = {
+    "sha256WithRSAEncryption-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
+    "sha256WithRSAEncryption-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
+    "id-RSASSA-PSS-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
+    "id-RSASSA-PSS-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
+    "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
+    "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
+    "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
+    "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
+    "id-Ed448": univ.ObjectIdentifier((1,3,101,113)),
+    "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
+    "id-ML-DSA-65": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18)),
+    "id-ML-DSA-87": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19)),
+    "id-MLDSA44-RSA2048-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,60)),
+    "id-MLDSA44-RSA2048-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,61)),
+    "id-MLDSA44-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,62)),
+    "id-MLDSA44-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,63)),
+    "id-MLDSA65-RSA3072-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,64)),
+    "id-MLDSA65-RSA3072-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,65)),
+    "id-MLDSA65-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,66)),
+    "id-MLDSA65-RSA4096-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,67)),
+    "id-MLDSA65-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,68)),
+    "id-MLDSA65-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,69)),
+    "id-MLDSA65-ECDSA-brainpoolP256r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,70)),
+    "id-MLDSA65-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,71)),
+    "id-MLDSA87-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,72)),
+    "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,73)),
+    "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,74)),
+    "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,75)),
+    "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,80)),
+    "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,81)),
+    "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,82)),
+    "id-HashMLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,83)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,84)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,85)),
+    "id-HashMLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,86)),
+    "id-HashMLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,87)),
+    "id-HashMLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,88)),
+    "id-HashMLDSA65-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,89)),
+    "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,90)),
+    "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,91)),
+    "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,92)),
+    "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,93)),
+    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95))
+}
 
 class SIG:
   pk = None
   sk = None
   id = None
-  oid = None
   pss_params = None
-  pss_params_asn = None
+  params_asn = None
 
   # returns nothing
   def keyGen(self):
@@ -57,12 +102,11 @@ class SIG:
 
 class RSA2048PSS(SIG):
   id = "id-RSASSA-PSS-2048"
-  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
   pss_params = padding.PSS(
                               mgf=padding.MGF1(hashes.SHA256()),
                               salt_length=padding.PSS.MAX_LENGTH
                           )
-  pss_params_asn = rfc4055.rSASSA_PSS_SHA256_Params
+  params_asn = rfc4055.rSASSA_PSS_SHA256_Params
 
   # returns nothing
   def keyGen(self):
@@ -114,7 +158,6 @@ class RSA2048PSS(SIG):
 
 class RSA2048PKCS15(RSA2048PSS):
   id = "sha256WithRSAEncryption-2048"
-  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,11))
 
     # returns nothing
   def keyGen(self):
@@ -151,7 +194,6 @@ class RSA2048PKCS15(RSA2048PSS):
 
 class RSA3072PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-3072"
-  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
 
   # returns nothing
   def keyGen(self):
@@ -166,7 +208,6 @@ class RSA3072PSS(RSA2048PSS):
 
 class RSA3072PKCS15(RSA2048PKCS15):
   id = "sha256WithRSAEncryption-3072"
-  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
 
     # returns nothing
   def keyGen(self):
@@ -179,7 +220,6 @@ class RSA3072PKCS15(RSA2048PKCS15):
 
 class RSA4096PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-4096"
-  oid = univ.ObjectIdentifier((1,2,840,113549,1,1,10))
 
   # returns nothing
   def keyGen(self):
@@ -207,7 +247,6 @@ class RSA4096PKCS15(RSA2048PKCS15):
 
 class ECDSAP256(SIG):
   id = "ecdsa-with-SHA256"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,2))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP256R1())
@@ -236,7 +275,6 @@ class ECDSAP256(SIG):
 
 class ECDSABP256(ECDSAP256):
   id = "ecdsa-with-SHA256"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,2))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP256R1())
@@ -246,7 +284,6 @@ class ECDSABP256(ECDSAP256):
 
 class ECDSAP384(ECDSAP256):
   id = "ecdsa-with-SHA384"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP384R1())
@@ -262,7 +299,6 @@ class ECDSAP384(ECDSAP256):
 
 class ECDSABP384(ECDSAP384):
   id = "ecdsa-with-SHA384"
-  oid = univ.ObjectIdentifier((1,2,840,10045,4,3,3))
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP384R1())
@@ -271,7 +307,6 @@ class ECDSABP384(ECDSAP384):
 
 class Ed25519(SIG):
   id = "id-Ed25519"
-  oid = univ.ObjectIdentifier((1,3,101,112))
 
   def keyGen(self):
     self.sk = ed25519.Ed25519PrivateKey.generate()
@@ -305,7 +340,6 @@ class Ed25519(SIG):
 
 class Ed448(Ed25519):
   id = "id-Ed448"
-  oid = univ.ObjectIdentifier((1,3,101,113))
 
   def keyGen(self):
     self.sk = ed448.Ed448PrivateKey.generate()
@@ -339,17 +373,14 @@ class MLDSA(SIG):
 
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17))
   ML_DSA_class = ML_DSA_44
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18))
   ML_DSA_class = ML_DSA_65
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
-  oid = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19))
   ML_DSA_class = ML_DSA_87
 
 
@@ -564,7 +595,6 @@ class HashCompositeSig(CompositeSig):
 
 class MLDSA44_RSA2048_PSS(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,60))
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
   domain = "060B6086480186FA6B5008013C"
@@ -572,7 +602,6 @@ class MLDSA44_RSA2048_PSS(CompositeSig):
 
 class MLDSA44_RSA2048_PKCS15(CompositeSig):
   id = "id-MLDSA44-RSA2048-PKCS15"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,61))
   mldsa = MLDSA44()
   tradsig = RSA2048PKCS15()
   domain = "060B6086480186FA6B5008013D"
@@ -580,7 +609,6 @@ class MLDSA44_RSA2048_PKCS15(CompositeSig):
 
 class MLDSA44_Ed25519(CompositeSig):
   id = "id-MLDSA44-Ed25519"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,62))
   mldsa = MLDSA44()
   tradsig = Ed25519()
   domain = "060B6086480186FA6B5008013E"
@@ -588,7 +616,6 @@ class MLDSA44_Ed25519(CompositeSig):
 
 class MLDSA44_ECDSA_P256(CompositeSig):
   id = "id-MLDSA44-ECDSA-P256"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,63))
   mldsa = MLDSA44()
   tradsig = ECDSAP256()
   domain = "060B6086480186FA6B5008013F"
@@ -596,7 +623,6 @@ class MLDSA44_ECDSA_P256(CompositeSig):
 
 class MLDSA65_RSA3072_PSS(CompositeSig):
   id = "id-MLDSA65-RSA3072-PSS"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,64))
   mldsa = MLDSA65()
   tradsig = RSA3072PSS()
   domain = "060B6086480186FA6B50080140"
@@ -604,7 +630,6 @@ class MLDSA65_RSA3072_PSS(CompositeSig):
 
 class MLDSA65_RSA3072_PKCS15(CompositeSig):
   id = "id-MLDSA65-RSA3072-PKCS15"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,65))
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
   domain = "060B6086480186FA6B50080141"
@@ -612,7 +637,6 @@ class MLDSA65_RSA3072_PKCS15(CompositeSig):
 
 class MLDSA65_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA65-RSA4096-PSS"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,66))
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   domain = "060B6086480186FA6B50080142"
@@ -620,7 +644,6 @@ class MLDSA65_RSA4096_PSS(CompositeSig):
 
 class MLDSA65_RSA4096_PKCS15(CompositeSig):
   id = "id-MLDSA65-RSA4096-PKCS15"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,67))
   mldsa = MLDSA65()
   tradsig = RSA4096PKCS15()
   domain = "060B6086480186FA6B50080143"
@@ -628,7 +651,6 @@ class MLDSA65_RSA4096_PKCS15(CompositeSig):
 
 class MLDSA65_ECDSA_P256(CompositeSig):
   id = "id-MLDSA65-ECDSA-P256"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,68))
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
   domain = "060B6086480186FA6B50080144"
@@ -636,7 +658,6 @@ class MLDSA65_ECDSA_P256(CompositeSig):
 
 class MLDSA65_ECDSA_P384(CompositeSig):
   id = "id-MLDSA65-ECDSA-P384"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,69))
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
   domain = "060B6086480186FA6B50080145"
@@ -644,7 +665,6 @@ class MLDSA65_ECDSA_P384(CompositeSig):
 
 class MLDSA65_ECDSA_brainpoolP256r1(CompositeSig):
   id = "id-MLDSA65-ECDSA-brainpoolP256r1"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,70))
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
   domain = "060B6086480186FA6B50080146"
@@ -652,7 +672,6 @@ class MLDSA65_ECDSA_brainpoolP256r1(CompositeSig):
 
 class MLDSA65_Ed25519(CompositeSig):
   id = "id-MLDSA65-Ed25519"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,71))
   mldsa = MLDSA65()
   tradsig = Ed25519()
   domain = "060B6086480186FA6B50080147"
@@ -660,7 +679,6 @@ class MLDSA65_Ed25519(CompositeSig):
 
 class MLDSA87_ECDSA_P384(CompositeSig):
   id = "id-MLDSA87-ECDSA-P384"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,72))
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
   domain = "060B6086480186FA6B50080148"
@@ -668,7 +686,6 @@ class MLDSA87_ECDSA_P384(CompositeSig):
 
 class MLDSA87_ECDSA_brainpoolP384r1(CompositeSig):
   id = "id-MLDSA87-ECDSA-brainpoolP384r1"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,73))
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
   domain = "060B6086480186FA6B50080149"
@@ -676,7 +693,6 @@ class MLDSA87_ECDSA_brainpoolP384r1(CompositeSig):
 
 class MLDSA87_Ed448(CompositeSig):
   id = "id-MLDSA87-Ed448"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,74))
   mldsa = MLDSA87()
   tradsig = Ed448()
   domain = "060B6086480186FA6B5008014A"
@@ -684,7 +700,6 @@ class MLDSA87_Ed448(CompositeSig):
 
 class MLDSA87_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA87-RSA4096-PSS"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,75))
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
   domain = "060B6086480186FA6B5008014B"
@@ -692,7 +707,6 @@ class MLDSA87_RSA4096_PSS(CompositeSig):
 
 class HashMLDSA44_RSA2048_PSS_SHA256(HashCompositeSig):
   id = "id-HashMLDSA44-RSA2048-PSS-SHA256"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,80))
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
   PH = hashes.SHA256()
@@ -701,7 +715,6 @@ class HashMLDSA44_RSA2048_PSS_SHA256(HashCompositeSig):
 
 class HashMLDSA44_RSA2048_PKCS15_SHA256(HashCompositeSig):
   id = "id-HashMLDSA44-RSA2048-PKCS15-SHA256"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,81))
   mldsa = MLDSA44()
   tradsig = RSA2048PKCS15()
   PH = hashes.SHA256()
@@ -710,7 +723,6 @@ class HashMLDSA44_RSA2048_PKCS15_SHA256(HashCompositeSig):
 
 class HashMLDSA44_Ed25519_SHA512(HashCompositeSig):
   id = "id-HashMLDSA44-Ed25519-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,82))
   mldsa = MLDSA44()
   tradsig = Ed25519()
   PH = hashes.SHA512()
@@ -719,7 +731,6 @@ class HashMLDSA44_Ed25519_SHA512(HashCompositeSig):
 
 class HashMLDSA44_ECDSA_P256_SHA256(HashCompositeSig):
   id = "id-HashMLDSA44-ECDSA-P256-SHA256"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,83))
   mldsa = MLDSA44()
   tradsig = ECDSAP256()
   PH = hashes.SHA256()
@@ -728,7 +739,6 @@ class HashMLDSA44_ECDSA_P256_SHA256(HashCompositeSig):
 
 class HashMLDSA65_RSA3072_PSS_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-RSA3072-PSS-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,84))
   mldsa = MLDSA65()
   tradsig = RSA3072PSS()
   PH = hashes.SHA512()
@@ -737,7 +747,6 @@ class HashMLDSA65_RSA3072_PSS_SHA512(HashCompositeSig):
 
 class HashMLDSA65_RSA3072_PKCS15_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-RSA3072-PSS-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,85))
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
   PH = hashes.SHA512()
@@ -746,7 +755,6 @@ class HashMLDSA65_RSA3072_PKCS15_SHA512(HashCompositeSig):
 
 class HashMLDSA65_RSA4096_PSS_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-RSA4096-PSS-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,86))
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
@@ -755,7 +763,6 @@ class HashMLDSA65_RSA4096_PSS_SHA512(HashCompositeSig):
 
 class HashMLDSA65_RSA4096_PKCS15_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-RSA4096-PKCS15-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,87))
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
@@ -764,7 +771,6 @@ class HashMLDSA65_RSA4096_PKCS15_SHA512(HashCompositeSig):
 
 class HashMLDSA65_ECDSA_P256_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-ECDSA-P256-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,88))
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
   PH = hashes.SHA512()
@@ -773,7 +779,6 @@ class HashMLDSA65_ECDSA_P256_SHA512(HashCompositeSig):
 
 class HashMLDSA65_ECDSA_P384_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-ECDSA-P384-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,89))
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
@@ -782,7 +787,6 @@ class HashMLDSA65_ECDSA_P384_SHA512(HashCompositeSig):
 
 class HashMLDSA65_ECDSA_brainpoolP256r1_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,90))
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
   PH = hashes.SHA512()
@@ -791,7 +795,6 @@ class HashMLDSA65_ECDSA_brainpoolP256r1_SHA512(HashCompositeSig):
 
 class HashMLDSA65_Ed25519_SHA512(HashCompositeSig):
   id = "id-HashMLDSA65-Ed25519-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,91))
   mldsa = MLDSA65()
   tradsig = Ed25519()
   PH = hashes.SHA512()
@@ -800,7 +803,6 @@ class HashMLDSA65_Ed25519_SHA512(HashCompositeSig):
 
 class HashMLDSA87_ECDSA_P384_SHA512(HashCompositeSig):
   id = "id-HashMLDSA87-ECDSA-P384-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,92))
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
@@ -809,7 +811,6 @@ class HashMLDSA87_ECDSA_P384_SHA512(HashCompositeSig):
 
 class HashMLDSA87_ECDSA_brainpoolP384r1_SHA512(HashCompositeSig):
   id = "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,93))
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
   PH = hashes.SHA512()
@@ -818,7 +819,6 @@ class HashMLDSA87_ECDSA_brainpoolP384r1_SHA512(HashCompositeSig):
 
 class HashMLDSA87_Ed448_SHA512(HashCompositeSig):
   id = "id-HashMLDSA87-Ed448-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,94))
   mldsa = MLDSA87()
   tradsig = Ed448()
   PH = hashes.SHA512()
@@ -827,7 +827,6 @@ class HashMLDSA87_Ed448_SHA512(HashCompositeSig):
 
 class HashMLDSA87_RSA4096_PSS_SHA512(HashCompositeSig):
   id = "id-HashMLDSA87-RSA4096-PSS-SHA512"
-  oid = univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95))
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
@@ -942,9 +941,9 @@ def signSigCert(sig):
 
   spki = rfc5280.SubjectPublicKeyInfo()
   algid = rfc5280.AlgorithmIdentifier()
-  algid['algorithm'] = sig.oid
-  if sig.pss_params_asn != None:
-    algid['parameters'] = sig.pss_params_asn
+  algid['algorithm'] = OID_TABLE[sig.id]
+  if sig.params_asn != None:
+    algid['parameters'] = sig.params_asn
   spki['algorithm'] = algid
   spki['subjectPublicKey'] = univ.BitString(hexValue=sig.public_key_bytes().hex())
   cert_pyasn1['tbsCertificate']['subjectPublicKeyInfo'] = spki
@@ -954,9 +953,9 @@ def signSigCert(sig):
 
   # Manually set the algID to ML-DSA and re-sign it
   sigAlgID = rfc5280.AlgorithmIdentifier()
-  sigAlgID['algorithm'] = sig.oid
-  if sig.pss_params_asn != None:
-    sigAlgID['parameters'] = sig.pss_params_asn
+  sigAlgID['algorithm'] = OID_TABLE[sig.id]
+  if sig.params_asn != None:
+    sigAlgID['parameters'] = sig.params_asn
   cert_pyasn1['tbsCertificate']['signature'] = sigAlgID
   tbs_bytes = encode(cert_pyasn1['tbsCertificate'])
   cert_pyasn1['signatureAlgorithm'] = sigAlgID
@@ -978,9 +977,37 @@ def formatResults(sig, s ):
   cert = signSigCert(sig)
   jsonTest['x5c'] = base64.b64encode(cert.public_bytes(encoding=serialization.Encoding.DER)).decode('ascii')
   jsonTest['sk'] = base64.b64encode(sig.private_key_bytes()).decode('ascii')
+
+    # Construct PKCS#8
+  pki = rfc5208.PrivateKeyInfo()
+  pki['version'] = 0
+  algId = rfc5208.AlgorithmIdentifier()
+  algId['algorithm'] = OID_TABLE[sig.id]
+  pki['privateKeyAlgorithm'] = algId
+  pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
+  jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
+
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
 
   return jsonTest
+
+def output_artifacts_certs_r5(jsonTestVectors):
+
+  artifacts_zip = ZipFile('artifacts_certs_r5.zip', mode='w')
+
+  for tc in jsonTestVectors['tests']:
+      try:
+          # <friendlyname>-<oid>_ta.der
+          certFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_ta.der"
+          keyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.raw"
+      except KeyError:
+          # if this one is not in the OID_TABLE, then just skip it
+          continue
+      
+      artifacts_zip.writestr(certFilename, data=base64.b64decode(tc['x5c']))
+      artifacts_zip.writestr(keyFilename, data=base64.b64decode(tc['sk']))
+
+
 
 
 _m = b'The quick brown fox jumps over the lazy dog.'
