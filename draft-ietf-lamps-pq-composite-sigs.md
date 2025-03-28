@@ -737,7 +737,7 @@ Explicit Input:
 
   mldsaKey  The ML-DSA public key, which is bytes.
 
-  tradKey   The traditional public key in the appropriate 
+  tradKey   The traditional public key in the appropriate
             encoding for the underlying component algorithm.
 
 Output:
@@ -772,7 +772,7 @@ Output:
 
   mldsaKey  The ML-DSA public key, which is bytes.
 
-  tradKey   The traditional public key in the appropriate 
+  tradKey   The traditional public key in the appropriate
             encoding for the underlying component algorithm.
 
 Deserialization Process:
@@ -781,7 +781,7 @@ Deserialization Process:
   1. Parse each constituent encoded public key.
        The length of the mldsaKey is known based on the size of
        the ML-DSA component key length specified by the Object ID
-    
+
      switch ML-DSA do
         case ML-DSA-44:
           mldsaKey = bytes[:1312]
@@ -816,7 +816,7 @@ Explicit Input:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
-  tradKey   The traditional private key in the appropriate 
+  tradKey   The traditional private key in the appropriate
             encoding for the underlying component algorithm.
 
 Output:
@@ -849,7 +849,7 @@ Output:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
-  tradKey   The traditional private key in the appropriate 
+  tradKey   The traditional private key in the appropriate
             encoding for the underlying component algorithm.
 
 Deserialization Process:
@@ -857,7 +857,7 @@ Deserialization Process:
   1. Parse each constituent encoded key.
        The length of an ML-DSA private key is always a 32 byte seed
        for all parameter sets.
-    
+
       mldsaSeed = bytes[:32]
       tradKey  = bytes[32:]
 
@@ -885,7 +885,7 @@ Explicit Inputs:
 
   mldsaSig  The ML-DSA signature value, which is bytes.
 
-  tradSig   The traditional signature value in the appropriate 
+  tradSig   The traditional signature value in the appropriate
             encoding for the underlying component algorithm.
 
 Output:
@@ -897,7 +897,7 @@ Serialization Process:
   1. Combine and output the encoded composite signature
 
      output mldsaSig || tradSig
-     
+
 ~~~
 {: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
 
@@ -921,7 +921,7 @@ Output:
 
   mldsaSig  The ML-DSA signature value, which is bytes.
 
-  tradSig   The traditional signature value in the appropriate 
+  tradSig   The traditional signature value in the appropriate
             encoding for the underlying component algorithm.
 
 Deserialization Process:
@@ -929,7 +929,7 @@ Deserialization Process:
   1. Parse each constituent encoded signature.
        The length of the mldsasig is known based on the size of
        the ML-DSA component signature length specified by the Object ID
-    
+
      switch ML-DSA do
         case ML-DSA-44:
           mldsaSig = bytes[:2420]
