@@ -2,4 +2,3 @@ pyasn1
 pyasn1-alt-modules
 cryptography
 dilithium-py
-kyber-py
