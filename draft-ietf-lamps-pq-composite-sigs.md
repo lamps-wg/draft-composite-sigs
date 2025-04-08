@@ -165,7 +165,7 @@ informative:
     org: CA/Browser Forum
     target: https://cabforum.org/working-groups/code-signing/documents/
 
-  
+
 
 
 --- abstract
