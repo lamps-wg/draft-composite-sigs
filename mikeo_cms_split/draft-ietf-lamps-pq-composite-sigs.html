@@ -2944,7 +2944,7 @@ CompositeSignatureValue ::= BIT STRING
             <p id="section-7.4-2.1.1">Pair equivalent levels.<a href="#section-7.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-2.2">
-            <p id="section-7.4-2.2.1">NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-2.2.1">NIST-P-384 is CNSA approved <span>[<a href="#CNSA2.0" class="cite xref">CNSA2.0</a>]</span> for all classification levels.<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-2.3">
             <p id="section-7.4-2.3.1">521 bit curve not widely used.<a href="#section-7.4-2.3.1" class="pilcrow">¶</a></p>
@@ -4409,6 +4409,18 @@ END
         <dd>
 <span class="refAuthor">Federal Office for Information Security (BSI)</span>, <span class="refTitle">"Quantum-safe cryptography - fundamentals, current developments and recommendations"</span>, <time datetime="2021-10" class="refDate">October 2021</time>, <span>&lt;<a href="https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf">https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="CNSA2.0">[CNSA2.0]</dt>
+        <dd>
+<span class="refTitle">"Commercial National Security Algorithm Suite 2.0"</span>, <span>n.d.</span>, <span>&lt;<a href="https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF">https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="codesigningbrsv3.8">[codesigningbrsv3.8]</dt>
+        <dd>
+<span class="refTitle">"Baseline Requirements for the Issuance and Management of Publicly‐Trusted Code Signing Certificates Version 3.8.0"</span>, <span>n.d.</span>, <span>&lt;<a href="https://cabforum.org/working-groups/code-signing/documents/">https://cabforum.org/working-groups/code-signing/documents/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="eIDAS2014">[eIDAS2014]</dt>
+        <dd>
+<span class="refTitle">"Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC"</span>, <span>n.d.</span>, <span>&lt;<a href="https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng">https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-lamps-cms-ml-dsa">[I-D.ietf-lamps-cms-ml-dsa]</dt>
         <dd>
 <span class="refAuthor">S, B.</span>, <span class="refAuthor">R, A.</span>, and <span class="refAuthor">D. Van Geest</span>, <span class="refTitle">"Use of the ML-DSA Signature Algorithm in the Cryptographic Message Syntax (CMS)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lamps-cms-ml-dsa-02</span>, <time datetime="2025-01-17" class="refDate">17 January 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lamps-cms-ml-dsa-02">https://datatracker.ietf.org/doc/html/draft-ietf-lamps-cms-ml-dsa-02</a>&gt;</span>. </dd>
@@ -5087,7 +5099,7 @@ DER:
 <a href="#appendix-D.2" class="section-number selfRef">D.2. </a><a href="#name-backwards-compatibility" class="section-name selfRef">Backwards Compatibility</a>
         </h3>
 <p id="appendix-D.2-1">The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this document.<a href="#appendix-D.2-1" class="pilcrow">¶</a></p>
-<p id="appendix-D.2-2">If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv2.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#appendix-D.2-2" class="pilcrow">¶</a></p>
+<p id="appendix-D.2-2">If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations <span>[<a href="#eIDAS2014" class="cite xref">eIDAS2014</a>]</span>, and publicly trusted code signing <span>[<a href="#codesigningbrsv3.8" class="cite xref">codesigningbrsv3.8</a>]</span>, as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#appendix-D.2-2" class="pilcrow">¶</a></p>
 <div id="hybrid-extensions-keys-and-signatures">
 <section id="appendix-D.2.1">
           <h4 id="name-hybrid-extensions-keys-and-">

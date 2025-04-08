@@ -2895,6 +2895,24 @@ Deserialization Process:
               <https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/
               Publications/Brochure/quantum-safe-cryptography.pdf>.
 
+   [CNSA2.0]  "Commercial National Security Algorithm Suite 2.0", n.d.,
+              <https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/
+              CSA_CNSA_2.0_ALGORITHMS_.PDF>.
+
+   [codesigningbrsv3.8]
+              "Baseline Requirements for the Issuance and Management of
+              Publicly‐Trusted Code Signing Certificates Version 3.8.0",
+              n.d., <https://cabforum.org/working-groups/code-signing/
+              documents/>.
+
+   [eIDAS2014]
+              "Regulation (EU) No 910/2014 of the European Parliament
+              and of the Council of 23 July 2014 on electronic
+              identification and trust services for electronic
+              transactions in the internal market and repealing
+              Directive 1999/93/EC", n.d.,
+              <https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng>.
+
    [I-D.ietf-lamps-cms-ml-dsa]
               S, B., R, A., and D. Van Geest, "Use of the ML-DSA
               Signature Algorithm in the Cryptographic Message Syntax
@@ -3417,7 +3435,7 @@ D.2.  Backwards Compatibility
    [RFC7296], to non-negotiated asynchronous protocols such as S/MIME
    signed email [RFC8551], document signing such as in the context of
    the European eIDAS regulations [eIDAS2014], and publicly trusted code
-   signing [codeSigningBRsv2.8], as well as myriad other standardized
+   signing [codesigningbrsv3.8], as well as myriad other standardized
    and proprietary protocols and applications that leverage CMS
    [RFC5652] signed structures.  Composite simplifies the protocol
    design work because it can be implemented as a signature algorithm
