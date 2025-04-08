@@ -156,7 +156,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 <!-- End of Abstract -->
 
@@ -1397,7 +1397,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 ###  Module Registration - SMI Security for PKIX Module Identifier
 -  Decimal: IANA Assigned - **Replace TBDMOD**
--  Description: Composite-Signatures-2023 - id-mod-composite-signatures
+-  Description: Composite-Signatures-2025 - id-mod-composite-signatures
 -  References: This Document
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
@@ -1628,9 +1628,6 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 --- back
 
 
-<<<<<<< HEAD
-=======
-# Samples {#appdx-samples}
 
 ## Message Format Examples {#appdx-messageFormat-examples}
 
@@ -1708,11 +1705,7 @@ HashOID: 06:09:60:86:48:01:65:03:04:02:01:
 PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
 ~~~
 
-## Composite Signature Examples {#appdx-expComposite-examples}
 
-TODO - Need Samples
-
->>>>>>> f0c6afad7caaa72dfb9971fc3e7ae596c7f75352
 # Component Algorithm Reference {#appdx_components}
 
 This section provides references to the full specification of the algorithms used in the composite constructions.
