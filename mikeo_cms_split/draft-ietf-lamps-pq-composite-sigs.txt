@@ -112,28 +112,22 @@ Table of Contents
        7.5.1.  RSA2048-PSS
        7.5.2.  RSA3072-PSS
        7.5.3.  RSA4096-PSS
-   8.  Use in CMS
-     8.1.  Underlying Components
-     8.2.  SignedData Conventions
-     8.3.  Signature generation and verification
-     8.4.  Certificate Conventions
-     8.5.  SMIMECapabilities Attribute Conventions
-   9.  ASN.1 Module
-   10. IANA Considerations
-     10.1.  Object Identifier Allocations
-       10.1.1.  Module Registration - SMI Security for PKIX Module
+   8.  ASN.1 Module
+   9.  IANA Considerations
+     9.1.  Object Identifier Allocations
+       9.1.1.  Module Registration - SMI Security for PKIX Module
                Identifier
-       10.1.2.  Object Identifier Registrations - SMI Security for
-               PKIX Algorithms
-   11. Security Considerations
-     11.1.  Why Hybrids?
-     11.2.  Non-separability, EUF-CMA and SUF
-     11.3.  Key Reuse
-     11.4.  Policy for Deprecated and Acceptable Algorithms
-     11.5.  Use of Prefix to for attack mitigation
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
+       9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+               Algorithms
+   10. Security Considerations
+     10.1.  Why Hybrids?
+     10.2.  Non-separability, EUF-CMA and SUF
+     10.3.  Key Reuse
+     10.4.  Policy for Deprecated and Acceptable Algorithms
+     10.5.  Use of Prefix to for attack mitigation
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Appendix A.  Samples
      A.1.  Message Format Examples
        A.1.1.  Example of MLDSA44-ECDSA-P256 with Context:
@@ -416,7 +410,7 @@ Table of Contents
    use, import or export component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
-   section Section 11.3.
+   section Section 10.3.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
@@ -1145,7 +1139,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.3.
+   security considerations around key reuse, see section Section 10.3.
 
    The following ASN.1 Information Object Class is defined to allow for
    compact definitions of each composite algorithm, leading to a smaller
@@ -1168,7 +1162,7 @@ Deserialization Process:
        CompositeMLDSAPublicKey }
 
    The full set of key types defined by this specification can be found
-   in the ASN.1 Module in Section 9.
+   in the ASN.1 Module in Section 8.
 
 5.2.  CompositeMLDSAPrivateKey
 
@@ -1224,7 +1218,7 @@ Deserialization Process:
 
    Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any
    other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 11.3.
+   security considerations around key reuse, see section Section 10.3.
 
 5.3.  Encoding Rules
 
@@ -1373,7 +1367,7 @@ Deserialization Process:
 
             Table 2: Pure ML-DSA Composite Signature Algorithms
 
-   See the ASN.1 module in section Section 9 for the explicit
+   See the ASN.1 module in section Section 8 for the explicit
    definitions of the above Composite ML-DSA algorithms.
 
    Full specifications for the referenced algorithms can be found in
@@ -1438,7 +1432,7 @@ Deserialization Process:
 
             Table 3: Hash ML-DSA Composite Signature Algorithms
 
-   See the ASN.1 module in Section 9 for the explicit definitions of the
+   See the ASN.1 module in Section 8 for the explicit definitions of the
    above Composite ML-DSA algorithms.
 
    The Pre-Hash algorithm is used as the PH algorithm and the DER
@@ -1667,122 +1661,7 @@ Deserialization Process:
 
    *  SHA-384 is defined in [RFC6234].
 
-8.  Use in CMS
-
-   [EDNOTE: The convention in LAMPS is to specify algorithms and their
-   CMS conventions in separate documents.  Here we have presented them
-   in the same document, but this section has been written so that it
-   can easily be moved to a stand-alone document.]
-
-   Composite Signature algorithms MAY be employed for one or more
-   recipients in the CMS signed-data content type [RFC5652].
-
-   All recommendations for using Composite ML-DSA in CMS are fully
-   aligned with the use of ML-DSA in CMS [I-D.ietf-lamps-cms-ml-dsa].
-
-8.1.  Underlying Components
-
-   A compliant implementation MUST support SHA-512 [FIPS180] for all
-   composite variants in this document.  Implementations MAY also
-   support other algorithms for the SignerInfo digestAlgorithm and
-   SHOULD use algorithms that produce a hash value of a size that is at
-   least twice the collision strength of the internal commitment hash
-   used by ML-DSA.
-
-   Note: The Hash ML-DSA Composite identifiers are relevant here because
-   this algorithm operation mode is not provided in CMS, which is
-   consistent with [I-D.ietf-lamps-cms-ml-dsa].
-
-8.2.  SignedData Conventions
-
-   As specified in CMS [RFC5652], the digital signature is produced from
-   the message digest and the signer's private key.  The signature is
-   computed over different values depending on whether signed attributes
-   are absent or present.
-
-   When signed attributes are absent, the composite signature is
-   computed over the content of the signed-data.  The "content" of a
-   signed-data is the value of the encapContentInfo eContent OCTET
-   STRING.  The tag and length octets are not included.  When signed
-   attributes are present, a hash is computed over the content using the
-   hash function specified in Section 8.1, and then a message-digest
-   attribute is constructed to contain the resulting hash value, and
-   then the result of DER encoding the set of signed attributes, which
-   MUST include a content-type attribute and a message-digest attribute,
-   and then the composite signature is computed over the DER-encoded
-   output.  In summary:
-
-   IF (signed attributes are absent)
-      THEN Composite-ML-DSA.Sign(content)
-   ELSE message-digest attribute = Hash(content);
-      Composite-ML-DSA.Sign(DER(SignedAttributes))
-
-   When using Composite Signatures, the fields in the SignerInfo are
-   used as follows:
-
-   digestAlgorithm: Per Section 5.3 of [RFC5652], the digestAlgorithm
-   contains the one-way hash function used by the CMS signer.  To ensure
-   collision resistance, the identified message digest algorithm SHOULD
-   produce a hash value of a size that is at least twice the collision
-   strength of the internal commitment hash used by ML-DSA component
-   algorithm of the Composite Signature.
-
-   signatureAlgorithm: The signatureAlgorithm MUST contain one of the
-   the Composite Signature algorithm identifiers as specified in
-   Section 8.1}
-
-   signature: The signature field contains the signature value resulting
-   from the composite signing operation of the specified
-   signatureAlgorithm.
-
-8.3.  Signature generation and verification
-
-   Composite signatures have a context string input that can be used to
-   ensure that different signatures are generated for different
-   application contexts.  When using composite signatures for CMS, the
-   context string is the empty string.
-
-8.4.  Certificate Conventions
-
-   The conventions specified in this section augment RFC 5280 [RFC5280].
-
-   The willingness to accept a composite Signature Algorithm MAY be
-   signaled by the use of the SMIMECapabilities Attribute as specified
-   in Section 2.5.2. of [RFC8551] or the SMIMECapabilities certificate
-   extension as specified in [RFC4262].
-
-   The intended application for the public key MAY be indicated in the
-   key usage certificate extension as specified in Section 4.2.1.3 of
-   [RFC5280].  If the keyUsage extension is present in a certificate
-   that conveys a composite Signature public key, then the key usage
-   extension MUST contain only the following value:
-
-   digitalSignature
-   nonRepudiation
-   keyCertSign
-   cRLSign
-
-   The keyEncipherment and dataEncipherment values MUST NOT be present.
-   That is, a public key intended to be employed only with a composite
-   signature algorithm MUST NOT also be employed for data encryption.
-   This requirement does not carry any particular security
-   consideration; only the convention that signature keys be identified
-   with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign'
-   key usages.
-
-8.5.  SMIMECapabilities Attribute Conventions
-
-   Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to
-   announce a partial list of algorithms that an S/MIME implementation
-   can support.  When constructing a CMS signed-data content type
-   [RFC5652], a compliant implementation MAY include the
-   SMIMECapabilities attribute.
-
-   The SMIMECapability SEQUENCE representing a composite signature
-   Algorithm MUST include the appropriate object identifier as per
-   Section 8.1 in the capabilityID field.
-
-9.  ASN.1 Module
+8.  ASN.1 Module
 
    <CODE STARTS>
 
@@ -2395,19 +2274,19 @@ Deserialization Process:
 
    <CODE ENDS>
 
-10.  IANA Considerations
+9.  IANA Considerations
 
    IANA is requested to allocate a value from the "SMI Security for PKIX
    Module Identifier" registry [RFC7299] for the included ASN.1 module,
    and allocate values from "SMI Security for PKIX Algorithms" to
    identify the fourteen Algorithms defined within.
 
-10.1.  Object Identifier Allocations
+9.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
    module and in Table 2 and Table 3.
 
-10.1.1.  Module Registration - SMI Security for PKIX Module Identifier
+9.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
    *  Decimal: IANA Assigned - *Replace TBDMOD*
 
@@ -2416,8 +2295,8 @@ Deserialization Process:
 
    *  References: This Document
 
-10.1.2.  Object Identifier Registrations - SMI Security for PKIX
-         Algorithms
+9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+        Algorithms
 
    *  id-MLDSA44-RSA2048-PSS
 
@@ -2675,9 +2554,9 @@ Deserialization Process:
 
       -  References: This Document
 
-11.  Security Considerations
+10.  Security Considerations
 
-11.1.  Why Hybrids?
+10.1.  Why Hybrids?
 
    In broad terms, a PQ/T Hybrid can be used either to provide dual-
    algorithm security or to provide migration flexibility.  Let's
@@ -2687,7 +2566,7 @@ Deserialization Process:
    proctected by two algorithms such that an attacker would need to
    break both in order to compromise the data.  As with most of
    cryptography, this property is easy to state in general terms, but
-   becomes more complicated when expressed in formalisms.  Section 11.2
+   becomes more complicated when expressed in formalisms.  Section 10.2
    goes into more detail here.  One common counter-argument against PQ/T
    hybrid signatures is that if an attacker can forge one of the
    component algorithms, then why attack the hybrid-signed message at
@@ -2714,14 +2593,14 @@ Deserialization Process:
    obtaining FIPS certification of a composite algorithm can be found in
    Appendix D.1.
 
-11.2.  Non-separability, EUF-CMA and SUF
+10.2.  Non-separability, EUF-CMA and SUF
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
    M’ will include the composite domain separator as evidence.  The
    prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 11.3 further strengthens the non-
+   contexts discussed in Section 10.3 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
@@ -2781,10 +2660,10 @@ Deserialization Process:
    reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.3 since there cannot exist simultaneously composite and
+   Section 10.3 since there cannot exist simultaneously composite and
    non-composite signers and verifiers for the same keys.
 
-11.3.  Key Reuse
+10.3.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
@@ -2803,7 +2682,7 @@ Deserialization Process:
    deployed RSA key pair and combine it with an ML-DSA key pair to form
    a hybrid key pair for use in a hybrid algorithm.  Within a hybrid
    signature context this leads to a class of attacks referred to as
-   "stripping attacks" discussed in Section 11.2 and may also open up
+   "stripping attacks" discussed in Section 10.2 and may also open up
    risks from further cross-protocol attacks.  Despite the weak non-
    separability property offered by the composite signature combiner,
    key reuse MUST be avoided to prevent the introduction of EUF-CMA
@@ -2822,7 +2701,7 @@ Deserialization Process:
    SHOULD also check both component keys independently to verify that
    the component keys have not been revoked.
 
-11.4.  Policy for Deprecated and Acceptable Algorithms
+10.4.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
@@ -2875,7 +2754,7 @@ Deserialization Process:
    in a way that is tamper-resistant and does not allow the component
    keys to be trusted independently.
 
-11.5.  Use of Prefix to for attack mitigation
+10.5.  Use of Prefix to for attack mitigation
 
    The Prefix value specified in the message format calculated in
    Section 4 can be used by a traditional verifier to detect if the
@@ -2888,9 +2767,9 @@ Deserialization Process:
    traditional verifier can check if the Message starts with this prefix
    and reject the message.
 
-12.  References
+11.  References
 
-12.1.  Normative References
+11.1.  Normative References
 
    [FIPS.186-5]
               National Institute of Standards and Technology (NIST),
@@ -2993,7 +2872,7 @@ Deserialization Process:
               Encoding Rules (CER) and Distinguished Encoding Rules
               (DER)", ISO/IEC 8825-1:2015, November 2015.
 
-12.2.  Informative References
+11.2.  Informative References
 
    [ANSSI2024]
               French Cybersecurity Agency (ANSSI), Federal Office for
