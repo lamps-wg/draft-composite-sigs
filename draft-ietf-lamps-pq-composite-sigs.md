@@ -152,11 +152,25 @@ informative:
       - org: "Federal Office for Information Security (BSI)"
       - org: "Netherlands National Communications Security Agency (NLNCSA)"
       - org: "Swedish National Communications Security Authority, Swedish Armed Forces"
+  CNSA2.0:
+      title: "Commercial National Security Algorithm Suite 2.0"
+      org: National Security Agency
+      target: https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF
+  eIDAS2014:
+    title: "Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC"
+    org: European Parliament and Council
+    target: https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng
+  codesigningbrsv3.8:
+    title: "Baseline Requirements for the Issuance and Management of Publicly‐Trusted Code Signing Certificates Version 3.8.0"
+    org: CA/Browser Forum
+    target: https://cabforum.org/working-groups/code-signing/documents/
+
+
 
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 <!-- End of Abstract -->
 
@@ -1307,76 +1321,6 @@ where:
 <!-- End of Composite Signature Algorithm section -->
 
 
-# Use in CMS
-
-\[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a stand-alone document.\]
-
-Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
-
-All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS {{I-D.ietf-lamps-cms-ml-dsa}}.
-
-## Underlying Components {#cms-underlying-components}
-
-A compliant implementation MUST support SHA-512 [FIPS180] for all composite variants in this document. Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms that produce a hash value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA.
-
-Note: The Hash ML-DSA Composite identifiers are relevant here because this algorithm operation mode is not provided in CMS, which is consistent with [I-D.ietf-lamps-cms-ml-dsa].
-
-## SignedData Conventions
-
-As specified in CMS [RFC5652], the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.
-
-When signed attributes are absent, the composite signature is computed over the content of the signed-data. The "content" of a signed-data is the value of the encapContentInfo eContent OCTET STRING. The tag and length octets are not included.
-When signed attributes are present, a hash is computed over the content using the hash function specified in {{cms-underlying-components}}, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
-
-~~~
-IF (signed attributes are absent)
-   THEN Composite-ML-DSA.Sign(content)
-ELSE message-digest attribute = Hash(content);
-   Composite-ML-DSA.Sign(DER(SignedAttributes))
-~~~
-
-When using Composite Signatures, the fields in the SignerInfo are used as follows:
-
-digestAlgorithm:
-    Per Section 5.3 of [RFC5652], the digestAlgorithm contains the one-way hash function used by the CMS signer.
-    To ensure collision resistance, the identified message digest algorithm SHOULD produce a hash
-    value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA
-    component algorithm of the Composite Signature.
-
-signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{cms-underlying-components}}}
-
-signature:
-    The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.
-
-## Signature generation and verification
-
-Composite signatures have a context string input that can be used to ensure that different signatures are generated for different application contexts.  When using composite signatures for CMS, the context string is the empty string.
-
-## Certificate Conventions
-
-The conventions specified in this section augment RFC 5280 [RFC5280].
-
-The willingness to accept a composite Signature Algorithm MAY be signaled by the use of the SMIMECapabilities Attribute as specified in Section 2.5.2. of [RFC8551] or the SMIMECapabilities certificate extension as specified in [RFC4262].
-
-The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of [RFC5280]. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:
-
-~~~
-digitalSignature
-nonRepudiation
-keyCertSign
-cRLSign
-~~~
-
-The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign' key usages.
-
-
-## SMIMECapabilities Attribute Conventions
-
-Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type [RFC5652], a compliant implementation MAY include the SMIMECapabilities attribute.
-
-The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per {{cms-underlying-components}} in the capabilityID field.
-
 
 # ASN.1 Module {#sec-asn1-module}
 
@@ -1399,7 +1343,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 ###  Module Registration - SMI Security for PKIX Module Identifier
 -  Decimal: IANA Assigned - **Replace TBDMOD**
--  Description: Composite-Signatures-2023 - id-mod-composite-signatures
+-  Description: Composite-Signatures-2025 - id-mod-composite-signatures
 -  References: This Document
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
@@ -1628,6 +1572,85 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 <!-- Start of Appendices -->
 
 --- back
+
+
+# Samples
+
+## Message Format Examples {#appdx-messageFormat-examples}
+
+### Example of MLDSA44-ECDSA-P256 with Context:
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || M
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Message encoded:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:08:08:0D:06:0C:05:10:19:17:00:01:02:03:04:05:06:07:08:09
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: 06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+M: 00:01:02:03:04:05:06:07:08:09
+~~~
+
+### Example of MLDSA44-ECDSA-P256 without a Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || M
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Message Encoded:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:00:00:01:02:03:04:05:06:07:08:09
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:
+len(ctx): 00:
+ctx: empty
+M: 00:01:02:03:04:05:06:07:08:09
+~~~
+
+### Example of HashMLDSA44-ECDSA-P256-SHA256 with Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
+
+### Example of HashMLDSA44-ECDSA-P256-SHA256 without Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
+len(ctx): 00:
+ctx: empty
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
 
 
 # Component Algorithm Reference {#appdx_components}
@@ -1995,7 +2018,7 @@ The authors wish to note that this gives composite algorithms great future utili
 
 The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this document.
 
-If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv2.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
+If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
 ### Hybrid Extensions (Keys and Signatures)
 

@@ -603,49 +603,4 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-HashMLDSA87-RSA4096-PSS-SHA512,
   ... }
 
-
---
--- Expand the S/MIME capabilities set used by CMS [RFC5911]
---
-
--- TODO: this doesn't compile, error:
--- "The referenced object in the 'ValueFromObject' 
--- syntax with the field '&smimeCaps' is invalid or does not exist."
--- We need help from an SMIME expert
-
-SMimeCaps SMIME-CAPS ::= {
-  sa-MLDSA44-RSA2048-PSS.&smimeCaps |
-  sa-MLDSA44-RSA2048-PKCS15.&smimeCaps |
-  sa-MLDSA44-Ed25519.&smimeCaps |
-  sa-MLDSA44-ECDSA-P256.&smimeCaps |
-  sa-MLDSA65-RSA3072-PSS.&smimeCaps |
-  sa-MLDSA65-RSA3072-PKCS15.&smimeCaps |
-  sa-MLDSA65-RSA4096-PSS.&smimeCaps |
-  sa-MLDSA65-RSA4096-PKCS15.&smimeCaps |
-  sa-MLDSA65-ECDSA-P256.&smimeCaps |
-  sa-MLDSA65-ECDSA-P384.&smimeCaps |
-  sa-MLDSA65-ECDSA-brainpoolP256r1.&smimeCaps |
-  sa-MLDSA65-Ed25519.&smimeCaps |
-  sa-MLDSA87-ECDSA-P384.&smimeCaps |
-  sa-MLDSA87-ECDSA-brainpoolP384r1.&smimeCaps |
-  sa-MLDSA87-Ed448.&smimeCaps |
-  sa-MLDSA87-RSA4096-PSS.&smimeCaps |  
-  sa-HashMLDSA44-RSA2048-PSS-SHA256.&smimeCaps |
-  sa-HashMLDSA44-RSA2048-PKCS15-SHA256.&smimeCaps |
-  sa-HashMLDSA44-Ed25519-SHA512.&smimeCaps |
-  sa-HashMLDSA44-ECDSA-P256-SHA256.&smimeCaps |
-  sa-HashMLDSA65-RSA3072-PSS-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA3072-PKCS15-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA4096-PSS-SHA512.&smimeCaps |
-  sa-HashMLDSA65-RSA4096-PKCS15-SHA512.&smimeCaps |
-  sa-HashMLDSA65-ECDSA-P256-SHA512.&smimeCaps |
-  sa-HashMLDSA65-ECDSA-P384-SHA512.&smimeCaps |
-  sa-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512.&smimeCaps |
-  sa-HashMLDSA65-Ed25519-SHA512.&smimeCaps |
-  sa-HashMLDSA87-ECDSA-P384-SHA512.&smimeCaps |
-  sa-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512.&smimeCaps |
-  sa-HashMLDSA87-Ed448-SHA512.&smimeCaps |
-  sa-HashMLDSA87-RSA4096-PSS-SHA512.&smimeCaps,
-  ... }
-
 END
