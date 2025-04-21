@@ -566,7 +566,7 @@ sa-HashMLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
        id-HashMLDSA87-RSA4096-PSS-SHA512,
        pk-HashMLDSA87-RSA4096-PSS-SHA512 }
-	   
+     
 
 SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA44-RSA2048-PSS |
