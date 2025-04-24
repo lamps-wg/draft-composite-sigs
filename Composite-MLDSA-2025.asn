@@ -326,6 +326,25 @@ sa-MLDSA87-RSA4096-PSS SIGNATURE-ALGORITHM ::=
        id-MLDSA87-RSA4096-PSS,
        pk-MLDSA87-RSA4096-PSS }
 
+-- TODO: OID to be replaced by IANA
+id-MLDSA87-ECDSA-P521 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 76 }
+
+pk-MLDSA87-ECDSA-P521 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA87-ECDSA-P521,
+  CompositeMLDSAPublicKey}
+
+sa-MLDSA87-ECDSA-P521 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA87-ECDSA-P521,
+       pk-MLDSA87-ECDSA-P521 }
+
+
+
+
+
+
 -- PreHash Version of the OIDs
 
 -- TODO: OID to be replaced by IANA
@@ -461,8 +480,6 @@ sa-HashMLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
        pk-HashMLDSA65-ECDSA-P256-SHA512 }
 
 
-
-
 -- TODO: OID to be replaced by IANA
 id-HashMLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
@@ -567,6 +584,23 @@ sa-HashMLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
        id-HashMLDSA87-RSA4096-PSS-SHA512,
        pk-HashMLDSA87-RSA4096-PSS-SHA512 }
      
+
+-- TODO: OID to be replaced by IANA
+id-HashMLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 96 }
+
+pk-HashMLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-HashMLDSA87-ECDSA-P521-SHA512,
+  CompositeMLDSAPublicKey}
+
+sa-HashMLDSA87-ECDSA-P521-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-HashMLDSA87-ECDSA-P521-SHA512,
+       pk-HashMLDSA87-ECDSA-P521-SHA512 }
+
+
+
 
 SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA44-RSA2048-PSS |

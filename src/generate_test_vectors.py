@@ -31,6 +31,7 @@ OID_TABLE = {
     # "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
     # "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
     # "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
+    # "ecdsa-with-SHA512": univ.ObjectIdentifier((1,2,840,10045,4,3,4)),
     # "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
     # "id-Ed448": univ.ObjectIdentifier((1,3,101,113)),
     # "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
@@ -52,6 +53,7 @@ OID_TABLE = {
     "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,73)),
     "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,74)),
     "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,75)),
+    "id-MLDSA87-ECDSA-P521": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,76)),
     "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,80)),
     "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,81)),
     "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,82)),
@@ -67,7 +69,8 @@ OID_TABLE = {
     "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,92)),
     "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,93)),
     "id-HashMLDSA87-Ed448-SHAKE256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,94)),
-    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,95))
+    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,95)),
+    "id-HashMLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,96))
 }
 
 DOMAIN_TABLE = {}
@@ -315,6 +318,21 @@ class ECDSABP384(ECDSAP384):
     self.pk = self.sk.public_key()
 
 
+class ECDSAP521(ECDSAP256):
+  id = "ecdsa-with-SHA512"
+
+  def keyGen(self):
+    self.sk = ec.generate_private_key(ec.SECP521R1())
+    self.pk = self.sk.public_key()
+    
+  def sign(self, m):    
+    s = self.sk.sign(m, ec.ECDSA(hashes.SHA512()))
+    return s
+
+  def verify(self, s, m):
+    return self.pk.verify(s, m, ec.ECDSA(hashes.SHA512()))
+
+
 class Ed25519(SIG):
   id = "id-Ed25519"
 
@@ -401,11 +419,11 @@ class CompositeSig(SIG):
   mldsa = None
   tradsig = None
   domain = ""
-  prefix = "436F6D706F73697465416C676F726974686D5369676E61747572657332303235"
+  prefix = bytes.fromhex("436F6D706F73697465416C676F726974686D5369676E61747572657332303235")
 
   def __init__(self):
     super().__init__()
-    domain = DOMAIN_TABLE[self.id]
+    self.domain = DOMAIN_TABLE[self.id]
 
   def keyGen(self):
     self.mldsa.keyGen()
@@ -416,8 +434,8 @@ class CompositeSig(SIG):
 
   def computeMp(self, m, ctx):
     # M' = Prefix || Domain || len(ctx) || ctx || M
-    Mp = bytes.fromhex(self.prefix)  + \
-         bytes.fromhex(self.domain)  + \
+    Mp = self.prefix                 + \
+         self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
          m
@@ -433,7 +451,7 @@ class CompositeSig(SIG):
 
     Mp = self.computeMp(m, ctx)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
+    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
     tradSig = self.tradsig.sign( Mp )
     
     return self.serializeSignatureValue(mldsaSig, tradSig)
@@ -453,7 +471,7 @@ class CompositeSig(SIG):
     Mp = self.computeMp(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaS, Mp, ctx=bytes.fromhex(self.domain))
+    self.mldsa.verify(mldsaS, Mp, ctx=self.domain)
     self.tradsig.verify(tradS, Mp)
 
 
@@ -511,11 +529,7 @@ class CompositeSig(SIG):
 
 
 class HashCompositeSig(CompositeSig):
-  mldsa = None
-  tradsig = None
-  domain = ""
   PH = None
-  prefix = "436F6D706F73697465416C676F726974686D5369676E61747572657332303235"
 
   def computeMp(self, m, ctx):
 
@@ -535,8 +549,8 @@ class HashCompositeSig(CompositeSig):
 
 
     # M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-    Mp = bytes.fromhex(self.prefix)  + \
-         bytes.fromhex(self.domain)  + \
+    Mp = self.prefix                 + \
+         self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
          HashOID                     + \
@@ -554,7 +568,7 @@ class HashCompositeSig(CompositeSig):
 
     Mp = self.computeMp(m, ctx)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
+    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
     tradSig = self.tradsig.sign( Mp )
     
     return self.serializeSignatureValue(mldsaSig, tradSig)
@@ -574,7 +588,7 @@ class HashCompositeSig(CompositeSig):
     Mp = self.computeMp(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaS, Mp, ctx=bytes.fromhex(self.domain))
+    self.mldsa.verify(mldsaS, Mp, ctx=self.domain)
     self.tradsig.verify(tradS, Mp)
 
 
@@ -673,6 +687,12 @@ class MLDSA87_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA87-RSA4096-PSS"
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
+
+
+class MLDSA87_ECDSA_P521(CompositeSig):
+  id = "id-MLDSA87-ECDSA-P521"
+  mldsa = MLDSA87()
+  tradsig = ECDSAP521()
 
 
 class HashMLDSA44_RSA2048_PSS_SHA256(HashCompositeSig):
@@ -786,7 +806,11 @@ class HashMLDSA87_RSA4096_PSS_SHA512(HashCompositeSig):
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
 
-
+class HashMLDSA65_ECDSA_P521_SHA512(HashCompositeSig):
+  id = "id-HashMLDSA87-ECDSA-P521-SHA512"
+  mldsa = MLDSA65()
+  tradsig = ECDSAP521()
+  PH = hashes.SHA512()
 
 
 
@@ -1049,6 +1073,7 @@ def main():
   jsonOutput['tests'].append( doSig(MLDSA87_ECDSA_brainpoolP384r1()) )
   jsonOutput['tests'].append( doSig(MLDSA87_Ed448()) )
   jsonOutput['tests'].append( doSig(MLDSA87_RSA4096_PSS()) )
+  jsonOutput['tests'].append( doSig(MLDSA87_ECDSA_P521()) )
 
   jsonOutput['tests'].append( doSig(HashMLDSA44_RSA2048_PSS_SHA256()) )
   jsonOutput['tests'].append( doSig(HashMLDSA44_RSA2048_PKCS15_SHA256()) )
@@ -1065,6 +1090,8 @@ def main():
   jsonOutput['tests'].append( doSig(HashMLDSA87_ECDSA_brainpoolP384r1_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_Ed448_SHAKE256()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_RSA4096_PSS_SHA512()) )
+  jsonOutput['tests'].append( doSig(HashMLDSA65_ECDSA_P521_SHA512()) )
+  
 
   
 
