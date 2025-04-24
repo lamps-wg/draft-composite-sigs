@@ -1343,52 +1343,52 @@ Deserialization Process:
    |Composite Signature Algorithm    |OID         |First    |Second Algorithm       |Pre-Hash   |
    |                                 |            |Algorithm|                       |           |
    +=================================+============+=========+=======================+===========+
-   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.80|id-ML-   |id-RSASSA-PSS with id- |SHA256     |
+   |id-HashMLDSA44-RSA2048-PSS-SHA256|<CompSig>.80|id-ML-   |id-RSASSA-PSS with id- |id-sha256  |
    |                                 |            |DSA-44   |sha256                 |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-                              |<CompSig>.81|id-ML-   |sha256WithRSAEncryption|SHA256     |
+   |id-                              |<CompSig>.81|id-ML-   |sha256WithRSAEncryption|id-sha256  |
    |HashMLDSA44-RSA2048-PKCS15-SHA256|            |DSA-44   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.82|id-ML-   |id-Ed25519             |SHA512     |
+   |id-HashMLDSA44-Ed25519-SHA512    |<CompSig>.82|id-ML-   |id-Ed25519             |id-sha512  |
    |                                 |            |DSA-44   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.83|id-ML-   |ecdsa-with-SHA256 with |SHA256     |
+   |id-HashMLDSA44-ECDSA-P256-SHA256 |<CompSig>.83|id-ML-   |ecdsa-with-SHA256 with |id-sha256  |
    |                                 |            |DSA-44   |secp256r1              |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.84|id-ML-   |id-RSASSA-PSS with id- |SHA512     |
+   |id-HashMLDSA65-RSA3072-PSS-SHA512|<CompSig>.84|id-ML-   |id-RSASSA-PSS with id- |id-sha512  |
    |                                 |            |DSA-65   |sha256                 |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-                              |<CompSig>.85|id-ML-   |sha256WithRSAEncryption|SHA512     |
+   |id-                              |<CompSig>.85|id-ML-   |sha256WithRSAEncryption|id-sha512  |
    |HashMLDSA65-RSA3072-PKCS15-SHA512|            |DSA-65   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.86|id-ML-   |id-RSASSA-PSS with id- |SHA512     |
+   |id-HashMLDSA65-RSA4096-PSS-SHA512|<CompSig>.86|id-ML-   |id-RSASSA-PSS with id- |id-sha512  |
    |                                 |            |DSA-65   |sha384                 |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-                              |<CompSig>.87|id-ML-   |sha384WithRSAEncryption|SHA512     |
+   |id-                              |<CompSig>.87|id-ML-   |sha384WithRSAEncryption|id-sha512  |
    |HashMLDSA65-RSA4096-PKCS15-SHA512|            |DSA-65   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-ECDSA-P256-SHA512 |<CompSig>.88|id-ML-   |ecdsa-with-SHA256 with |SHA512     |
+   |id-HashMLDSA65-ECDSA-P256-SHA512 |<CompSig>.88|id-ML-   |ecdsa-with-SHA256 with |id-sha512  |
    |                                 |            |DSA-65   |secp256r1              |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.89|id-ML-   |ecdsa-with-SHA384 with |SHA512     |
+   |id-HashMLDSA65-ECDSA-P384-SHA512 |<CompSig>.89|id-ML-   |ecdsa-with-SHA384 with |id-sha512  |
    |                                 |            |DSA-65   |secp384r1              |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-ECDSA-            |<CompSig>.90|id-ML-   |ecdsa-with-SHA256 with |SHA512     |
+   |id-HashMLDSA65-ECDSA-            |<CompSig>.90|id-ML-   |ecdsa-with-SHA256 with |id-sha512  |
    |brainpoolP256r1-SHA512           |            |DSA-65   |brainpoolP256r1        |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.91|id-ML-   |id-Ed25519             |SHA512     |
+   |id-HashMLDSA65-Ed25519-SHA512    |<CompSig>.91|id-ML-   |id-Ed25519             |id-sha512  |
    |                                 |            |DSA-65   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.92|id-ML-   |ecdsa-with-SHA384 with |SHA512     |
+   |id-HashMLDSA87-ECDSA-P384-SHA512 |<CompSig>.92|id-ML-   |ecdsa-with-SHA384 with |id-sha512  |
    |                                 |            |DSA-87   |secp384r1              |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA87-ECDSA-            |<CompSig>.93|id-ML-   |ecdsa-with-SHA384 with |SHA512     |
+   |id-HashMLDSA87-ECDSA-            |<CompSig>.93|id-ML-   |ecdsa-with-SHA384 with |id-sha512  |
    |brainpoolP384r1-SHA512           |            |DSA-87   |brainpoolP384r1        |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
    |id-HashMLDSA87-Ed448-SHAKE256    |<CompSig>.94|id-ML-   |id-Ed448               |SHAKE256/64|
    |                                 |            |DSA-87   |                       |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
-   |id-HashMLDSA87-RSA4096-PSS-SHA512|<CompSig>.95|id-ML-   |id-RSASSA-PSS with id- |SHA512     |
+   |id-HashMLDSA87-RSA4096-PSS-SHA512|<CompSig>.95|id-ML-   |id-RSASSA-PSS with id- |id-sha512  |
    |                                 |            |DSA-87   |sha384                 |           |
    +---------------------------------+------------+---------+-----------------------+-----------+
 
