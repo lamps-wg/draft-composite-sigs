@@ -178,28 +178,15 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 --- middle
 
 
-# Changes in -04
+# Changes in -05
 
 Interop-affecting changes:
 
-* Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private Keys and Composite Signature Value
-* ML-DSA secret keys are now only seeds.
-* Since all ML-DSA keys and signature values are now fixed-length, dropped the length-tagged encoding.
-* Added a prefix into the message format to allow traditional verifiers to detect if a composite signature has been stripped
-* Added a fixed 4-byte length value to identify the length of the first ML-DSA component so keys and signatures can be separated
-* Issued new prototype OIDs for testing purposes since the above changes break backwards compatiblity with version -03
-* Added support for a MLDSA65-ECDSA-P256 combination because P256 is a widely supported EC algorithm
-* Added support for a MLDSA87-RSA4096-PSS combination at the request of Microsoft and because we want a RSA combination complaint with CNSA 2.0
-* When used in CMS, all composite combinations make use of the SHA-512 digest algorithm
-
+* Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 
 Editorial changes:
-* Added normative language to make it clear that key reuse is prohibited
-* Updated the security considerations section
-* Added Message format examples
-* Additional editing changes as needed
-* Cleaned up the presentation of the serialize and deserialize functions.
 
+*
 
 # Introduction {#sec-intro}
 
@@ -1172,24 +1159,25 @@ HashComposite-ML-DSA Signature public key types:
 
 | Composite Signature Algorithm | OID | First Algorithm | Second Algorithm | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-HashMLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.80 | id-ML-DSA-44  | id-RSASSA-PSS with id-sha256 | id-sha256 |
-| id-HashMLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.81 | id-ML-DSA-44  | sha256WithRSAEncryption | id-sha256 |
-| id-HashMLDSA44-Ed25519-SHA512             | &lt;CompSig&gt;.82 | id-ML-DSA-44  | id-Ed25519 | id-sha512 |
-| id-HashMLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.83 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | id-sha256 |
-| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256 | id-sha512 |
-| id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.85  | id-ML-DSA-65 | sha256WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384 | id-sha512 |
-| id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.87  | id-ML-DSA-65 | sha384WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.88  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |
-| id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.89  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 | id-sha512 |
-| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.90  | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha512 |
-| id-HashMLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.91  | id-ML-DSA-65 | id-Ed25519 | id-sha512 |
-| id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 | id-sha512|
-| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
-| id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.94 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
-| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95 | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384 | id-sha512 |
+| id-HashMLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.80   | id-ML-DSA-44 | id-RSASSA-PSS with id-sha256           | SHA256 |
+| id-HashMLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.81   | id-ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
+| id-HashMLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.82   | id-ML-DSA-44 | id-Ed25519                             | SHA512 |
+| id-HashMLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.83   | id-ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
+| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256           | SHA512 |
+| id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.85   | id-ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
+| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384           | SHA512 |
+| id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.87   | id-ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
+| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.88   | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
+| id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.89   | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.90   | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
+| id-HashMLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.91   | id-ML-DSA-65 | id-Ed25519                             | SHA512 |
+| id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
+| id-HashMLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | SHAKE256/64 |
+| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | SHA512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
+Note that pre-hhash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [!RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
@@ -1238,7 +1226,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008015B|
 | id-HashMLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008015C|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008015D|
-| id-HashMLDSA87-Ed448-SHA512 |060B6086480186FA6B5008015E|
+| id-HashMLDSA87-Ed448-SHAKE256 |060B6086480186FA6B5008015E|
 | id-HashMLDSA87-RSA4096-PSS-SHA512 |060B6086480186FA6B5008015F|
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
@@ -1498,9 +1486,9 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512
   - References: This Document
 
-- id-HashMLDSA87-Ed448-SHA512
+- id-HashMLDSA87-Ed448-SHAKE256
   - Decimal: IANA Assigned
-  - Description:  id-HashMLDSA87-Ed448-SHA512
+  - Description:  id-HashMLDSA87-Ed448-SHAKE256
   - References: This Document
 
 - id-HashMLDSA87-RSA4096-PSS-SHA512
