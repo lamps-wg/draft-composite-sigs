@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 26 October 2025</td>
+<td class="center">Expires 27 October 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-24" class="published">24 April 2025</time>
+<time datetime="2025-04-25" class="published">25 April 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-26">26 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-10-27">27 October 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 26 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 27 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2850,8 +2850,8 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008014B</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">TODO</td>
-              <td class="text-left" rowspan="1" colspan="1">TODO</td>
+              <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P521</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008014C</td>
             </tr>
           </tbody>
         </table>
@@ -2934,8 +2934,8 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B5008015F</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">TODO</td>
-              <td class="text-left" rowspan="1" colspan="1">TODO</td>
+              <td class="text-left" rowspan="1" colspan="1">id-HashMLDSA87-ECDSA-P521-SHA512</td>
+              <td class="text-left" rowspan="1" colspan="1">060B6086480186FA6B50080160</td>
             </tr>
           </tbody>
         </table>
@@ -4452,6 +4452,10 @@ END
         <dd>
 <span class="refAuthor">Schaad, J.</span> and <span class="refAuthor">R. Andrews</span>, <span class="refTitle">"IANA Registration for the Cryptographic Algorithm Object Identifier Range"</span>, <span class="seriesInfo">RFC 8411</span>, <span class="seriesInfo">DOI 10.17487/RFC8411</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8411">https://www.rfc-editor.org/info/rfc8411</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="SEC2">[SEC2]</dt>
+        <dd>
+<span class="refAuthor">Certicom Research</span>, <span class="refTitle">"SEC 2: Recommended Elliptic Curve Domain Parameters"</span>, <time datetime="2010-01" class="refDate">January 2010</time>, <span>&lt;<a href="https://www.secg.org/sec2-v2.pdf">https://www.secg.org/sec2-v2.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="X.690">[X.690]</dt>
       <dd>
 <span class="refAuthor">ITU-T</span>, <span class="refTitle">"Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"</span>, <span class="seriesInfo">ISO/IEC 8825-1:2015</span>, <time datetime="2015-11" class="refDate">November 2015</time>. </dd>
@@ -4769,14 +4773,21 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
             <td class="text-left" rowspan="1" colspan="1">secp256r1</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.3.1.7</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>
+              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">secp384r1</td>
             <td class="text-left" rowspan="1" colspan="1">1.3.132.0.34</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>
+              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">secp521r1</td>
+            <td class="text-left" rowspan="1" colspan="1">1.3.132.0.35</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
 </td>
           </tr>
           <tr>
@@ -5062,8 +5073,37 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
 </pre><a href="#appendix-C-32" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-33"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-33" class="pilcrow">¶</a></p>
+<p id="appendix-C-33"><strong>ECDSA NIST-521 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-33" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-C-34">
+<pre>
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
+    parameters ANY ::= {
+      AlgorithmIdentifier ::= {
+        algorithm secp521r1   -- (1.3.132.0.35)
+        }
+      }
+    }
+
+DER:
+  30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
+</pre><a href="#appendix-C-34" class="pilcrow">¶</a>
+</div>
+<p id="appendix-C-35"><strong>ECDSA NIST-521 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-35" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-36">
+<pre>
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA512   -- (1.2.840.10045.4.3.4)
+    }
+
+DER:
+  30 0A 06 08 2A 86 48 CE 3D 04 03 04
+</pre><a href="#appendix-C-36" class="pilcrow">¶</a>
+</div>
+<p id="appendix-C-37"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-37" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-38">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -5077,10 +5117,10 @@ ASN.1:
 
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
-</pre><a href="#appendix-C-34" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-38" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-35"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-35" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-36">
+<p id="appendix-C-39"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-39" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-40">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -5089,10 +5129,10 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
-</pre><a href="#appendix-C-36" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-40" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-37"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-37" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-38">
+<p id="appendix-C-41"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-C-41" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-42">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -5106,10 +5146,10 @@ ASN.1:
 
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
-</pre><a href="#appendix-C-38" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-42" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-39"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-39" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-40">
+<p id="appendix-C-43"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-C-43" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-44">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -5118,10 +5158,10 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
-</pre><a href="#appendix-C-40" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-44" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-41"><strong>Ed25519 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-C-41" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-42">
+<p id="appendix-C-45"><strong>Ed25519 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-C-45" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-46">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -5130,10 +5170,10 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 70
-</pre><a href="#appendix-C-42" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-46" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-43"><strong>Ed448 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-C-43" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-44">
+<p id="appendix-C-47"><strong>Ed448 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-C-47" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-48">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -5142,7 +5182,7 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 71
-</pre><a href="#appendix-C-44" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-48" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
