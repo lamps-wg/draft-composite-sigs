@@ -92,6 +92,12 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  SEC2:
+    title: "SEC 2: Recommended Elliptic Curve Domain Parameters"
+    date: January 27, 2010
+    author:
+      org: "Certicom Research"
+    target: https://www.secg.org/sec2-v2.pdf
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
@@ -1209,7 +1215,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA87-ECDSA-brainpoolP384r1 |060B6086480186FA6B50080149|
 | id-MLDSA87-Ed448 |060B6086480186FA6B5008014A|
 | id-MLDSA87-RSA4096-PSS |060B6086480186FA6B5008014B|
-| TODO | TODO |
+| id-MLDSA87-ECDSA-P521 | 060B6086480186FA6B5008014C |
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
 | Composite Signature Algorithm | Domain Separator (in Hex encoding)|
@@ -1230,7 +1236,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008015D|
 | id-HashMLDSA87-Ed448-SHAKE256 |060B6086480186FA6B5008015E|
 | id-HashMLDSA87-RSA4096-PSS-SHA512 |060B6086480186FA6B5008015F|
-| TODO | TODO |
+| id-HashMLDSA87-ECDSA-P521-SHA512 | 060B6086480186FA6B50080160 |
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
 ## Rationale for choices
@@ -1674,8 +1680,9 @@ This section provides references to the full specification of the algorithms use
 
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090] |
-| secp384r1 | 1.3.132.0.34 | [RFC6090] |
+| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090], [SEC2] |
+| secp384r1 | 1.3.132.0.34 | [RFC6090], [SEC2] |
+| secp521r1 | 1.3.132.0.35 | [RFC6090], [SEC2] |
 | brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
 | brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
@@ -1919,6 +1926,35 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
+~~~
+
+**ECDSA NIST-521 -- AlgorithmIdentifier of Public Key**
+
+~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
+    parameters ANY ::= {
+      AlgorithmIdentifier ::= {
+        algorithm secp521r1   -- (1.3.132.0.35)
+        }
+      }
+    }
+
+DER:
+  30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
+~~~
+
+**ECDSA NIST-521 -- AlgorithmIdentifier of Signature**
+
+~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA512   -- (1.2.840.10045.4.3.4)
+    }
+
+DER:
+  30 0A 06 08 2A 86 48 CE 3D 04 03 04
 ~~~
 
 **ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key**
