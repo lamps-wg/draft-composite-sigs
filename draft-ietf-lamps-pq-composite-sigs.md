@@ -85,13 +85,6 @@ normative:
   RFC8174:
   RFC8410:
   RFC8411:
-  X.690:
-      title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
-      date: November 2015
-      author:
-        org: ITU-T
-      seriesinfo:
-        ISO/IEC: 8825-1:2015
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
@@ -228,17 +221,11 @@ This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt
           definitions of "cryptographic algorithm" and
           "cryptographic scheme" given in {{I-D.ietf-pquip-pqt-hybrid-terminology}}.
 
-**BER**:
-          Basic Encoding Rules (BER) as defined in [X.690].
-
 **CLIENT**:
           Any software that is making use of a cryptographic key.
           This includes a signer, verifier, encrypter, decrypter.
           This is not meant to imply any sort of client-server
           relationship between the communicating parties.
-
-**DER**:
-          Distinguished Encoding Rules as defined in [X.690].
 
 **PKI**:
           Public Key Infrastructure, as defined in [RFC5280].
@@ -1059,17 +1046,6 @@ Some applications may need to reconstruct the `OneAsymmetricKey` objects corresp
 
 Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
-
-## Encoding Rules {#sec-encoding-rules}
-<!-- EDNOTE 7: Examples of how other specifications specify how a data structure is converted to a bit string can be found in RFC 2313, section 10.1.4, 3279 section 2.3.5, and RFC 4055, section 3.2. -->
-
-Many protocol specifications will require that the composite public key and composite private key data structures be represented by an octet string or bit string.
-
-When an octet string is required, the DER encoding of the composite data structure SHALL be used directly.
-
-When a bit string is required, the octets of the DER encoded composite data structure SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
-
-In the interests of simplicity and avoiding compatibility issues, implementations that parse these structures MAY accept both BER and DER.
 
 ## Key Usage Bits
 
