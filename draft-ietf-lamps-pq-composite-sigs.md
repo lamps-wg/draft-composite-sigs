@@ -1582,36 +1582,46 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 # Key and Signature Sizes
 
-+----------------------------------+------+-------+---------+
-|   Algorithm                      | Npk  |  Nsk  | Nsig    |
-+-----------   --------------------+------+-------+---------+
-| ML-DSA44                         | 1312 | 2560  | 2420    |
-| id-MLDSA44-RSA2048-PSS           | 1596 | N.A   | 2690    |
-| id-MLDSA44-RSA2048-PKCS15        | 1596 | N.A   | 2690    |
-| id-MLDSA44-Ed25519               | 1356 | 2602  | 2496    |
-| id-MLDSA44-ECDSA-P256            | 1389 | 2602  | N.A     |
-| ML-DSA65                         | 1952 | 4032  | 3309    |
-| id-MLDSA65-RSA3072-PSS           | 2364 | N.A   | 3707    |
-| id-MLDSA65-RSA3072-PKCS15        | 2364 | N.A   | 3707    |
-| id-MLDSA65-RSA4096-PSS           | 2492 | N.A   | 3835    |
-| id-MLDSA65-RSA4096-PKCS15        | 2492 | N.A   | 3835    |
-| id-MLDSA65-ECDSA-P256            | 2029 | 4074  | TODO    |
-| id-MLDSA65-ECDSA-P384            | 2061 | 4090  | N.A     |
-| id-MLDSA65-ECDSA-brainpoolP256r1 | 2029 | 4074  | N.A     |
-| id-MLDSA65-Ed25519               | 1996 | 4074  | 3385    |
-| ML-DSA87                         | 2592 | 4896  | 4627    |
-| id-MLDSA87-ECDSA-P384            | 2701 | 4954  | N.A     |
-| id-MLDSA87-ECDSA-brainpoolP384r1 | 2701 | 4954  | N.A     |
-| id-MLDSA87-Ed448                 | 2523 | 4963  | 4753    |
-| id-MLDSA87-RSA4096-PSS           | 3004 | TODO  | 5025    |
-+----------------------------------+------+-------+---------+
+| Algorithm                                     |  Public key  |  Private key |  Signature   |
+| --------------------------------------------- | ------------ | ------------ |  ----------- |
+| id-ML-DSA-44                                  |     1312     |      32      |     2420     |
+| id-ML-DSA-65                                  |     1952     |      32      |     3309     |
+| id-ML-DSA-87                                  |     2592     |      32      |     4627     |
+| id-MLDSA44-RSA2048-PSS                        |     1582     |     1249     |     2676     |
+| id-MLDSA44-RSA2048-PKCS15                     |     1582     |     1249     |     2676     |
+| id-MLDSA44-Ed25519                            |     1344     |      64      |     2484     |
+| id-MLDSA44-ECDSA-P256                         |     1377     |     170      |     2492     |
+| id-MLDSA65-RSA3072-PSS                        |     2350     |     1826     |     3693     |
+| id-MLDSA65-RSA3072-PKCS15                     |     2350     |     1824     |     3693     |
+| id-MLDSA65-RSA4096-PSS                        |     2478     |     2408     |     3821     |
+| id-MLDSA65-RSA4096-PKCS15                     |     2478     |     2405     |     3821     |
+| id-MLDSA65-ECDSA-P256                         |     2017     |     170      |     3380     |
+| id-MLDSA65-ECDSA-P384                         |     2049     |     217      |     3412     |
+| id-MLDSA65-ECDSA-brainpoolP256r1              |     2017     |     171      |     3381     |
+| id-MLDSA65-Ed25519                            |     1984     |      64      |     3373     |
+| id-MLDSA87-ECDSA-P384                         |     2689     |     217      |     4730     |
+| id-MLDSA87-ECDSA-brainpoolP384r1              |     2689     |     221      |     4729     |
+| id-MLDSA87-Ed448                              |     2649     |      89      |     4741     |
+| id-MLDSA87-RSA4096-PSS                        |     3118     |     2406     |     5139     |
+| id-HashMLDSA44-RSA2048-PSS-SHA256             |     1582     |     1250     |     2676     |
+| id-HashMLDSA44-RSA2048-PKCS15-SHA256          |     1582     |     1251     |     2676     |
+| id-HashMLDSA44-Ed25519-SHA512                 |     1344     |      64      |     2484     |
+| id-HashMLDSA44-ECDSA-P256-SHA256              |     1377     |     170      |     2491     |
+| id-HashMLDSA65-RSA3072-PSS-SHA512             |     2350     |     1825     |     3693     |
+| id-HashMLDSA65-RSA4096-PSS-SHA512             |     2478     |     2406     |     3821     |
+| id-HashMLDSA65-RSA4096-PKCS15-SHA512          |     2478     |     2406     |     3821     |
+| id-HashMLDSA65-ECDSA-P256-SHA512              |     2017     |     170      |     3379     |
+| id-HashMLDSA65-ECDSA-P384-SHA512              |     2049     |     217      |     3413     |
+| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512   |     2017     |     171      |     3379     |
+| id-HashMLDSA65-Ed25519-SHA512                 |     1984     |      64      |     3373     |
+| id-HashMLDSA87-ECDSA-P384-SHA512              |     2689     |     217      |     4729     |
+| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512   |     2689     |     221      |     4729     |
+| id-HashMLDSA87-RSA4096-PSS-SHA512             |     3118     |     2405     |     5139     |
 
-EDNOTE: why are there N.A's?
-EDNOTE: fill in TODOs and NA's
 
 Non-hybrid ML-DSA is included for reference.
 
-Note that the pre-hash variants are not represented here as they have the same key and signature sizes as the equivalent pure versions.
+Note that since this specification allows for multiple encodings of the traditional component, small variations in size could be encountered. Implementations MUST NOT perform strict length checking based on the values in this table.
 
 # Samples {#appdx-samples}
 
