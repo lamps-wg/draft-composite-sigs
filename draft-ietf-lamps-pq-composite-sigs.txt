@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 23 October 2025                                         M. Pala
+Expires: 29 October 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                           21 April 2025
+                                                           27 April 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 October 2025.
+   This Internet-Draft will expire on 29 October 2025.
 
 Copyright Notice
 
@@ -92,9 +92,9 @@ Table of Contents
        4.3.1.  HashComposite-ML-DSA-Sign signature mode
        4.3.2.  HashComposite-ML-DSA-Verify
      4.4.  Serialization
-     4.5.  SerializePublicKey and DeserializePublicKey
-     4.6.  SerializePrivateKey and DeserializePrivateKey
-     4.7.  SerializeSignatureValue and DeSerializeSignatureValue
+       4.4.1.  SerializePublicKey and DeserializePublicKey
+       4.4.2.  SerializePrivateKey and DeserializePrivateKey
+       4.4.3.  SerializeSignatureValue and DeSerializeSignatureValue
    5.  Composite Key Structures
      5.1.  CompositeMLDSAPublicKey
      5.2.  CompositeMLDSAPrivateKey
@@ -863,97 +863,96 @@ Signature Verification Process:
    When these values are required to be carried in an ASN.1 structure,
    they are wrapped as described in Section 5 and Section 6.
 
-4.5.  SerializePublicKey and DeserializePublicKey
+4.4.1.  SerializePublicKey and DeserializePublicKey
 
    The serialization routine for keys simply concatenates the fixed-
    length public keys of the component signature algorithms, as defined
    below:
 
-   Composite-ML-DSA.SerializePublicKey(mldsaKey, tradKey) -> bytes
+  Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
-   Explicit Input:
+  Explicit Input:
 
-     mldsaKey  The ML-DSA public key, which is bytes.
+    mldsaPK  The ML-DSA public key, which is bytes.
 
-     tradKey   The traditional public key in the appropriate
-               encoding for the underlying component algorithm.
+    tradPK   The traditional public key in the appropriate
+             bytes-like encoding for the underlying component algorithm.
 
-   Output:
+  Output:
 
-     bytes   The encoded composite public key
+    bytes   The encoded composite public key
 
-   Serialization Process:
+  Serialization Process:
 
-     1. Combine and output the encoded public key
+    1. Combine and output the encoded public key
 
-        output mldsaPK || tradPK
+       output mldsaPK || tradPK
 
-          Figure 6: SerializePublicKey(mldsaKey, tradKey) -> bytes
+          Figure 6: SerializePublicKey(mldsaPK, tradPK) -> bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.  Each component key is deserialized
    according to their respective standard as shown in Appendix B.
 
-   Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
+  Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
 
-   Explicit Input:
+  Explicit Input:
 
-     bytes   An encoded composite public key
+    bytes   An encoded composite public key
 
-   Implicit inputs:
+  Implicit inputs:
 
-     ML-DSA   A placeholder for the specific ML-DSA algorithm and
-              parameter set to use, for example, could be "ML-DSA-65".
+    ML-DSA   A placeholder for the specific ML-DSA algorithm and
+             parameter set to use, for example, could be "ML-DSA-65".
 
-   Output:
+  Output:
 
-     mldsaKey  The ML-DSA public key, which is bytes.
+    mldsaPK  The ML-DSA public key, which is bytes.
 
-     tradKey   The traditional public key in the appropriate
-               encoding for the underlying component algorithm.
+    tradPK   The traditional public key in the appropriate
+             bytes-like encoding for the underlying component algorithm.
 
-   Deserialization Process:
+  Deserialization Process:
 
+    1. Parse each constituent encoded public key.
+         The length of the mldsaKey is known based on the size of
+         the ML-DSA component key length specified by the Object ID
 
-     1. Parse each constituent encoded public key.
-          The length of the mldsaKey is known based on the size of
-          the ML-DSA component key length specified by the Object ID
+       switch ML-DSA do
+          case ML-DSA-44:
+            mldsaPK = bytes[:1312]
+            tradPK  = bytes[1312:]
+          case ML-DSA-65:
+            mldsaPK = bytes[:1952]
+            tradPK  = bytes[1952:]
+          case ML-DSA-87:
+            mldsaPK = bytes[:2592]
+            tradPK  = bytes[2592:]
 
-        switch ML-DSA do
-           case ML-DSA-44:
-             mldsaKey = bytes[:1312]
-             tradKey  = bytes[1312:]
-           case MLDSA65:
-             mldsaKey = bytes[:1952]
-             tradKey  = bytes[1952:]
-           case MLDSA87:
-             mldsaKey = bytes[:2592]
-             tradKey  = bytes[2592:]
+       Note that while ML-DSA has fixed-length keys, RSA and ECDH
+       may not, depending on encoding, so rigorous length-checking
+       of the overall composite key is not always possible.
 
-        Note that while ML-DSA has fixed-length keys, RSA and ECDSA
-        may not, depending on encoding, so rigorous length-checking is
-        not always possible here.
+    2. Output the component public keys
 
-     2. Output the component public keys
+       output (mldsaPK, tradPK)
 
-        output (mldsaKey, tradKey)
+        Figure 7: DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
-        Figure 7: DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
-
-4.6.  SerializePrivateKey and DeserializePrivateKey
+4.4.2.  SerializePrivateKey and DeserializePrivateKey
 
    The serialization routine for keys simply concatenates the fixed-
    length private keys of the component signature algorithms, as defined
    below:
 
-   Composite-ML-DSA.SerializePrivateKey(mldsaKey, tradKey) -> bytes
+   Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes
 
    Explicit Input:
 
      mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
-     tradKey   The traditional private key in the appropriate
-               encoding for the underlying component algorithm.
+     tradSK     The traditional private key in the appropriate
+                encoding for the underlying component algorithm.
 
    Output:
 
@@ -963,50 +962,46 @@ Signature Verification Process:
 
      1. Combine and output the encoded private key
 
-        output mldsaSeed || tradKey
+        output mldsaSeed || tradSK
 
-         Figure 8: SerializePrivateKey(mldsaSeed, tradKey) -> bytes
+         Figure 8: SerializePrivateKey(mldsaSeed, tradSK) -> bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.
 
-Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradKey)
+ Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 
-Explicit Input:
+ Explicit Input:
 
-  bytes   An encoded composite private key
+   bytes   An encoded composite private key
 
-  IntegerToBytes  A function that takes an Integer and converts it to
-           a byte representation of size byteLength.  See definition in
-           [FIPS.204]
+ Output:
 
-Output:
+   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
-  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+   tradSK     The traditional private key in the appropriate
+              encoding for the underlying component algorithm.
 
-  tradKey   The traditional private key in the appropriate
-            encoding for the underlying component algorithm.
+ Deserialization Process:
 
-Deserialization Process:
+   1. Parse each constituent encoded key.
+        The length of an ML-DSA private key is always a 32 byte seed
+        for all parameter sets.
 
-  1. Parse each constituent encoded key.
-       The length of an ML-DSA private key is always a 32 byte seed
-       for all parameter sets.
+       mldsaSeed = bytes[:32]
+       tradSK  = bytes[32:]
 
-      mldsaSeed = bytes[:32]
-      tradKey  = bytes[32:]
+      Note that while ML-KEM has fixed-length keys (seeds), RSA and ECDH
+      may not, depending on encoding, so rigorous length-checking
+      of the overall composite key is not always possible.
 
-     Note that while ML-DSA has fixed-length keys (seeds), RSA and ECDSA
-     may not, depending on encoding, so rigorous length-checking is
-     not always possible here.
+   2. Output the component private keys
 
-  2. Output the component private keys
+      output (mldsaSeed, tradSK)
 
-     output (mldsaSeed, tradKey)
+         Figure 9: DeserializeKey(bytes) -> (mldsaSeed, tradSK)
 
-       Figure 9: DeserializeKey(bytes) -> (mldsaSeed, tradKey)
-
-4.7.  SerializeSignatureValue and DeSerializeSignatureValue
+4.4.3.  SerializeSignatureValue and DeSerializeSignatureValue
 
    The serialization routine for the CompositeSignatureValue simply
    concatenates the fixed-length ML-DSA signature value with the
