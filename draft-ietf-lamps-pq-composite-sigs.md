@@ -739,6 +739,8 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
 
+While ML-DSA has a single fixed-size representation for each of public key, private key, and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed. Since a design goal of this specification is to treat the traditional component as a pre-existing black box, no requirements are imposed on a composite implementation as to what encodings should be accepted for the traditional component.
+For this reason, the size of the traditional component is left unspecified and all serialization and deserialization routines are specified in terms of the fixed size of the ML-DSA component and assumes that "the rest" is the traditional component.
 
 ### SerializePublicKey and DeserializePublicKey
 
