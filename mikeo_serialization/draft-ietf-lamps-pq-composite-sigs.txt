@@ -122,6 +122,7 @@ Table of Contents
    10. Security Considerations
      10.1.  Why Hybrids?
      10.2.  Non-separability, EUF-CMA and SUF
+       10.2.1.  Implications of mupliple encodings
      10.3.  Key Reuse
      10.4.  Policy for Deprecated and Acceptable Algorithms
      10.5.  Use of Prefix to for attack mitigation
@@ -874,7 +875,8 @@ Signature Verification Process:
    reason, the size of the traditional component is left unspecified and
    all serialization and deserialization routines are specified in terms
    of the fixed size of the ML-DSA component and assumes that "the rest"
-   is the traditional component.
+   is the traditional component.  See Section 10.2.1 for discussion of
+   security implications.
 
 4.4.1.  SerializePublicKey and DeserializePublicKey
 
@@ -2658,6 +2660,23 @@ Deserialization Process:
    strictly follow the prohibition on key reuse presented in
    Section 10.3 since there cannot exist simultaneously composite and
    non-composite signers and verifiers for the same keys.
+
+10.2.1.  Implications of mupliple encodings
+
+   As noted in Section 4.4, this specification leaves open the choice of
+   encoding of the traditional component.  As such it is possible for
+   the same composite public key to carry multiple valid representations
+   (mldsaPK, tradPK1) and (mldsaPK, tradPK2) where tradPK1 and tradPK2
+   are alternate encodings of the same key, for example compressed vs
+   uncompressed EC points.  In theory alternate encodings of the
+   traditional signature value are also possible, although the authors
+   are not aware of any.
+
+   In theory this introduces complications for EUF-CMA and SUF-CMA
+   security proofs.  Implementors who are concerned with this SHOULD
+   choose implementations of the traditional component that only accept
+   a single encoding, and reject composites which contain any other
+   encodings.  This is permitted by this specification.
 
 10.3.  Key Reuse
 
