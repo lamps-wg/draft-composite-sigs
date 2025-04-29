@@ -725,7 +725,7 @@ Note that there are two different context strings `ctx` here: the first is the a
 
 
 
-## Serialization
+## Serialization {#sec-serialization}
 
 This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
@@ -740,7 +740,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
 
 While ML-DSA has a single fixed-size representation for each of public key, private key, and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed. Since a design goal of this specification is to treat the traditional component as a pre-existing black box, no requirements are imposed on a composite implementation as to what encodings should be accepted for the traditional component.
-For this reason, the size of the traditional component is left unspecified and all serialization and deserialization routines are specified in terms of the fixed size of the ML-DSA component and assumes that "the rest" is the traditional component.
+For this reason, the size of the traditional component is left unspecified and all serialization and deserialization routines are specified in terms of the fixed size of the ML-DSA component and assumes that "the rest" is the traditional component. See {{sec-cons-multiple-encodings}} for discussion of security implications.
 
 ### SerializePublicKey and DeserializePublicKey
 
@@ -1531,6 +1531,12 @@ CompositeML-DSA only achieves SUF security if both components are SUF secure, wh
 In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite oracle for signing and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
 
 In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction added to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
+
+### Implications of mupliple encodings {#sec-cons-multiple-encodings}
+
+As noted in {{sec-serialization}}, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations `(mldsaPK, tradPK1)` and `(mldsaPK, tradPK2)` where `tradPK1` and `tradPK2` are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.
+
+In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding, and reject composites which contain any other encodings. This is permitted by this specification.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
