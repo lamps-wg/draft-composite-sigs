@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from cryptography.hazmat.primitives import hashes, hmac
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, ec, ed25519, ed448, padding
 import secrets
 from dilithium_py.ml_dsa import ML_DSA_44, ML_DSA_65, ML_DSA_87
@@ -31,43 +31,56 @@ OID_TABLE = {
     # "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
     # "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
     # "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
+    # "ecdsa-with-SHA512": univ.ObjectIdentifier((1,2,840,10045,4,3,4)),
     # "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
     # "id-Ed448": univ.ObjectIdentifier((1,3,101,113)),
-    "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
-    "id-ML-DSA-65": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18)),
-    "id-ML-DSA-87": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19)),
-    "id-MLDSA44-RSA2048-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,60)),
-    "id-MLDSA44-RSA2048-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,61)),
-    "id-MLDSA44-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,62)),
-    "id-MLDSA44-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,63)),
-    "id-MLDSA65-RSA3072-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,64)),
-    "id-MLDSA65-RSA3072-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,65)),
-    "id-MLDSA65-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,66)),
-    "id-MLDSA65-RSA4096-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,67)),
-    "id-MLDSA65-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,68)),
-    "id-MLDSA65-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,69)),
-    "id-MLDSA65-ECDSA-brainpoolP256r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,70)),
-    "id-MLDSA65-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,71)),
-    "id-MLDSA87-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,72)),
-    "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,73)),
-    "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,74)),
-    "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,75)),
-    "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,80)),
-    "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,81)),
-    "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,82)),
-    "id-HashMLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,83)),
-    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,84)),
-    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,85)),
-    "id-HashMLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,86)),
-    "id-HashMLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,87)),
-    "id-HashMLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,88)),
-    "id-HashMLDSA65-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,89)),
-    "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,90)),
-    "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,91)),
-    "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,92)),
-    "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,93)),
-    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95))
+    # "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
+    # "id-ML-DSA-65": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18)),
+    # "id-ML-DSA-87": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19)),
+    "id-MLDSA44-RSA2048-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,60)),
+    "id-MLDSA44-RSA2048-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,61)),
+    "id-MLDSA44-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,62)),
+    "id-MLDSA44-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,63)),
+    "id-MLDSA65-RSA3072-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,64)),
+    "id-MLDSA65-RSA3072-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,65)),
+    "id-MLDSA65-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,66)),
+    "id-MLDSA65-RSA4096-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,67)),
+    "id-MLDSA65-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,68)),
+    "id-MLDSA65-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,69)),
+    "id-MLDSA65-ECDSA-brainpoolP256r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,70)),
+    "id-MLDSA65-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,71)),
+    "id-MLDSA87-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,72)),
+    "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,73)),
+    "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,74)),
+    "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,75)),
+    "id-MLDSA87-ECDSA-P521": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,76)),
+    "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,80)),
+    "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,81)),
+    "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,82)),
+    "id-HashMLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,83)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,84)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,85)),
+    "id-HashMLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,86)),
+    "id-HashMLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,87)),
+    "id-HashMLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,88)),
+    "id-HashMLDSA65-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,89)),
+    "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,90)),
+    "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,91)),
+    "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,92)),
+    "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,93)),
+    "id-HashMLDSA87-Ed448-SHAKE256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,94)),
+    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,95)),
+    "id-HashMLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,96))
 }
+
+DOMAIN_TABLE = {}
+
+def genDomainTable():
+  for alg in OID_TABLE:
+    domain = base64.b16encode(encode(OID_TABLE[alg]))
+    DOMAIN_TABLE[alg] = domain
+
+genDomainTable()
 
 class SIG:
   pk = None
@@ -305,6 +318,21 @@ class ECDSABP384(ECDSAP384):
     self.pk = self.sk.public_key()
 
 
+class ECDSAP521(ECDSAP256):
+  id = "ecdsa-with-SHA512"
+
+  def keyGen(self):
+    self.sk = ec.generate_private_key(ec.SECP521R1())
+    self.pk = self.sk.public_key()
+    
+  def sign(self, m):    
+    s = self.sk.sign(m, ec.ECDSA(hashes.SHA512()))
+    return s
+
+  def verify(self, s, m):
+    return self.pk.verify(s, m, ec.ECDSA(hashes.SHA512()))
+
+
 class Ed25519(SIG):
   id = "id-Ed25519"
 
@@ -391,20 +419,23 @@ class CompositeSig(SIG):
   mldsa = None
   tradsig = None
   domain = ""
-  prefix = "436F6D706F73697465416C676F726974686D5369676E61747572657332303235"
+  prefix = bytes.fromhex("436F6D706F73697465416C676F726974686D5369676E61747572657332303235")
+
+  def __init__(self):
+    super().__init__()
+    self.domain = DOMAIN_TABLE[self.id]
 
   def keyGen(self):
     self.mldsa.keyGen()
     self.tradsig.keyGen()
 
     self.pk = self.public_key_bytes()
-    self.sk = self.public_key_bytes()  
 
 
   def computeMp(self, m, ctx):
     # M' = Prefix || Domain || len(ctx) || ctx || M
-    Mp = bytes.fromhex(self.prefix)  + \
-         bytes.fromhex(self.domain)  + \
+    Mp = self.prefix                 + \
+         self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
          m
@@ -414,16 +445,13 @@ class CompositeSig(SIG):
   def sign(self, m, ctx=b''):
     """
     returns (s)
-    """
-    if self.sk == None:
-      raise Exception("Cannot Sign for a SIG with no SK.")
-    
+    """    
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
     Mp = self.computeMp(m, ctx)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
+    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
     tradSig = self.tradsig.sign( Mp )
     
     return self.serializeSignatureValue(mldsaSig, tradSig)
@@ -443,7 +471,7 @@ class CompositeSig(SIG):
     Mp = self.computeMp(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaS, Mp, ctx=bytes.fromhex(self.domain))
+    self.mldsa.verify(mldsaS, Mp, ctx=self.domain)
     self.tradsig.verify(tradS, Mp)
 
 
@@ -480,27 +508,6 @@ class CompositeSig(SIG):
     return mldsaSK + tradSK
   
 
-  # def compositeEncode(self, v1, v2):
-  #   """
-  #   (v1, v2) -> v
-  #   """
-  #   assert isinstance(v1, bytes)
-  #   assert isinstance(v2, bytes)
-  #   return len(v1).to_bytes(4, 'big') + v1 + v2
-  
-
-  # def compositeDecode(self, v):
-  #   """
-  #   v -> (v1, v2)
-  #   """
-  #   assert isinstance(v, bytes)
-  #   # first 4 bytes is the length tag of ct1
-  #   v1_len = int.from_bytes(v[0:4], 'big')
-  #   v1 = v[4:4+v1_len]
-  #   v2 = v[4+v1_len:]
-  #   return (v1, v2)
-  
-
   def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
@@ -522,32 +529,28 @@ class CompositeSig(SIG):
 
 
 class HashCompositeSig(CompositeSig):
-  mldsa = None
-  tradsig = None
-  domain = ""
   PH = None
-  prefix = "436F6D706F73697465416C676F726974686D5369676E61747572657332303235"
 
   def computeMp(self, m, ctx):
 
     if (self.PH.name == hashes.SHA256.name):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01'
-      h = hashes.Hash(hashes.SHA256())
     elif (self.PH.name == hashes.SHA512.name):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x03'
-      h = hashes.Hash(hashes.SHA512())
     elif (self.PH.name == hashes.SHAKE128.name):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0b'
-      h = hashes.Hash(hashes.SHAKE128(256))
+    elif (self.PH.name == hashes.SHAKE256.name):
+      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0c'
     # elif ...
 
+    h = hashes.Hash(self.PH)
     h.update(m)
     ph_m = h.finalize()
 
 
     # M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-    Mp = bytes.fromhex(self.prefix)  + \
-         bytes.fromhex(self.domain)  + \
+    Mp = self.prefix                 + \
+         self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
          HashOID                     + \
@@ -559,16 +562,13 @@ class HashCompositeSig(CompositeSig):
   def sign(self, m, ctx=b'', PH=hashes.SHA256()):
     """
     returns (s)
-    """
-    if self.sk == None:
-      raise Exception("Cannot Sign for a SIG with no SK.")
-    
+    """    
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
     Mp = self.computeMp(m, ctx)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=bytes.fromhex(self.domain) )
+    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
     tradSig = self.tradsig.sign( Mp )
     
     return self.serializeSignatureValue(mldsaSig, tradSig)
@@ -588,7 +588,7 @@ class HashCompositeSig(CompositeSig):
     Mp = self.computeMp(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaS, Mp, ctx=bytes.fromhex(self.domain))
+    self.mldsa.verify(mldsaS, Mp, ctx=self.domain)
     self.tradsig.verify(tradS, Mp)
 
 
@@ -597,112 +597,102 @@ class MLDSA44_RSA2048_PSS(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS"
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
-  domain = "060B6086480186FA6B5008013C"
 
 
 class MLDSA44_RSA2048_PKCS15(CompositeSig):
   id = "id-MLDSA44-RSA2048-PKCS15"
   mldsa = MLDSA44()
   tradsig = RSA2048PKCS15()
-  domain = "060B6086480186FA6B5008013D"
 
 
 class MLDSA44_Ed25519(CompositeSig):
   id = "id-MLDSA44-Ed25519"
   mldsa = MLDSA44()
   tradsig = Ed25519()
-  domain = "060B6086480186FA6B5008013E"
 
 
 class MLDSA44_ECDSA_P256(CompositeSig):
   id = "id-MLDSA44-ECDSA-P256"
   mldsa = MLDSA44()
   tradsig = ECDSAP256()
-  domain = "060B6086480186FA6B5008013F"
 
 
 class MLDSA65_RSA3072_PSS(CompositeSig):
   id = "id-MLDSA65-RSA3072-PSS"
   mldsa = MLDSA65()
   tradsig = RSA3072PSS()
-  domain = "060B6086480186FA6B50080140"
 
 
 class MLDSA65_RSA3072_PKCS15(CompositeSig):
   id = "id-MLDSA65-RSA3072-PKCS15"
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
-  domain = "060B6086480186FA6B50080141"
 
 
 class MLDSA65_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA65-RSA4096-PSS"
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
-  domain = "060B6086480186FA6B50080142"
 
 
 class MLDSA65_RSA4096_PKCS15(CompositeSig):
   id = "id-MLDSA65-RSA4096-PKCS15"
   mldsa = MLDSA65()
   tradsig = RSA4096PKCS15()
-  domain = "060B6086480186FA6B50080143"
 
 
 class MLDSA65_ECDSA_P256(CompositeSig):
   id = "id-MLDSA65-ECDSA-P256"
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
-  domain = "060B6086480186FA6B50080144"
 
 
 class MLDSA65_ECDSA_P384(CompositeSig):
   id = "id-MLDSA65-ECDSA-P384"
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
-  domain = "060B6086480186FA6B50080145"
 
 
 class MLDSA65_ECDSA_brainpoolP256r1(CompositeSig):
   id = "id-MLDSA65-ECDSA-brainpoolP256r1"
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
-  domain = "060B6086480186FA6B50080146"
 
 
 class MLDSA65_Ed25519(CompositeSig):
   id = "id-MLDSA65-Ed25519"
   mldsa = MLDSA65()
   tradsig = Ed25519()
-  domain = "060B6086480186FA6B50080147"
 
 
 class MLDSA87_ECDSA_P384(CompositeSig):
   id = "id-MLDSA87-ECDSA-P384"
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
-  domain = "060B6086480186FA6B50080148"
 
 
 class MLDSA87_ECDSA_brainpoolP384r1(CompositeSig):
   id = "id-MLDSA87-ECDSA-brainpoolP384r1"
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
-  domain = "060B6086480186FA6B50080149"
 
 
 class MLDSA87_Ed448(CompositeSig):
   id = "id-MLDSA87-Ed448"
   mldsa = MLDSA87()
   tradsig = Ed448()
-  domain = "060B6086480186FA6B5008014A"
 
 
 class MLDSA87_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA87-RSA4096-PSS"
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
-  domain = "060B6086480186FA6B5008014B"
+
+
+class MLDSA87_ECDSA_P521(CompositeSig):
+  id = "id-MLDSA87-ECDSA-P521"
+  mldsa = MLDSA87()
+  tradsig = ECDSAP521()
 
 
 class HashMLDSA44_RSA2048_PSS_SHA256(HashCompositeSig):
@@ -710,7 +700,6 @@ class HashMLDSA44_RSA2048_PSS_SHA256(HashCompositeSig):
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
   PH = hashes.SHA256()
-  domain = "060B6086480186FA6B50080150"
 
 
 class HashMLDSA44_RSA2048_PKCS15_SHA256(HashCompositeSig):
@@ -718,7 +707,6 @@ class HashMLDSA44_RSA2048_PKCS15_SHA256(HashCompositeSig):
   mldsa = MLDSA44()
   tradsig = RSA2048PKCS15()
   PH = hashes.SHA256()
-  domain = "060B6086480186FA6B50080151"
 
 
 class HashMLDSA44_Ed25519_SHA512(HashCompositeSig):
@@ -726,7 +714,6 @@ class HashMLDSA44_Ed25519_SHA512(HashCompositeSig):
   mldsa = MLDSA44()
   tradsig = Ed25519()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080152"
 
 
 class HashMLDSA44_ECDSA_P256_SHA256(HashCompositeSig):
@@ -734,7 +721,6 @@ class HashMLDSA44_ECDSA_P256_SHA256(HashCompositeSig):
   mldsa = MLDSA44()
   tradsig = ECDSAP256()
   PH = hashes.SHA256()
-  domain = "060B6086480186FA6B50080153"
 
 
 class HashMLDSA65_RSA3072_PSS_SHA512(HashCompositeSig):
@@ -742,7 +728,6 @@ class HashMLDSA65_RSA3072_PSS_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA3072PSS()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080154"
 
 
 class HashMLDSA65_RSA3072_PKCS15_SHA512(HashCompositeSig):
@@ -750,7 +735,6 @@ class HashMLDSA65_RSA3072_PKCS15_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080155"
 
 
 class HashMLDSA65_RSA4096_PSS_SHA512(HashCompositeSig):
@@ -758,7 +742,6 @@ class HashMLDSA65_RSA4096_PSS_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080156"
 
 
 class HashMLDSA65_RSA4096_PKCS15_SHA512(HashCompositeSig):
@@ -766,7 +749,6 @@ class HashMLDSA65_RSA4096_PKCS15_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080157"
 
 
 class HashMLDSA65_ECDSA_P256_SHA512(HashCompositeSig):
@@ -774,7 +756,6 @@ class HashMLDSA65_ECDSA_P256_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080158"
 
 
 class HashMLDSA65_ECDSA_P384_SHA512(HashCompositeSig):
@@ -782,7 +763,6 @@ class HashMLDSA65_ECDSA_P384_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B50080159"
 
 
 class HashMLDSA65_ECDSA_brainpoolP256r1_SHA512(HashCompositeSig):
@@ -790,7 +770,6 @@ class HashMLDSA65_ECDSA_brainpoolP256r1_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015A"
 
 
 class HashMLDSA65_Ed25519_SHA512(HashCompositeSig):
@@ -798,7 +777,6 @@ class HashMLDSA65_Ed25519_SHA512(HashCompositeSig):
   mldsa = MLDSA65()
   tradsig = Ed25519()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015B"
 
 
 class HashMLDSA87_ECDSA_P384_SHA512(HashCompositeSig):
@@ -806,7 +784,6 @@ class HashMLDSA87_ECDSA_P384_SHA512(HashCompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015C"
 
 
 class HashMLDSA87_ECDSA_brainpoolP384r1_SHA512(HashCompositeSig):
@@ -814,15 +791,13 @@ class HashMLDSA87_ECDSA_brainpoolP384r1_SHA512(HashCompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015D"
 
 
-class HashMLDSA87_Ed448_SHA512(HashCompositeSig):
-  id = "id-HashMLDSA87-Ed448-SHA512"
+class HashMLDSA87_Ed448_SHAKE256(HashCompositeSig):
+  id = "id-HashMLDSA87-Ed448-SHAKE256"
   mldsa = MLDSA87()
   tradsig = Ed448()
-  PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015E"
+  PH = hashes.SHAKE256(64)
 
 
 class HashMLDSA87_RSA4096_PSS_SHA512(HashCompositeSig):
@@ -830,14 +805,17 @@ class HashMLDSA87_RSA4096_PSS_SHA512(HashCompositeSig):
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
-  domain = "060B6086480186FA6B5008015F"
+
+class HashMLDSA65_ECDSA_P521_SHA512(HashCompositeSig):
+  id = "id-HashMLDSA87-ECDSA-P521-SHA512"
+  mldsa = MLDSA65()
+  tradsig = ECDSAP521()
+  PH = hashes.SHA512()
 
 
 
 
-
-
-### Generate CA Cert and KEM Cert ###
+### Generate CA Cert and EE Cert ###
 
 caName = x509.Name(
     [
@@ -991,6 +969,8 @@ def formatResults(sig, s ):
 
   return jsonTest
 
+
+
 def output_artifacts_certs_r5(jsonTestVectors):
 
   artifacts_zip = ZipFile('artifacts_certs_r5.zip', mode='w')
@@ -1026,6 +1006,18 @@ def writeDumpasn1Cfg():
       f.write("\n")
 
 
+def writeDomainTable():
+  """
+  Writes the table of domain separators to go into the draft.
+  """
+
+  with open('domSepTable.md', 'w') as f:
+    f.write('| Composite Signature Algorithm | Domain Separator (in Hex encoding)|\n')
+
+    for alg in DOMAIN_TABLE:
+      f.write('| ' + alg + " | " + str(DOMAIN_TABLE[alg].decode('ascii')) + " |\n")
+
+
 _m = b'The quick brown fox jumps over the lazy dog.'
 
 def doSig(sig, PH=None):
@@ -1058,9 +1050,9 @@ def main():
   # jsonOutput['tests'].append( doSig(ECDSABP384()) )
   # jsonOutput['tests'].append( doSig(Ed25519()) )
   # jsonOutput['tests'].append( doSig(Ed448()) )
-  jsonOutput['tests'].append( doSig(MLDSA44()) )
-  jsonOutput['tests'].append( doSig(MLDSA65()) )
-  jsonOutput['tests'].append( doSig(MLDSA87()) )
+  # jsonOutput['tests'].append( doSig(MLDSA44()) )
+  # jsonOutput['tests'].append( doSig(MLDSA65()) )
+  # jsonOutput['tests'].append( doSig(MLDSA87()) )
   
   
 
@@ -1081,6 +1073,7 @@ def main():
   jsonOutput['tests'].append( doSig(MLDSA87_ECDSA_brainpoolP384r1()) )
   jsonOutput['tests'].append( doSig(MLDSA87_Ed448()) )
   jsonOutput['tests'].append( doSig(MLDSA87_RSA4096_PSS()) )
+  jsonOutput['tests'].append( doSig(MLDSA87_ECDSA_P521()) )
 
   jsonOutput['tests'].append( doSig(HashMLDSA44_RSA2048_PSS_SHA256()) )
   jsonOutput['tests'].append( doSig(HashMLDSA44_RSA2048_PKCS15_SHA256()) )
@@ -1095,7 +1088,10 @@ def main():
   jsonOutput['tests'].append( doSig(HashMLDSA65_Ed25519_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_ECDSA_P384_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_ECDSA_brainpoolP384r1_SHA512()) )
+  jsonOutput['tests'].append( doSig(HashMLDSA87_Ed448_SHAKE256()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_RSA4096_PSS_SHA512()) )
+  jsonOutput['tests'].append( doSig(HashMLDSA65_ECDSA_P521_SHA512()) )
+  
 
   
 
@@ -1110,6 +1106,8 @@ def main():
                                   drop_whitespace=False)))
 
   writeDumpasn1Cfg()
+  writeDomainTable()
 
 
-main()
+if __name__ == "__main__":
+  main()
