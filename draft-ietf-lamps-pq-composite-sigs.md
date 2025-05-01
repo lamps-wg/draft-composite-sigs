@@ -1580,7 +1580,20 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 --- back
 
-# Key and Signature Sizes
+# Approximate Key and Signature Sizes
+
+Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:
+
+* Compressed vs uncompressed EC point.
+* The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017].
+* [RFC8017] allows for RSA private keys to be represented as either `(n, d)` or as Chinese Remainder Theorem as a quintuple `(p, q, dP, dQ, qInv)` and a (possibly empty) sequence of triplets `(r_i, d_i, t_i)`.
+* When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
+
+Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component.
+
+Implementations MUST NOT perform strict length checking based on the values in this table.
+
+Non-hybrid ML-DSA is included for reference.
 
 | Algorithm                                     |  Public key  |  Private key |  Signature   |
 | --------------------------------------------- | ------------ | ------------ |  ----------- |
@@ -1617,11 +1630,9 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 | id-HashMLDSA87-ECDSA-P384-SHA512              |     2689     |     217      |     4729     |
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512   |     2689     |     221      |     4729     |
 | id-HashMLDSA87-RSA4096-PSS-SHA512             |     3118     |     2405     |     5139     |
+{: #tab-size-values title="Approximate size values of composite ML-DSA"}
 
 
-Non-hybrid ML-DSA is included for reference.
-
-Note that since this specification allows for multiple encodings of the traditional component, small variations in size could be encountered. Implementations MUST NOT perform strict length checking based on the values in this table.
 
 # Samples {#appdx-samples}
 
