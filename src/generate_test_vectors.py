@@ -52,6 +52,7 @@ OID_TABLE = {
     "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,73)),
     "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,74)),
     "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,75)),
+    "id-MLDSA87-ECDSA-P521": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,76)),
     "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,80)),
     "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,81)),
     "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,82)),
@@ -66,7 +67,9 @@ OID_TABLE = {
     "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,91)),
     "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,92)),
     "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,93)),
-    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95))
+    "id-HashMLDSA87-Ed448-SHAKE256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,94)),
+    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95)),
+    "id-HashMLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,96)),
 }
 
 SIZE_TABLE = {}
@@ -505,7 +508,7 @@ class CompositeSig(SIG):
 
     return mldsaSK + tradSK
   
- def serializeSignatureValue(self, s1, s2):
+  def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
     return s1 + s2
