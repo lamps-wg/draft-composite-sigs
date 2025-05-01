@@ -31,47 +31,48 @@ OID_TABLE = {
     # "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
     # "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
     # "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
-    # "ecdsa-with-SHA512": univ.ObjectIdentifier((1,2,840,10045,4,3,4)),
     # "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
     # "id-Ed448": univ.ObjectIdentifier((1,3,101,113)),
-    # "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
-    # "id-ML-DSA-65": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18)),
-    # "id-ML-DSA-87": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19)),
-    "id-MLDSA44-RSA2048-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,60)),
-    "id-MLDSA44-RSA2048-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,61)),
-    "id-MLDSA44-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,62)),
-    "id-MLDSA44-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,63)),
-    "id-MLDSA65-RSA3072-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,64)),
-    "id-MLDSA65-RSA3072-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,65)),
-    "id-MLDSA65-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,66)),
-    "id-MLDSA65-RSA4096-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,67)),
-    "id-MLDSA65-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,68)),
-    "id-MLDSA65-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,69)),
-    "id-MLDSA65-ECDSA-brainpoolP256r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,70)),
-    "id-MLDSA65-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,71)),
-    "id-MLDSA87-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,72)),
-    "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,73)),
-    "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,74)),
-    "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,75)),
+    "id-ML-DSA-44": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,17)),
+    "id-ML-DSA-65": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18)),
+    "id-ML-DSA-87": univ.ObjectIdentifier((2,16,840,1,101,3,4,3,19)),
+    "id-MLDSA44-RSA2048-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,60)),
+    "id-MLDSA44-RSA2048-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,61)),
+    "id-MLDSA44-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,62)),
+    "id-MLDSA44-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,63)),
+    "id-MLDSA65-RSA3072-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,64)),
+    "id-MLDSA65-RSA3072-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,65)),
+    "id-MLDSA65-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,66)),
+    "id-MLDSA65-RSA4096-PKCS15": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,67)),
+    "id-MLDSA65-ECDSA-P256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,68)),
+    "id-MLDSA65-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,69)),
+    "id-MLDSA65-ECDSA-brainpoolP256r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,70)),
+    "id-MLDSA65-Ed25519": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,71)),
+    "id-MLDSA87-ECDSA-P384": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,72)),
+    "id-MLDSA87-ECDSA-brainpoolP384r1": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,73)),
+    "id-MLDSA87-Ed448": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,74)),
+    "id-MLDSA87-RSA4096-PSS": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,75)),
     "id-MLDSA87-ECDSA-P521": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,76)),
-    "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,80)),
-    "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,81)),
-    "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,82)),
-    "id-HashMLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,83)),
-    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,84)),
-    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,85)),
-    "id-HashMLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,86)),
-    "id-HashMLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,87)),
-    "id-HashMLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,88)),
-    "id-HashMLDSA65-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,89)),
-    "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,90)),
-    "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,91)),
-    "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,92)),
-    "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,93)),
+    "id-HashMLDSA44-RSA2048-PSS-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,80)),
+    "id-HashMLDSA44-RSA2048-PKCS15-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,81)),
+    "id-HashMLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,82)),
+    "id-HashMLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,83)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,84)),
+    "id-HashMLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,85)),
+    "id-HashMLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,86)),
+    "id-HashMLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,87)),
+    "id-HashMLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,88)),
+    "id-HashMLDSA65-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,89)),
+    "id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,90)),
+    "id-HashMLDSA65-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,91)),
+    "id-HashMLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,92)),
+    "id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,93)),
     "id-HashMLDSA87-Ed448-SHAKE256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,94)),
-    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,95)),
-    "id-HashMLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,96))
+    "id-HashMLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,1,95)),
+    "id-HashMLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,96)),
 }
+
+SIZE_TABLE = {}
 
 DOMAIN_TABLE = {}
 
@@ -507,7 +508,6 @@ class CompositeSig(SIG):
 
     return mldsaSK + tradSK
   
-
   def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
@@ -598,7 +598,7 @@ class MLDSA44_RSA2048_PSS(CompositeSig):
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
 
-
+  
 class MLDSA44_RSA2048_PKCS15(CompositeSig):
   id = "id-MLDSA44-RSA2048-PKCS15"
   mldsa = MLDSA44()
@@ -628,7 +628,7 @@ class MLDSA65_RSA3072_PKCS15(CompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
 
-
+  
 class MLDSA65_RSA4096_PSS(CompositeSig):
   id = "id-MLDSA65-RSA4096-PSS"
   mldsa = MLDSA65()
@@ -793,6 +793,13 @@ class HashMLDSA87_ECDSA_brainpoolP384r1_SHA512(HashCompositeSig):
   PH = hashes.SHA512()
 
 
+class HashMLDSA87_Ed448_SHA512(HashCompositeSig):
+  id = "id-HashMLDSA87-Ed448-SHA512"
+  mldsa = MLDSA87()
+  tradsig = Ed448()
+  PH = hashes.SHA512()
+
+
 class HashMLDSA87_Ed448_SHAKE256(HashCompositeSig):
   id = "id-HashMLDSA87-Ed448-SHAKE256"
   mldsa = MLDSA87()
@@ -806,6 +813,7 @@ class HashMLDSA87_RSA4096_PSS_SHA512(HashCompositeSig):
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
 
+  
 class HashMLDSA65_ECDSA_P521_SHA512(HashCompositeSig):
   id = "id-HashMLDSA87-ECDSA-P521-SHA512"
   mldsa = MLDSA65()
@@ -816,7 +824,6 @@ class HashMLDSA65_ECDSA_P521_SHA512(HashCompositeSig):
 
 
 ### Generate CA Cert and EE Cert ###
-
 caName = x509.Name(
     [
         x509.NameAttribute(NameOID.ORGANIZATION_NAME, 'IETF'),
@@ -948,6 +955,13 @@ def signSigCert(sig):
 
 
 def formatResults(sig, s ):
+
+  sizeRow = {}
+  sizeRow['pk'] = len(sig.public_key_bytes())
+  sizeRow['sk'] = len(sig.private_key_bytes())
+  sizeRow['s'] = len(s)
+  SIZE_TABLE[sig.id] = sizeRow
+
   jsonTest = {}
   jsonTest['tcId'] = sig.id
   jsonTest['pk'] = base64.b64encode(sig.public_key_bytes()).decode('ascii')
@@ -968,7 +982,6 @@ def formatResults(sig, s ):
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
 
   return jsonTest
-
 
 
 def output_artifacts_certs_r5(jsonTestVectors):
@@ -1006,6 +1019,27 @@ def writeDumpasn1Cfg():
       f.write("\n")
 
 
+def writeSizeTable():
+  # In this style:
+  # | Algorithm | Public key  | Private key | Signature |
+  # | --------- | ----------- | ----------- |  -------- |
+  # | ML-DSA-44 |     1312    |      32     |    2420   |
+  # | ML-DSA-65 |     1952    |      32     |    3309   |
+  # | ML-DSA-87 |     2592    |      32     |    4627   |
+
+
+  with open('sizeTable.md', 'w') as f:
+    f.write('| Algorithm                                     |  Public key  |  Private key |  Signature   |\n')
+    f.write('| --------------------------------------------- | ------------ | ------------ |  ----------- |\n')
+
+    for alg in SIZE_TABLE:
+      row = SIZE_TABLE[alg]
+      f.write('| '+ alg.ljust(46, ' ') +'|'+
+                 str(row['pk']).center(14, ' ') +'|'+
+                 str(row['sk']).center(14, ' ') +'|'+
+                 str(row['s']).center(14, ' ') +'|\n' )
+
+      
 def writeDomainTable():
   """
   Writes the table of domain separators to go into the draft.
@@ -1016,6 +1050,7 @@ def writeDomainTable():
 
     for alg in DOMAIN_TABLE:
       f.write('| ' + alg + " | " + str(DOMAIN_TABLE[alg].decode('ascii')) + " |\n")
+
 
 
 _m = b'The quick brown fox jumps over the lazy dog.'
@@ -1050,9 +1085,9 @@ def main():
   # jsonOutput['tests'].append( doSig(ECDSABP384()) )
   # jsonOutput['tests'].append( doSig(Ed25519()) )
   # jsonOutput['tests'].append( doSig(Ed448()) )
-  # jsonOutput['tests'].append( doSig(MLDSA44()) )
-  # jsonOutput['tests'].append( doSig(MLDSA65()) )
-  # jsonOutput['tests'].append( doSig(MLDSA87()) )
+  jsonOutput['tests'].append( doSig(MLDSA44()) )
+  jsonOutput['tests'].append( doSig(MLDSA65()) )
+  jsonOutput['tests'].append( doSig(MLDSA87()) )
   
   
 
@@ -1088,11 +1123,10 @@ def main():
   jsonOutput['tests'].append( doSig(HashMLDSA65_Ed25519_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_ECDSA_P384_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_ECDSA_brainpoolP384r1_SHA512()) )
+  jsonOutput['tests'].append( doSig(HashMLDSA87_RSA4096_PSS_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_Ed448_SHAKE256()) )
   jsonOutput['tests'].append( doSig(HashMLDSA87_RSA4096_PSS_SHA512()) )
   jsonOutput['tests'].append( doSig(HashMLDSA65_ECDSA_P521_SHA512()) )
-  
-
   
 
 
@@ -1106,6 +1140,7 @@ def main():
                                   drop_whitespace=False)))
 
   writeDumpasn1Cfg()
+  writeSizeTable()
   writeDomainTable()
 
 

@@ -1575,6 +1575,62 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 --- back
 
+# Approximate Key and Signature Sizes
+
+Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:
+
+* Compressed vs uncompressed EC point.
+* The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017].
+* [RFC8017] allows for RSA private keys to be represented as either `(n, d)` or as Chinese Remainder Theorem as a quintuple `(p, q, dP, dQ, qInv)` and a (possibly empty) sequence of triplets `(r_i, d_i, t_i)`.
+* When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
+
+Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component.
+
+Implementations MUST NOT perform strict length checking based on the values in this table.
+
+Non-hybrid ML-DSA is included for reference.
+
+| Algorithm                                     |  Public key  |  Private key |  Signature   |
+| --------------------------------------------- | ------------ | ------------ |  ----------- |
+| id-ML-DSA-44                                  |     1312     |      32      |     2420     |
+| id-ML-DSA-65                                  |     1952     |      32      |     3309     |
+| id-ML-DSA-87                                  |     2592     |      32      |     4627     |
+| id-MLDSA44-RSA2048-PSS                        |     1582     |     1250     |     2676     |
+| id-MLDSA44-RSA2048-PKCS15                     |     1582     |     1250     |     2676     |
+| id-MLDSA44-Ed25519                            |     1344     |      64      |     2484     |
+| id-MLDSA44-ECDSA-P256                         |     1377     |     170      |     2491     |
+| id-MLDSA65-RSA3072-PSS                        |     2350     |     1826     |     3693     |
+| id-MLDSA65-RSA3072-PKCS15                     |     2350     |     1826     |     3693     |
+| id-MLDSA65-RSA4096-PSS                        |     2478     |     2407     |     3821     |
+| id-MLDSA65-RSA4096-PKCS15                     |     2478     |     2407     |     3821     |
+| id-MLDSA65-ECDSA-P256                         |     2017     |     170      |     3380     |
+| id-MLDSA65-ECDSA-P384                         |     2049     |     217      |     3411     |
+| id-MLDSA65-ECDSA-brainpoolP256r1              |     2017     |     171      |     3379     |
+| id-MLDSA65-Ed25519                            |     1984     |      64      |     3373     |
+| id-MLDSA87-ECDSA-P384                         |     2689     |     217      |     4729     |
+| id-MLDSA87-ECDSA-brainpoolP384r1              |     2689     |     221      |     4730     |
+| id-MLDSA87-Ed448                              |     2649     |      89      |     4741     |
+| id-MLDSA87-RSA4096-PSS                        |     3118     |     2408     |     5139     |
+| id-MLDSA87-ECDSA-P521                         |     2725     |     273      |     4766     |
+| id-HashMLDSA44-RSA2048-PSS-SHA256             |     1582     |     1249     |     2676     |
+| id-HashMLDSA44-RSA2048-PKCS15-SHA256          |     1582     |     1249     |     2676     |
+| id-HashMLDSA44-Ed25519-SHA512                 |     1344     |      64      |     2484     |
+| id-HashMLDSA44-ECDSA-P256-SHA256              |     1377     |     170      |     2491     |
+| id-HashMLDSA65-RSA3072-PSS-SHA512             |     2350     |     1825     |     3693     |
+| id-HashMLDSA65-RSA4096-PSS-SHA512             |     2478     |     2407     |     3821     |
+| id-HashMLDSA65-RSA4096-PKCS15-SHA512          |     2478     |     2407     |     3821     |
+| id-HashMLDSA65-ECDSA-P256-SHA512              |     2017     |     170      |     3381     |
+| id-HashMLDSA65-ECDSA-P384-SHA512              |     2049     |     217      |     3413     |
+| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512   |     2017     |     171      |     3380     |
+| id-HashMLDSA65-Ed25519-SHA512                 |     1984     |      64      |     3373     |
+| id-HashMLDSA87-ECDSA-P384-SHA512              |     2689     |     217      |     4730     |
+| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512   |     2689     |     221      |     4729     |
+| id-HashMLDSA87-RSA4096-PSS-SHA512             |     3118     |     2406     |     5139     |
+| id-HashMLDSA87-Ed448-SHAKE256                 |     2649     |      89      |     4741     |
+| id-HashMLDSA87-ECDSA-P521-SHA512              |     2085     |     273      |     3447     |
+{: #tab-size-values title="Approximate size values of composite ML-DSA"}
+
+
 
 # Samples
 
@@ -2115,7 +2171,9 @@ Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
-林邦曄 (Austin Lin, Chunghwa Telecom) and
+林邦曄 (Austin Lin, Chunghwa Telecom),
+Zhao Peiduo (Seventh Sense AI),
+Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
