@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 29 October 2025                                         M. Pala
+Expires: 2 November 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                           27 April 2025
+                                                              1 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 October 2025.
+   This Internet-Draft will expire on 2 November 2025.
 
 Copyright Notice
 
@@ -133,7 +133,7 @@ Table of Contents
    12. References
      12.1.  Normative References
      12.2.  Informative References
-   Appendix A.  Key and Signature Sizes
+   Appendix A.  Approximate Key and Signature Sizes
    Appendix B.  Samples
      B.1.  Explicit Composite Signature Examples
    Appendix C.  Component Algorithm Reference
@@ -3074,7 +3074,35 @@ Deserialization Process:
               Message Specification", RFC 8551, DOI 10.17487/RFC8551,
               April 2019, <https://www.rfc-editor.org/info/rfc8551>.
 
-Appendix A.  Key and Signature Sizes
+Appendix A.  Approximate Key and Signature Sizes
+
+   Note that the sizes listed below are approximate: these values are
+   measured from the test vectors, but other implementations could
+   produce values where the traditional component has a different size.
+   For example, this could be due to:
+
+   *  Compressed vs uncompressed EC point.
+
+   *  The RSA public key (n, e) allows e to vary is size between 3 and n
+      - 1 [RFC8017].
+
+   *  [RFC8017] allows for RSA private keys to be represented as either
+      (n, d) or as Chinese Remainder Theorem as a quintuple (p, q, dP,
+      dQ, qInv) and a (possibly empty) sequence of triplets (r_i, d_i,
+      t_i).
+
+   *  When the underlying RSA or EC value is itself DER-encoded, integer
+      values could occaisionally be shorter than expected due to leading
+      zeros being dropped from the encoding.
+
+   Note that by contrast, ML-DSA values are always fixed size, so
+   composite values can always be correctly de-serialized based on the
+   size of the ML-DSA component.
+
+   Implementations MUST NOT perform strict length checking based on the
+   values in this table.
+
+   Non-hybrid ML-DSA is included for reference.
 
    +===================================+========+=========+===========+
    | Algorithm                         | Public | Private | Signature |
@@ -3151,14 +3179,7 @@ Appendix A.  Key and Signature Sizes
    | id-HashMLDSA87-RSA4096-PSS-SHA512 | 3118   | 2405    | 5139      |
    +-----------------------------------+--------+---------+-----------+
 
-                                 Table 10
-
-   Non-hybrid ML-DSA is included for reference.
-
-   Note that since this specification allows for multiple encodings of
-   the traditional component, small variations in size could be
-   encountered.  Implementations MUST NOT perform strict length checking
-   based on the values in this table.
+          Table 10: Approximate size values of composite ML-DSA
 
 Appendix B.  Samples
 

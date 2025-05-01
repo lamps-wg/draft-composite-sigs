@@ -1052,11 +1052,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">April 2025</td>
+<td class="right">May 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 29 October 2025</td>
+<td class="center">Expires 2 November 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-04-27" class="published">27 April 2025</time>
+<time datetime="2025-05-01" class="published">1 May 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-10-29">29 October 2025</time></dd>
+<dd class="expires"><time datetime="2025-11-02">2 November 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 October 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 November 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1357,7 +1357,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-key-and-signature-sizes" class="internal xref">Key and Signature Sizes</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-approximate-key-and-signatu" class="internal xref">Approximate Key and Signature Sizes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
             <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-samples" class="internal xref">Samples</a></p>
@@ -4603,13 +4603,35 @@ END
 </div>
 </section>
 </div>
-<div id="key-and-signature-sizes">
+<div id="approximate-key-and-signature-sizes">
 <section id="appendix-A">
-      <h2 id="name-key-and-signature-sizes">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-key-and-signature-sizes" class="section-name selfRef">Key and Signature Sizes</a>
+      <h2 id="name-approximate-key-and-signatu">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-approximate-key-and-signatu" class="section-name selfRef">Approximate Key and Signature Sizes</a>
       </h2>
+<p id="appendix-A-1">Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A-2.1">
+          <p id="appendix-A-2.1.1">Compressed vs uncompressed EC point.<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.2">
+          <p id="appendix-A-2.2.1">The RSA public key <code>(n, e)</code> allows <code>e</code> to vary is size between 3 and <code>n - 1</code> <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.3">
+          <p id="appendix-A-2.3.1"><span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> allows for RSA private keys to be represented as either <code>(n, d)</code> or as Chinese Remainder Theorem as a quintuple <code>(p, q, dP, dQ, qInv)</code> and a (possibly empty) sequence of triplets <code>(r_i, d_i, t_i)</code>.<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-A-2.4">
+          <p id="appendix-A-2.4.1">When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.<a href="#appendix-A-2.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="appendix-A-3">Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">Implementations MUST NOT perform strict length checking based on the values in this table.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<span id="name-approximate-size-values-of-"></span><div id="tab-size-values">
 <table class="center" id="table-10">
-        <caption><a href="#table-10" class="selfRef">Table 10</a></caption>
+        <caption>
+<a href="#table-10" class="selfRef">Table 10</a>:
+<a href="#name-approximate-size-values-of-" class="selfRef">Approximate size values of composite ML-DSA</a>
+        </caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">Algorithm</th>
@@ -4819,8 +4841,7 @@ END
           </tr>
         </tbody>
       </table>
-<p id="appendix-A-2">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
-<p id="appendix-A-3">Note that since this specification allows for multiple encodings of the traditional component, small variations in size could be encountered. Implementations MUST NOT perform strict length checking based on the values in this table.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+</div>
 </section>
 </div>
 <div id="appdx-samples">
