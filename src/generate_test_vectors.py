@@ -1085,9 +1085,9 @@ def main():
   # jsonOutput['tests'].append( doSig(ECDSABP384()) )
   # jsonOutput['tests'].append( doSig(Ed25519()) )
   # jsonOutput['tests'].append( doSig(Ed448()) )
-  # jsonOutput['tests'].append( doSig(MLDSA44()) )
-  # jsonOutput['tests'].append( doSig(MLDSA65()) )
-  # jsonOutput['tests'].append( doSig(MLDSA87()) )
+  jsonOutput['tests'].append( doSig(MLDSA44()) )
+  jsonOutput['tests'].append( doSig(MLDSA65()) )
+  jsonOutput['tests'].append( doSig(MLDSA87()) )
   
   
 
