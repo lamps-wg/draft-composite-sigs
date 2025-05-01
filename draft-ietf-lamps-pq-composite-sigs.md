@@ -92,6 +92,12 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  SEC2:
+    title: "SEC 2: Recommended Elliptic Curve Domain Parameters"
+    date: January 27, 2010
+    author:
+      org: "Certicom Research"
+    target: https://www.secg.org/sec2-v2.pdf
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
@@ -120,7 +126,7 @@ informative:
   I-D.draft-pala-klaussner-composite-kofn-00:
   I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
   I-D.draft-ietf-lamps-dilithium-certificates-04:
-  I-D.draft-salter-lamps-cms-ml-dsa-00:
+  I-D.draft-ietf-lamps-cms-ml-dsa-02:
   Bindel2017:
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
@@ -152,11 +158,25 @@ informative:
       - org: "Federal Office for Information Security (BSI)"
       - org: "Netherlands National Communications Security Agency (NLNCSA)"
       - org: "Swedish National Communications Security Authority, Swedish Armed Forces"
+  CNSA2.0:
+      title: "Commercial National Security Algorithm Suite 2.0"
+      org: National Security Agency
+      target: https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF
+  eIDAS2014:
+    title: "Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC"
+    org: European Parliament and Council
+    target: https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng
+  codesigningbrsv3.8:
+    title: "Baseline Requirements for the Issuance and Management of Publicly‐Trusted Code Signing Certificates Version 3.8.0"
+    org: CA/Browser Forum
+    target: https://cabforum.org/working-groups/code-signing/documents/
+
+
 
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSA-PKCS#1v1.5, RSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509, PKIX, and CMS data structures and protocols that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 <!-- End of Abstract -->
 
@@ -164,15 +184,15 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 --- middle
 
 
-# Changes in -04
+# Changes in -05
 
 Interop-affecting changes:
 
-* Remove the ASN.1 SEQUENCE Wrapping around the Public Keys, Private Keys and Composite Signature Value
-* TODO Remove the HashComposite-ML-DSA algorithms in favour of the external Mu hashing
+* Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 
 Editorial changes:
 
+*
 
 # Introduction {#sec-intro}
 
@@ -254,19 +274,19 @@ Composite schemes are defined as cryptographic primitives that consist of three 
 
 We define the following algorithms which we use to serialize and deserialize the public and private keys
 
-   *  `SerializeKey(key) -> bytes`: Produce a fixed-length byte string encoding the public or private key.
+   *  `SerializeKey(key) -> bytes`: Produce a byte string encoding the public or private key.
 
-   *  `DeserializeKey(bytes) -> pk`: Parse a fixed-length byte string to recover a public or private key. This function can fail if the input byte string is malformed.
+   *  `DeserializeKey(bytes) -> pk`: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
 We define the following algorithms which are used to serialize and deseralize the composite signature value
 
-   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a fixed-length byte string encoding the CompositeSignatureValue.
+   *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
 
-   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a fixed-length byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
+   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
-This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSA PKCS#1v1.5 and RSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
+This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
 
 ## Pure vs Pre-hashed modes
 
@@ -293,7 +313,7 @@ Implicit inputs:
              parameter set to use, for example, could be "ML-DSA-65".
 
   Trad       A placeholder for the specific traditional algorithm and
-             parameter set to use, for example "RSASA-PSS"
+             parameter set to use, for example "RSASSA-PSS"
              or "Ed25519".
 
 Output:
@@ -326,7 +346,7 @@ Key Generation Process:
 
 The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoperability is not required.
 
-In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use or import component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
@@ -353,7 +373,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string.
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
 
 
@@ -363,7 +384,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -379,10 +400,11 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || M
 
@@ -416,6 +438,10 @@ It is possible to use component private keys stored in separate software or hard
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
+
 ### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
 
 This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Algorithm 3 in Section 5.3 of [FIPS.204].
@@ -436,8 +462,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
 Implicit inputs:
 
@@ -445,7 +471,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
   Domain   Domain separator value for binding the signature to the
@@ -463,7 +489,7 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
       return error
 
   2. Separate the keys and signatures
@@ -477,6 +503,7 @@ Signature Verification Process:
     "Invalid signature" and stop.
 
   3. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
         M' = Prefix || Domain || len(ctx) || ctx || M
 
@@ -505,6 +532,8 @@ In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated 
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
 
 ### HashComposite-ML-DSA-Sign signature mode {#sec-hash-comp-sig-sign}
 
@@ -522,7 +551,8 @@ Explicit inputs:
 
   M     The Message to be signed, an octet string.
 
-  ctx   The Message context string, which defaults to the empty string
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
 
   PH    The Message Digest Algorithm for pre-hashing.  See
         section on pre-hashing the message below.
@@ -533,7 +563,7 @@ Implicit inputs:
            parameter set to use, for example, could be "ML-DSA-65".
 
   Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASA-PSS with id-sha256"
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
  Prefix    The prefix String which is the byte encoding of the String
@@ -551,16 +581,19 @@ Output:
 
 Signature Generation Process:
 
-  1. If |ctx| > 255:
+  1. If len(ctx) > 255:
       return error
 
   2. Compute the Message format M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
         M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
-  3. Separate the private key into component keys.
+  3. Separate the private key into component keys
+     and re-generate the ML-DSA key from seed.
 
-       (mldsaSK, tradSK) = sk
+       (mldsaSeed, tradSK) = DeserializePrivateKey(sk)
+       mldsaSK = ML-DSA.KeyGen(mldsaSeed)
 
   4. Generate the 2 component signatures independently, by calculating
      the signature over M' according to their algorithm specifications.
@@ -576,7 +609,7 @@ Signature Generation Process:
 
   6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := CompositeSignatureValue(mldsaSig, tradSig)
+      signature := (mldsaSig, tradSig)
 
   7. Output signature
 
@@ -587,6 +620,10 @@ Signature Generation Process:
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
+
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
 
 ### HashComposite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
 
@@ -608,8 +645,8 @@ Explicit inputs:
   signature   CompositeSignatureValue containing the component
               signature values (mldsaSig and tradSig) to be verified.
 
-  ctx         The Message context string, which defaults to the empty
-              string.
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
 
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
@@ -620,7 +657,7 @@ Implicit inputs:
             parameter set to use, for example, could be "ML-DSA-65".
 
   Trad      A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASA-PSS with id-sha256"
+            parameter set to use, for example "RSASSA-PSS with id-sha256"
             or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
@@ -641,13 +678,13 @@ Output:
 
 Signature Verification Process:
 
-  1. If |ctx| > 255
+  1. If len(ctx) > 255
        return error
 
   2. Separate the keys and signatures
 
-     (pk1, pk2) = pk
-      (s1, s2) = signature
+     (pk1, pk2) = DeserializePublicKey(pk)
+     (s1, s2)   = DeserializeSignatureValue(signature)
 
    If Error during Desequencing, or if any of the component
    keys or signature values are not of the correct key type or
@@ -655,6 +692,7 @@ Signature Verification Process:
    "Invalid signature" and stop.
 
   3. Compute a Hash of the Message.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
 
@@ -675,119 +713,182 @@ Signature Verification Process:
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
-## SerializeKey and DeserializeKey
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
 
-The serialization routine for keys simply concatenates the fixed-length public or private keys of the component signatures, as defined below:
+
+
+
+## Serialization
+
+This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
+Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
+
+| Algorithm | Public key  | Private key | Signature |
+| --------- | ----------- | ----------- |  -------- |
+| ML-DSA-44 |     1312    |      32     |    2420   |
+| ML-DSA-65 |     1952    |      32     |    3309   |
+| ML-DSA-87 |     2592    |      32     |    4627   |
+{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
+
+When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
+
+
+### SerializePublicKey and DeserializePublicKey
+
+The serialization routine for keys simply concatenates the fixed-length public keys of the component signature algorithms, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeKey(key) -> bytes
+Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
 Explicit Input:
 
-  key    Composite ML-DSA public key or private key
+  mldsaPK  The ML-DSA public key, which is bytes.
+
+  tradPK   The traditional public key in the appropriate
+           bytes-like encoding for the underlying component algorithm.
+
+Output:
+
+  bytes   The encoded composite public key
+
+Serialization Process:
+
+  1. Combine and output the encoded public key
+
+     output mldsaPK || tradPK
+~~~
+{: #alg-composite-serialize-pk title="SerializePublicKey(mldsaPK, tradPK) -> bytes"}
+
+
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
+key is deserialized according to their respective standard as shown in {{appdx_components}}.
+
+~~~
+Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
+
+Explicit Input:
+
+  bytes   An encoded composite public key
 
 Implicit inputs:
 
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
+Output:
+
+  mldsaPK  The ML-DSA public key, which is bytes.
+
+  tradPK   The traditional public key in the appropriate
+           bytes-like encoding for the underlying component algorithm.
+
+Deserialization Process:
+
+  1. Parse each constituent encoded public key.
+       The length of the mldsaKey is known based on the size of
+       the ML-DSA component key length specified by the Object ID
+
+     switch ML-DSA do
+        case ML-DSA-44:
+          mldsaPK = bytes[:1312]
+          tradPK  = bytes[1312:]
+        case ML-DSA-65:
+          mldsaPK = bytes[:1952]
+          tradPK  = bytes[1952:]
+        case ML-DSA-87:
+          mldsaPK = bytes[:2592]
+          tradPK  = bytes[2592:]
+
+     Note that while ML-DSA has fixed-length keys, RSA and ECDH
+     may not, depending on encoding, so rigorous length-checking
+     of the overall composite key is not always possible.
+
+  2. Output the component public keys
+
+     output (mldsaPK, tradPK)
+~~~
+{: #alg-composite-deserialize-pk title="DeserializePublicKey(bytes) -> (mldsaPK, tradPK)"}
+
+
+
+### SerializePrivateKey and DeserializePrivateKey
+
+The serialization routine for keys simply concatenates the fixed-length private keys of the component signature algorithms, as defined below:
+
+~~~
+Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes
+
+Explicit Input:
+
+  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+
+  tradSK     The traditional private key in the appropriate
+             encoding for the underlying component algorithm.
 
 Output:
 
-  bytes   The encoded public key
+  bytes   The encoded composite private key
 
 Serialization Process:
 
-  1. Separate the  keys
+  1. Combine and output the encoded private key
 
-     (mldsaKey, tradKey) = key
-
-  2. Serialize each of the constituent public keys
-
-     mldsaEncodedKey = MLDSA.SerializeKey(mldsaKey)
-     tradEncodedKey = Trad.SerializeKey(tradKey)
-
-  3. Combine and output the encoded public key
-
-     bytes = mldsaEncodedPK || tradEncodedPK
-     output bytes
+     output mldsaSeed || tradSK
 ~~~
-{: #alg-composite-serialize title="Composite SerializeKey(pk)"}
+{: #alg-composite-serialize-sk title="SerializePrivateKey(mldsaSeed, tradSK) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.
 
 ~~~
-Composite-ML-DSA.DeserializeKey(bytes) -> pk
+Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 
 Explicit Input:
 
-  bytes   An encoded public key or private key
-
-Implicit inputs:
-
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
-
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
+  bytes   An encoded composite private key
 
 Output:
 
-  key     The composite ML-DSA public key or private key
+  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+
+  tradSK     The traditional private key in the appropriate
+             encoding for the underlying component algorithm.
 
 Deserialization Process:
 
-  1. Validate the length of the the input byte string
+  1. Parse each constituent encoded key.
+       The length of an ML-DSA private key is always a 32 byte seed
+       for all parameter sets.
 
-     if bytes is not the correct length:
-      output "Deserialization error"
+      mldsaSeed = bytes[:32]
+      tradSK  = bytes[32:]
 
-  2. Parse each constituent encoded key.
-       The length of the mldsaEncodedKey is known based on the size of
-       the ML-DSA component key length specified by the Object ID
+     Note that while ML-KEM has fixed-length keys (seeds), RSA and ECDH
+     may not, depending on encoding, so rigorous length-checking
+     of the overall composite key is not always possible.
 
-     (mldsaEncodedKey, tradEncodedKey) = bytes
+  2. Output the component private keys
 
-  3. Deserialize the constituent public or private keys
-
-     mldsaKey = MLDSA.DeserializeKey(mldsaEncodedKey)
-     tradKey = Trad.DeserializeKey(tradEncodedKey)
-
-  4. If either ML-DSA.DeserializeKey() or
-     Trad.DeserializeKey() return an error,
-     then this process must return an error.
-
-      if NOT mldsaKey or NOT tradKey:
-        output "Deserialization error"
-
-  5. Output the composite ML-DSA key
-
-     output (mldsaPK, tradPK)
+     output (mldsaSeed, tradSK)
 ~~~
-{: #alg-composite-deserialize title="Composite DeserializeKey(bytes)"}
+{: #alg-composite-deserialize-sk title="DeserializeKey(bytes) -> (mldsaSeed, tradSK)"}
 
-## SerializeSignatureValue and DeSerializeSignatureValue
+
+
+### SerializeSignatureValue and DeSerializeSignatureValue
 
 The serialization routine for the CompositeSignatureValue simply concatenates the fixed-length
 ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeSignatureValue(CompositeSignatureValue) -> bytes
+Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig) -> bytes
 
-Explicit Input:
+Explicit Inputs:
 
-  CompositeSignatureValue    The Composite Signature Value obtained from Composite-ML-DSA.Sign()
+  mldsaSig  The ML-DSA signature value, which is bytes.
 
-Implicit inputs:
-
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
-
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
+  tradSig   The traditional signature value in the appropriate
+            encoding for the underlying component algorithm.
 
 Output:
 
@@ -795,27 +896,19 @@ Output:
 
 Serialization Process:
 
-  1. Separate the signatures
+  1. Combine and output the encoded composite signature
 
-     (mldsaSig, tradSig) = CompositeSignatureValue
-
-  2. Serialize each of the constituent signatures
-
-     mldsaEncodedSignature = ML-DSA.SerializeSignature(mldsaSig)
-     tradEncodedSignature = Trad.SerializeSignature(tradSig)
-
-  3. Combine and output the encoded composite signature
-
-     bytes = mldsaEncodedSignature || tradEncodedSignature
-     output bytes
-~~~
-{: #alg-composite-serialize-sig title="Composite SerializeSignatureValue(CompositeSignatureValue)"}
-
-
-Deserialization reverses this process, raising an error in the event that the input is malformed.
+     output mldsaSig || tradSig
 
 ~~~
-Composite-ML-DSA.DeserializeSignatureValue(bytes) -> CompositeSignatureValue
+{: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
+
+
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
+signature is deserialized according to their respective standard as shown in {{appdx_components}}.
+
+~~~
+Composite-ML-DSA.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
 
 Explicit Input:
 
@@ -826,73 +919,46 @@ Implicit inputs:
   ML-DSA   A placeholder for the specific ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSA" or "ECDSA".
-
 Output:
 
-  CompositeSignatureValue  The CompositeSignatureValue
+  mldsaSig  The ML-DSA signature value, which is bytes.
+
+  tradSig   The traditional signature value in the appropriate
+            encoding for the underlying component algorithm.
 
 Deserialization Process:
 
-  1. Validate the length of the the input byte string
-
-     if bytes is not the correct length:
-      output "Deserialization error"
-
-  2. Parse each constituent encoded signature.
-       The length of the mldsaEncodedSignature is known based on the size of
+  1. Parse each constituent encoded signature.
+       The length of the mldsasig is known based on the size of
        the ML-DSA component signature length specified by the Object ID
 
-     (mldsaEncodedSignature, tradEncodedSignature) = bytes
+     switch ML-DSA do
+        case ML-DSA-44:
+          mldsaSig = bytes[:2420]
+          tradSig  = bytes[2420:]
+        case ML-DSA-65:
+          mldsaSig = bytes[:3309]
+          tradSig  = bytes[3309:]
+        case ML-DSA-87:
+          mldsaSig = bytes[:4627]
+          tradSig  = bytes[4627:]
 
-  3. Deserialize the constituent signature values
+     Note that while ML-DSA has fixed-length signatures, RSA and ECDSA
+     may not, depending on encoding, so rigorous length-checking is
+     not always possible here.
 
-     mldsaSig = ML-DSA.DeserializeSignature(mldsaEncodedSignature)
-     tradSig = Trad.DeserializeSignature(tradEncodedSignature)
-
-  4. If either ML-DSA.DeserializeSignature() or
-     Trad.DeserializeSignature() return an error,
-     then this process must return an error.
-
-      if NOT mldsaSig or NOT tradSig:
-        output "Deserialization error"
-
-  5. Output the CompositeSignatureValue
+  2. Output the component signature values
 
      output (mldsaSig, tradSig)
 ~~~
-{: #alg-composite-deserialize-sig title="Composite DeserializeSignatureValue(bytes)"}
+{: #alg-composite-deserialize-sig title="DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)"}
 
-## ML-DSA public key, private key and signature sizes for serialization and deserialization
 
-As noted above in the composite public key, composite private key and composite signature value
-serialization and deserialization methods, ML-DSA uses fixed-length values for
-all of these components.  This means the length encoding of the first component is
-known and does NOT need to be encoded into the serialization and deserialization process
-which simplifies the encoding.  The second traditional component may be variable-length but
-can still be parsed correctly by taking the rest of the value after the specified offset
-as the traditional component.
 
-This encoding is optimized for the fact that all values related to ML-DSA are fixed-length.
-If future composite combinations make use of
-algorithms where the first component uses variable length keys or signatures, then
-that specification will need to ensure the length is encoded in a
-fixed-length prefix so the components can be correctly deserialized.
-
-The following table shows the fixed length values in bytes for the public, private and signature
-sizes for ML-DSA which can be used to deserialzie the components.
-
-| Algorithm | Public key  | Private key  | Signature |
-| ----------- | ----------- | ----------- |  ----------- |
-| ML-DSA-44 |      1312     |    32     |  2420        |
-| ML-DSA-65 |      1952     |    32     |  3309  |
-| ML-DSA-87 |      2592     |    32     |  4627   |
-{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
-
-# Composite Key Structures {#sec-composite-structs}
+# Composite Key Structures {#sec-composite-key-structs}
 
 In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
+
 
 
 ## CompositeMLDSAPublicKey {#sec-composite-pub-keys}
@@ -1019,7 +1085,7 @@ Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if th
 traditional component key supports both signing and encryption,
 the post-quantum algorithms do not and therefore the overall composite algorithm does not.
 
-# Composite Signature Structures
+# Composite Signature Structures {#sec-composite-sigs-structs}
 
 ## sa-CompositeSignature {#sec-composite-sig-structs}
 
@@ -1066,13 +1132,13 @@ Pure Composite-ML-DSA Signature public key types:
 
 | Composite Signature Algorithm | OID | First Algorithm | Second Algorithm |
 | ----------- | ----------- | ----------- |  ----------- |
-| id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.60 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 |
+| id-MLDSA44-RSA2048-PSS      | &lt;CompSig&gt;.60 | id-ML-DSA-44  | id-RSASSA-PSS with id-sha256 |
 | id-MLDSA44-RSA2048-PKCS15    | &lt;CompSig&gt;.61 | id-ML-DSA-44  | sha256WithRSAEncryption |
 | id-MLDSA44-Ed25519                  | &lt;CompSig&gt;.62 | id-ML-DSA-44  | id-Ed25519 |
 | id-MLDSA44-ECDSA-P256        | &lt;CompSig&gt;.63 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 |
-| id-MLDSA65-RSA3072-PSS          | &lt;CompSig&gt;.64 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 |
+| id-MLDSA65-RSA3072-PSS          | &lt;CompSig&gt;.64 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256 |
 | id-MLDSA65-RSA3072-PKCS15       | &lt;CompSig&gt;.65  | id-ML-DSA-65 | sha256WithRSAEncryption |
-| id-MLDSA65-RSA4096-PSS         | &lt;CompSig&gt;.66 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 |
+| id-MLDSA65-RSA4096-PSS         | &lt;CompSig&gt;.66 | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384 |
 | id-MLDSA65-RSA4096-PKCS15        | &lt;CompSig&gt;.67  | id-ML-DSA-65 | sha384WithRSAEncryption |
 | id-MLDSA65-ECDSA-P256           | &lt;CompSig&gt;.68  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 |
 | id-MLDSA65-ECDSA-P384           | &lt;CompSig&gt;.69  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 |
@@ -1081,7 +1147,8 @@ Pure Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P384            | &lt;CompSig&gt;.72  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 |
 | id-MLDSA87-ECDSA-brainpoolP384r1 | &lt;CompSig&gt;.73 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 |
 | id-MLDSA87-Ed448                        | &lt;CompSig&gt;.74 | id-ML-DSA-87 | id-Ed448 |
-| id-MLDSA87-RSA4096-PSS           | &lt;CompSig&gt;.75 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 |
+| id-MLDSA87-RSA4096-PSS           | &lt;CompSig&gt;.75 | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384 |
+| id-MLDSA87-ECDSA-P521            | &lt;CompSig&gt;.76 | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1 |
 {: #tab-sig-algs title="Pure ML-DSA Composite Signature Algorithms"}
 
 See the ASN.1 module in section {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
@@ -1094,24 +1161,26 @@ HashComposite-ML-DSA Signature public key types:
 
 | Composite Signature Algorithm | OID | First Algorithm | Second Algorithm | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-HashMLDSA44-RSA2048-PSS-SHA256      | &lt;CompSig&gt;.80 | id-ML-DSA-44  | id-RSASA-PSS with id-sha256 | id-sha256 |
-| id-HashMLDSA44-RSA2048-PKCS15-SHA256    | &lt;CompSig&gt;.81 | id-ML-DSA-44  | sha256WithRSAEncryption | id-sha256 |
-| id-HashMLDSA44-Ed25519-SHA512             | &lt;CompSig&gt;.82 | id-ML-DSA-44  | id-Ed25519 | id-sha512 |
-| id-HashMLDSA44-ECDSA-P256-SHA256         | &lt;CompSig&gt;.83 | id-ML-DSA-44  | ecdsa-with-SHA256 with secp256r1 | id-sha256 |
-| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84 | id-ML-DSA-65 | id-RSASA-PSS with id-sha256 | id-sha512 |
-| id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.85  | id-ML-DSA-65 | sha256WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86 | id-ML-DSA-65 | id-RSASA-PSS with id-sha384 | id-sha512 |
-| id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.87  | id-ML-DSA-65 | sha384WithRSAEncryption | id-sha512 |
-| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.88  | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1 | id-sha512 |
-| id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.89  | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1 | id-sha512 |
-| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.90  | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha512 |
-| id-HashMLDSA65-Ed25519-SHA512              | &lt;CompSig&gt;.91  | id-ML-DSA-65 | id-Ed25519 | id-sha512 |
-| id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92  | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1 | id-sha512|
-| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93 | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
-| id-HashMLDSA87-Ed448-SHA512              | &lt;CompSig&gt;.94 | id-ML-DSA-87 | id-Ed448 | id-sha512 |
-| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95 | id-ML-DSA-87 | id-RSASA-PSS with id-sha384 | id-sha512 |
+| id-HashMLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.80   | id-ML-DSA-44 | id-RSASSA-PSS with id-sha256           | id-sha256 |
+| id-HashMLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.81   | id-ML-DSA-44 | sha256WithRSAEncryption                | id-sha256 |
+| id-HashMLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.82   | id-ML-DSA-44 | id-Ed25519                             | id-sha512 |
+| id-HashMLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.83   | id-ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | id-sha256 |
+| id-HashMLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.84   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256           | id-sha512 |
+| id-HashMLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.85   | id-ML-DSA-65 | sha256WithRSAEncryption                | id-sha512 |
+| id-HashMLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.86   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384           | id-sha512 |
+| id-HashMLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.87   | id-ML-DSA-65 | sha384WithRSAEncryption                | id-sha512 |
+| id-HashMLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.88   | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | id-sha512 |
+| id-HashMLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.89   | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
+| id-HashMLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.90   | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha512 |
+| id-HashMLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.91   | id-ML-DSA-65 | id-Ed25519                             | id-sha512 |
+| id-HashMLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
+| id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
+| id-HashMLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | SHAKE256/64 |
+| id-HashMLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
+| id-HashMLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.96   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
+Note that pre-hhash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [!RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
@@ -1141,7 +1210,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-MLDSA87-ECDSA-brainpoolP384r1 |060B6086480186FA6B50080149|
 | id-MLDSA87-Ed448 |060B6086480186FA6B5008014A|
 | id-MLDSA87-RSA4096-PSS |060B6086480186FA6B5008014B|
-
+| id-MLDSA87-ECDSA-P521 | 060B6086480186FA6B5008014C |
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
 | Composite Signature Algorithm | Domain Separator (in Hex encoding)|
@@ -1160,8 +1229,9 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 | id-HashMLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008015B|
 | id-HashMLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008015C|
 | id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008015D|
-| id-HashMLDSA87-Ed448-SHA512 |060B6086480186FA6B5008015E|
+| id-HashMLDSA87-Ed448-SHAKE256 |060B6086480186FA6B5008015E|
 | id-HashMLDSA87-RSA4096-PSS-SHA512 |060B6086480186FA6B5008015F|
+| id-HashMLDSA87-ECDSA-P521-SHA512 | 060B6086480186FA6B50080160 |
 {: #tab-hash-sig-alg-oids title="Hash ML-DSA Composite Signature Domain Separators"}
 
 ## Rationale for choices
@@ -1170,30 +1240,30 @@ In generating the list of Composite algorithms, the following general guidance w
 
 * Pair equivalent levels.
 * NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.
-* 521 bit curve not widely used.
 
 SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.
 
 At the higher security levels of pre-hashed Composite ML-DSA, for example `id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
 
-## RSA-PSS Parameters
+## RSASSA-PSS
 
-Use of RSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
+Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified, which differ for each security level.
 
+Also note that this specification fixes the Public Key OID of RSASSA-PSS to id-RSASSA-PSS (1.2.840.113549.1.1.10), although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1).
 
 ### RSA2048-PSS
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to compliment ML-DSA-44
+The RSA component keys MUST be generated at the 2048-bit security level in order to match that of ML-DSA-44.
 
-As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256           |
 | Message Digest Algorithm   | SHA-256           |
 | Salt Length in bits        | 256               |
-{: #rsa-pss-params2048 title="RSA-PSS 2048 Parameters"}
+{: #rsa-pss-params2048 title="RSASSA-PSS 2048 Parameters"}
 
 where:
 
@@ -1203,17 +1273,17 @@ where:
 
 ### RSA3072-PSS
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to compliment ML-DSA-65.
+The RSA component keys MUST be generated at the 3072-bit security level in order to match that of ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-256                |
 | Message Digest Algorithm   | SHA-256                |
 | Salt Length in bits        | 256                    |
-{: #rsa-pss-params3072 title="RSA-PSS 3072 Parameters"}
+{: #rsa-pss-params3072 title="RSASSA-PSS 3072 Parameters"}
 
 where:
 
@@ -1222,17 +1292,17 @@ where:
 
 ### RSA4096-PSS
 
-The RSA component keys MUST be generated at the 4096-bit security level in order to match with ML-DSA-65.
+The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSA-PSS with the following parameters:
+As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSASSA-PSS with the following parameters:
 
-| RSA-PSS Parameter          | Value                      |
+| RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
 | Mask Generation Function   | mgf1 |
 | Mask Generation params     | SHA-384                |
 | Message Digest Algorithm   | SHA-384                |
 | Salt Length in bits        | 384                    |
-{: #rsa-pss-params4096 title="RSA-PSS 4096 Parameters"}
+{: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 where:
 
@@ -1241,97 +1311,6 @@ where:
 
 <!-- End of Composite Signature Algorithm section -->
 
-
-# Use in CMS
-
-\[EDNOTE: The convention in LAMPS is to specify algorithms and their CMS conventions in separate documents. Here we have presented them in the same document, but this section has been written so that it can easily be moved to a stand-alone document.\]
-
-Composite Signature algorithms MAY be employed for one or more recipients in the CMS signed-data content type [RFC5652].
-
-All recommendations for using Composite ML-DSA in CMS are fully aligned with the use of ML-DSA in CMS {{I-D.salter-lamps-cms-ml-dsa}}.
-\[EDNOTE: at time of writing, this draft is not aligned with {{I-D.salter-lamps-cms-ml-dsa}} because it uses SHAKE for the digest algorithm. We believe that it should use SHA2, and we are sorting this out between authors. See: https://mailarchive.ietf.org/arch/msg/spasm/yM8kS1kCoizWCMjS8pdcV3IFaDg/\]
-
-## Underlying Components
-
-A compliant implementation MUST support the following algorithms for the SignerInfo `digestAlgorithm` field when the corresponding Composite ML-DSA algorithm is listed in the SignerInfo `signatureAlgorithm` field.  Implementations MAY also support other algorithms for the SignerInfo `digestAlgorithm` and SHOULD use algorithms of equivalent strength or greater.
-
-| Composite Signature Algorithm | digestAlgorithm |
-| ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS           | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15        | SHA256 |
-| id-MLDSA44-Ed25519               | SHA512 |
-| id-MLDSA44-ECDSA-P256            | SHA256 |
-| id-MLDSA65-RSA3072-PSS           | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15        | SHA512 |
-| id-MLDSA65-RSA4096-PSS           | SHA512 |
-| id-MLDSA65-RSA4096-PKCS15        | SHA512 |
-| id-MLDSA65-ECDSA-P256            | SHA512 |
-| id-MLDSA65-ECDSA-P384            | SHA512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519               | SHA512 |
-| id-MLDSA87-ECDSA-P384            | SHA512 |
-| id-MLDSA87-ECDSA-brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448                 | SHA512 |
-{: #tab-cms-shas title="Recommended Composite Signature Digest Algorithms"}
-
-where:
-
-* SHA2 instantiations are defined in [FIPS180].
-
-Note: The rationale for using SHA512 with id-MLDSA44-Ed25519 is that Section 5.1 in [RFC8032] explicitly defines SHA512 as hash algorithm for Ed25519.
-
-Note:  The Hash ML-DSA Composite identifiers are not included in this list because the message content is already digested before being passed to the Composite-ML-DSA.Sign() function.
-
-## SignedData Conventions
-
-As specified in CMS [RFC5652], the digital signature is produced from the message digest and the signer's private key. The signature is computed over different values depending on whether signed attributes are absent or present.
-
-When signed attributes are absent, the composite signature is computed over the message digest of the content. When signed attributes are present, a hash is computed over the content using the hash function specified in {{tab-cms-shas}}, and then a message-digest attribute is constructed to contain the resulting hash value, and then the result of DER encoding the set of signed attributes, which MUST include a content-type attribute and a message-digest attribute, and then the composite signature is computed over the DER-encoded output. In summary:
-
-~~~
-IF (signed attributes are absent)
-   THEN Composite-ML-DSA.Sign(Hash(content))
-ELSE message-digest attribute = Hash(content);
-   Composite-ML-DSA.Sign(DER(SignedAttributes))
-~~~
-
-When using Composite Signatures, the fields in the SignerInfo are used as follows:
-
-digestAlgorithm:
-    Per Section 5.3 of [RFC5652], the digestAlgorithm contains the one-way hash function used by the CMS signer.
-    To ensure collision resistance, the identified message digest algorithm SHOULD produce a hash
-    value of a size that is at least twice the collision strength of the internal commitment hash used by ML-DSA
-    component algorithm of the Composite Signature.
-
-signatureAlgorithm:
-    The signatureAlgorithm MUST contain one of the the Composite Signature algorithm identifiers as specified in {{tab-cms-shas}}
-
-signature:
-    The signature field contains the signature value resulting from the composite signing operation of the specified signatureAlgorithm.
-
-## Certificate Conventions
-
-The conventions specified in this section augment RFC 5280 [RFC5280].
-
-The willingness to accept a composite Signature Algorithm MAY be signaled by the use of the SMIMECapabilities Attribute as specified in Section 2.5.2. of [RFC8551] or the SMIMECapabilities certificate extension as specified in [RFC4262].
-
-The intended application for the public key MAY be indicated in the key usage certificate extension as specified in Section 4.2.1.3 of [RFC5280]. If the keyUsage extension is present in a certificate that conveys a composite Signature public key, then the key usage extension MUST contain only the following value:
-
-~~~
-digitalSignature
-nonRepudiation
-keyCertSign
-cRLSign
-~~~
-
-The keyEncipherment and dataEncipherment values MUST NOT be present. That is, a public key intended to be employed only with a composite signature algorithm MUST NOT also be employed for data encryption. This requirement does not carry any particular security consideration; only the convention that signature keys be identified with 'digitalSignature','nonRepudiation','keyCertSign' or 'cRLSign' key usages.
-
-
-## SMIMECapabilities Attribute Conventions
-
-Section 2.5.2 of [RFC8551] defines the SMIMECapabilities attribute to announce a partial list of algorithms that an S/MIME implementation can support. When constructing a CMS signed-data content type [RFC5652], a compliant implementation MAY include the SMIMECapabilities attribute.
-
-The SMIMECapability SEQUENCE representing a composite signature Algorithm MUST include the appropriate object identifier as per {{tab-cms-shas}} in the capabilityID field.
 
 
 # ASN.1 Module {#sec-asn1-module}
@@ -1355,7 +1334,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 ###  Module Registration - SMI Security for PKIX Module Identifier
 -  Decimal: IANA Assigned - **Replace TBDMOD**
--  Description: Composite-Signatures-2023 - id-mod-composite-signatures
+-  Description: Composite-Signatures-2025 - id-mod-composite-signatures
 -  References: This Document
 
 ###  Object Identifier Registrations - SMI Security for PKIX Algorithms
@@ -1440,6 +1419,11 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-MLDSA87-RSA4096-PSS
   - References: This Document
 
+- id-MLDSA87-ECDSA-P521
+  - Decimal: IANA Assigned
+  - Description:  id-MLDSA87-ECDSA-P521
+  - References: This Document
+
 - id-HashMLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA44-RSA2048-PSS-SHA256
@@ -1510,15 +1494,21 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Description:  id-HashMLDSA87-ECDSA-brainpoolP384r1-SHA512
   - References: This Document
 
-- id-HashMLDSA87-Ed448-SHA512
+- id-HashMLDSA87-Ed448-SHAKE256
   - Decimal: IANA Assigned
-  - Description:  id-HashMLDSA87-Ed448-SHA512
+  - Description:  id-HashMLDSA87-Ed448-SHAKE256
   - References: This Document
 
 - id-HashMLDSA87-RSA4096-PSS-SHA512
   - Decimal: IANA Assigned
   - Description:  id-HashMLDSA87-RSA4096-PSS-SHA512
   - References: This Document
+
+- id-HashMLDSA87-ECDSA-P521-SHA512
+  - Decimal: IANA Assigned
+  - Description: id-HashMLDSA87-ECDSA-P521-SHA512
+  - References: This Document
+
 
 <!-- End of IANA Considerations section -->
 
@@ -1532,24 +1522,29 @@ Dual-algorithm security. The general idea is that the data is proctected by two 
 
 Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode where the client can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded clients to co-exist and communicate. The Composites presented in this specification do not provide this since they operate in a strict "AND" mode, but they do provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC. Composites allow them to add to this an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implemtation is still experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
 
-## Non-separability and EUF-CMA {#sec-cons-non-separability}
 
-The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}},  since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
+## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
 
-Unforgeability properties are somewhat more nuanced. The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a signature-message pair `(s, m)` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure. There is a stronger notion of Strong Existential Unforgeability (SUF) in which an attacker is required to produce a new signature to an already-signed message. CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(s1*, m)` pair where `s1*` was not produced by the honest signer and it then can be combined with an honestly-signed `(s2, m)` signature over the same message `m` to create `( (s1*, s2), m)` which violates SUF for the composite algorithm.
+The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
 
-In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, Trad.Sign() and ML-DSA.Sign(), and attempts to fraudulently present them as a composite, or where the attacker has access to a composite oracle for signing and then attempts to split the signature back into components and present them to either ML-DSA.Verify() or Trad.Verify(). The latter version bears a resemblance to a stripping attack, which parallel signatures are subject to, but is slightly different in that the cross-protocol EUF-CMA game also considers modification message definition as signed differs from the message the verifier accepts. In contrast stripping attacks consider only removing one component signature and attempting verification under the remaining and the same original message.
+Unforgeability properties are somewhat more nuanced. We recall first the definitions of Exitential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF).The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. SUF requires that the attacker cannot construct a new signature to an already-signed message.
 
-In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction addition to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since then there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys. Consequently, following the specification and verification of the policy mechanism, such as a composite X.509 certificate which defines the bound keys, is essential when using keys intended for use with a CompositeML-DSA signing algorithm.
+The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its `Verify()` which in turn will cause `CompositeML-DSA.Verify()` to fail.
+
+CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(m, s1*)` pair where `s1*` was not produced by the honest signer and it then can be combined with an honestly-signed `(m, s2)` signature over the same message `m` to create `(m, (s1*, s2))` which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.
+
+In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite oracle for signing and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
+
+In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction added to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
 
 When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)
 
-Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions and did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, it is still RECOMMENDED to avoid key reuse as key reuse in single-algorithm use cases could introduce EUF-CMA vulnerabilities.
+Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
 
-In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, it is RECOMMENDED to avoid key reuse and always generate fresh component keys for a new composite. It is also RECOMMENDED that CAs performing revocation checks on a composite key should also check both component keys independently.
+In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibilty of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
 
 ## Policy for Deprecated and Acceptable Algorithms
@@ -1634,11 +1629,84 @@ Non-hybrid ML-DSA is included for reference.
 
 
 
-# Samples {#appdx-samples}
+# Samples
 
-## Explicit Composite Signature Examples {#appdx-expComposite-examples}
+## Message Format Examples {#appdx-messageFormat-examples}
 
-TODO - Need Samples
+### Example of MLDSA44-ECDSA-P256 with Context:
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || M
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Message encoded:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:08:08:0D:06:0C:05:10:19:17:00:01:02:03:04:05:06:07:08:09
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: 06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+M: 00:01:02:03:04:05:06:07:08:09
+~~~
+
+### Example of MLDSA44-ECDSA-P256 without a Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || M
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Message Encoded:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:00:00:01:02:03:04:05:06:07:08:09
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:3F:
+len(ctx): 00:
+ctx: empty
+M: 00:01:02:03:04:05:06:07:08:09
+~~~
+
+### Example of HashMLDSA44-ECDSA-P256-SHA256 with Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
+
+### Example of HashMLDSA44-ECDSA-P256-SHA256 without Context
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
+len(ctx): 00:
+ctx: empty
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
+
 
 # Component Algorithm Reference {#appdx_components}
 
@@ -1655,13 +1723,14 @@ This section provides references to the full specification of the algorithms use
 | ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha512WithRSAEncryption | 1.2.840.113549.1.1.13 | [RFC8017] |
-| id-RSASA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
+| id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
 {: #tab-component-sig-algs title="Component Signature Algorithms used in Composite Constructions"}
 
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090] |
-| secp384r1 | 1.3.132.0.34 | [RFC6090] |
+| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090], [SEC2] |
+| secp384r1 | 1.3.132.0.34 | [RFC6090], [SEC2] |
+| secp521r1 | 1.3.132.0.35 | [RFC6090], [SEC2] |
 | brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
 | brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
@@ -1717,7 +1786,7 @@ DER:
 ~~~
 
 
-**RSA PSS 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1729,7 +1798,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSA PSS 2048 -- AlgorithmIdentifier of Signature**
+**RSASSA-PSS 2048 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1757,7 +1826,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 ~~~
 
-**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1769,7 +1838,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSA PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
+**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1797,7 +1866,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 ~~~
 
-**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1810,7 +1879,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSA PKCS 1.5 2048 -- AlgorithmIdentifier of Signature**
+**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1823,7 +1892,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
 
 ~~~
 ASN.1:
@@ -1836,7 +1905,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSA PKCS 1.5 3072 & 4096 -- AlgorithmIdentifier of Signature**
+**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Signature**
 
 ~~~
 ASN.1:
@@ -1905,6 +1974,35 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
+~~~
+
+**ECDSA NIST-521 -- AlgorithmIdentifier of Public Key**
+
+~~~
+ASN.1:
+  algorithm AlgorithmIdentifier ::= {
+    algorithm id-ecPublicKey   -- (1.2.840.10045.2.1)
+    parameters ANY ::= {
+      AlgorithmIdentifier ::= {
+        algorithm secp521r1   -- (1.3.132.0.35)
+        }
+      }
+    }
+
+DER:
+  30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
+~~~
+
+**ECDSA NIST-521 -- AlgorithmIdentifier of Signature**
+
+~~~
+ASN.1:
+  signature AlgorithmIdentifier ::= {
+    algorithm ecdsa-with-SHA512   -- (1.2.840.10045.4.3.4)
+    }
+
+DER:
+  30 0A 06 08 2A 86 48 CE 3D 04 03 04
 ~~~
 
 **ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key**
@@ -2005,7 +2103,7 @@ The authors wish to note that this gives composite algorithms great future utili
 
 The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this document.
 
-If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv2.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
+If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
 ### Hybrid Extensions (Keys and Signatures)
 
@@ -2014,6 +2112,36 @@ The use of Composite Crypto provides the possibility to process multiple algorit
 
 <!-- End of Implementation Considerations section -->
 
+
+# Test Vectors {#appdx-samples}
+
+The following test vectors are provided in a format similar to the NIST ACVP Known-Answer-Tests (KATs).
+
+The structure is that a global message `m` is signed over in all test cases. `m` is the ASCII string "The quick brown fox jumps over the lazy dog."
+Within each test case there are the following values:
+
+* `tcId` the name of the algorithm.
+* `pk` the verification public key.
+* `x5c` a self-signed X.509 certificate of the public key.
+* `sk` the raw signature private key.
+* `sk_pkcs8` the signature private key in a PKCS#8 object.
+* `s` the signature value.
+
+Implementers should be able to perform the following tests using the test vectors below:
+
+1. Load the public key `pk` or certificate `x5c` and use it to verify the signature `s` over the message `m`.
+2. Validate the self-signed certificate `x5c`.
+3. Load the signing private key `sk` and use it to produce a new signature which can be verified using the provided `pk` or `x5c`.
+
+Test vectors are provided for each underlying component in isolation for the purposes of debugging.
+
+Due to the length of the test vectors, you may prefer to retrieve them from GitHub. The reference implementation that generated them is also available:
+
+https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
+
+~~~
+{::include src/testvectors_wrapped.json}
+~~~
 
 
 # Intellectual Property Considerations
