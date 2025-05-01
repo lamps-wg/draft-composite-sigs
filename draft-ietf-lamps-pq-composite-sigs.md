@@ -92,6 +92,18 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  SEC1:
+    title: "SEC 1: Elliptic Curve Cryptography"
+    date: May 21, 2009
+    author:
+      org: "Certicom Research"
+    target: https://www.secg.org/sec1-v2.pdf
+  SEC2:
+    title: "SEC 2: Recommended Elliptic Curve Domain Parameters"
+    date: January 27, 2010
+    author:
+      org: "Certicom Research"
+    target: https://www.secg.org/sec2-v2.pdf
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
@@ -739,7 +751,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
 
-While ML-DSA has a single fixed-size representation for each of public key, private key, and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed. Since a design goal of this specification is to treat the traditional component as a pre-existing black box, no requirements are imposed on a composite implementation as to what encodings should be accepted for the traditional component.
+While ML-DSA has a single fixed-size representation for each of public key, private key, and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. Since a design goal of this specification is to treat the traditional component as a pre-existing black box, no requirements are imposed on a composite implementation as to what encodings should be accepted for the traditional component.
 For this reason, the size of the traditional component is left unspecified and all serialization and deserialization routines are specified in terms of the fixed size of the ML-DSA component and assumes that "the rest" is the traditional component. See {{sec-cons-multiple-encodings}} for discussion of security implications.
 
 ### SerializePublicKey and DeserializePublicKey
@@ -1536,7 +1548,7 @@ In the case of CompositeML-DSA, a specific message forgery exists for a cross-pr
 
 As noted in {{sec-serialization}}, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations `(mldsaPK, tradPK1)` and `(mldsaPK, tradPK2)` where `tradPK1` and `tradPK2` are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.
 
-In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding, and reject composites which contain any other encodings. This is permitted by this specification.
+In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and and reject composites which contain any other encodings. This is permitted by this specification.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
@@ -1676,8 +1688,9 @@ This section provides references to the full specification of the algorithms use
 
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
-| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090] |
-| secp384r1 | 1.3.132.0.34 | [RFC6090] |
+| secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090], [SEC2] |
+| secp384r1 | 1.3.132.0.34 | [RFC6090], [SEC2] |
+| secp521r1 | 1.3.132.0.35 | [RFC6090], [SEC2] |
 | brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
 | brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
