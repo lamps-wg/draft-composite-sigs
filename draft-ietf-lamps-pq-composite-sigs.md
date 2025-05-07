@@ -1200,7 +1200,7 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 
 
 <!-- Note to authors, this is not auto-generated on build;
-     you have to manually re-run the python script and 
+     you have to manually re-run the python script and
      commit the results to git.
      This is mainly to save resources and build time on the github commits. -->
 {::include src/domSepTable.md}
@@ -1563,7 +1563,7 @@ Implementations MUST NOT perform strict length checking based on the values in t
 Non-hybrid ML-DSA is included for reference.
 
 <!-- Note to authors, this is not auto-generated on build;
-     you have to manually re-run the python script and 
+     you have to manually re-run the python script and
      commit the results to git.
      This is mainly to save resources and build time on the github commits. -->
 {::include src/sizeTable.md}
