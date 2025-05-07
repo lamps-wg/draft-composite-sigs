@@ -1194,6 +1194,7 @@ The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
+
 ## Domain Separators {#sec-domsep-values}
 
 As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.
@@ -1202,9 +1203,11 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
      commit the results to git.
-     This is mainly to save resources and build time on the github commits.
-     Note that the table caption needs to be edited in the python script -->
+     This is mainly to save resources and build time on the github commits. -->
+
 {::include src/domSepTable.md}
+{: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
+
 
 ## Rationale for choices
 
@@ -1565,9 +1568,10 @@ Non-hybrid ML-DSA is included for reference.
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
      commit the results to git.
-     This is mainly to save resources and build time on the github commits.
-     Note that the table caption needs to be edited in the python script -->
+     This is mainly to save resources and build time on the github commits. -->
+
 {::include src/sizeTable.md}
+{: #tab-size-values title="Approximate size values of composite ML-DSA"}
 
 
 

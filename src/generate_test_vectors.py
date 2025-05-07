@@ -1088,8 +1088,6 @@ def writeSizeTable():
                  str(row['sk']).center(14, ' ') +'|'+
                  str(row['s']).center(14, ' ') +'|\n' )
       
-      f.write("{: #tab-size-values title=\"Approximate size values of composite ML-DSA\"}")
-
       
 def writeDomainTable():
   """
@@ -1103,25 +1101,24 @@ def writeDomainTable():
     for alg in DOMAIN_TABLE:
       if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
         f.write('| ' + alg.ljust(46, ' ') + " | " + str(DOMAIN_TABLE[alg][0].decode('ascii')) + " |\n")
-
-    f.write("{: #tab-sig-alg-oids title=\"Pure ML-DSA Composite Signature Domain Separators\"}")
+        
 
 
 def main():
 
   # Single algs - remove these, just for testing
-  # jsonOutput['tests'].append( doSig(RSA2048PSS()) )
-  # jsonOutput['tests'].append( doSig(RSA2048PKCS1()) )
-  # jsonOutput['tests'].append( doSig(RSA3072PSS()) )
-  # jsonOutput['tests'].append( doSig(RSA3072PKCS1()) )
-  # jsonOutput['tests'].append( doSig(RSA4096PSS()) )
-  # jsonOutput['tests'].append( doSig(RSA4096PKCS1()) )
-  # jsonOutput['tests'].append( doSig(ECDSAP256()) )
-  # jsonOutput['tests'].append( doSig(ECDSABP256()) )
-  # jsonOutput['tests'].append( doSig(ECDSAP384()) )
-  # jsonOutput['tests'].append( doSig(ECDSABP384()) )
-  # jsonOutput['tests'].append( doSig(Ed25519()) )
-  # jsonOutput['tests'].append( doSig(Ed448()) )
+  # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA3072PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA3072PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA4096PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA4096PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(ECDSAP256(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(ECDSABP256(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(ECDSAP384(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(ECDSABP384(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(Ed25519(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(Ed448(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   doSig(MLDSA44(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   doSig(MLDSA65(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   doSig(MLDSA87(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
