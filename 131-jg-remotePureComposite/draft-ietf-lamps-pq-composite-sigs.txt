@@ -2317,7 +2317,12 @@ Appendix A.  Approximate Key and Signature Sizes
 
    Note that by contrast, ML-DSA values are always fixed size, so
    composite values can always be correctly de-serialized based on the
-   size of the ML-DSA component.
+   size of the ML-DSA component.  It is expected for the size values of
+   RSA and ECDSA variants to fluctuate by a few bytes even between
+   subsequent runs of the same composite implementation signing the same
+   message over different keys.  EdDSA values are always fixed size, so
+   the size values for ML-DSA + EdDSA variants can be treated as
+   constants.
 
    Implementations MUST NOT perform strict length checking based on the
    values in this table.
