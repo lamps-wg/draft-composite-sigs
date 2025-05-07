@@ -290,7 +290,7 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 ## Pure vs Pre-hashed modes
 
-In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively.  Following this, this document defines "Composite-ML-DSA" which uses a strong hash function in the Message format, and makes use of the pure "ML-DSA" mode as the underlying ML-DSA mode.   This gives Composite ML-DSA a balance between performance and security.
+In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" which uses a strong hash function in the Message format, and makes use of the pure "ML-DSA" mode as the underlying ML-DSA mode. This gives Composite ML-DSA a balance between performance and security.
 
 # Composite ML-DSA Functions {#sec-sigs}
 
