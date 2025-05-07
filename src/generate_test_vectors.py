@@ -1097,7 +1097,8 @@ def writeDomainTable():
   """
 
   with open('domSepTable.md', 'w') as f:
-    f.write('| Composite Signature Algorithm | Domain Separator (in Hex encoding)|\n')
+    f.write('| Composite Signature Algorithm                | Domain Separator (in Hex encoding)|\n')
+    f.write('| -------------------------------------------  | --------------------------------- |\n')
 
     for alg in DOMAIN_TABLE:
       if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
