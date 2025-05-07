@@ -987,26 +987,13 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.
 
-| Composite Signature Algorithm | Domain Separator (in Hex encoding)|
-| ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256 | 060B6086480186FA6B50080150|
-| id-MLDSA44-RSA2048-PKCS15-SHA256 |060B6086480186FA6B50080151|
-| id-MLDSA44-Ed25519-SHA512 |060B6086480186FA6B50080152|
-| id-MLDSA44-ECDSA-P256-SHA256 |060B6086480186FA6B50080153|
-| id-MLDSA65-RSA3072-PSS-SHA512 |060B6086480186FA6B50080154|
-| id-MLDSA65-RSA3072-PKCS15-SHA512 |060B6086480186FA6B50080155|
-| id-MLDSA65-RSA4096-PSS-SHA512 |060B6086480186FA6B50080156|
-| id-MLDSA65-RSA4096-PKCS15-SHA512 |060B6086480186FA6B50080157|
-| id-MLDSA65-ECDSA-P256-SHA512 |060B6086480186FA6B50080158|
-| id-MLDSA65-ECDSA-P384-SHA512 |060B6086480186FA6B50080159|
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |060B6086480186FA6B5008015A|
-| id-MLDSA65-Ed25519-SHA512 |060B6086480186FA6B5008015B|
-| id-MLDSA87-ECDSA-P384-SHA512 |060B6086480186FA6B5008015C|
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |060B6086480186FA6B5008015D|
-| id-MLDSA87-Ed448-SHAKE256 |060B6086480186FA6B5008015E|
-| id-MLDSA87-RSA4096-PSS-SHA512 |060B6086480186FA6B5008015F|
-| id-MLDSA87-ECDSA-P521-SHA512 | 060B6086480186FA6B50080160 |
-{: #tab-hash-sig-alg-oids title="Composite ML-DSA Signature Domain Separators"}
+<!-- Note to authors, this is not auto-generated on build;
+     you have to manually re-run the python script and
+     commit the results to git.
+     This is mainly to save resources and build time on the github commits. -->
+
+{::include src/domSepTable.md}
+{: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
 ## Rationale for choices
 
@@ -1279,24 +1266,13 @@ Implementations MUST NOT perform strict length checking based on the values in t
 
 Non-hybrid ML-DSA is included for reference.
 
-| Algorithm                                 |  Public key  |  Private key |  Signature   |
-| ----------------------------------------- | ------------ | ------------ |  ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256             |     1582     |     1249     |     2676     |
-| id-MLDSA44-RSA2048-PKCS15-SHA256          |     1582     |     1249     |     2676     |
-| id-MLDSA44-Ed25519-SHA512                 |     1344     |      64      |     2484     |
-| id-MLDSA44-ECDSA-P256-SHA256              |     1377     |     170      |     2491     |
-| id-MLDSA65-RSA3072-PSS-SHA512             |     2350     |     1825     |     3693     |
-| id-MLDSA65-RSA4096-PSS-SHA512             |     2478     |     2407     |     3821     |
-| id-MLDSA65-RSA4096-PKCS15-SHA512          |     2478     |     2407     |     3821     |
-| id-MLDSA65-ECDSA-P256-SHA512              |     2017     |     170      |     3381     |
-| id-MLDSA65-ECDSA-P384-SHA512              |     2049     |     217      |     3413     |
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512   |     2017     |     171      |     3380     |
-| id-MLDSA65-Ed25519-SHA512                 |     1984     |      64      |     3373     |
-| id-MLDSA87-ECDSA-P384-SHA512              |     2689     |     217      |     4730     |
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512   |     2689     |     221      |     4729     |
-| id-MLDSA87-RSA4096-PSS-SHA512             |     3118     |     2406     |     5139     |
-| id-MLDSA87-Ed448-SHAKE256                 |     2649     |      89      |     4741     |
-| id-MLDSA87-ECDSA-P521-SHA512              |     2085     |     273      |     3447     |
+
+<!-- Note to authors, this is not auto-generated on build;
+     you have to manually re-run the python script and
+     commit the results to git.
+     This is mainly to save resources and build time on the github commits. -->
+
+{::include src/sizeTable.md}
 {: #tab-size-values title="Approximate size values of composite ML-DSA"}
 
 
