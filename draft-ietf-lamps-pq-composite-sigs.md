@@ -1261,7 +1261,7 @@ Note that the sizes listed below are approximate: these values are measured from
 * [RFC8017] allows for RSA private keys to be represented as either `(n, d)` or as Chinese Remainder Theorem as a quintuple `(p, q, dP, dQ, qInv)` and a (possibly empty) sequence of triplets `(r_i, d_i, t_i)`.
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
 
-Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component.
+Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation signing the same message over different keys. EdDSA values are always fixed size, so the size values for ML-DSA + EdDSA variants can be treated as constants.
 
 Implementations MUST NOT perform strict length checking based on the values in this table.
 
