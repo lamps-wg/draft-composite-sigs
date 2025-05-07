@@ -32,3 +32,4 @@
 | id-HashMLDSA87-Ed448-SHAKE256                  | 060B6086480186FA6B5008015E |
 | id-HashMLDSA87-RSA4096-PSS-SHA512              | 060B6086480186FA6B5008015F |
 | id-HashMLDSA87-ECDSA-P521-SHA512               | 060B6086480186FA6B50080160 |
+{: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}

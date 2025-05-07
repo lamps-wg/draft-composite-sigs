@@ -1087,6 +1087,8 @@ def writeSizeTable():
                  str(row['pk']).center(14, ' ') +'|'+
                  str(row['sk']).center(14, ' ') +'|'+
                  str(row['s']).center(14, ' ') +'|\n' )
+      
+      f.write("{: #tab-size-values title=\"Approximate size values of composite ML-DSA\"}")
 
       
 def writeDomainTable():
@@ -1101,6 +1103,7 @@ def writeDomainTable():
       if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
         f.write('| ' + alg.ljust(46, ' ') + " | " + str(DOMAIN_TABLE[alg][0].decode('ascii')) + " |\n")
 
+    f.write("{: #tab-sig-alg-oids title=\"Pure ML-DSA Composite Signature Domain Separators\"}")
 
 
 def main():
