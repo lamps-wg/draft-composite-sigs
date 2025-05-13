@@ -1727,6 +1727,7 @@ This section provides references to the full specification of the algorithms use
 | id-Ed448     | 1.3.101.113 | [RFC8410] |
 | ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758] |
 | ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC5758] |
+| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha384WithRSAEncryption | 1.2.840.113549.1.1.12 | [RFC8017] |
 | id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
