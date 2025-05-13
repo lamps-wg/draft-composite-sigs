@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 6 November 2025                                         M. Pala
+Expires: 14 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                              5 May 2025
+                                                             13 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 November 2025.
+   This Internet-Draft will expire on 14 November 2025.
 
 Copyright Notice
 
@@ -3219,6 +3219,8 @@ Appendix C.  Component Algorithm Reference
     | ecdsa-with-SHA256       | 1.2.840.10045.4.3.2     |[RFC5758]    |
     +-------------------------+-------------------------+-------------+
     | ecdsa-with-SHA384       | 1.2.840.10045.4.3.3     |[RFC5758]    |
+    +-------------------------+-------------------------+-------------+
+    | ecdsa-with-SHA512       | 1.2.840.10045.4.3.4     |[RFC5758]    |
     +-------------------------+-------------------------+-------------+
     | sha256WithRSAEncryption | 1.2.840.113549.1.1.11   |[RFC8017]    |
     +-------------------------+-------------------------+-------------+
