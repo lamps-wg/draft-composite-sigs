@@ -264,7 +264,7 @@ Composite schemes are defined as cryptographic primitives that consist of three 
       which generates a public key pk and a secret key sk.
 
    *  `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
-      as input a secret key sk and a Message, and outputs a signature
+      as input a secret key sk and a Message, and outputs a signature.
 
    *  `Verify(pk, Message, signature) -> true or false`: A verification algorithm
       which takes as input a public key, a Message, and a signature and outputs true
@@ -293,7 +293,7 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" which uses a strong hash function in the Message format, and makes use of the pure "ML-DSA" mode as the underlying ML-DSA mode. This gives Composite ML-DSA a balance between performance and security.
 
-# Composite ML-DSA Functions {#sec-sigs}
+# Composite/HashComposite ML-DSA Functions {#sec-sigs}
 
 ## Key Generation
 
@@ -335,8 +335,8 @@ Key Generation Process:
 
   3. Encode the component keys into composite structures
 
-      pk = CompositeSignaturePublicKey(mldsaPK, tradPK)
-      sk = CompositeSignaturePrivateKey(mldsaSK, tradSK)
+      pk = CompositeMLDSAPublicKey(mldsaPK, tradPK)
+      sk = CompositeMLDSAPrivateKey(mldsaSK, tradSK)
 
   4. Output the composite keys
 
@@ -345,7 +345,7 @@ Key Generation Process:
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
 
-The structures CompositeSignaturePublicKey and CompositeSignaturePrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoperability is not required.
+The structures CompositeMLDSAPublicKey and CompositeMLDSAPrivateKey are described in {{sec-composite-pub-keys}} and {{sec-priv-key}} respectively and are used here as placeholders since implementations MAY use their own internal key representations in cases where interoperability is not required.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
@@ -353,7 +353,187 @@ Note that in step 2 above, both component key generation processes are invoked, 
 
 ## Signature Mode {#sec-comp-sig-gen-prehash}
 
+<<<<<<< HEAD
 In CompositeML-DSA, the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+=======
+This mode mirrors `ML-DSA` defined in Sections 5.2 and 5.3 of [FIPS.204].
+
+In the pure mode the Domain separator value is concatenated with the length of the context in bytes, the context, and the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+
+A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
+
+
+### Composite-ML-DSA.Sign
+
+This mode mirrors `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 2 in Section 5.2 of [FIPS.204].
+
+~~~
+Composite-ML-DSA.Sign (sk, M, ctx) -> (signature)
+
+Explicit inputs:
+
+  sk    Composite private key consisting of signing private keys for
+        each component.
+
+  M     The Message to be signed, an octet string.
+
+  ctx   The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
+
+
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
+           or "Ed25519".
+
+  Domain   Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
+
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+Output:
+
+  signature   The composite signature, a CompositeSignatureValue.
+
+Signature Generation Process:
+
+  1. If len(ctx) > 255:
+      return error
+
+  2. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
+
+      M' = Prefix || Domain || len(ctx) || ctx || M
+
+  3. Separate the private key into component keys.
+
+      (mldsaSK, tradSK) = sk
+
+  4. Generate the 2 component signatures independently, by calculating
+     the signature over M' according to their algorithm specifications.
+
+      mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+      tradSig = Trad.Sign( tradSK, M' )
+
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
+     process must return an error.
+
+      if NOT mldsaSig or NOT tradSig:
+        output "Signature generation error"
+
+   6. Encode each component signature into a CompositeSignatureValue.
+
+      signature = CompositeSignatureValue(mldsaSig, tradSig)
+
+  7. Output signature
+
+      return signature
+~~~
+{: # title="Composite-ML-DSA.Sign(sk, M, ctx)"}
+
+It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
+
+Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
+
+Note that there are two different context strings `ctx` here: the first is the application context that is passed into `Composite-ML-DSA.Sign` and bound to the composite signature combiner (by default it is an empty string). The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` (it is always set to the domain separator value). Here Composite-ML-DSA itself is the application that we wish to bind while the outer application context is already contained within the `M'` message.
+
+
+
+### Composite-ML-DSA.Verify {#sec-comp-sig-verify}
+
+This mode mirrors `ML-DSA.Verify(pk, M, signature, ctx)` defined in Algorithm 3 in Section 5.3 of [FIPS.204].
+
+Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
+
+~~~
+Composite-ML-DSA.Verify(pk, M, signature, ctx)
+
+Explicit inputs:
+
+  pk          Composite public key consisting of verification public keys
+              for each component.
+
+  M           Message whose signature is to be verified,
+              an octet string.
+
+  signature   CompositeSignatureValue containing the component
+              signature values (mldsaSig and tradSig) to be verified.
+
+  ctx         The Message context string used in the composite signature
+              combiner, which defaults to the empty string.
+
+Implicit inputs:
+
+  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+           parameter set to use, for example, could be "ML-DSA-65".
+
+  Trad     A placeholder for the specific traditional algorithm and
+           parameter set to use, for example "RSASSA-PSS with id-sha256"
+           or "Ed25519".
+
+  Domain   Domain separator value for binding the signature to the
+           Composite OID. See section on Domain Separators below.
+
+  Prefix   The prefix String which is the byte encoding of the String
+           "CompositeAlgorithmSignatures2025" which in hex is
+           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+
+Output:
+    Validity (bool)    "Valid signature" (true) if the composite
+                        signature is valid, "Invalid signature"
+                        (false) otherwise.
+
+Signature Verification Process:
+
+  1. If len(ctx) > 255
+      return error
+
+  2. Separate the keys and signatures
+
+        (pk1, pk2) = pk
+        (s1, s2)   = signature
+
+    If Error during Desequencing, or if any of the component
+    keys or signature values are not of the correct key type or
+    length for the given component algorithm then output
+    "Invalid signature" and stop.
+
+  3. Compute the Message M'.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
+
+        M' = Prefix || Domain || len(ctx) || ctx || M
+
+  4. Check each component signature individually, according to its
+     algorithm specification.
+     If any fail, then the entire signature validation fails.
+
+        if not ML-DSA.Verify( pk1, M', s1, ctx=Domain) then
+          output "Invalid signature"
+
+        if not Trad.Verify( pk2, M', s2) then
+          output "Invalid signature"
+
+        if all succeeded, then
+          output "Valid signature"
+~~~
+{: #alg-composite-verify title="Composite-ML-DSA.Verify(pk, Message, signature, Context)"}
+
+Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
+
+## PreHash-Signature Mode {#sec-comp-sig-gen-prehash}
+
+This mode mirrors `HashML-DSA` defined in Section 5.4 of [FIPS.204].
+
+In the pre-hash mode the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are then placed in the CompositeSignatureValue structure defined in {{sec-composite-sig-structs}}.
+>>>>>>> main
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
@@ -452,7 +632,7 @@ Note that there are two different context strings `ctx` here: the first is the a
 
 ### Composite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
 
-This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Section 5.4.1 of [FIPS.204].
+This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Algorithm 5 Section 5.4.1 of [FIPS.204].
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
@@ -585,8 +765,7 @@ Serialization Process:
 {: #alg-composite-serialize-pk title="SerializePublicKey(mldsaPK, tradPK) -> bytes"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
-key is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component key is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
 Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
@@ -729,8 +908,7 @@ Serialization Process:
 {: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component
-signature is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
 Composite-ML-DSA.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
@@ -990,6 +1168,7 @@ The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
+
 ## Domain Separators {#sec-domsep-values}
 
 As mentioned above, the OID input value is used as a domain separator for the Composite Signature Generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.
@@ -1060,9 +1239,14 @@ where:
 
 ### RSA4096-PSS
 
-The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65.
+The RSA component keys MUST be generated at the 4096-bit security level in order to match that of ML-DSA-65 or ML-DSA-87.
 
-As with the other composite signature algorithms, when `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA4096-PSS` or `id-HashMLDSA65-RSA4096-PSS-SHA384` SHALL instantiate RSASSA-PSS with the following parameters:
+When
+* `id-MLDSA65-RSA4096-PSS`,
+* `id-HashMLDSA65-RSA4096-PSS-SHA512`,
+* `id-MLDSA87-RSA4096-PSS` or
+* `id-HashMLDSA87-RSA4096-PSS-SHA512`
+is used in an AlgorithmIdentifier, the parameters MUST be absent and RSASSA-PSS SHALL be instantiated with the following parameters:
 
 | RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
@@ -1201,16 +1385,16 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.
 
-Dual-algorithm security. The general idea is that the data is proctected by two algorithms such that an attacker would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. {{sec-cons-non-separability}} goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an attacker can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value.
+Dual-algorithm security. The general idea is that the data is protected by two algorithms such that an attacker would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. {{sec-cons-non-separability}} goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an attacker can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value.
 
-Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode where the client can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded clients to co-exist and communicate. The Composites presented in this specification do not provide this since they operate in a strict "AND" mode, but they do provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC. Composites allow them to add to this an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implemtation is still experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
+Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode where the client can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded clients to co-exist and communicate. The Composites presented in this specification do not provide this since they operate in a strict "AND" mode, but they do provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC. Composites allow them to add to this an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
 
 
 ## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
 
 The signature combiner defined in this document is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
 
-Unforgeability properties are somewhat more nuanced. We recall first the definitions of Exitential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF).The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. SUF requires that the attacker cannot construct a new signature to an already-signed message.
+Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF).The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m` was never signed by the oracle. SUF requires that the attacker cannot construct a new signature to an already-signed message.
 
 The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its `Verify()` which in turn will cause `CompositeML-DSA.Verify()` to fail.
 
@@ -1227,7 +1411,7 @@ When using single-algorithm cryptography, the best practice is to always generat
 
 Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
 
-In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrollment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibilty of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
+In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
 
 ## Policy for Deprecated and Acceptable Algorithms
@@ -1236,13 +1420,13 @@ Traditionally, a public key, certificate, or signature contains a single cryptog
 
 In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.
 
-Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA512` even after ECDSA-P256 is deprecated.
+Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256` even after ECDSA-P256 is deprecated.
 
 When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.
 
 Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:
 
-1. This specification assumes that all of the component keys within a composite key are freshly generated for the composite; ie a given public key MUST NOT appear as a component within a composite key and also within single-algorithm constructions.
+1. This specification assumes that all of the component keys within a composite key are freshly generated for the composite; i.e. a given public key MUST NOT appear as a component within a composite key and also within single-algorithm constructions.
 
 2. This specification assumes that composite public keys will be bound in a structure that contains a signature over the public key (for example, an X.509 Certificate [RFC5280]), which is chained back to a trust anchor, and where that signature algorithm is at least as strong as the composite public key that it is protecting.
 
@@ -1272,7 +1456,6 @@ Note that by contrast, ML-DSA values are always fixed size, so composite values 
 Implementations MUST NOT perform strict length checking based on the values in this table.
 
 Non-hybrid ML-DSA is included for reference.
-
 
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
@@ -1339,9 +1522,10 @@ This section provides references to the full specification of the algorithms use
 | id-Ed25519   | 1.3.101.112 | [RFC8410] |
 | id-Ed448     | 1.3.101.113 | [RFC8410] |
 | ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758] |
+| ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC5758] |
 | ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
-| sha512WithRSAEncryption | 1.2.840.113549.1.1.13 | [RFC8017] |
+| sha384WithRSAEncryption | 1.2.840.113549.1.1.12 | [RFC8017] |
 | id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
 {: #tab-component-sig-algs title="Component Signature Algorithms used in Composite Constructions"}
 
@@ -1358,7 +1542,7 @@ This section provides references to the full specification of the algorithms use
 | ----------- | ----------- | ----------- |
 | id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
 | id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234] |
-{: #tab-component-hash title="Hash algorithms used in Composite Constructions"}
+{: #tab-component-hash title="Hash algorithms used in pre-hashed Composite Constructions to build PH element"}
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
 
