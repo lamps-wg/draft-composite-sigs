@@ -2427,7 +2427,7 @@ CompositeSignatureValue ::= BIT STRING
           </tbody>
         </table>
 </div>
-<p id="section-7.1-3">Note that pre-hhash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [!RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-4">See the ASN.1 module in <a href="#sec-asn1-module" class="auto internal xref">Section 8</a> for the explicit definitions of the above Composite ML-DSA algorithms.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of <code>Composite-ML-DSA.Sign</code> in section <a href="#sec-hash-comp-sig-sign" class="auto internal xref">Section 4.2.1</a> and <code>Composite-ML-DSA.Verify</code> in <a href="#sec-hash-comp-sig-verify" class="auto internal xref">Section 4.2.2</a>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
 <p id="section-7.1-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
