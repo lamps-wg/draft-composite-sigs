@@ -980,7 +980,7 @@ Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.96   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-Note that pre-hhash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [!RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
+Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
