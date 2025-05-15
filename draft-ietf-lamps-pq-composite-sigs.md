@@ -104,6 +104,11 @@ normative:
     author:
       org: "Certicom Research"
     target: https://www.secg.org/sec2-v2.pdf
+  X9.62–2005:
+    title: "Public Key Cryptography for the Financial Services Industry The Elliptic Curve Digital Signature Algorithm (ECDSA)"
+    date: "November 16, 2005"
+    author:
+      org: "American National Standards Institute"
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
@@ -738,8 +743,14 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-composite-key-structs}} and {{sec-composite-sigs-structs}}.
 
-While ML-DSA has a single fixed-size representation for each of public key, private key, and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. Since a design goal of this specification is to treat the traditional component as a pre-existing black box, no requirements are imposed on a composite implementation as to what encodings should be accepted for the traditional component.
-For this reason, the size of the traditional component is left unspecified and all serialization and deserialization routines are specified in terms of the fixed size of the ML-DSA component and assumes that "the rest" is the traditional component. See {{sec-cons-multiple-encodings}} for discussion of security implications.
+While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
+
+* **ML-DSA**: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.
+* **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017]. For maximum interoperability, it is RECOMMENDED to use the `(n,d)` private key representation.
+* **ECDSA**: MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
+* **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032] and section 4 of [RFC8410].
+
+In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
 ### SerializePublicKey and DeserializePublicKey
 
@@ -1132,7 +1143,7 @@ This table summarizes the list of Composite ML-DSA algorithms and lists the OID 
 
 EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-&lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
+&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1
 
 ## PureComposite-ML-DSA Algorithm Identifiers
 
@@ -1195,6 +1206,7 @@ See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the 
 The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `HashComposite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `HashComposite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
+
 
 ## Domain Separators {#sec-domsep-values}
 
@@ -1549,7 +1561,7 @@ In the case of CompositeML-DSA, a specific message forgery exists for a cross-pr
 
 As noted in {{sec-serialization}}, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations `(mldsaPK, tradPK1)` and `(mldsaPK, tradPK2)` where `tradPK1` and `tradPK2` are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.
 
-In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and and reject composites which contain any other encodings. This is permitted by this specification.
+In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This is permitted by this specification.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
@@ -1589,13 +1601,12 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 --- back
 
-# Approximate Key and Signature Sizes
+# Approximate Key and Signature Sizes {#sec-sizetable}
 
 Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:
 
 * Compressed vs uncompressed EC point.
 * The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017].
-* [RFC8017] allows for RSA private keys to be represented as either `(n, d)` or as Chinese Remainder Theorem as a quintuple `(p, q, dP, dQ, qInv)` and a (possibly empty) sequence of triplets `(r_i, d_i, t_i)`.
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
 
 Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component.
@@ -1734,10 +1745,10 @@ This section provides references to the full specification of the algorithms use
 | id-ML-DSA-44 | 2.16.840.1.101.3.4.3.17 | [FIPS.204] |
 | id-ML-DSA-65 | 2.16.840.1.101.3.4.3.18 | [FIPS.204] |
 | id-ML-DSA-87 | 2.16.840.1.101.3.4.3.19 | [FIPS.204] |
-| id-Ed25519   | 1.3.101.112 | [RFC8410] |
-| id-Ed448     | 1.3.101.113 | [RFC8410] |
-| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758] |
-| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
+| id-Ed25519   | 1.3.101.112 | [RFC8032], [RFC8410] |
+| id-Ed448     | 1.3.101.113 | [RFC8032], [RFC8410] |
+| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha512WithRSAEncryption | 1.2.840.113549.1.1.13 | [RFC8017] |
 | id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
@@ -1746,8 +1757,8 @@ This section provides references to the full specification of the algorithms use
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
 | secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090], [SEC2] |
-| secp384r1 | 1.3.132.0.34 | [RFC6090], [SEC2] |
-| secp521r1 | 1.3.132.0.35 | [RFC6090], [SEC2] |
+| secp384r1 | 1.3.132.0.34 | [RFC5480], [RFC6090], [SEC2] |
+| secp521r1 | 1.3.132.0.35 | [RFC5480], [RFC6090], [SEC2] |
 | brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
 | brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
