@@ -297,6 +297,16 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" which uses a strong hash function in the Message format, and makes use of the pure "ML-DSA" mode as the underlying ML-DSA mode. This gives Composite ML-DSA a balance between performance and security.
 
+
+## Domain Separators and CTX {#sec-domsep-and-ctx}
+
+In CompositeML-DSA, the Domain separator defined in {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
+
+A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
+
+Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+
+
 # Composite/HashComposite ML-DSA Functions {#sec-sigs}
 
 ## Key Generation
@@ -353,16 +363,8 @@ In order to ensure fresh keys, the key generation functions MUST be executed for
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
-## Signature Mode {#sec-comp-sig-gen-prehash}
 
-In CompositeML-DSA, the Domain separator {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
-
-A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
-
-Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
-
-
-### Composite-ML-DSA-Sign signature mode {#sec-hash-comp-sig-sign}
+## Sign {#sec-hash-comp-sig-sign}
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Algorithm 4 Section 5.4.1 of [FIPS.204].
 
@@ -451,8 +453,7 @@ Note that in step 5 above, both component signature processes are invoked, and n
 Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
 
 
-
-### Composite-ML-DSA-Verify {#sec-hash-comp-sig-verify}
+## Verify {#sec-hash-comp-sig-verify}
 
 This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Algorithm 5 Section 5.4.1 of [FIPS.204].
 
@@ -777,12 +778,6 @@ Deserialization Process:
      output (mldsaSig, tradSig)
 ~~~
 {: #alg-composite-deserialize-sig title="DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)"}
-
-
-
-# Composite Key Structures {#sec-composite-key-structs}
-
-In order to form composite public keys and signature values, we define ASN.1-based composite encodings such that these structures can be used as a drop-in replacement for existing public key and signature fields such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652].
 
 
 # Use within X.509 and PKIX
