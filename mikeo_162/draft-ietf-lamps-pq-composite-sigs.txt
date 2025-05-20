@@ -83,44 +83,43 @@ Table of Contents
      2.2.  Composite Design Philosophy
    3.  Overview of the Composite ML-DSA Signature Scheme
      3.1.  Pure vs Pre-hashed modes
+     3.2.  Domain Separators and CTX
    4.  Composite/HashComposite ML-DSA Functions
      4.1.  Key Generation
-     4.2.  Signature Mode
-       4.2.1.  Composite-ML-DSA-Sign signature mode
-       4.2.2.  Composite-ML-DSA-Verify
+     4.2.  Sign
+     4.3.  Verify
    5.  Serialization
      5.1.  SerializePublicKey and DeserializePublicKey
      5.2.  SerializePrivateKey and DeserializePrivateKey
      5.3.  SerializeSignatureValue and DeserializeSignatureValue
-   6.  Composite Key Structures
-   7.  Use within X.509 and PKIX
-     7.1.  Encoding to DER
-     7.2.  Key Usage Bits
-     7.3.  ASN.1 Definitions
-   8.  Algorithm Identifiers
-     8.1.  Composite-ML-DSA Algorithm Identifiers
-     8.2.  Domain Separators
-     8.3.  Rationale for choices
-     8.4.  RSASSA-PSS
-       8.4.1.  RSA2048-PSS
-       8.4.2.  RSA3072-PSS
-       8.4.3.  RSA4096-PSS
-   9.  ASN.1 Module
-   10. IANA Considerations
-     10.1.  Object Identifier Allocations
-       10.1.1.  Module Registration - SMI Security for PKIX Module
+   6.  Use within X.509 and PKIX
+     6.1.  Encoding to DER
+     6.2.  Key Usage Bits
+     6.3.  ASN.1 Definitions
+   7.  Algorithm Identifiers
+     7.1.  Composite-ML-DSA Algorithm Identifiers
+     7.2.  Domain Separators
+     7.3.  Rationale for choices
+     7.4.  RSASSA-PSS
+       7.4.1.  RSA2048-PSS
+       7.4.2.  RSA3072-PSS
+       7.4.3.  RSA4096-PSS
+   8.  ASN.1 Module
+   9.  IANA Considerations
+     9.1.  Object Identifier Allocations
+       9.1.1.  Module Registration - SMI Security for PKIX Module
                Identifier
-       10.1.2.  Object Identifier Registrations - SMI Security for
-               PKIX Algorithms
-   11. Security Considerations
-     11.1.  Why Hybrids?
-     11.2.  Non-separability, EUF-CMA and SUF
-     11.3.  Key Reuse
-     11.4.  Policy for Deprecated and Acceptable Algorithms
-     11.5.  Use of Prefix to for attack mitigation
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
+       9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+               Algorithms
+   10. Security Considerations
+     10.1.  Why Hybrids?
+     10.2.  Non-separability, EUF-CMA and SUF
+     10.3.  Key Reuse
+     10.4.  Policy for Deprecated and Acceptable Algorithms
+     10.5.  Use of Prefix to for attack mitigation
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Appendix A.  Approximate Key and Signature Sizes
    Appendix B.  Samples
      B.1.  Message Format Examples
@@ -333,6 +332,27 @@ Table of Contents
    "ML-DSA" mode as the underlying ML-DSA mode.  This gives Composite
    ML-DSA a balance between performance and security.
 
+3.2.  Domain Separators and CTX
+
+   In CompositeML-DSA, the Domain separator defined in Section 7.2 is
+   concatenated with the length of the context in bytes, the context, an
+   additional DER encoded value that represents the OID of the Hash
+   function and finally the hash of the message to be signed.  After
+   that, the signature process for each component algorithm is invoked
+   and the values are serialized into a composite signature value as per
+   Section 5.3.
+
+   A composite signature's value MUST include two signature components
+   and MUST be in the same order as the components from the
+   corresponding signing key.
+
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
+
 4.  Composite/HashComposite ML-DSA Functions
 
 4.1.  Key Generation
@@ -340,7 +360,7 @@ Table of Contents
    In order to maintain security properties of the composite,
    applications that use composite keys MUST always perform fresh key
    generations of both component keys and MUST NOT reuse existing key
-   material.  See Section 11.3 for a discussion.
+   material.  See Section 10.3 for a discussion.
 
    To generate a new keypair for Composite schemes, the KeyGen() -> (pk,
    sk) function is used.  The KeyGen() function calls the two key
@@ -395,40 +415,19 @@ Table of Contents
    use, import or export component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
-   section Section 11.3.
+   section Section 10.3.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
 
-4.2.  Signature Mode
-
-   In CompositeML-DSA, the Domain separator Section 8.2 is concatenated
-   with the length of the context in bytes, the context, an additional
-   DER encoded value that represents the OID of the Hash function and
-   finally the hash of the message to be signed.  After that, the
-   signature process for each component algorithm is invoked and the
-   values are serialized into a composite signature value as per
-   Section 5.3.
-
-   A composite signature's value MUST include two signature components
-   and MUST be in the same order as the components from the
-   corresponding signing key.
-
-   Note that there are two different context strings ctx here: the first
-   is the application context that is passed in to Composite-ML-DSA.Sign
-   and bound to the composite signature combiner.  The second is the ctx
-   that is passed down into the underlying ML-DSA.Sign and here
-   Composite-ML-DSA itself is the application that we wish to bind, and
-   outer ctx is already contained within the M' message.
-
-4.2.1.  Composite-ML-DSA-Sign signature mode
+4.2.  Sign
 
    This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in
    Algorithm 4 Section 5.4.1 of [FIPS.204].
 
-   In CompositeML-DSA, the Domain separator (see Section 8.2) is
+   In CompositeML-DSA, the Domain separator (see Section 7.2) is
    concatenated with the length of the context in bytes, the context, an
    additional DER encoded value that indicates which Hash function was
    used for the pre-hash and finally the pre-hashed message PH(M).
@@ -526,7 +525,7 @@ Signature Generation Process:
    Composite-ML-DSA itself is the application that we wish to bind, and
    outer ctx is already contained within the M' message.
 
-4.2.2.  Composite-ML-DSA-Verify
+4.3.  Verify
 
    This mode mirrors HashML-DSA.Verify(pk, M, signature, ctx, PH)
    defined in Algorithm 5 Section 5.4.1 of [FIPS.204].
@@ -648,7 +647,7 @@ Signature Verification Process:
              Table 1: ML-DSA Key and Signature Sizes in bytes
 
    When these values are required to be carried in an ASN.1 structure,
-   they are wrapped as described in Section 7.1.
+   they are wrapped as described in Section 6.1.
 
 5.1.  SerializePublicKey and DeserializePublicKey
 
@@ -865,15 +864,7 @@ Deserialization Process:
 
   Figure 9: DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
 
-6.  Composite Key Structures
-
-   In order to form composite public keys and signature values, we
-   define ASN.1-based composite encodings such that these structures can
-   be used as a drop-in replacement for existing public key and
-   signature fields such as those found in PKCS#10 [RFC2986], CMP
-   [RFC4210], X.509 [RFC5280], CMS [RFC5652].
-
-7.  Use within X.509 and PKIX
+6.  Use within X.509 and PKIX
 
    The following sections provide processing logic and the necessary
    ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX
@@ -887,7 +878,7 @@ Deserialization Process:
    such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509
    [RFC5280], CMS [RFC5652].
 
-7.1.  Encoding to DER
+6.1.  Encoding to DER
 
    The serialization routines presented in Section 5 produce raw binary
    values.  When these values are required to be carried within a DER-
@@ -905,7 +896,7 @@ Deserialization Process:
    When an OCTET STRING is required, the DER encoding of the composite
    data value SHALL be used directly.
 
-7.2.  Key Usage Bits
+6.2.  Key Usage Bits
 
    When any of the Composite ML-DSA AlgorithmIdentifier appears in the
    SubjectPublicKeyInfo field of an X.509 certificate [RFC5280], the key
@@ -935,7 +926,7 @@ Deserialization Process:
    encryption, the post-quantum algorithms do not and therefore the
    overall composite algorithm does not.
 
-7.3.  ASN.1 Definitions
+6.3.  ASN.1 Definitions
 
    The wire encoding of a Composite ML-DSA public key is:
 
@@ -960,7 +951,7 @@ Deserialization Process:
        CompositeMLDSAPublicKey }
 
    The full set of key types defined by this specification can be found
-   in the ASN.1 Module in Section 9.
+   in the ASN.1 Module in Section 8.
 
    The ASN.1 algorithm object for a composite signature is:
 
@@ -999,32 +990,32 @@ Deserialization Process:
    structure (version 1 of which is also known as PrivateKeyInfo)
    [RFC5958], the privateKeyAlgorithm field SHALL be set to the
    corresponding composite algorithm identifier defined according to
-   Section 8 and its parameters field MUST be absent.  The privateKey
+   Section 7 and its parameters field MUST be absent.  The privateKey
    field SHALL contain the OCTET STRING reperesentation of the
    serialized composite private key as per Section 5.2.  The publicKey
    field remains OPTIONAL.  If the publicKey field is present, it MUST
    be a composite public key as per Section 5.1.
 
    Some applications may need to reconstruct the OneAsymmetricKey
-   objects corresponding to each component private key.  Section 8
+   objects corresponding to each component private key.  Section 7
    provides the necessary mapping between composite and their component
    algorithms for doing this reconstruction.
 
    Component keys of a composite MUST NOT be used in any other type of
    key or as a standalone key.  For more details on the security
-   considerations around key reuse, see section Section 11.3.
+   considerations around key reuse, see section Section 10.3.
 
-8.  Algorithm Identifiers
+7.  Algorithm Identifiers
 
    This table summarizes the list of Composite ML-DSA algorithms and
    lists the OID and the two component algorithms.  Domain separator
-   values are defined below in Section 8.2.
+   values are defined below in Section 7.2.
 
    EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
    <CompSig>.1 is equal to 2.16.840.1.114027.80.8.1.1
 
-8.1.  Composite-ML-DSA Algorithm Identifiers
+7.1.  Composite-ML-DSA Algorithm Identifiers
 
    Composite-ML-DSA Signature public key types:
 
@@ -1091,18 +1082,18 @@ Deserialization Process:
    Ed448 they match the hash function defined in [RFC8032]; SHA512 for
    Ed25519ph and SHAKE256(x, 64) for Ed448.
 
-   See the ASN.1 module in Section 9 for the explicit definitions of the
+   See the ASN.1 module in Section 8 for the explicit definitions of the
    above Composite ML-DSA algorithms.
 
    The Pre-Hash algorithm is used as the PH algorithm and the DER
    Encoded OID value of this Hash is used as HashOID for the Message
-   format in step 2 of Composite-ML-DSA.Sign in section Section 4.2.1
-   and Composite-ML-DSA.Verify in Section 4.2.2.
+   format in step 2 of Composite-ML-DSA.Sign in section Section 4.2 and
+   Composite-ML-DSA.Verify in Section 4.3.
 
    Full specifications for the referenced algorithms can be found in
    Appendix C.
 
-8.2.  Domain Separators
+7.2.  Domain Separators
 
    As mentioned above, the OID input value is used as a domain separator
    for the Composite Signature Generation and verification process and
@@ -1148,7 +1139,7 @@ Deserialization Process:
 
         Table 3: Pure ML-DSA Composite Signature Domain Separators
 
-8.3.  Rationale for choices
+7.3.  Rationale for choices
 
    In generating the list of Composite algorithms, the following general
    guidance was used, however during development of this specification
@@ -1171,7 +1162,7 @@ Deserialization Process:
    because in this case the pre-hash must not weaken the ML-DSA-87
    component against a collision attack.
 
-8.4.  RSASSA-PSS
+7.4.  RSASSA-PSS
 
    Use of RSASSA-PSS [RFC8017] requires extra parameters to be
    specified, which differ for each security level.
@@ -1181,7 +1172,7 @@ Deserialization Process:
    implementations also would accept rsaEncryption
    (1.2.840.113549.1.1.1).
 
-8.4.1.  RSA2048-PSS
+7.4.1.  RSA2048-PSS
 
    The RSA component keys MUST be generated at the 2048-bit security
    level in order to match that of ML-DSA-44.
@@ -1212,7 +1203,7 @@ Deserialization Process:
 
    *  SHA-256 is defined in [RFC6234].
 
-8.4.2.  RSA3072-PSS
+7.4.2.  RSA3072-PSS
 
    The RSA component keys MUST be generated at the 3072-bit security
    level in order to match that of ML-DSA-65.
@@ -1243,7 +1234,7 @@ Deserialization Process:
 
    *  SHA-256 is defined in [RFC6234].
 
-8.4.3.  RSA4096-PSS
+7.4.3.  RSA4096-PSS
 
    The RSA component keys MUST be generated at the 4096-bit security
    level in order to match that of ML-DSA-65 or ML-DSA-87.
@@ -1273,7 +1264,7 @@ Deserialization Process:
 
    *  SHA-384 is defined in [RFC6234].
 
-9.  ASN.1 Module
+8.  ASN.1 Module
 
    <CODE STARTS>
 
@@ -1586,19 +1577,19 @@ Deserialization Process:
 
    <CODE ENDS>
 
-10.  IANA Considerations
+9.  IANA Considerations
 
    IANA is requested to allocate a value from the "SMI Security for PKIX
    Module Identifier" registry [RFC7299] for the included ASN.1 module,
    and allocate values from "SMI Security for PKIX Algorithms" to
    identify the fourteen Algorithms defined within.
 
-10.1.  Object Identifier Allocations
+9.1.  Object Identifier Allocations
 
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
    module and in Table 2.
 
-10.1.1.  Module Registration - SMI Security for PKIX Module Identifier
+9.1.1.  Module Registration - SMI Security for PKIX Module Identifier
 
    *  Decimal: IANA Assigned - *Replace TBDMOD*
 
@@ -1607,8 +1598,8 @@ Deserialization Process:
 
    *  References: This Document
 
-10.1.2.  Object Identifier Registrations - SMI Security for PKIX
-         Algorithms
+9.1.2.  Object Identifier Registrations - SMI Security for PKIX
+        Algorithms
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
 
@@ -1746,9 +1737,9 @@ Deserialization Process:
 
       -  References: This Document
 
-11.  Security Considerations
+10.  Security Considerations
 
-11.1.  Why Hybrids?
+10.1.  Why Hybrids?
 
    In broad terms, a PQ/T Hybrid can be used either to provide dual-
    algorithm security or to provide migration flexibility.  Let's
@@ -1758,7 +1749,7 @@ Deserialization Process:
    protected by two algorithms such that an attacker would need to break
    both in order to compromise the data.  As with most of cryptography,
    this property is easy to state in general terms, but becomes more
-   complicated when expressed in formalisms.  Section 11.2 goes into
+   complicated when expressed in formalisms.  Section 10.2 goes into
    more detail here.  One common counter-argument against PQ/T hybrid
    signatures is that if an attacker can forge one of the component
    algorithms, then why attack the hybrid-signed message at all when
@@ -1785,14 +1776,14 @@ Deserialization Process:
    obtaining FIPS certification of a composite algorithm can be found in
    Appendix E.1.
 
-11.2.  Non-separability, EUF-CMA and SUF
+10.2.  Non-separability, EUF-CMA and SUF
 
    The signature combiner defined in this document is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
    M’ will include the composite domain separator as evidence.  The
    prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 11.3 further strengthens the non-
+   contexts discussed in Section 10.3 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
    the definition of SNS.
@@ -1852,10 +1843,10 @@ Deserialization Process:
    reasonable trade-off.  Moreover and very importantly, the cross-
    protocol EUF-CMA attack in either direction is foiled if implementors
    strictly follow the prohibition on key reuse presented in
-   Section 11.3 since there cannot exist simultaneously composite and
+   Section 10.3 since there cannot exist simultaneously composite and
    non-composite signers and verifiers for the same keys.
 
-11.3.  Key Reuse
+10.3.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
@@ -1874,7 +1865,7 @@ Deserialization Process:
    deployed RSA key pair and combine it with an ML-DSA key pair to form
    a hybrid key pair for use in a hybrid algorithm.  Within a hybrid
    signature context this leads to a class of attacks referred to as
-   "stripping attacks" discussed in Section 11.2 and may also open up
+   "stripping attacks" discussed in Section 10.2 and may also open up
    risks from further cross-protocol attacks.  Despite the weak non-
    separability property offered by the composite signature combiner,
    key reuse MUST be avoided to prevent the introduction of EUF-CMA
@@ -1893,7 +1884,7 @@ Deserialization Process:
    SHOULD also check both component keys independently to verify that
    the component keys have not been revoked.
 
-11.4.  Policy for Deprecated and Acceptable Algorithms
+10.4.  Policy for Deprecated and Acceptable Algorithms
 
    Traditionally, a public key, certificate, or signature contains a
    single cryptographic algorithm.  If and when an algorithm becomes
@@ -1946,7 +1937,7 @@ Deserialization Process:
    in a way that is tamper-resistant and does not allow the component
    keys to be trusted independently.
 
-11.5.  Use of Prefix to for attack mitigation
+10.5.  Use of Prefix to for attack mitigation
 
    The Prefix value specified in the message format calculated in
    Section 4 can be used by a traditional verifier to detect if the
@@ -1959,9 +1950,9 @@ Deserialization Process:
    traditional verifier can check if the Message starts with this prefix
    and reject the message.
 
-12.  References
+11.  References
 
-12.1.  Normative References
+11.1.  Normative References
 
    [FIPS.186-5]
               National Institute of Standards and Technology (NIST),
@@ -2068,7 +2059,7 @@ Deserialization Process:
               Encoding Rules (CER) and Distinguished Encoding Rules
               (DER)", ISO/IEC 8825-1:2015, November 2015.
 
-12.2.  Informative References
+11.2.  Informative References
 
    [ANSSI2024]
               French Cybersecurity Agency (ANSSI), Federal Office for
