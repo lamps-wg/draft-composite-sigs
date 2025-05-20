@@ -1744,11 +1744,19 @@ Each option has been specified because there is a community that has a direct ap
 However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.
 
 This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:
 
     id-MLDSA65-ECDSA-P256-SHA512
 
 
+In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
+
+    id-MLDSA65-RSA3072-PSS-SHA512
+
+
+In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:
+
+    id-MLDSA87-ECDSA-P384-SHA512
 
 <!-- End of Implementation Considerations section -->
 
