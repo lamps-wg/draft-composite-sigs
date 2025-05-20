@@ -340,14 +340,11 @@ Key Generation Process:
       if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
         output "Key generation error"
 
-  3. Encode the component keys into composite structures
+  3. Output the composite public and private keys
 
-      pk = CompositeMLDSAPublicKey(mldsaPK, tradPK)
-      sk = CompositeMLDSAPrivateKey(mldsaSK, tradSK)
-
-  4. Output the composite keys
-
-      return (pk, sk)
+    pk = (mldsaPK, tradPK)
+    sk = (mldsaSK, tradSK)
+    return (pk, sk)
 
 ~~~
 {: #alg-composite-keygen title="Composite KeyGen(pk, sk)"}
