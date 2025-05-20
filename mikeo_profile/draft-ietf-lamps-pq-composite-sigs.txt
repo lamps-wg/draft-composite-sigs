@@ -2878,9 +2878,19 @@ E.3.  Profiling down the number of options
    select a small number of composites appropriate for that application
    domain.  For applications that do not have any regulatory
    requirements or legacy implementations to consider, it is RECOMMENDED
-   to focus implemtation effort on
+   to focus implemtation effort on:
 
    id-MLDSA65-ECDSA-P256-SHA512
+
+   In applications that require RSA, it is RECOMMENDED to focus
+   implementation effort on:
+
+   id-MLDSA65-RSA3072-PSS-SHA512
+
+   In applications that only allow NIST PQC Level 5, it is RECOMMENDED
+   to focus implemtation effort on:
+
+   id-MLDSA87-ECDSA-P384-SHA512
 
 Appendix F.  Test Vectors
 

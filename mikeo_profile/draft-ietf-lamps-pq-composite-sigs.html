@@ -4420,11 +4420,23 @@ DER:
 Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.<a href="#appendix-E.3-1" class="pilcrow">¶</a></p>
 <p id="appendix-E.3-2">However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.<a href="#appendix-E.3-2" class="pilcrow">¶</a></p>
 <p id="appendix-E.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on<a href="#appendix-E.3-3" class="pilcrow">¶</a></p>
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:<a href="#appendix-E.3-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-E.3-4">
 <pre>
 id-MLDSA65-ECDSA-P256-SHA512
 </pre><a href="#appendix-E.3-4" class="pilcrow">¶</a>
+</div>
+<p id="appendix-E.3-5">In applications that require RSA, it is RECOMMENDED to focus implementation effort on:<a href="#appendix-E.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E.3-6">
+<pre>
+id-MLDSA65-RSA3072-PSS-SHA512
+</pre><a href="#appendix-E.3-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-E.3-7">In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:<a href="#appendix-E.3-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E.3-8">
+<pre>
+id-MLDSA87-ECDSA-P384-SHA512
+</pre><a href="#appendix-E.3-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
