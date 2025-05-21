@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 15 November 2025                                        M. Pala
+Expires: 22 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             14 May 2025
+                                                             21 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 November 2025.
+   This Internet-Draft will expire on 22 November 2025.
 
 Copyright Notice
 
@@ -309,7 +309,7 @@ Table of Contents
    PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the
    Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in
    section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in
-   [RFC8410].  A simple "signature combiner"function which prepends a
+   [RFC8410].  A simple "signature combiner" function which prepends a
    domain separator value specific to the composite algorithm is used to
    bind the two component signatures to the composite algorithm and
    achieve weak non-separability.
