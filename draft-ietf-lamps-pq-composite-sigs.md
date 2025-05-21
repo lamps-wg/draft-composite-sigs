@@ -104,6 +104,12 @@ normative:
     author:
       org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+  FIPS.202:
+    title: "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"
+    date: August 2015
+    author:
+      org: "National Institute of Standards and Technology (NIST)"
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
   FIPS.204:
     title: "Module-Lattice-Based Digital Signature Standard"
     date: August 13, 2024
@@ -980,7 +986,7 @@ Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.96   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
+Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) (that is, 64 bytes of SHAKE256 output) for Ed448
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
@@ -1363,7 +1369,8 @@ This section provides references to the full specification of the algorithms use
 | HashID | OID | Specification |
 | ----------- | ----------- | ----------- |
 | id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
-| id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234] |
+| id-sha512 | 2.16.840.1.101.3.4.2.3 | [RFC6234] |
+| id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS 202] |
 {: #tab-component-hash title="Hash algorithms used in pre-hashed Composite Constructions to build PH element"}
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
