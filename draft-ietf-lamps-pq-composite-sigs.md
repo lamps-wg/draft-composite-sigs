@@ -981,7 +981,7 @@ Composite-ML-DSA Signature public key types:
 | id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.91   | id-ML-DSA-65 | id-Ed25519                             | id-sha512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | SHAKE256/64 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | id-shake256/64 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.96   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
