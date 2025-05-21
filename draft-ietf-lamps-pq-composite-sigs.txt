@@ -136,6 +136,7 @@ Table of Contents
      E.1.  FIPS certification
      E.2.  Backwards Compatibility
        E.2.1.  Hybrid Extensions (Keys and Signatures)
+     E.3.  Profiling down the number of options
    Appendix F.  Test Vectors
    Appendix G.  Intellectual Property Considerations
    Appendix H.  Contributors and Acknowledgements
@@ -1163,6 +1164,9 @@ Deserialization Process:
    format in step 2 of Composite-ML-DSA.Sign in section Section 4.2.1
    and Composite-ML-DSA.Verify in Section 4.2.2.
 
+   As the number of algorithms can be daunting to implementers, see
+   Appendix E.3 for a discussion of choosing a subset to support.
+
    Full specifications for the referenced algorithms can be found in
    Appendix C.
 
@@ -2036,8 +2040,8 @@ Deserialization Process:
    Since composite algorithms are registered independently of their
    component algorithms, their deprecation can be handled independently
    from that of their component algorithms.  For example a cryptographic
-   policy might continue to allow id-MLDSA65-ECDSA-P256 even after
-   ECDSA-P256 is deprecated.
+   policy might continue to allow id-MLDSA65-ECDSA-P256-SHA512 even
+   after ECDSA-P256 is deprecated.
 
    When considering stripping attacks, one need consider the case where
    an attacker has fully compromised one of the component algorithms to
@@ -2852,6 +2856,41 @@ E.2.1.  Hybrid Extensions (Keys and Signatures)
    the post-quantum (or extra) keys and signatures, it also requires all
    applications to be updated for correctly processing multiple
    algorithms together.
+
+E.3.  Profiling down the number of options
+
+   One immediately daunting aspect of this specification is the number
+   of composite algorithm combinations.  Each option has been specified
+   because there is a community that has a direct application for it;
+   typically because the traditional component is already deployed in a
+   change-managed environment, or because that specific traditional
+   component is required for regulatory reasons.
+
+   However, this large number of combinations leads either to fracturing
+   of the ecosystem into non-interoperable sub-groups when different
+   communities choose non-overlapping subsets to support, or on the
+   other hand it leads to spreading development resources too thin when
+   trying to support all options.
+
+   This specification does not list any particular composite algorithm
+   as mandatory-to-implement, however organizations that operate within
+   specific application domains are encouraged to define profiles that
+   select a small number of composites appropriate for that application
+   domain.  For applications that do not have any regulatory
+   requirements or legacy implementations to consider, it is RECOMMENDED
+   to focus implemtation effort on:
+
+   id-MLDSA65-ECDSA-P256-SHA512
+
+   In applications that require RSA, it is RECOMMENDED to focus
+   implementation effort on:
+
+   id-MLDSA65-RSA3072-PSS-SHA512
+
+   In applications that only allow NIST PQC Level 5, it is RECOMMENDED
+   to focus implemtation effort on:
+
+   id-MLDSA87-ECDSA-P384-SHA512
 
 Appendix F.  Test Vectors
 
