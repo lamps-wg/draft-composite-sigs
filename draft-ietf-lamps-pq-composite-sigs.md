@@ -266,6 +266,17 @@ This document is consistent with the terminology defined in {{I-D.ietf-pquip-pqt
           A digital cryptographic signature, making no assumptions
             about which algorithm.
 
+
+Notation:
+The algorithm descriptions use python-like syntax. The following symbols deserve special mention:
+
+ * `||` represents concatenation of two byte arrays.
+
+ * `[:]` represents byte array slicing.
+
+ * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.
+
+
 ## Composite Design Philosophy
 
 {{I-D.ietf-pquip-pqt-hybrid-terminology}} defines composites as:
