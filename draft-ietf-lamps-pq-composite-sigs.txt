@@ -83,23 +83,19 @@ Table of Contents
      2.2.  Composite Design Philosophy
    3.  Overview of the Composite ML-DSA Signature Scheme
      3.1.  Pure vs Pre-hashed modes
+     3.2.  Domain Separators and CTX
    4.  Composite/HashComposite ML-DSA Functions
      4.1.  Key Generation
-     4.2.  Signature Mode
-       4.2.1.  Composite-ML-DSA-Sign signature mode
-       4.2.2.  Composite-ML-DSA-Verify
-     4.3.  Serialization
-       4.3.1.  SerializePublicKey and DeserializePublicKey
-       4.3.2.  SerializePrivateKey and DeserializePrivateKey
-       4.3.3.  SerializeSignatureValue and DeSerializeSignatureValue
-   5.  Composite Key Structures
-     5.1.  CompositeMLDSAPublicKey
-     5.2.  CompositeMLDSAPrivateKey
-     5.3.  Encoding Rules
-     5.4.  Key Usage Bits
-   6.  Composite Signature Structures
-     6.1.  sa-CompositeSignature
-     6.2.  CompositeSignatureValue
+     4.2.  Sign
+     4.3.  Verify
+   5.  Serialization
+     5.1.  SerializePublicKey and DeserializePublicKey
+     5.2.  SerializePrivateKey and DeserializePrivateKey
+     5.3.  SerializeSignatureValue and DeserializeSignatureValue
+   6.  Use within X.509 and PKIX
+     6.1.  Encoding to DER
+     6.2.  Key Usage Bits
+     6.3.  ASN.1 Definitions
    7.  Algorithm Identifiers
      7.1.  Composite-ML-DSA Algorithm Identifiers
      7.2.  Domain Separators
@@ -160,9 +156,22 @@ Table of Contents
    *  Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64
       to match the hash functions used in ED448ph in RFC8032.
 
+   *  ML-DSA secret keys are now only seeds.
+
+   *  Since all ML-KEM keys and ciphertexts are now fixed-length,
+      dropped the length-tagged encoding.
+
+   *  Added complete test vectors.
+
    Editorial changes:
 
-   *
+   *  Since the serialization is now non-DER, drastically reduced the
+      ASN.1-based text.
+
+   Still to do in a future version:
+
+   *  [ ] Other outstanding github issues: https://github.com/lamps-wg/
+      draft-composite-sigs/issues
 
 2.  Introduction
 
@@ -237,6 +246,18 @@ Table of Contents
 
    *SIGNATURE*: A digital cryptographic signature, making no assumptions
    about which algorithm.
+
+   Notation: The algorithm descriptions use python-like syntax.  The
+   following symbols deserve special mention:
+
+   *  || represents concatenation of two byte arrays.
+
+   *  [:] represents byte array slicing.
+
+   *  (a, b) represents a pair of values a and b.  Typically this
+      indicates that a function returns multiple values; the exact
+      conveyance mechanism -- tuple, struct, output parameters, etc --
+      is left to the implementer.
 
 2.2.  Composite Design Philosophy
 
@@ -325,9 +346,35 @@ Table of Contents
    "ML-DSA" mode as the underlying ML-DSA mode.  This gives Composite
    ML-DSA a balance between performance and security.
 
+3.2.  Domain Separators and CTX
+
+   In CompositeML-DSA, the Domain separator defined in Section 7.2 is
+   concatenated with the length of the context in bytes, the context, an
+   additional DER encoded value that represents the OID of the Hash
+   function and finally the hash of the message to be signed.  After
+   that, the signature process for each component algorithm is invoked
+   and the values are serialized into a composite signature value as per
+   Section 5.3.
+
+   A composite signature's value MUST include two signature components
+   and MUST be in the same order as the components from the
+   corresponding signing key.
+
+   Note that there are two different context strings ctx here: the first
+   is the application context that is passed in to Composite-ML-DSA.Sign
+   and bound to the composite signature combiner.  The second is the ctx
+   that is passed down into the underlying ML-DSA.Sign and here
+   Composite-ML-DSA itself is the application that we wish to bind, and
+   outer ctx is already contained within the M' message.
+
 4.  Composite/HashComposite ML-DSA Functions
 
 4.1.  Key Generation
+
+   In order to maintain security properties of the composite,
+   applications that use composite keys MUST always perform fresh key
+   generations of both component keys and MUST NOT reuse existing key
+   material.  See Section 10.3 for a discussion.
 
    To generate a new keypair for Composite schemes, the KeyGen() -> (pk,
    sk) function is used.  The KeyGen() function calls the two key
@@ -369,22 +416,13 @@ Table of Contents
          if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
            output "Key generation error"
 
-     3. Encode the component keys into composite structures
+     3. Output the composite public and private keys
 
-         pk = CompositeMLDSAPublicKey(mldsaPK, tradPK)
-         sk = CompositeMLDSAPrivateKey(mldsaSK, tradSK)
-
-     4. Output the composite keys
-
-         return (pk, sk)
+       pk = mldsaPK || tradPK
+       sk = mldsaSK || tradSK
+       return (pk, sk)
 
                      Figure 1: Composite KeyGen(pk, sk)
-
-   The structures CompositeMLDSAPublicKey and CompositeMLDSAPrivateKey
-   are described in Section 5.1 and Section 5.2 respectively and are
-   used here as placeholders since implementations MAY use their own
-   internal key representations in cases where interoperability is not
-   required.
 
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
@@ -398,28 +436,7 @@ Table of Contents
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
 
-4.2.  Signature Mode
-
-   In CompositeML-DSA, the Domain separator Section 7.2 is concatenated
-   with the length of the context in bytes, the context, an additional
-   DER encoded value that represents the OID of the Hash function and
-   finally the hash of the message to be signed.  After that, the
-   signature process for each component algorithm is invoked and the
-   values are then placed in the CompositeSignatureValue structure
-   defined in Section 6.1.
-
-   A composite signature's value MUST include two signature components
-   and MUST be in the same order as the components from the
-   corresponding signing key.
-
-   Note that there are two different context strings ctx here: the first
-   is the application context that is passed in to Composite-ML-DSA.Sign
-   and bound to the composite signature combiner.  The second is the ctx
-   that is passed down into the underlying ML-DSA.Sign and here
-   Composite-ML-DSA itself is the application that we wish to bind, and
-   outer ctx is already contained within the M' message.
-
-4.2.1.  Composite-ML-DSA-Sign signature mode
+4.2.  Sign
 
    This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in
    Algorithm 4 Section 5.4.1 of [FIPS.204].
@@ -496,7 +513,7 @@ Signature Generation Process:
 
   6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := (mldsaSig, tradSig)
+      signature = mldsaSig || tradSig
 
   7. Output signature
 
@@ -522,7 +539,7 @@ Signature Generation Process:
    Composite-ML-DSA itself is the application that we wish to bind, and
    outer ctx is already contained within the M' message.
 
-4.2.2.  Composite-ML-DSA-Verify
+4.3.  Verify
 
    This mode mirrors HashML-DSA.Verify(pk, M, signature, ctx, PH)
    defined in Algorithm 5 Section 5.4.1 of [FIPS.204].
@@ -622,7 +639,7 @@ Signature Verification Process:
    Composite-ML-DSA itself is the application that we wish to bind, and
    outer ctx is already contained within the M' message.
 
-4.3.  Serialization
+5.  Serialization
 
    This section presents routines for serializing and deserializing
    composite public keys, private keys (seeds), and signature values to
@@ -644,7 +661,7 @@ Signature Verification Process:
              Table 1: ML-DSA Key and Signature Sizes in bytes
 
    When these values are required to be carried in an ASN.1 structure,
-   they are wrapped as described in Section 5 and Section 6.
+   they are wrapped as described in Section 6.1.
 
    While ML-DSA has a single fixed-size representation for each of
    public key, private key (seed), and signature, the traditional
@@ -679,7 +696,7 @@ Signature Verification Process:
    that drop leading zeroes.  See Appendix A for further discussion of
    encoded size of each composite algorithm.
 
-4.3.1.  SerializePublicKey and DeserializePublicKey
+5.1.  SerializePublicKey and DeserializePublicKey
 
    The serialization routine for keys simply concatenates the fixed-
    length public keys of the component signature algorithms, as defined
@@ -755,7 +772,7 @@ Signature Verification Process:
 
         Figure 5: DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
-4.3.2.  SerializePrivateKey and DeserializePrivateKey
+5.2.  SerializePrivateKey and DeserializePrivateKey
 
    The serialization routine for keys simply concatenates the fixed-
    length private keys of the component signature algorithms, as defined
@@ -817,7 +834,7 @@ Signature Verification Process:
 
          Figure 7: DeserializeKey(bytes) -> (mldsaSeed, tradSK)
 
-4.3.3.  SerializeSignatureValue and DeSerializeSignatureValue
+5.3.  SerializeSignatureValue and DeserializeSignatureValue
 
    The serialization routine for the CompositeSignatureValue simply
    concatenates the fixed-length ML-DSA signature value with the
@@ -894,151 +911,39 @@ Deserialization Process:
 
   Figure 9: DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
 
-5.  Composite Key Structures
+6.  Use within X.509 and PKIX
 
-   In order to form composite public keys and signature values, we
-   define ASN.1-based composite encodings such that these structures can
-   be used as a drop-in replacement for existing public key and
-   signature fields such as those found in PKCS#10 [RFC2986], CMP
-   [RFC4210], X.509 [RFC5280], CMS [RFC5652].
+   The following sections provide processing logic and the necessary
+   ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX
+   protocols.
 
-5.1.  CompositeMLDSAPublicKey
+   While composite ML-DSA keys and signature values MAY be used raw, the
+   following sections provide conventions for using them within X.509
+   and other PKIX protocols, including defining ASN.1-based wrappers for
+   the binary composite values such that these structures can be used as
+   a drop-in replacement for existing public key and ciphertext fields
+   such as those found in PKCS#10 [RFC2986], CMP [RFC4210], X.509
+   [RFC5280], CMS [RFC5652].
 
-   The wire encoding of a Composite ML-DSA public key is:
+6.1.  Encoding to DER
 
-   CompositeMLDSAPublicKey ::= BIT STRING
+   The serialization routines presented in Section 5 produce raw binary
+   values.  When these values are required to be carried within a DER-
+   endeded message format such as an X.509's subjectPublicKey BIT STRING
+   and signatureValue [RFC5280] or a CMS SignerInfo.signature OCTET
+   STRING [RFC5652], then the composite value MUST be wrapped into a DER
+   BIT STRING or OCTET STRING in the obvious ways:
 
-   Since RSA and ECDSA component public keys are themselves in a DER
-   encoding, the following show the internal structure of the various
-   public key types used in this specification:
+   When a BIT STRING is required, the octets of the composite data value
+   SHALL be used as the bits of the bit string, with the most
+   significant bit of the first octet becoming the first bit, and so on,
+   ending with the least significant bit of the last octet becoming the
+   last bit of the bit string.
 
-   When a CompositeMLDSAPublicKey is used with an RSA public key, the
-   BIT STRING is generated by the concatenation of a raw ML-DSA key
-   according to [I-D.ietf-lamps-dilithium-certificates], and an
-   RSAPublicKey (which is a DER encoded RSAPublicKey).
+   When an OCTET STRING is required, the DER encoding of the composite
+   data value SHALL be used directly.
 
-   When a CompositeMLDSAPublicKey is used with an EC public key, the BIT
-   STRING is generated by the concatenation of a raw ML-DSA key
-   according to [I-D.ietf-lamps-dilithium-certificates] and an
-   ECDSAPublicKey (which is a DER encoded ECPoint).
-
-   When a CompositeMLDSAPublicKey is used with an Edwards public key,
-   the BIT STRING is generated by the concatenation of a raw ML-DSA key
-   according to [I-D.ietf-lamps-dilithium-certificates] and a raw
-   Edwards public key according to [RFC8410].
-
-   Some applications may need to reconstruct the SubjectPublicKeyInfo
-   objects corresponding to each component public key.  Table 2 in
-   Section 7 provides the necessary mapping between composite and their
-   component algorithms for doing this reconstruction.
-
-   When the CompositeMLDSAPublicKey must be provided in octet string or
-   bit string format, the data structure is encoded as specified in
-   Section 5.3.
-
-   Component keys of a CompositeMLDSAPublicKey MUST NOT be used in any
-   other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 10.3.
-
-   The following ASN.1 Information Object Class is defined to allow for
-   compact definitions of each composite algorithm, leading to a smaller
-   overall ASN.1 module.
-
-   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
-       PUBLIC-KEY ::= {
-         IDENTIFIER id
-         KEY PublicKeyType
-         PARAMS ARE absent
-         CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
-       }
-
-   As an example, the public key type id-MLDSA44-ECDSA-P256-SHA256 is
-   defined as:
-
-   id-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{
-       id-MLDSA44-ECDSA-P256,
-       CompositeMLDSAPublicKey }
-
-   The full set of key types defined by this specification can be found
-   in the ASN.1 Module in Section 8.
-
-5.2.  CompositeMLDSAPrivateKey
-
-   When a Composite ML-DSA private key is to be exported from a
-   cryptographic module, it uses an analogous definition to the public
-   keys:
-
-   CompositeMLDSAPrivateKey ::= OCTET STRING
-
-   Each element of the CompositeMLDSAPrivateKey is an OCTET STRING
-   according to the encoding of the underlying algorithm specification
-   and will decode into the respective private key structures in an
-   analogous way to the public key structures defined in Section 5.1.
-   The ASN.1 module in this document does not provide helper classes for
-   private keys.  The PrivateKey for each component algorithm MUST be in
-   the same order as defined in Section 5.1.
-
-   Use cases that require an interoperable encoding for composite
-   private keys will often need to place a CompositeMLDSAPrivateKey
-   inside a OneAsymmetricKey structure defined in [RFC5958], such as
-   when private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or
-   CRMF [RFC4211].  The definition of OneAsymmetricKey is copied here
-   for convenience:
-
-    OneAsymmetricKey ::= SEQUENCE {
-          version                   Version,
-          privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
-          privateKey                PrivateKey,
-          attributes            [0] Attributes OPTIONAL,
-          ...,
-          [[2: publicKey        [1] PublicKey OPTIONAL ]],
-          ...
-        }
-     ...
-     PrivateKey ::= OCTET STRING
-                           -- Content varies based on type of key.  The
-                           -- algorithm identifier dictates the format of
-                           -- the key.
-
-   When a CompositeMLDSAPrivateKey is conveyed inside a OneAsymmetricKey
-   structure (version 1 of which is also known as PrivateKeyInfo)
-   [RFC5958], the privateKeyAlgorithm field SHALL be set to the
-   corresponding composite algorithm identifier defined according to
-   Section 7 and its parameters field MUST be absent.  The privateKey
-   field SHALL contain the CompositeMLDSAPrivateKey, and the publicKey
-   field remains OPTIONAL.  If the publicKey field is present, it MUST
-   be a CompositeMLDSAPublicKey.
-
-   Some applications may need to reconstruct the OneAsymmetricKey
-   objects corresponding to each component private key.  Section 7
-   provides the necessary mapping between composite and their component
-   algorithms for doing this reconstruction.
-
-   Component keys of a CompositeMLDSAPrivateKey MUST NOT be used in any
-   other type of key or as a standalone key.  For more details on the
-   security considerations around key reuse, see section Section 10.3.
-
-5.3.  Encoding Rules
-
-   Many protocol specifications will require that the composite public
-   key and composite private key data structures be represented by an
-   octet string or bit string.
-
-   When an octet string is required, the DER encoding of the composite
-   data structure SHALL be used directly.
-
-   When a bit string is required, the octets of the DER encoded
-   composite data structure SHALL be used as the bits of the bit string,
-   with the most significant bit of the first octet becoming the first
-   bit, and so on, ending with the least significant bit of the last
-   octet becoming the last bit of the bit string.
-
-   In the interests of simplicity and avoiding compatibility issues,
-   implementations that parse these structures MAY accept both BER and
-   DER.
-
-5.4.  Key Usage Bits
+6.2.  Key Usage Bits
 
    When any of the Composite ML-DSA AlgorithmIdentifier appears in the
    SubjectPublicKeyInfo field of an X.509 certificate [RFC5280], the key
@@ -1068,9 +973,32 @@ Deserialization Process:
    encryption, the post-quantum algorithms do not and therefore the
    overall composite algorithm does not.
 
-6.  Composite Signature Structures
+6.3.  ASN.1 Definitions
 
-6.1.  sa-CompositeSignature
+   The wire encoding of a Composite ML-DSA public key is:
+
+   The following ASN.1 Information Object Class is defined to allow for
+   compact definitions of each composite algorithm, leading to a smaller
+   overall ASN.1 module.
+
+   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
+       PUBLIC-KEY ::= {
+         IDENTIFIER id
+         KEY BIT STRING
+         PARAMS ARE absent
+         CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
+       }
+
+   As an example, the public key type id-MLDSA44-ECDSA-P256-SHA256 is
+   defined as:
+
+   id-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
+     pk-CompositeSignature{
+       id-MLDSA44-ECDSA-P256,
+       CompositeMLDSAPublicKey }
+
+   The full set of key types defined by this specification can be found
+   in the ASN.1 Module in Section 8.
 
    The ASN.1 algorithm object for a composite signature is:
 
@@ -1078,40 +1006,51 @@ Deserialization Process:
       PUBLIC-KEY:publicKeyType }
          SIGNATURE-ALGORITHM ::=  {
             IDENTIFIER id
-            VALUE CompositeSignatureValue
+            VALUE BIT STRING
             PARAMS ARE absent
             PUBLIC-KEYS {publicKeyType}
          }
 
-6.2.  CompositeSignatureValue
+   Use cases that require an interoperable encoding for composite
+   private keys will often need to place a composite private key inside
+   a OneAsymmetricKey structure defined in [RFC5958], such as when
+   private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF
+   [RFC4211].  The definition of OneAsymmetricKey is copied here for
+   convenience:
 
-   The output of a Composite ML-DSA algorithm is the DER encoding of the
-   following structure:
+    OneAsymmetricKey ::= SEQUENCE {
+          version                   Version,
+          privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
+          privateKey                PrivateKey,
+          attributes            [0] Attributes OPTIONAL,
+          ...,
+          [[2: publicKey        [1] PublicKey OPTIONAL ]],
+          ...
+        }
+     ...
+     PrivateKey ::= OCTET STRING
+                           -- Content varies based on type of key.  The
+                           -- algorithm identifier dictates the format of
+                           -- the key.
 
-   The CompositeSignatureValue is the DER encoding of a concatenation of
-   the signature values from the underlying component algorithms.  It is
-   represented in ASN.1 as follows:
+   When a composite private key is conveyed inside a OneAsymmetricKey
+   structure (version 1 of which is also known as PrivateKeyInfo)
+   [RFC5958], the privateKeyAlgorithm field SHALL be set to the
+   corresponding composite algorithm identifier defined according to
+   Section 7 and its parameters field MUST be absent.  The privateKey
+   field SHALL contain the OCTET STRING reperesentation of the
+   serialized composite private key as per Section 5.2.  The publicKey
+   field remains OPTIONAL.  If the publicKey field is present, it MUST
+   be a composite public key as per Section 5.1.
 
-   CompositeSignatureValue ::= BIT STRING
+   Some applications may need to reconstruct the OneAsymmetricKey
+   objects corresponding to each component private key.  Section 7
+   provides the necessary mapping between composite and their component
+   algorithms for doing this reconstruction.
 
-   The order of the component signature values is the same as the order
-   defined in Section 5.1.
-
-   When a CompositeSignatureValue is used with an RSA signature, the BIT
-   STRING is generated by the concatenation of a raw ML-DSA signature
-   according to [I-D.ietf-lamps-dilithium-certificates], and an RSA
-   Signature (which is an octet string according to [RFC8017]).
-
-   When a CompositeSignatureValue is used with an ECDSA signature, the
-   BIT STRING is generated by the concatenation of a raw ML-DSA
-   signature according to [I-D.ietf-lamps-dilithium-certificates] and an
-   ECDSA signature (which is a DER encoded ECDSA-Sig-Value according to
-   [RFC5480]).
-
-   When a CompositeSignatureValue is used with an Edwards signature, the
-   BIT STRING is generated by the concatenation of a raw ML-DSA
-   signature according to [I-D.ietf-lamps-dilithium-certificates] and an
-   Edwards signature (which is an octet string according to [RFC8410]).
+   Component keys of a composite MUST NOT be used in any other type of
+   key or as a standalone key.  For more details on the security
+   considerations around key reuse, see section Section 10.3.
 
 7.  Algorithm Identifiers
 
@@ -1196,8 +1135,8 @@ Deserialization Process:
 
    The Pre-Hash algorithm is used as the PH algorithm and the DER
    Encoded OID value of this Hash is used as HashOID for the Message
-   format in step 2 of Composite-ML-DSA.Sign in section Section 4.2.1
-   and Composite-ML-DSA.Verify in Section 4.2.2.
+   format in step 2 of Composite-ML-DSA.Sign in section Section 4.2 and
+   Composite-ML-DSA.Verify in Section 4.3.
 
    As the number of algorithms can be daunting to implementers, see
    Appendix E.3 for a discussion of choosing a subset to support.
@@ -1407,57 +1346,13 @@ Deserialization Process:
      {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
 
    --
-   -- Signature Algorithm
-   --
-
-   --
-   -- Composite Signature basic structures
-   --
-
-   --
-   -- When a CompositeMLDSAPublicKey is used with an RSA public key, the BIT STRING is generated
-   -- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}},
-   -- and an RSAPublicKey (which is a DER encoded RSAPublicKey).
-
-   -- When a CompositeMLDSAPublicKey is used with an EC public key, the BIT STRING is generated
-   -- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}
-   -- and an ECDSAPublicKey according to [RFC5480].
-
-   -- When a CompositeMLDSAPublicKey is used with an Edwards public key, the BIT STRING is generated
-   -- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}
-   -- and a raw Edwards public key according to [RFC8410].
-
-   CompositeMLDSAPublicKey ::= BIT STRING
-
-   --
-   -- When a CompositeMLDSAPrivateKey is used with an RSA public key, the OCTET STRING is generated
-   -- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
-   -- and an RSAPrivateKey (which is a DER encoded RSAPrivateKey).
-
-   -- When a CompositeMLDSAPrivateKey is used with an EC public key, the OCTET STRING is generated
-   -- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
-   -- and an ECDSAPrivateKey according to [RFC5915].
-
-   -- When a CompositeMLDSAPrivateKey is used with an Edwards public key, the OCTET STRING is generated
-   -- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
-   -- and a raw Edwards private key according to [RFC8410].
-
-   CompositeMLDSAPrivateKey ::= OCTET STRING
-
-   -- Composite Signature Value is just an BIT STRING and is a concatenation of the component signature
-   -- algorithms.
-
-   CompositeSignatureValue ::= BIT STRING
-
-
-   --
    -- Information Object Classes
    --
 
-   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
+   pk-CompositeSignature {OBJECT IDENTIFIER:id}
        PUBLIC-KEY ::= {
          IDENTIFIER id
-         KEY PublicKeyType
+         KEY BIT STRING
          PARAMS ARE absent
          CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
        }
@@ -1466,7 +1361,7 @@ Deserialization Process:
       PUBLIC-KEY:publicKeyType }
          SIGNATURE-ALGORITHM ::=  {
             IDENTIFIER id
-            VALUE CompositeSignatureValue
+            VALUE OCTET STRING
             PARAMS ARE absent
             PUBLIC-KEYS {publicKeyType}
          }
@@ -1480,8 +1375,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 80 }
 
    pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256}
 
    sa-MLDSA44-RSA2048-PSS-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1494,8 +1388,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 81 }
 
    pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256}
 
    sa-MLDSA44-RSA2048-PKCS15-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1509,8 +1402,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 82 }
 
    pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512}
 
    sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1524,8 +1416,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 83 }
 
    pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
 
    sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1539,8 +1430,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 84 }
 
    pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512}
 
    sa-MLDSA65-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1554,8 +1444,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 85 }
 
    pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512}
 
    sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1568,8 +1457,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 86 }
 
    pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512}
 
    sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1583,8 +1471,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 87 }
 
    pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512}
 
    sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1598,8 +1485,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 88 }
 
    pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512}
 
    sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1613,8 +1499,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 89 }
 
    pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512}
 
    sa-MLDSA65-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1628,8 +1513,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 90 }
 
    pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512}
 
    sa-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1643,8 +1527,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 91 }
 
    pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512}
 
    sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1658,8 +1541,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 92 }
 
    pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512}
 
    sa-MLDSA87-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1673,8 +1555,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 93 }
 
    pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512}
 
    sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1688,8 +1569,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 94 }
 
    pk-MLDSA87-Ed448-SHAKE256 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256}
 
    sa-MLDSA87-Ed448-SHAKE256 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1703,8 +1583,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 95 }
 
    pk-MLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512}
 
    sa-MLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -1718,8 +1597,7 @@ Deserialization Process:
       entrust(114027) algorithm(80) composite(8) signature(1) 96 }
 
    pk-MLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
-     pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512,
-     CompositeMLDSAPublicKey}
+     pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512}
 
    sa-MLDSA87-ECDSA-P521-SHA512 SIGNATURE-ALGORITHM ::=
        sa-CompositeSignature{
@@ -2021,7 +1899,7 @@ Deserialization Process:
 
 10.2.1.  Implications of mupliple encodings
 
-   As noted in Section 4.3, this specification leaves open the choice of
+   As noted in Section 5, this specification leaves open the choice of
    encoding of the traditional component.  As such it is possible for
    the same composite public key to carry multiple valid representations
    (mldsaPK, tradPK1) and (mldsaPK, tradPK2) where tradPK1 and tradPK2
@@ -2306,14 +2184,6 @@ Deserialization Process:
               Directive 1999/93/EC", n.d.,
               <https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng>.
 
-   [I-D.ietf-lamps-cms-ml-dsa]
-              S, B., R, A., and D. Van Geest, "Use of the ML-DSA
-              Signature Algorithm in the Cryptographic Message Syntax
-              (CMS)", Work in Progress, Internet-Draft, draft-ietf-
-              lamps-cms-ml-dsa-02, 17 January 2025,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-lamps-
-              cms-ml-dsa-02>.
-
    [I-D.ietf-lamps-dilithium-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
               Westerbaan, "Internet X.509 Public Key Infrastructure:
@@ -2335,13 +2205,6 @@ Deserialization Process:
               Draft, draft-ietf-pquip-pqt-hybrid-terminology-04, 10
               September 2024, <https://datatracker.ietf.org/doc/html/
               draft-ietf-pquip-pqt-hybrid-terminology-04>.
-
-   [I-D.pala-klaussner-composite-kofn]
-              Pala, M. and J. Klaußner, "K-threshold Composite
-              Signatures for the Internet PKI", Work in Progress,
-              Internet-Draft, draft-pala-klaussner-composite-kofn-00, 15
-              November 2022, <https://datatracker.ietf.org/doc/html/
-              draft-pala-klaussner-composite-kofn-00>.
 
    [RFC3279]  Bassham, L., Polk, W., and R. Housley, "Algorithms and
               Identifiers for the Internet X.509 Public Key
