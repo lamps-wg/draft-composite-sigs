@@ -1291,6 +1291,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
                 <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-non-separability-euf-cma-an" class="internal xref">Non-separability, EUF-CMA and SUF</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.1">
+                    <p id="section-toc.1-1.10.2.2.2.1.1"><a href="#section-10.2.1" class="auto internal xref">10.2.1</a>.  <a href="#name-implications-of-mupliple-en" class="internal xref">Implications of mupliple encodings</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
                 <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-key-reuse" class="internal xref">Key Reuse</a></p>
@@ -1352,6 +1357,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
                     <p id="section-toc.1-1.16.2.2.2.1.1"><a href="#appendix-E.2.1" class="auto internal xref">E.2.1</a>.  <a href="#name-hybrid-extensions-keys-and-" class="internal xref">Hybrid Extensions (Keys and Signatures)</a></p>
 </li>
                 </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.3">
+                <p id="section-toc.1-1.16.2.3.1"><a href="#appendix-E.3" class="auto internal xref">E.3</a>.  <a href="#name-profiling-down-the-number-o" class="internal xref">Profiling down the number of options</a></p>
 </li>
             </ul>
 </li>
@@ -1520,11 +1528,11 @@ it returns false.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
           <p id="section-3-6.1.1"><code>SerializeSignatureValue(CompositeSignatureValue) -&gt; bytes</code>: Produce a byte string encoding the CompositeSignatureValue.<a href="#section-3-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-6.2">
-          <p id="section-3-6.2.1"><code>DeserializeSignatureValue(bytes) -&gt; pk</code>: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-6.2.1"><code>DeserializeSignatureValue(bytes) -&gt; signature</code>: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-7">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations <code>Sign()</code> and <code>Verify()</code>.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<p id="section-3-8">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-8">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner" function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div id="pure-vs-pre-hashed-modes">
 <section id="section-3.1">
         <h3 id="name-pure-vs-pre-hashed-modes">
@@ -1846,6 +1854,22 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
       </table>
 </div>
 <p id="section-5-3">When these values are required to be carried in an ASN.1 structure, they are wrapped as described in <a href="#sec-encoding-to-der" class="auto internal xref">Section 6.1</a>.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, or an RSA private key could be encoded in Chinese Remainder Theorem form <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:<a href="#section-5-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-5.1">
+          <p id="section-5-5.1.1"><strong>ML-DSA</strong>: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.<a href="#section-5-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.2">
+          <p id="section-5-5.2.1"><strong>RSA</strong>: MUST be encoded with the <code>(n,e)</code> public key representation as specified in A.1.1 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> and the private key representation as specified in A.1.2 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-5-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.3">
+          <p id="section-5-5.3.1"><strong>ECDSA</strong>: MUST be encoded as an <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-5-5.4">
+          <p id="section-5-5.4.1"><strong>EdDSA</strong>: MUST be encoded as per section 3.1 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> and section 4 of <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5-5.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-5-6">In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for further discussion of encoded size of each composite algorithm.<a href="#section-5-6" class="pilcrow">¶</a></p>
 <div id="sec-serialize-pubkey">
 <section id="section-5.1">
         <h3 id="name-serializepublickey-and-dese">
@@ -2223,7 +2247,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
       </h2>
 <p id="section-7-1">This table summarizes the list of Composite ML-DSA algorithms and lists the OID and the two component algorithms. Domain separator values are defined below in <a href="#sec-domsep-values" class="auto internal xref">Section 7.2</a>.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">EDNOTE: these are prototyping OIDs to be replaced by IANA.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">&lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-3">&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1<a href="#section-7-3" class="pilcrow">¶</a></p>
 <div id="composite-ml-dsa-algorithm-identifiers">
 <section id="section-7.1">
         <h3 id="name-composite-ml-dsa-algorithm-">
@@ -2349,7 +2373,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.94</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
               <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
-              <td class="text-left" rowspan="1" colspan="1">SHAKE256/64</td>
+              <td class="text-left" rowspan="1" colspan="1">id-shake256/64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS-SHA512</td>
@@ -2368,10 +2392,11 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
           </tbody>
         </table>
 </div>
-<p id="section-7.1-3">Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64) (that is, 64 bytes of SHAKE256 output) for Ed448<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-4">See the ASN.1 module in <a href="#sec-asn1-module" class="auto internal xref">Section 8</a> for the explicit definitions of the above Composite ML-DSA algorithms.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of <code>Composite-ML-DSA.Sign</code> in section <a href="#sec-hash-comp-sig-sign" class="auto internal xref">Section 4.2</a> and <code>Composite-ML-DSA.Verify</code> in <a href="#sec-hash-comp-sig-verify" class="auto internal xref">Section 4.3</a>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
-<p id="section-7.1-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
+<p id="section-7.1-6">As the number of algorithms can be daunting to implementers, see <a href="#sec-impl-profile" class="auto internal xref">Appendix E.3</a> for a discussion of choosing a subset to support.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
+<p id="section-7.1-7">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-7.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-domsep-values">
@@ -3275,6 +3300,15 @@ END
 <p id="section-10.2-4">CompositeML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(m, s1*)</code> pair where <code>s1*</code> was not produced by the honest signer and it then can be combined with an honestly-signed <code>(m, s2)</code> signature over the same message <code>m</code> to create <code>(m, (s1*, s2))</code> which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.<a href="#section-10.2-4" class="pilcrow">¶</a></p>
 <p id="section-10.2-5">In addition to the classic EUF-CMA game, we should also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite oracle for signing and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
 <p id="section-10.2-6">In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction added to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M’</code> and then trivially assemble a composite. In the second case, the message <code>M’</code> (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
+<div id="sec-cons-multiple-encodings">
+<section id="section-10.2.1">
+          <h4 id="name-implications-of-mupliple-en">
+<a href="#section-10.2.1" class="section-number selfRef">10.2.1. </a><a href="#name-implications-of-mupliple-en" class="section-name selfRef">Implications of mupliple encodings</a>
+          </h4>
+<p id="section-10.2.1-1">As noted in <a href="#sec-serialization" class="auto internal xref">Section 5</a>, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations <code>(mldsaPK, tradPK1)</code> and <code>(mldsaPK, tradPK2)</code> where <code>tradPK1</code> and <code>tradPK2</code> are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.<a href="#section-10.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-10.2.1-2">In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This is permitted by this specification.<a href="#section-10.2.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-cons-key-reuse">
@@ -3294,7 +3328,7 @@ END
         </h3>
 <p id="section-10.4-1">Traditionally, a public key, certificate, or signature contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), then clients performing signatures or verifications should be updated to adhere to appropriate policies.<a href="#section-10.4-1" class="pilcrow">¶</a></p>
 <p id="section-10.4-2">In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.<a href="#section-10.4-2" class="pilcrow">¶</a></p>
-<p id="section-10.4-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256</code> even after ECDSA-P256 is deprecated.<a href="#section-10.4-3" class="pilcrow">¶</a></p>
+<p id="section-10.4-3">Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow <code>id-MLDSA65-ECDSA-P256-SHA512</code> even after ECDSA-P256 is deprecated.<a href="#section-10.4-3" class="pilcrow">¶</a></p>
 <p id="section-10.4-4">When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.<a href="#section-10.4-4" class="pilcrow">¶</a></p>
 <p id="section-10.4-5">Specifically, in order to achieve this non-separability property, this specification makes two assumptions about how the verifier will establish trust in a composite public key:<a href="#section-10.4-5" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-10.4-6">
@@ -3332,6 +3366,10 @@ END
 <dt id="FIPS.186-5">[FIPS.186-5]</dt>
         <dd>
 <span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"Digital Signature Standard (DSS)"</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="FIPS.202">[FIPS.202]</dt>
+        <dd>
+<span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"</span>, <time datetime="2015-08" class="refDate">August 2015</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="FIPS.204">[FIPS.204]</dt>
         <dd>
@@ -3405,13 +3443,21 @@ END
         <dd>
 <span class="refAuthor">Schaad, J.</span> and <span class="refAuthor">R. Andrews</span>, <span class="refTitle">"IANA Registration for the Cryptographic Algorithm Object Identifier Range"</span>, <span class="seriesInfo">RFC 8411</span>, <span class="seriesInfo">DOI 10.17487/RFC8411</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8411">https://www.rfc-editor.org/info/rfc8411</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="SEC1">[SEC1]</dt>
+        <dd>
+<span class="refAuthor">Certicom Research</span>, <span class="refTitle">"SEC 1: Elliptic Curve Cryptography"</span>, <time datetime="2009-05" class="refDate">May 2009</time>, <span>&lt;<a href="https://www.secg.org/sec1-v2.pdf">https://www.secg.org/sec1-v2.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="SEC2">[SEC2]</dt>
         <dd>
 <span class="refAuthor">Certicom Research</span>, <span class="refTitle">"SEC 2: Recommended Elliptic Curve Domain Parameters"</span>, <time datetime="2010-01" class="refDate">January 2010</time>, <span>&lt;<a href="https://www.secg.org/sec2-v2.pdf">https://www.secg.org/sec2-v2.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="X.690">[X.690]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">ITU-T</span>, <span class="refTitle">"Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"</span>, <span class="seriesInfo">ISO/IEC 8825-1:2015</span>, <time datetime="2015-11" class="refDate">November 2015</time>. </dd>
+<dd class="break"></dd>
+<dt id="X9.62_2005">[X9.62_2005]</dt>
+      <dd>
+<span class="refAuthor">American National Standards Institute</span>, <span class="refTitle">"Public Key Cryptography for the Financial Services Industry The Elliptic Curve Digital Signature Algorithm (ECDSA)"</span>, <time datetime="2005-11" class="refDate">November 2005</time>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -3495,7 +3541,7 @@ END
 </div>
 </section>
 </div>
-<div id="approximate-key-and-signature-sizes">
+<div id="sec-sizetable">
 <section id="appendix-A">
       <h2 id="name-approximate-key-and-signatu">
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-approximate-key-and-signatu" class="section-name selfRef">Approximate Key and Signature Sizes</a>
@@ -3509,10 +3555,7 @@ END
           <p id="appendix-A-2.2.1">The RSA public key <code>(n, e)</code> allows <code>e</code> to vary is size between 3 and <code>n - 1</code> <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-A-2.3">
-          <p id="appendix-A-2.3.1"><span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> allows for RSA private keys to be represented as either <code>(n, d)</code> or as Chinese Remainder Theorem as a quintuple <code>(p, q, dP, dQ, qInv)</code> and a (possibly empty) sequence of triplets <code>(r_i, d_i, t_i)</code>.<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-A-2.4">
-          <p id="appendix-A-2.4.1">When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.<a href="#appendix-A-2.4.1" class="pilcrow">¶</a></p>
+          <p id="appendix-A-2.3.1">When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-A-3">Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation signing the same message over different keys. EdDSA values are always fixed size, so the size values for ML-DSA + EdDSA variants can be treated as constants.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
@@ -3761,35 +3804,35 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
             <td class="text-left" rowspan="1" colspan="1">id-Ed25519</td>
             <td class="text-left" rowspan="1" colspan="1">1.3.101.112</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
+              <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>, <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
             <td class="text-left" rowspan="1" colspan="1">1.3.101.113</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
+              <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>, <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.2</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>
+              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA384</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.3</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>
+              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.4</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>
+              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
@@ -3841,14 +3884,14 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
             <td class="text-left" rowspan="1" colspan="1">secp384r1</td>
             <td class="text-left" rowspan="1" colspan="1">1.3.132.0.34</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
+              <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">secp521r1</td>
             <td class="text-left" rowspan="1" colspan="1">1.3.132.0.35</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
+              <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#RFC6090" class="cite xref">RFC6090</a>]</span>, <span>[<a href="#SEC2" class="cite xref">SEC2</a>]</span>
 </td>
           </tr>
           <tr>
@@ -3891,10 +3934,15 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
-            <td class="text-left" rowspan="1" colspan="1">2.16.840.1..101.3.4.2.3</td>
+            <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.3</td>
             <td class="text-left" rowspan="1" colspan="1">
               <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>
 </td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-shake256</td>
+            <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.18</td>
+            <td class="text-left" rowspan="1" colspan="1">[FIPS 202]</td>
           </tr>
         </tbody>
       </table>
@@ -4276,6 +4324,35 @@ DER:
           </h4>
 <p id="appendix-E.2.1-1">The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.<a href="#appendix-E.2.1-1" class="pilcrow">¶</a></p>
 </section>
+</div>
+</section>
+</div>
+<div id="sec-impl-profile">
+<section id="appendix-E.3">
+        <h3 id="name-profiling-down-the-number-o">
+<a href="#appendix-E.3" class="section-number selfRef">E.3. </a><a href="#name-profiling-down-the-number-o" class="section-name selfRef">Profiling down the number of options</a>
+        </h3>
+<p id="appendix-E.3-1">One immediately daunting aspect of this specification is the number of composite algorithm combinations.
+Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.<a href="#appendix-E.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-E.3-2">However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.<a href="#appendix-E.3-2" class="pilcrow">¶</a></p>
+<p id="appendix-E.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:<a href="#appendix-E.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E.3-4">
+<pre>
+id-MLDSA65-ECDSA-P256-SHA512
+</pre><a href="#appendix-E.3-4" class="pilcrow">¶</a>
+</div>
+<p id="appendix-E.3-5">In applications that require RSA, it is RECOMMENDED to focus implementation effort on:<a href="#appendix-E.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E.3-6">
+<pre>
+id-MLDSA65-RSA3072-PSS-SHA512
+</pre><a href="#appendix-E.3-6" class="pilcrow">¶</a>
+</div>
+<p id="appendix-E.3-7">In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:<a href="#appendix-E.3-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E.3-8">
+<pre>
+id-MLDSA87-ECDSA-P384-SHA512
+</pre><a href="#appendix-E.3-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
