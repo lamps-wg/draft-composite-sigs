@@ -92,18 +92,35 @@ normative:
         org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
+  SEC1:
+    title: "SEC 1: Elliptic Curve Cryptography"
+    date: May 21, 2009
+    author:
+      org: "Certicom Research"
+    target: https://www.secg.org/sec1-v2.pdf
   SEC2:
     title: "SEC 2: Recommended Elliptic Curve Domain Parameters"
     date: January 27, 2010
     author:
       org: "Certicom Research"
     target: https://www.secg.org/sec2-v2.pdf
+  X9.62–2005:
+    title: "Public Key Cryptography for the Financial Services Industry The Elliptic Curve Digital Signature Algorithm (ECDSA)"
+    date: "November 16, 2005"
+    author:
+      org: "American National Standards Institute"
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
     author:
       org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
+  FIPS.202:
+    title: "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"
+    date: August 2015
+    author:
+      org: "National Institute of Standards and Technology (NIST)"
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
   FIPS.204:
     title: "Module-Lattice-Based Digital Signature Standard"
     date: August 13, 2024
@@ -287,11 +304,11 @@ We define the following algorithms which are used to serialize and deseralize th
 
    *  `SerializeSignatureValue(CompositeSignatureValue) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
 
-   *  `DeserializeSignatureValue(bytes) -> pk`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
+   *  `DeserializeSignatureValue(bytes) -> signature`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
 
 A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
 
-This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner"function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
+This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner" function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
 
 ## Pure vs Pre-hashed modes
 
@@ -544,8 +561,6 @@ Note that in step 4 above, the function fails early if the first component fails
 Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
 
 
-
-
 # Serialization {#sec-serialization}
 
 This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
@@ -560,6 +575,14 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
+While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
+
+* **ML-DSA**: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.
+* **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
+* **ECDSA**: MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
+* **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032] and section 4 of [RFC8410].
+
+In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
 ### SerializePublicKey and DeserializePublicKey {#sec-serialize-pubkey}
 
@@ -900,7 +923,7 @@ This table summarizes the list of Composite ML-DSA algorithms and lists the OID 
 
 EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-&lt;CompSig&gt;.1 is equal to 2.16.840.1.114027.80.8.1.1
+&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1
 
 ## Composite-ML-DSA Algorithm Identifiers
 
@@ -922,16 +945,18 @@ Composite-ML-DSA Signature public key types:
 | id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.91   | id-ML-DSA-65 | id-Ed25519                             | id-sha512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.92   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.93   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | SHAKE256/64 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.94   | id-ML-DSA-87 | id-Ed448                               | id-shake256/64 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.95   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.96   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.
+Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) (that is, 64 bytes of SHAKE256 output) for Ed448
 
 See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
 
 The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `Composite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `Composite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
+
+As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1171,6 +1196,12 @@ In addition to the classic EUF-CMA game, we should also consider a “cross-prot
 
 In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction added to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
 
+### Implications of mupliple encodings {#sec-cons-multiple-encodings}
+
+As noted in {{sec-serialization}}, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations `(mldsaPK, tradPK1)` and `(mldsaPK, tradPK2)` where `tradPK1` and `tradPK2` are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.
+
+In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This is permitted by this specification.
+
 
 ## Key Reuse {#sec-cons-key-reuse}
 
@@ -1187,7 +1218,7 @@ Traditionally, a public key, certificate, or signature contains a single cryptog
 
 In the composite model this is less obvious since implementers may decide that certain cryptographic algorithms have complementary security properties and are acceptable in combination even though one or both algorithms are deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms.
 
-Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256` even after ECDSA-P256 is deprecated.
+Since composite algorithms are registered independently of their component algorithms, their deprecation can be handled independently from that of their component algorithms. For example a cryptographic policy might continue to allow `id-MLDSA65-ECDSA-P256-SHA512` even after ECDSA-P256 is deprecated.
 
 When considering stripping attacks, one need consider the case where an attacker has fully compromised one of the component algorithms to the point that they can produce forged signatures that appear valid under one of the component public keys, and thus fool a victim verifier into accepting a forged signature. The protection against this attack relies on the victim verifier trusting the pair of public keys as a single composite key, and not trusting the individual component keys by themselves.
 
@@ -1209,13 +1240,12 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 --- back
 
-# Approximate Key and Signature Sizes
+# Approximate Key and Signature Sizes {#sec-sizetable}
 
 Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:
 
 * Compressed vs uncompressed EC point.
 * The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017].
-* [RFC8017] allows for RSA private keys to be represented as either `(n, d)` or as Chinese Remainder Theorem as a quintuple `(p, q, dP, dQ, qInv)` and a (possibly empty) sequence of triplets `(r_i, d_i, t_i)`.
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
 
 Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation signing the same message over different keys. EdDSA values are always fixed size, so the size values for ML-DSA + EdDSA variants can be treated as constants.
@@ -1286,11 +1316,11 @@ This section provides references to the full specification of the algorithms use
 | id-ML-DSA-44 | 2.16.840.1.101.3.4.3.17 | [FIPS.204] |
 | id-ML-DSA-65 | 2.16.840.1.101.3.4.3.18 | [FIPS.204] |
 | id-ML-DSA-87 | 2.16.840.1.101.3.4.3.19 | [FIPS.204] |
-| id-Ed25519   | 1.3.101.112 | [RFC8410] |
-| id-Ed448     | 1.3.101.113 | [RFC8410] |
-| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758] |
-| ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC5758] |
-| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758] |
+| id-Ed25519   | 1.3.101.112 | [RFC8032], [RFC8410] |
+| id-Ed448     | 1.3.101.113 | [RFC8032], [RFC8410] |
+| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha384WithRSAEncryption | 1.2.840.113549.1.1.12 | [RFC8017] |
 | id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |
@@ -1299,8 +1329,8 @@ This section provides references to the full specification of the algorithms use
 | Elliptic CurveID | OID | Specification |
 | ----------- | ----------- | ----------- |
 | secp256r1 | 1.2.840.10045.3.1.7 | [RFC6090], [SEC2] |
-| secp384r1 | 1.3.132.0.34 | [RFC6090], [SEC2] |
-| secp521r1 | 1.3.132.0.35 | [RFC6090], [SEC2] |
+| secp384r1 | 1.3.132.0.34 | [RFC5480], [RFC6090], [SEC2] |
+| secp521r1 | 1.3.132.0.35 | [RFC5480], [RFC6090], [SEC2] |
 | brainpoolP256r1 | 1.3.36.3.3.2.8.1.1.7 | [RFC5639] |
 | brainpoolP384r1 | 1.3.36.3.3.2.8.1.1.11 | [RFC5639] |
 {: #tab-component-curve-algs title="Elliptic Curves used in Composite Constructions"}
@@ -1308,7 +1338,8 @@ This section provides references to the full specification of the algorithms use
 | HashID | OID | Specification |
 | ----------- | ----------- | ----------- |
 | id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
-| id-sha512 | 2.16.840.1..101.3.4.2.3 | [RFC6234] |
+| id-sha512 | 2.16.840.1.101.3.4.2.3 | [RFC6234] |
+| id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS 202] |
 {: #tab-component-hash title="Hash algorithms used in pre-hashed Composite Constructions to build PH element"}
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
@@ -1679,6 +1710,29 @@ If backwards compatibility is required, then additional mechanisms will be neede
 
 The use of Composite Crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where clients can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
 
+
+
+## Profiling down the number of options {#sec-impl-profile}
+
+One immediately daunting aspect of this specification is the number of composite algorithm combinations.
+Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.
+
+However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.
+
+This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:
+
+    id-MLDSA65-ECDSA-P256-SHA512
+
+
+In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
+
+    id-MLDSA65-RSA3072-PSS-SHA512
+
+
+In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:
+
+    id-MLDSA87-ECDSA-P384-SHA512
 
 <!-- End of Implementation Considerations section -->
 
