@@ -746,7 +746,7 @@ When these values are required to be carried in an ASN.1 structure, they are wra
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
 * **ML-DSA**: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.
-* **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017]. For maximum interoperability, it is RECOMMENDED to use the `(n,d)` private key representation.
+* **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
 * **ECDSA**: MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
 * **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032] and section 4 of [RFC8410].
 
