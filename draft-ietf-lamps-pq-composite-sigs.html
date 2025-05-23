@@ -2411,7 +2411,7 @@ CompositeSignatureValue ::= BIT STRING
               <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.94</td>
               <td class="text-left" rowspan="1" colspan="1">id-ML-DSA-87</td>
               <td class="text-left" rowspan="1" colspan="1">id-Ed448</td>
-              <td class="text-left" rowspan="1" colspan="1">SHAKE256/64</td>
+              <td class="text-left" rowspan="1" colspan="1">id-shake256/64</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS-SHA512</td>
@@ -2430,7 +2430,7 @@ CompositeSignatureValue ::= BIT STRING
           </tbody>
         </table>
 </div>
-<p id="section-7.1-3">Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64) for Ed448.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64) (that is, 64 bytes of SHAKE256 output) for Ed448<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-4">See the ASN.1 module in <a href="#sec-asn1-module" class="auto internal xref">Section 8</a> for the explicit definitions of the above Composite ML-DSA algorithms.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of <code>Composite-ML-DSA.Sign</code> in section <a href="#sec-hash-comp-sig-sign" class="auto internal xref">Section 4.2.1</a> and <code>Composite-ML-DSA.Verify</code> in <a href="#sec-hash-comp-sig-verify" class="auto internal xref">Section 4.2.2</a>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
 <p id="section-7.1-6">As the number of algorithms can be daunting to implementers, see <a href="#sec-impl-profile" class="auto internal xref">Appendix E.3</a> for a discussion of choosing a subset to support.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
@@ -3457,6 +3457,10 @@ END
         <dd>
 <span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"Digital Signature Standard (DSS)"</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="FIPS.202">[FIPS.202]</dt>
+        <dd>
+<span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"</span>, <time datetime="2015-08" class="refDate">August 2015</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="FIPS.204">[FIPS.204]</dt>
         <dd>
 <span class="refAuthor">National Institute of Standards and Technology (NIST)</span>, <span class="refTitle">"Module-Lattice-Based Digital Signature Standard"</span>, <time datetime="2024-08" class="refDate">August 2024</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf</a>&gt;</span>. </dd>
@@ -4023,10 +4027,15 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
-            <td class="text-left" rowspan="1" colspan="1">2.16.840.1..101.3.4.2.3</td>
+            <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.3</td>
             <td class="text-left" rowspan="1" colspan="1">
               <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>
 </td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-shake256</td>
+            <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.18</td>
+            <td class="text-left" rowspan="1" colspan="1">[FIPS 202]</td>
           </tr>
         </tbody>
       </table>
