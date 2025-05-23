@@ -1469,6 +1469,19 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
 <p id="section-2.1-9"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
             about which algorithm.<a href="#section-2.1-9" class="pilcrow">¶</a></p>
+<p id="section-2.1-10">Notation:
+The algorithm descriptions use python-like syntax. The following symbols deserve special mention:<a href="#section-2.1-10" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.1-11.1">
+            <p id="section-2.1-11.1.1"><code>||</code> represents concatenation of two byte arrays.<a href="#section-2.1-11.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.1-11.2">
+            <p id="section-2.1-11.2.1"><code>[:]</code> represents byte array slicing.<a href="#section-2.1-11.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.1-11.3">
+            <p id="section-2.1-11.3.1"><code>(a, b)</code> represents a pair of values <code>a</code> and <code>b</code>. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.<a href="#section-2.1-11.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="composite-design-philosophy">
