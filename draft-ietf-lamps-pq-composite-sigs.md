@@ -352,8 +352,8 @@ Key Generation Process:
 
   3. Output the composite public and private keys
 
-    pk = (mldsaPK, tradPK)
-    sk = (mldsaSK, tradSK)
+    pk = mldsaPK || tradPK
+    sk = mldsaSK || tradSK
     return (pk, sk)
 
 ~~~
@@ -438,7 +438,7 @@ Signature Generation Process:
 
   6. Encode each component signature into a CompositeSignatureValue.
 
-      signature := (mldsaSig, tradSig)
+      signature = mldsaSig || tradSig
 
   7. Output signature
 
