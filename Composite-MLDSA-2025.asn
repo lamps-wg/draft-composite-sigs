@@ -25,57 +25,13 @@ der OBJECT IDENTIFIER ::=
   {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
 
 --
--- Signature Algorithm
---
-
---
--- Composite Signature basic structures
---
-
---
--- When a CompositeMLDSAPublicKey is used with an RSA public key, the BIT STRING is generated
--- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}},
--- and an RSAPublicKey (which is a DER encoded RSAPublicKey).
-
--- When a CompositeMLDSAPublicKey is used with an EC public key, the BIT STRING is generated
--- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}
--- and an ECDSAPublicKey according to [RFC5480].
-
--- When a CompositeMLDSAPublicKey is used with an Edwards public key, the BIT STRING is generated
--- by the concatenation of a raw ML-DSA key according to {{I-D.ietf-lamps-dilithium-certificates}}
--- and a raw Edwards public key according to [RFC8410].
-
-CompositeMLDSAPublicKey ::= BIT STRING
-
---
--- When a CompositeMLDSAPrivateKey is used with an RSA public key, the OCTET STRING is generated
--- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
--- and an RSAPrivateKey (which is a DER encoded RSAPrivateKey).
-
--- When a CompositeMLDSAPrivateKey is used with an EC public key, the OCTET STRING is generated
--- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
--- and an ECDSAPrivateKey according to [RFC5915].
-
--- When a CompositeMLDSAPrivateKey is used with an Edwards public key, the OCTET STRING is generated
--- by the concatenation of an ML-DSA private key according to {{I-D.ietf-lamps-dilithium-certificates}},
--- and a raw Edwards private key according to [RFC8410].
-
-CompositeMLDSAPrivateKey ::= OCTET STRING
-
--- Composite Signature Value is just an BIT STRING and is a concatenation of the component signature
--- algorithms.
-
-CompositeSignatureValue ::= BIT STRING
-
-
---
 -- Information Object Classes
 --
 
-pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
+pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY PublicKeyType
+      KEY BIT STRING
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
     }
@@ -84,7 +40,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         VALUE CompositeSignatureValue
+         VALUE OCTET STRING
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
@@ -98,8 +54,7 @@ id-MLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 80 }
 
 pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256}
 
 sa-MLDSA44-RSA2048-PSS-SHA256 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -112,8 +67,7 @@ id-MLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 81 }
 
 pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256}
 
 sa-MLDSA44-RSA2048-PKCS15-SHA256 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -127,8 +81,7 @@ id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 82 }
 
 pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512}
 
 sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -142,8 +95,7 @@ id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 83 }
 
 pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
 
 sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -157,8 +109,7 @@ id-MLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 84 }
 
 pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512}
 
 sa-MLDSA65-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -172,8 +123,7 @@ id-MLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 85 }
 
 pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512}
 
 sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -186,8 +136,7 @@ id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 86 }
 
 pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512}
 
 sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -201,8 +150,7 @@ id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 87 }
 
 pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512}
 
 sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -216,8 +164,7 @@ id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 88 }
 
 pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512}
 
 sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -231,8 +178,7 @@ id-MLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 89 }
 
 pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512}
 
 sa-MLDSA65-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -246,8 +192,7 @@ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 90 }
 
 pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512}
 
 sa-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -261,8 +206,7 @@ id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 91 }
 
 pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512}
 
 sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -276,8 +220,7 @@ id-MLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 92 }
 
 pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512}
 
 sa-MLDSA87-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -291,8 +234,7 @@ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 93 }
 
 pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512}
 
 sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -306,8 +248,7 @@ id-MLDSA87-Ed448-SHAKE256 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 94 }
 
 pk-MLDSA87-Ed448-SHAKE256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256}
 
 sa-MLDSA87-Ed448-SHAKE256 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -321,8 +262,7 @@ id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 95 }
 
 pk-MLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512}
 
 sa-MLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -336,8 +276,7 @@ id-MLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
    entrust(114027) algorithm(80) composite(8) signature(1) 96 }
 
 pk-MLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512,
-  CompositeMLDSAPublicKey}
+  pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512}
 
 sa-MLDSA87-ECDSA-P521-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
