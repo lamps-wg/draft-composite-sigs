@@ -205,7 +205,8 @@ Interop-affecting changes:
 * MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of the Mprime construction was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131
 * Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 * ML-DSA secret keys are now only seeds.
-* Since all ML-KEM keys and ciphertexts are now fixed-length, dropped the length-tagged encoding.
+* Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
+* Added new prototype OIDs to avoid interoperability issues with previous versions
 * Added complete test vectors.
 
 Editorial changes:
