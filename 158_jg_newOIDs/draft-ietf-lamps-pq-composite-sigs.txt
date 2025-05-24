@@ -158,8 +158,11 @@ Table of Contents
 
    *  ML-DSA secret keys are now only seeds.
 
-   *  Since all ML-KEM keys and ciphertexts are now fixed-length,
-      dropped the length-tagged encoding.
+   *  Since all ML-DSA keys and signatures are now fixed-length, dropped
+      the length-tagged encoding.
+
+   *  Added new prototype OIDs to avoid interoperability issues with
+      previous versions
 
    *  Added complete test vectors.
 
