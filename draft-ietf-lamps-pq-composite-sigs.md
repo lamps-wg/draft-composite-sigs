@@ -451,7 +451,7 @@ Signature Generation Process:
 
        (firstSK, secondSK) = DeserializePrivateKey(sk)
        firstSK = FirstAlg.init(firstSK)
-       secondSK = SecondAlg.init(secondSK) 
+       secondSK = SecondAlg.init(secondSK)
 
   4. Generate the 2 component signatures independently, by calculating
      the signature over M' according to their algorithm specifications.
