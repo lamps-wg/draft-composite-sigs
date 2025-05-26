@@ -289,17 +289,17 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
 
 
-# Overview of the Composite ML-DSA Signature Scheme
+# Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
 Composite schemes are defined as cryptographic primitives that consist of three algorithms:
 
-   *  `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm,
+   * `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm,
       which generates a public key pk and a secret key sk.
 
-   *  `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
+   * `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
       as input a secret key sk and a Message, and outputs a signature.
 
-   *  `Verify(pk, Message, signature) -> true or false`: A verification algorithm
+   * `Verify(pk, Message, signature) -> true or false`: A verification algorithm
       which takes as input a public key, a Message, and a signature and outputs true
       if the signature verifies correctly.  Thus it proves the Message was signed
       with the secret key associated with the public key and verifies the integrity
@@ -338,13 +338,13 @@ Note that there are two different context strings `ctx` here: the first is the a
 
 # Composite ML-DSA Functions {#sec-sigs}
 
-## Key Generation
+This section describes the composite ML-KEM functions needed to instantiate the public signature API in {{sec-sig-scheme}}.
 
-This section defines the public API of Composite ML-DSA.
+## Key Generation
 
 In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
 
-To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms for the Composite keypair in no particular order. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
+To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
 
 The following process is used to generate composite keypair values:
 
@@ -357,11 +357,11 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA     A placeholder for the specific ML-DSA algorithm and
-             parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA     The underlying ML-DSA algorithm and
+             parameter set, for example, could be "ML-DSA-65".
 
-  Trad       A placeholder for the specific traditional algorithm and
-             parameter set to use, for example "RSASSA-PSS"
+  Trad       The underlying traditional algorithm and
+             parameter set, for example "RSASSA-PSS"
              or "Ed25519".
 
 Output:
@@ -372,8 +372,9 @@ Key Generation Process:
 
   1. Generate component keys
 
-      (mldsaPK, mldsaSK) = ML-DSA.KeyGen()
-      (tradPK, tradSK)   = Trad.KeyGen()
+      mldsaSeed = Random(32)
+      mldsaPK = ML-DSA.KeyGen(mldsaSeed)
+      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
 
@@ -382,8 +383,8 @@ Key Generation Process:
 
   3. Output the composite public and private keys
 
-    pk = mldsaPK || tradPK
-    sk = mldsaSK || tradSK
+    pk = Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK)
+    sk = Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK)
     return (pk, sk)
 
 ~~~
@@ -418,11 +419,11 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA   The underlying ML-DSA algorithm and
+           parameter set, for example, could be "ML-DSA-65".
 
-  Trad     A placeholder for the specific traditional algorithm and
-           parameter set to use, for example "RSASSA-PSS with id-sha256"
+  Trad     The underlying traditional algorithm and
+           parameter set, for example "RSASSA-PSS with id-sha256"
            or "Ed25519".
 
  Prefix    The prefix String which is the byte encoding of the String
@@ -466,12 +467,9 @@ Signature Generation Process:
       if NOT mldsaSig or NOT tradSig:
         output "Signature generation error"
 
-  6. Encode each component signature into a CompositeSignatureValue.
+  6. Output the encoded composite signature.
 
-      signature = mldsaSig || tradSig
-
-  7. Output signature
-
+      signature = Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig)
       return signature
 ~~~
 {: #alg-composite-sign title="Composite-ML-DSA.Sign(sk, M, ctx, PH)"}
@@ -479,9 +477,6 @@ Signature Generation Process:
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
 
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
-
-Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
-
 
 ## Verify {#sec-hash-comp-sig-verify}
 
@@ -511,11 +506,11 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA    A placeholder for the specific ML-DSA algorithm and
-            parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA    The underlying ML-DSA algorithm and
+            parameter set, for example, could be "ML-DSA-65".
 
-  Trad      A placeholder for the specific traditional algorithm and
-            parameter set to use, for example "RSASSA-PSS with id-sha256"
+  Trad      The underlying traditional algorithm and
+            parameter set, for example "RSASSA-PSS with id-sha256"
             or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
@@ -571,8 +566,6 @@ Signature Verification Process:
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
-Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
-
 
 # Serialization {#sec-serialization}
 
@@ -599,19 +592,13 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
-### SerializePublicKey and DeserializePublicKey {#sec-serialize-pubkey}
+## SerializePublicKey and DeserializePublicKey {#sec-serialize-pubkey}
 
 The serialization routine for keys simply concatenates the fixed-length public keys of the component signature algorithms, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
-Explicit Input:
-
-  mldsaPK  The ML-DSA public key, which is bytes.
-
-  tradPK   The traditional public key in the appropriate
-           bytes-like encoding for the underlying component algorithm.
 
 Output:
 
@@ -637,7 +624,7 @@ Explicit Input:
 
 Implicit inputs:
 
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+  ML-DSA   The underlying ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
 Output:
@@ -780,7 +767,7 @@ Explicit Input:
 
 Implicit inputs:
 
-  ML-DSA   A placeholder for the specific ML-DSA algorithm and
+  ML-DSA   The underlying ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
 
 Output:
