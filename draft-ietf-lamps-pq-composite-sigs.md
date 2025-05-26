@@ -336,10 +336,11 @@ A composite signature's value MUST include two signature components and MUST be 
 Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
 
 
-# Composite/HashComposite ML-DSA Functions {#sec-sigs}
+# Composite ML-DSA Functions {#sec-sigs}
 
 ## Key Generation
 
+This section defines the public API of Composite ML-DSA.
 
 In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
 
@@ -576,6 +577,8 @@ Note that there are two different context strings `ctx` here: the first is the a
 # Serialization {#sec-serialization}
 
 This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
+The functions defined in this section are considered internal implementation detail and are referenced from within the public API definitions in {{sec-sigs}}.
+
 Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
 
 | Algorithm | Public key  | Private key | Signature |
