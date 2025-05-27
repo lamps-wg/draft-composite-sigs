@@ -1806,8 +1806,11 @@ Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
 林邦曄 (Austin Lin, Chunghwa Telecom),
 Zhao Peiduo (Seventh Sense AI),
+Phil Hallin (Microsoft),
+Samuel Lee (Microsoft),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
+
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
