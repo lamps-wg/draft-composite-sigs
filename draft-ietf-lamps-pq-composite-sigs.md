@@ -338,7 +338,7 @@ Note that there are two different context strings `ctx` here: the first is the a
 
 # Composite ML-DSA Functions {#sec-sigs}
 
-This section describes the composite ML-KEM functions needed to instantiate the public signature API in {{sec-sig-scheme}}.
+This section describes the composite ML-DSA functions needed to instantiate the public signature API in {{sec-sig-scheme}}.
 
 ## Key Generation
 
