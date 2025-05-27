@@ -394,10 +394,13 @@ In order to ensure fresh keys, the key generation functions MUST be executed for
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
+It is possible to use component private keys stored in separate software or hardware keystores. Variations in the keygen and signature processes to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
+
 
 ## Sign {#sec-hash-comp-sig-sign}
 
 This mode mirrors `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Algorithm 4 Section 5.4.1 of [FIPS.204].
+Note that while the external behaviour of Composite-ML-DSA mirrors that of HashML-DSA, internally it uses pure ML-DSA as the component algorithm because there is no reason to pre-hash twice.
 
 In CompositeML-DSA, the Domain separator (see {{sec-domsep-values}}) is concatenated with the length of the context in bytes, the context, an additional DER encoded value that indicates which Hash function was used for the pre-hash and finally the pre-hashed message `PH(M)`.
 
@@ -431,7 +434,9 @@ Implicit inputs:
            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
  Domain    Domain separator value for binding the signature to the
-           Composite OID. See section on Domain Separators below.
+           Composite OID. Additionally, the composite Domain is passed into
+           the underlying ML-DSA primitive as the ctx.
+           Domain values are defined in the "Domain Separators" section below.
 
  HashOID   The DER Encoding of the Object Identifier of the
            PreHash algorithm (PH) which is passed into the function.
@@ -474,8 +479,6 @@ Signature Generation Process:
 ~~~
 {: #alg-composite-sign title="Composite-ML-DSA.Sign(sk, M, ctx, PH)"}
 
-It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
-
 Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
 ## Verify {#sec-hash-comp-sig-verify}
@@ -517,8 +520,10 @@ Implicit inputs:
             "CompositeAlgorithmSignatures2025" which in hex is
             436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  Domain    Domain separator value for binding the signature to the
-            Composite OID. See section on Domain Separators below.
+ Domain    Domain separator value for binding the signature to the
+           Composite OID. Additionally, the composite Domain is passed into
+           the underlying ML-DSA primitive as the ctx.
+           Domain values are defined in the "Domain Separators" section below.
 
   HashOID   The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
@@ -974,6 +979,8 @@ As mentioned above, the OID input value is used as a domain separator for the Co
 
 {::include src/domSepTable.md}
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
+
+EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early allocation of these OIDs so that we can re-compute the domain separators over the final OIDs.
 
 ## Rationale for choices
 
