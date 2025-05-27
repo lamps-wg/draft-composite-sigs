@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 26 November 2025                                        M. Pala
+Expires: 28 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             25 May 2025
+                                                             27 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 November 2025.
+   This Internet-Draft will expire on 28 November 2025.
 
 Copyright Notice
 
@@ -682,13 +682,12 @@ Signature Verification Process:
       specified in A.1.1 of [RFC8017] and the private key representation
       as specified in A.1.2 of [RFC8017].
 
-   *  *ECDSA*: MUST be encoded as an ECPoint as specified in section 2.2
-      of [RFC5480], with both compressed and uncompressed keys
-      supported.  For maximum interoperability, it is RECOMMENEDED to
-      use uncompressed points.
+   *  *ECDSA*: public key MUST be encoded as an ECPoint as specified in
+      section 2.2 of [RFC5480], with both compressed and uncompressed
+      keys supported.  For maximum interoperability, it is RECOMMENEDED
+      to use uncompressed points.
 
-   *  *EdDSA*: MUST be encoded as per section 3.1 of [RFC8032] and
-      section 4 of [RFC8410].
+   *  *EdDSA*: MUST be encoded as per section 3.1 of [RFC8032].
 
    In the event that a composite implementation uses an underlying
    implementation of the traditional component that requires a different
@@ -730,7 +729,7 @@ Signature Verification Process:
    that the input is malformed.  Each component key is deserialized
    according to their respective standard as shown in Appendix C.
 
-  Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
+  Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
   Explicit Input:
 
