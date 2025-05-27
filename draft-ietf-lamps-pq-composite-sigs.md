@@ -591,8 +591,8 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 * **ML-DSA**: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.
 * **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
-* **ECDSA**: MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
-* **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032] and section 4 of [RFC8410].
+* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
+* **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032].
 
 In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
@@ -626,7 +626,7 @@ Serialization Process:
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component key is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
-Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
+Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
 Explicit Input:
 
