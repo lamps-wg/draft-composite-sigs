@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 27 November 2025                                        M. Pala
+Expires: 28 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             26 May 2025
+                                                             27 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 November 2025.
+   This Internet-Draft will expire on 28 November 2025.
 
 Copyright Notice
 
@@ -443,10 +443,20 @@ Table of Contents
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
 
+   It is possible to use component private keys stored in separate
+   software or hardware keystores.  Variations in the keygen and
+   signature processes to accommodate particular private key storage
+   mechanisms are considered to be conformant to this document so long
+   as it produces the same output and error handling as the process
+   sketched above.
+
 4.2.  Sign
 
    This mode mirrors HashML-DSA.Sign(sk, M, ctx, PH) defined in
-   Algorithm 4 Section 5.4.1 of [FIPS.204].
+   Algorithm 4 Section 5.4.1 of [FIPS.204].  Note that while the
+   external behaviour of Composite-ML-DSA mirrors that of HashML-DSA,
+   internally it uses pure ML-DSA as the component algorithm because
+   there is no reason to pre-hash twice.
 
    In CompositeML-DSA, the Domain separator (see Section 7.2) is
    concatenated with the length of the context in bytes, the context, an
@@ -482,7 +492,9 @@ Implicit inputs:
            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
  Domain    Domain separator value for binding the signature to the
-           Composite OID. See section on Domain Separators below.
+           Composite OID. Additionally, the composite Domain is passed into
+           the underlying ML-DSA primitive as the ctx.
+           Domain values are defined in the "Domain Separators" section below.
 
  HashOID   The DER Encoding of the Object Identifier of the
            PreHash algorithm (PH) which is passed into the function.
@@ -524,12 +536,6 @@ Signature Generation Process:
       return signature
 
            Figure 2: Composite-ML-DSA.Sign(sk, M, ctx, PH)
-
-   It is possible to use component private keys stored in separate
-   software or hardware keystores.  Variations in the process to
-   accommodate particular private key storage mechanisms are considered
-   to be conformant to this document so long as it produces the same
-   output and error handling as the process sketched above.
 
    Note that in step 5 above, both component signature processes are
    invoked, and no indication is given about which one failed.  This
@@ -577,8 +583,10 @@ Implicit inputs:
             "CompositeAlgorithmSignatures2025" which in hex is
             436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  Domain    Domain separator value for binding the signature to the
-            Composite OID. See section on Domain Separators below.
+ Domain    Domain separator value for binding the signature to the
+           Composite OID. Additionally, the composite Domain is passed into
+           the underlying ML-DSA primitive as the ctx.
+           Domain values are defined in the "Domain Separators" section below.
 
   HashOID   The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
@@ -1177,6 +1185,11 @@ Deserialization Process:
    +---------------------------------------+--------------------------+
 
         Table 3: Pure ML-DSA Composite Signature Domain Separators
+
+   EDNOTE: these domain separators are based on the prototyping OIDs
+   assigned on the Entrust arc.  We will need to ask for IANA early
+   allocation of these OIDs so that we can re-compute the domain
+   separators over the final OIDs.
 
 7.3.  Rationale for choices
 
