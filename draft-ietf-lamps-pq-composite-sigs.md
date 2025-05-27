@@ -1793,7 +1793,7 @@ This document incorporates contributions and comments from a large group of expe
 Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
-Panos Kampanakis (Cisco Systems),
+Panos Kampanakis (Amazon),
 Richard Kisley (IBM),
 Serge Mister (Entrust),
 Piotr Popis,
@@ -1808,6 +1808,8 @@ Jan Oupický,
 Zhao Peiduo (Seventh Sense AI),
 Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
+Alicja Kario,
+Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
 
