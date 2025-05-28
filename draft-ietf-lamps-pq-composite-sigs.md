@@ -1793,7 +1793,7 @@ This document incorporates contributions and comments from a large group of expe
 Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
-Panos Kampanakis (Cisco Systems),
+Panos Kampanakis (Amazon),
 Richard Kisley (IBM),
 Serge Mister (Entrust),
 Piotr Popis,
@@ -1806,8 +1806,13 @@ Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
 林邦曄 (Austin Lin, Chunghwa Telecom),
 Zhao Peiduo (Seventh Sense AI),
+Phil Hallin (Microsoft),
+Samuel Lee (Microsoft),
+Alicja Kario (Red Hat),
+Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
+
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
