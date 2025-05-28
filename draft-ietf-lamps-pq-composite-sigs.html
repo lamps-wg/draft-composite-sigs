@@ -1879,10 +1879,10 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
           <p id="section-5-5.2.1"><strong>RSA</strong>: MUST be encoded with the <code>(n,e)</code> public key representation as specified in A.1.1 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> and the private key representation as specified in A.1.2 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-5-5.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-5.3">
-          <p id="section-5-5.3.1"><strong>ECDSA</strong>: MUST be encoded as an <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
+          <p id="section-5-5.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-5.4">
-          <p id="section-5-5.4.1"><strong>EdDSA</strong>: MUST be encoded as per section 3.1 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> and section 4 of <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5-5.4.1" class="pilcrow">¶</a></p>
+          <p id="section-5-5.4.1"><strong>EdDSA</strong>: MUST be encoded as per section 3.1 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>.<a href="#section-5-5.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-5-6">In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for further discussion of encoded size of each composite algorithm.<a href="#section-5-6" class="pilcrow">¶</a></p>
@@ -1925,7 +1925,7 @@ Serialization Process:
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-5.1-4.1">
 <pre>
-Composite-ML-DSA.DeserializePublicKey(bytes) -&gt; (mldsaKey, tradKey)
+Composite-ML-DSA.DeserializePublicKey(bytes) -&gt; (mldsaPK, tradPK)
 
 Explicit Input:
 
