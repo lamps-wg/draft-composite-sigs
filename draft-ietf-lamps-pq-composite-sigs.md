@@ -517,7 +517,7 @@ Explicit inputs:
 
 Implicit inputs:
 
-  FirstAlg  The first algorithm and parameter set, for example,  
+  FirstAlg  The first algorithm and parameter set, for example,
             could be "ML-DSA-65".
 
   SecondAlg The second algorithm and parameter set, for example
@@ -739,7 +739,7 @@ Deserialization Process:
       mldsaSeed = bytes[:32]
       tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys (seeds), RSA and ECDH
+     Note that while ML-DSA has fixed-length keys (seeds), RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
