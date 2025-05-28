@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 28 November 2025                                        M. Pala
+Expires: 29 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             27 May 2025
+                                                             28 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 November 2025.
+   This Internet-Draft will expire on 29 November 2025.
 
 Copyright Notice
 
@@ -682,12 +682,13 @@ Signature Verification Process:
       specified in A.1.1 of [RFC8017] and the private key representation
       as specified in A.1.2 of [RFC8017].
 
-   *  *ECDSA*: public key MUST be encoded as an ECPoint as specified in
-      section 2.2 of [RFC5480], with both compressed and uncompressed
-      keys supported.  For maximum interoperability, it is RECOMMENEDED
-      to use uncompressed points.
+   *  *ECDSA*: MUST be encoded as an ECPoint as specified in section 2.2
+      of [RFC5480], with both compressed and uncompressed keys
+      supported.  For maximum interoperability, it is RECOMMENEDED to
+      use uncompressed points.
 
-   *  *EdDSA*: MUST be encoded as per section 3.1 of [RFC8032].
+   *  *EdDSA*: MUST be encoded as per section 3.1 of [RFC8032] and
+      section 4 of [RFC8410].
 
    In the event that a composite implementation uses an underlying
    implementation of the traditional component that requires a different
@@ -729,7 +730,7 @@ Signature Verification Process:
    that the input is malformed.  Each component key is deserialized
    according to their respective standard as shown in Appendix C.
 
-  Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
+  Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaKey, tradKey)
 
   Explicit Input:
 
@@ -8417,13 +8418,14 @@ Appendix H.  Contributors and Acknowledgements
    of this document:
 
    Daniel Van Geest (CryptoNext), Dr. Britta Hale (Naval Postgraduade
-   School), Tim Hollebeek (Digicert), Panos Kampanakis (Cisco Systems),
-   Richard Kisley (IBM), Serge Mister (Entrust), Piotr Popis, François
-   Rousseau, Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien
-   (Siemens), José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.
-   Chen, Chunghwa Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao
-   Peiduo (Seventh Sense AI), Varun Chatterji (Seventh Sense AI) and
-   Mojtaba Bisheh-Niasar
+   School), Tim Hollebeek (Digicert), Panos Kampanakis (Amazon), Richard
+   Kisley (IBM), Serge Mister (Entrust), Piotr Popis, François Rousseau,
+   Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien (Siemens),
+   José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
+   Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao Peiduo (Seventh
+   Sense AI), Phil Hallin (Microsoft), Samuel Lee (Microsoft), Alicja
+   Kario (Red Hat), Jean-Pierre Fiset (Crypto4A), Varun Chatterji
+   (Seventh Sense AI) and Mojtaba Bisheh-Niasar
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensely with strengthening the signature combiner
