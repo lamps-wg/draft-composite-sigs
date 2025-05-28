@@ -1492,6 +1492,9 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
           <li class="normal" id="section-2.1-11.3">
             <p id="section-2.1-11.3.1"><code>(a, b)</code> represents a pair of values <code>a</code> and <code>b</code>. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.<a href="#section-2.1-11.3.1" class="pilcrow">¶</a></p>
 </li>
+          <li class="normal" id="section-2.1-11.4">
+            <p id="section-2.1-11.4.1"><code>(a, _)</code>: represents a pair of values where one -- the second one in this case -- is ignored.<a href="#section-2.1-11.4.1" class="pilcrow">¶</a></p>
+</li>
         </ul>
 </section>
 </div>
@@ -1521,20 +1524,24 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 <p id="section-3-1">Composite schemes are defined as cryptographic primitives that consist of three algorithms:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1"><code>KeyGen() -&gt; (pk, sk)</code>: A probabilistic key generation algorithm,
+          <p id="section-3-2.1.1"><code>KeyGen() -&gt; (pk, sk)</code>: A probabilistic key generation algorithm
  which generates a public key pk and a secret key sk.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1"><code>Sign(sk, Message) -&gt; (signature)</code>: A signing algorithm which takes
- as input a secret key sk and a Message, and outputs a signature.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1"><code>KeyGen(seed) -&gt; (pk, sk)</code>: A deterministic key generation algorithm
+ which generates a public key pk and a secret key sk from a seed.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.3">
-          <p id="section-3-2.3.1"><code>Verify(pk, Message, signature) -&gt; true or false</code>: A verification algorithm
+          <p id="section-3-2.3.1"><code>Sign(sk, Message) -&gt; (signature)</code>: A signing algorithm which takes
+ as input a secret key sk and a Message, and outputs a signature.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-2.4">
+          <p id="section-3-2.4.1"><code>Verify(pk, Message, signature) -&gt; true or false</code>: A verification algorithm
  which takes as input a public key, a Message, and a signature and outputs true
  if the signature verifies correctly.  Thus it proves the Message was signed
  with the secret key associated with the public key and verifies the integrity
  of the Message.  If the signature and public key cannot verify the Message,
- it returns false.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
+ it returns false.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-3-3">We define the following algorithms which we use to serialize and deserialize the public and private keys<a href="#section-3-3" class="pilcrow">¶</a></p>
