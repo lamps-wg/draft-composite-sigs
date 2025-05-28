@@ -517,12 +517,11 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA    The underlying ML-DSA algorithm and
-            parameter set, for example, could be "ML-DSA-65".
+  FirstAlg  The first algorithm and parameter set, for example,  
+            could be "ML-DSA-65".
 
-  Trad      The underlying traditional algorithm and
-            parameter set, for example "RSASSA-PSS with id-sha256"
-            or "Ed25519".
+  SecondAlg The second algorithm and parameter set, for example
+            "RSASSA-PSS with id-sha256" or "Ed25519".
 
   Prefix    The prefix String which is the byte encoding of the String
             "CompositeAlgorithmSignatures2025" which in hex is
@@ -564,11 +563,19 @@ Signature Verification Process:
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
-      if not ML-DSA.Verify( pk1, M', s1, ctx=Domain ) then
-          output "Invalid signature"
+      if FirstAlg supports context:
+          if not FirstAlg.Verify( pk1, M', s1, ctx=Domain ) then
+             output "Invalid signature"
+      else
+          if not FirstALg.Verify( pk1, M', s1) then
+             output "Invalid signature"
 
-      if not Trad.Verify( pk2, M', s2 ) then
-          output "Invalid signature"
+      if SecondALg supports context:
+         if not SecongAlg.Verify( pk2, M', s1, ctx=Domain ) then
+            output "Invalid signature"
+      else
+         if not SecondAlg.Verify( pk2, M', s2 ) then
+            output "Invalid signature"
 
       if all succeeded, then
          output "Valid signature"
@@ -746,17 +753,19 @@ Deserialization Process:
 
 ## SerializeSignatureValue and DeserializeSignatureValue {#sec-serialize-sig}
 
-The serialization routine for the CompositeSignatureValue simply concatenates the fixed-length
-ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
+The serialization routine for the CompositeSignatureValue simply concatenates the first algorithm
+which in this specification is an ML-DSA signature value with a fixed-length signature, and the
+second algorithm as defined below:
 
 ~~~
-Composite.SerializeSignatureValue(mldsaSig, tradSig) -> bytes
+Composite.SerializeSignatureValue(firstSig, secondSig) -> bytes
 
 Explicit Inputs:
 
-  mldsaSig  The ML-DSA signature value, which is bytes.
+  firstSig  The first signature value in the appropriate encoding
+            for the underlying component algorithm
 
-  tradSig   The traditional signature value in the appropriate
+  secondSig The second signature value in the appropriate
             encoding for the underlying component algorithm.
 
 Output:
@@ -767,16 +776,16 @@ Serialization Process:
 
   1. Combine and output the encoded composite signature
 
-     output mldsaSig || tradSig
+     output firstSig || secondSig
 
 ~~~
-{: #alg-composite-serialize-sig title="SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
+{: #alg-composite-serialize-sig title="SerializeSignatureValue(firstSig, secondSig) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective standard as shown in {{appdx_components}}.
 
 ~~~
-Composite.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)
+Composite.DeserializeSignatureValue(bytes) -> (firstSig, secondSig)
 
 Explicit Input:
 
