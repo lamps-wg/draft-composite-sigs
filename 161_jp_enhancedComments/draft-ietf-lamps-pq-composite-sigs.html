@@ -1202,6 +1202,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-sign" class="internal xref">Sign</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="auto internal xref">4.2.1</a>.  <a href="#name-algorithminitsk" class="internal xref">Algorithm.init(sk)</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
                 <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-verify" class="internal xref">Verify</a></p>
@@ -1731,6 +1736,19 @@ Signature Generation Process:
 <p id="section-4.2-4">It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">Note that in step 5 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 <p id="section-4.2-6">Note that there are two different context strings <code>ctx</code> here: the first is the application context that is passed in to <code>Composite.Sign</code> and bound to the composite signature combiner. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> and here Composite-ML-DSA itself is the application that we wish to bind, and outer <code>ctx</code> is already contained within the <code>M'</code> message.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<div id="algorithminitsk">
+<section id="section-4.2.1">
+          <h4 id="name-algorithminitsk">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-algorithminitsk" class="section-name selfRef">Algorithm.init(sk)</a>
+          </h4>
+<p id="section-4.2.1-1">If an algorithm used requires an initialization operation to be performed on the private key before it can be used, an initialization method may be called.  When ML-DSA is used, the 32-byte seed is used to generate the secret key, which is essentially the operation:<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.2.1-2">
+<pre>
+mldsaSK = ML-DSA.KeyGen(mldsaSeed)
+</pre><a href="#section-4.2.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-hash-comp-sig-verify">

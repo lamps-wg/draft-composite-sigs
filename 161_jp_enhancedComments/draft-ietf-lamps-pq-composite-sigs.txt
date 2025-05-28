@@ -87,6 +87,7 @@ Table of Contents
    4.  Composite Functions
      4.1.  Composite Key Generation
      4.2.  Sign
+       4.2.1.  Algorithm.init(sk)
      4.3.  Verify
    5.  Serialization
      5.1.  SerializePublicKey and DeserializePublicKey
@@ -553,6 +554,15 @@ Signature Generation Process:
    that is passed down into the underlying ML-DSA.Sign and here
    Composite-ML-DSA itself is the application that we wish to bind, and
    outer ctx is already contained within the M' message.
+
+4.2.1.  Algorithm.init(sk)
+
+   If an algorithm used requires an initialization operation to be
+   performed on the private key before it can be used, an initialization
+   method may be called.  When ML-DSA is used, the 32-byte seed is used
+   to generate the secret key, which is essentially the operation:
+
+   mldsaSK = ML-DSA.KeyGen(mldsaSeed)
 
 4.3.  Verify
 
