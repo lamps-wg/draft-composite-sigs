@@ -386,6 +386,11 @@ Key Generation Process:
       (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
       (tradPK, tradSK) = Trad.KeyGen()
 
+      Note: Step 1 shows an example of an ML-DSA seed being generated
+      externally (outside the ML-DSA.KeyGen()) routine. The seed may also
+      be generated inside the ML-DSA.KeyGen() routine depending on the
+      implementation and cryptographic library API.
+
   2. Check for component key gen failure
 
       if NOT (mldsaPK, mldsaSK) or NOT (tradPK, tradSK):
