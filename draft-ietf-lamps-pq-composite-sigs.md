@@ -813,7 +813,6 @@ Deserialization Process:
   2. Parse each constituent encoded signature.
        The length of the mldsaSig is known based on the size of
        the ML-DSA component signature length specified by the Object ID.
-       Note that the first 32 bytes of the randomizer needs to be skipped.
 
      switch ML-DSA do
         case ML-DSA-44:
