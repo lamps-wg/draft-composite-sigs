@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 28 November 2025                                        M. Pala
+Expires: 29 November 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             27 May 2025
+                                                             28 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 November 2025.
+   This Internet-Draft will expire on 29 November 2025.
 
 Copyright Notice
 
@@ -480,24 +480,24 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA   The underlying ML-DSA algorithm and
-           parameter set, for example, could be "ML-DSA-65".
+  ML-DSA    The underlying ML-DSA algorithm and
+            parameter set, for example, could be "ML-DSA-65".
 
-  Trad     The underlying traditional algorithm and
-           parameter set, for example "RSASSA-PSS with id-sha256"
-           or "Ed25519".
+  Trad      The underlying traditional algorithm and
+            parameter set, for example "RSASSA-PSS with id-sha256"
+            or "Ed25519".
 
- Prefix    The prefix String which is the byte encoding of the String
-           "CompositeAlgorithmSignatures2025" which in hex is
-           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
- Domain    Domain separator value for binding the signature to the
-           Composite OID. Additionally, the composite Domain is passed into
-           the underlying ML-DSA primitive as the ctx.
-           Domain values are defined in the "Domain Separators" section below.
+  Domain    Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
 
- HashOID   The DER Encoding of the Object Identifier of the
-           PreHash algorithm (PH) which is passed into the function.
+  HashOID   The DER Encoding of the Object Identifier of the
+            PreHash algorithm (PH) which is passed into the function.
 
 Output:
   signature   The composite signature, a CompositeSignatureValue.
@@ -583,10 +583,10 @@ Implicit inputs:
             "CompositeAlgorithmSignatures2025" which in hex is
             436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
- Domain    Domain separator value for binding the signature to the
-           Composite OID. Additionally, the composite Domain is passed into
-           the underlying ML-DSA primitive as the ctx.
-           Domain values are defined in the "Domain Separators" section below.
+ Domain     Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
 
   HashOID   The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
@@ -704,20 +704,26 @@ Signature Verification Process:
    length public keys of the component signature algorithms, as defined
    below:
 
-   Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
+  Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
+  Explicit Input:
 
-   Output:
+    mldsaPK  The ML-DSA public key, which is bytes.
 
-     bytes   The encoded composite public key
+    tradPK   The traditional public key in the appropriate
+             bytes-like encoding for the underlying component algorithm.
 
-   Serialization Process:
+  Output:
 
-     1. Combine and output the encoded public key
+    bytes   The encoded composite public key
 
-        output mldsaPK || tradPK
+  Serialization Process:
 
-           Figure 4: SerializePublicKey(mldsaPK, tradPK) -> bytes
+    1. Combine and output the encoded public key
+
+       output mldsaPK || tradPK
+
+          Figure 4: SerializePublicKey(mldsaPK, tradPK) -> bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.  Each component key is deserialized
