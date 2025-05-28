@@ -388,8 +388,8 @@ Key Generation Process:
 
   3. Output the composite public and private keys
 
-    pk = Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK)
-    sk = Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK)
+    pk = SerializePublicKey(mldsaPK, tradPK)
+    sk = SerializePrivateKey(mldsaSeed, tradSK)
     return (pk, sk)
 
 ~~~
