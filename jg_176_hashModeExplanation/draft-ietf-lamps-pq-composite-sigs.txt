@@ -362,12 +362,13 @@ Table of Contents
    signing time by the signer into the pre-hash PH(r || M) this strongly
    prevents against signature collision attacks; since r is chosen by
    the signer at signing time, an attacker is unable to pre-compute
-   collision pairs M and M' such that PH(r || M) = PH(r || M').  Some
-   implementations might wish to externalize the pre-hash computation
-   for performance or optimization reasons, in which case responsibility
-   for generation of the randomizer becomes the responsibility of the
-   party performing the externalized pre-hashing.  See Section 10.5 for
-   further discussion of security implications of the randomizer.
+   collision pairs M1 and M2 such that PH(r || M1) = PH(r || M2) without
+   knowledge of r.  Some implementations might wish to externalize the
+   pre-hash computation for performance or optimization reasons, in
+   which case responsibility for generation of the randomizer becomes
+   the responsibility of the party performing the externalized pre-
+   hashing.  See Section 10.5 for further discussion of security
+   implications of the randomizer.
 
    This simplification into a single strongly-pre-hashed algorithm
    avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-
@@ -2002,10 +2003,9 @@ Deserialization Process:
    The Prefix value specified in the message format calculated in
    Section 4 can be used by a traditional verifier to detect if the
    composite signature has been stripped apart.  An attacker would need
-   to compute M' = Prefix || Domain || len(ctx) || ctx || M or M' :=
-   Prefix || Domain || len(ctx) || ctx || HashOID || PH(M).  Since the
-   Prefix is the constant String "CompositeAlgorithmSignatures2025"
-   (Byte encoding
+   to compute M' := Prefix || Domain || len(ctx) || ctx || HashOID ||
+   PH(r || M).  Since the Prefix is the constant String
+   "CompositeAlgorithmSignatures2025" (Byte encoding
    436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a
    traditional verifier can check if the Message starts with this prefix
    and reject the message.
