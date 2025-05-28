@@ -324,12 +324,14 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 ## Pure vs Pre-hashed modes
 
-In [FIPS.204] NIST defined ML-DSA to have both pure and pre-hashed signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. Following this, this document defines "Composite-ML-DSA" which uses a strong hash function in the Message format, and makes use of the pure "ML-DSA" mode as the underlying ML-DSA mode.
+In [FIPS.204] NIST defined separate algorithms for "pure" ML-DSA and "pre-hashed" signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. This document takes a middle-ground approach which takes some design elements of each ML-DSA mode and provides a compromised balance between performance and security.
+Composite-ML-DSA offers improved performance by pre-hashing the potentially large message only once and then passing the shorter digest into the component algorithms. However, it sacrifices a small amount of theoretical security in that a collision in the PH pre-hash will yield a signature collision which is a slight reduction of the implicit security of the ML-DSA algorithm since a signature collision attack no longer needs to be computed against the specific public key hash and context value.
 
-Composite-ML-DSA offers improved performance by pre-hashing the toBeSigned data, ensuring it is only processed once. This approach avoids the complexity of supporting a separate set of algorithms while maintaining collision resistance (provided it uses a strong hash function).  Additionally, pre-hashing reduces the need to use the 'external mu' internal ML-DSA implementation because the message format being signed is small. These properties give Composite-ML-DSA a balance between performance and security.
+This simplification into a single pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
 
 
-## Domain Separators and CTX {#sec-domsep-and-ctx}
+
+## Domain Separators, CTX and Randomizer {#sec-domsep-and-ctx}
 
 In CompositeML-DSA, the Domain separator defined in {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
 
