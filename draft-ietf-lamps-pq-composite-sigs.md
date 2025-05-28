@@ -422,24 +422,24 @@ Explicit inputs:
 
 Implicit inputs:
 
-  ML-DSA   The underlying ML-DSA algorithm and
-           parameter set, for example, could be "ML-DSA-65".
+  ML-DSA    The underlying ML-DSA algorithm and
+            parameter set, for example, could be "ML-DSA-65".
 
-  Trad     The underlying traditional algorithm and
-           parameter set, for example "RSASSA-PSS with id-sha256"
-           or "Ed25519".
+  Trad      The underlying traditional algorithm and
+            parameter set, for example "RSASSA-PSS with id-sha256"
+            or "Ed25519".
 
- Prefix    The prefix String which is the byte encoding of the String
-           "CompositeAlgorithmSignatures2025" which in hex is
-           436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
- Domain    Domain separator value for binding the signature to the
-           Composite OID. Additionally, the composite Domain is passed into
-           the underlying ML-DSA primitive as the ctx.
-           Domain values are defined in the "Domain Separators" section below.
+  Domain    Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
 
- HashOID   The DER Encoding of the Object Identifier of the
-           PreHash algorithm (PH) which is passed into the function.
+  HashOID   The DER Encoding of the Object Identifier of the
+            PreHash algorithm (PH) which is passed into the function.
 
 Output:
   signature   The composite signature, a CompositeSignatureValue.
@@ -520,10 +520,10 @@ Implicit inputs:
             "CompositeAlgorithmSignatures2025" which in hex is
             436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
- Domain    Domain separator value for binding the signature to the
-           Composite OID. Additionally, the composite Domain is passed into
-           the underlying ML-DSA primitive as the ctx.
-           Domain values are defined in the "Domain Separators" section below.
+ Domain     Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
 
   HashOID   The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
@@ -604,6 +604,12 @@ The serialization routine for keys simply concatenates the fixed-length public k
 ~~~
 Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
+Explicit Input:
+
+  mldsaPK  The ML-DSA public key, which is bytes.
+
+  tradPK   The traditional public key in the appropriate
+           bytes-like encoding for the underlying component algorithm.
 
 Output:
 
