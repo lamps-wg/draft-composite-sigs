@@ -1808,7 +1808,7 @@ Jan Oupický,
 Zhao Peiduo (Seventh Sense AI),
 Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
-Alicja Kario,
+Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
