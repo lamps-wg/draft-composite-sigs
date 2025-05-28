@@ -488,6 +488,13 @@ Note that in step 5 above, both component signature processes are invoked, and n
 
 Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
 
+### Algorithm.init(sk)
+If an algorithm used requires an initialization operation to be performed on the private key before it can be used, an initialization method may be called.  When ML-DSA is used, the 32-byte seed is used to generate the secret key, which is essentially the operation:
+
+~~~
+mldsaSK = ML-DSA.KeyGen(mldsaSeed)
+~~~
+
 
 ## Verify {#sec-hash-comp-sig-verify}
 
