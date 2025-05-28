@@ -278,6 +278,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 
  * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.
 
+ * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
+
 
 ## Composite Design Philosophy
 
@@ -294,8 +296,11 @@ Composite keys, as defined here, follow this definition and should be regarded a
 
 Composite schemes are defined as cryptographic primitives that consist of three algorithms:
 
-   * `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm,
+   * `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm
       which generates a public key pk and a secret key sk.
+
+   * `KeyGen(seed) -> (pk, sk)`: A deterministic key generation algorithm
+      which generates a public key pk and a secret key sk from a seed.
 
    * `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
       as input a secret key sk and a Message, and outputs a signature.
