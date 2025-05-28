@@ -410,7 +410,7 @@ class CompositeSig(SIG):
     self.pk = self.public_key_bytes()
 
 
-  def computeMp(self, m, ctx):
+  def computeMp(self, m, ctx, r):
 
     if (self.PH.name == hashes.SHA256.name):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01'
@@ -423,6 +423,7 @@ class CompositeSig(SIG):
     # elif ...
 
     h = hashes.Hash(self.PH)
+    h.update(r)
     h.update(m)
     ph_m = h.finalize()
 
@@ -445,16 +446,17 @@ class CompositeSig(SIG):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    Mp = self.computeMp(m, ctx)
+    r = secrets.token_bytes(32)
+    Mp = self.computeMp(m, ctx, r)
 
     mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
     tradSig = self.tradsig.sign( Mp )
     
-    return self.serializeSignatureValue(mldsaSig, tradSig)
+    return self.serializeSignatureValue(r, mldsaSig, tradSig)
   
 
   # raises cryptography.exceptions.InvalidSignature
-  def verify(self, s, m, ctx=b'', PH=hashes.SHA256()):
+  def verify(self, s, m, ctx=b'', PH=None):
     if self.pk == None:
       raise Exception("Cannot Verify for a SIG with no PK.")
     
@@ -462,13 +464,13 @@ class CompositeSig(SIG):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    (mldsaS, tradS) = self.deserializeSignatureValue(s)
+    (r, mldsaSig, tradSig) = self.deserializeSignatureValue(s)
 
-    Mp = self.computeMp(m, ctx)
+    Mp = self.computeMp(m, ctx, r)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaS, Mp, ctx=self.domain)
-    self.tradsig.verify(tradS, Mp)
+    self.mldsa.verify(mldsaSig, Mp, ctx=self.domain)
+    self.tradsig.verify(tradSig, Mp)
 
 
   def serializeKey(self):
@@ -504,22 +506,34 @@ class CompositeSig(SIG):
 
     return mldsaSK + tradSK
   
-  def serializeSignatureValue(self, s1, s2):
+  def serializeSignatureValue(self, r, s1, s2):
+    assert isinstance(r, bytes)
+    assert len(r) == 32
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
-    return s1 + s2
+    return r + s1 + s2
   
 
   def deserializeSignatureValue(self, s):
+    """
+    Returns (r, mldsaSig, tradSig)
+    """
     assert isinstance(s, bytes)
 
+    r = s[:32]
+    s = s[32:]  # truncate off the randomizer
+
     if isinstance(self.mldsa, MLDSA44):
-      return s[:2420], s[2420:]
+      mldsaSig = s[:2420]
+      tradSig  = s[2420:]
     elif isinstance(self.mldsa, MLDSA65):
-      return s[:3309], s[3309:]
+      mldsaSig = s[:3309]
+      tradSig  = s[3309:]
     elif isinstance(self.mldsa, MLDSA87):
-      return s[:4627], s[4627:]
+      mldsaSig = s[:4627]
+      tradSig  = s[4627:]
   
+    return (r, mldsaSig, tradSig)
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS-SHA256"
