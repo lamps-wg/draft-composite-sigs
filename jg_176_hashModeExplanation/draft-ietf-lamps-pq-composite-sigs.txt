@@ -2029,7 +2029,7 @@ Deserialization Process:
    the same randomizer across multiple signatures.  Provided that the
    batch signature is performed as an atomic signing oracle and an
    attacker is never able to see the randomizer that will be used in a
-   future signature then this ought to sasitfy the stated security
+   future signature then this ought to satisfy the stated security
    requirements, but detailed security analysis of such a modification
    of the Composite-ML-DSA signing routine MUST be perfermed on a per-
    application basis.
