@@ -383,7 +383,7 @@ Key Generation Process:
   1. Generate component keys
 
       mldsaSeed = Random(32)
-      mldsaPK = ML-DSA.KeyGen(mldsaSeed)
+      (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
       (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
@@ -473,7 +473,7 @@ Signature Generation Process:
      and re-generate the ML-DSA key from seed.
 
        (mldsaSeed, tradSK) = DeserializePrivateKey(sk)
-       mldsaSK = ML-DSA.KeyGen(mldsaSeed)
+       (_, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
 
   4. Generate the 2 component signatures independently, by calculating
      the signature over M' according to their algorithm specifications.
