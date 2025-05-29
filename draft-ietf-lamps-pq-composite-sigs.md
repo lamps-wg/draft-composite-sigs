@@ -330,8 +330,11 @@ This specification uses the Post-Quantum signature scheme ML-DSA as specified in
 
 ## Pre-hashing and Randomizer {#sec-prehash}
 
-In [FIPS.204] NIST defines separate algorithms for "pure" ML-DSA and "pre-hashed" signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. This document takes a middle-ground approach which takes some design elements from each of ML-DSA and HashML-DSA and introduces a new design element -- the pre-hash randomizer -- which together provides a compromised balance between performance and security.
-Composite-ML-DSA offers improved performance by pre-hashing the potentially large message only once and then passing the shorter digest into the component algorithms. The pre-hashing done by Composite-ML-DSA slightly reduces ML-DSA's collision resistance against cross-key attacks since the pre-hash digest no longer depends on the ML-DSA public key hash `tr`, however Composite-ML-DSA compensates for this by introducing a 32-byte randomizer `r` chosen at signing time by the signer into the pre-hash `PH(r || M)` this strongly prevents against signature collision attacks; since `r` is chosen by the signer at signing time, an attacker is unable to pre-compute collision pairs `M1` and `M2` such that `PH(r || M1) = PH(r || M2)` without knowledge of `r`. Some implementations might wish to externalize the pre-hash computation for performance or optimization reasons, in which case responsibility for generation of the randomizer becomes the responsibility of the party performing the externalized pre-hashing. See {{sec-cons-randomizer}} for further discussion of security implications of the randomizer.
+In [FIPS.204] NIST defines separate algorithms for "pure" ML-DSA and "pre-hashed" signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. This document takes a middle-ground approach which borrows some design elements from each of ML-DSA and HashML-DSA and introduces a new design element -- the pre-hash randomizer -- which together provides a compromised balance between performance and security.
+
+Composite-ML-DSA offers improved performance by pre-hashing the potentially large message only once and then passing the shorter digest into the component algorithms. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the length of `HashOID` and the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+
+See {{sec-cons-randomizer}} for a discussion of security implications of the randomized pre-hash.
 
 This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
 
@@ -1263,10 +1266,23 @@ Composite-ML-DSA introduces a 32-byte randomizer into the pre-hash:
 
     PH( r || M )
 
-for the purposes of providing the performance benefits of a pre-hash without introducing signature collision issues.
-To this goal it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict which randomizer will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite-ML-DSA signing routine MUST be perfermed on a per-application basis.
+as part of the overall construction of the to-be-signed message:
 
-Introduction of the randomizer might introduce other benificial security properties, but these are outside the scope of design consideration.
+        r = Random(32)
+        M' :=  Prefix || Domain || len(ctx) || ctx
+                                || HashOID || PH( r || M )
+
+Where len(ctx) is encoded as a single unsigned byte as is done in [FIPS.204].
+
+The primary design motivation behind the pre-hashing is to only need to perform a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
+
+Randomizing the pre-hash means that Composite-ML-DSA does not rely on collision-resistance of the hash function used as `PH` because the ability to efficiently compute message pairs `M1, M2` such that `PH(M1) = PH(M2)` does not help in finding a collision pair `PH(r || M1) = PH(r || M2)` when `r` is unknown a priori to the attacker. However, this construction still relies on the second pre-image resistance of the hash function used as `PH` because given a signature value `s = (r, mldsaSig, tradSig)`, an attacker is free to find a pair `(r2, M2)` such that `PH(r || M) = PH(r2 || M2)` which will result in a signature `s' = (r2, mldsaSig, tradSig)` appearing to be a valid signature over `M2`.
+
+To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict which randomizer will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite-ML-DSA signing routine MUST be perfermed on a per-application basis.
+
+Further, since introduction of the randomizer is a net-gain over both the ML-DSA and Traditional components, a failure of randomness; i.e. where `r = {0}` or `r = ""` reverts the overall collision resistance of Composite-ML-DSA to the collision resistance of the hash function used as `PH`, which is no worse than the security properties that Composite-ML-DSA would have had without a randomizer, which is the same collision resistance property that RSA, ECDSA, and HashML-DSA have.
+
+Introduction of the randomizer might introduce other benificial security properties (such as non-determinism), but these are outside the scope of design consideration.
 
 
 
@@ -1750,7 +1766,9 @@ One of the primary design goals of this specification is for the overall composi
 
 Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
-The authors wish to note that this gives composite algorithms great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
+The pre-hash randomizer `r` requires the composite implentation to have access to a cryptographic random number generator; as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, and ECDSA, and failure of randomness does not compromise the Composite-ML-DSA algorithm, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
+
+The authors wish to note that composite algorithms have great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
 
 
 ## Backwards Compatibility {#sec-backwards-compat}
