@@ -1190,7 +1190,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-pre-hashing-and-randomizer" class="internal xref">Pre-hashing and Randomizer</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-domain-separators-and-ctx" class="internal xref">Domain Separators and CTX</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-prefix-domain-separators-an" class="internal xref">Prefix, Domain Separators and CTX</a></p>
 </li>
             </ul>
 </li>
@@ -1577,12 +1577,20 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 </div>
 <div id="sec-domsep-and-ctx">
 <section id="section-3.2">
-        <h3 id="name-domain-separators-and-ctx">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-domain-separators-and-ctx" class="section-name selfRef">Domain Separators and CTX</a>
+        <h3 id="name-prefix-domain-separators-an">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-prefix-domain-separators-an" class="section-name selfRef">Prefix, Domain Separators and CTX</a>
         </h3>
-<p id="section-3.2-1">In CompositeML-DSA, the Domain separator defined in <a href="#sec-domsep-values" class="auto internal xref">Section 7.2</a> is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per <a href="#sec-serialize-sig" class="auto internal xref">Section 5.3</a>.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">Note that there are two different context strings <code>ctx</code> here: the first is the application context that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the composite signature combiner. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> and here Composite-ML-DSA itself is the application that we wish to bind, and outer <code>ctx</code> is already contained within the <code>M'</code> message.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">When constructing the message representative <code>M'</code>, first a fixed prefix string is pre-pended which is the byte encoding of the ACSII string
+"CompositeAlgorithmSignatures2025" which in hex is:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-2">
+<pre>
+ 436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+</pre><a href="#section-3.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.2-3">This allows for cautious implementers to wrap their existing Traditional <code>Verify()</code> implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">The Domain separator defined in <a href="#sec-domsep-values" class="auto internal xref">Section 7.2</a> is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per <a href="#sec-serialize-sig" class="auto internal xref">Section 5.3</a>.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-6">Note that there are two different context strings <code>ctx</code> here: the first is the application context that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the composite signature combiner. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> and here Composite-ML-DSA itself is the application that we wish to bind, and outer <code>ctx</code> is already contained within the <code>M'</code> message.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
