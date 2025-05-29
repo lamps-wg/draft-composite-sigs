@@ -340,9 +340,16 @@ This simplification into a single strongly-pre-hashed algorithm avoids the need 
 
 
 
-## Domain Separators and CTX {#sec-domsep-and-ctx}
+## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
 
-In CompositeML-DSA, the Domain separator defined in {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
+When constructing the message representative `M'`, first a fixed prefix string is pre-pended which is the byte encoding of the ACSII string
+"CompositeAlgorithmSignatures2025" which in hex is:
+
+     436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+This allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
+
+The Domain separator defined in {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
 
 A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
 
