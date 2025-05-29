@@ -342,7 +342,7 @@ This simplification into a single strongly-pre-hashed algorithm avoids the need 
 
 ## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
 
-When constructing the message representative `M'`, first a fixed prefix string is pre-pended which is the byte encoding of the ACSII string
+When constructing the message representative `M'`, first a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
 "CompositeAlgorithmSignatures2025" which in hex is:
 
      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
