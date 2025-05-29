@@ -1398,7 +1398,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
           <p id="section-1-2.1.1">MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of the Mprime construction was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-2.1.2.1">
-              <p id="section-1-2.1.2.1.1">To compensate for the loss of signature collision resistance, the pre-hash has been randomized as <code>PH( r || M )</code>.<a href="#section-1-2.1.2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-1-2.1.2.1.1">The construction has been enhanced by adding a pre-hash randomizer <code>PH( r || M )</code> so that we don't need to rely on collision resistance of PH.<a href="#section-1-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
