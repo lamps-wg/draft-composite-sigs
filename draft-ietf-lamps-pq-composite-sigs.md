@@ -208,6 +208,7 @@ Interop-affecting changes:
 * Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
 * Added new prototype OIDs to avoid interoperability issues with previous versions
 * Added complete test vectors.
+* Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.
 
 Editorial changes:
 
