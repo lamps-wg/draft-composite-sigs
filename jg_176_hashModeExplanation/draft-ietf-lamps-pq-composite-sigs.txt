@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 30 November 2025                                        M. Pala
+Expires: 1 December 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             29 May 2025
+                                                             30 May 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 November 2025.
+   This Internet-Draft will expire on 1 December 2025.
 
 Copyright Notice
 
@@ -2057,9 +2057,9 @@ Deserialization Process:
    collision-resistance of the hash function used as PH because the
    ability to efficiently compute message pairs M1, M2 such that PH(M1)
    = PH(M2) does not help in finding a collision pair PH(r || M1) =
-   PH(r || M2) when r is unknown a priori to the attacker.  However,
-   this construction still relies on the second pre-image resistance of
-   the hash function used as PH because given a signature value s = (r,
+   PH(r || M2) when r is unknown prior to the attacker.  However, this
+   construction still relies on the second pre-image resistance of the
+   hash function used as PH because given a signature value s = (r,
    mldsaSig, tradSig), an attacker is free to find a pair (r2, M2) such
    that PH(r || M) = PH(r2 || M2) which will result in a signature s' =
    (r2, mldsaSig, tradSig) appearing to be a valid signature over M2.
