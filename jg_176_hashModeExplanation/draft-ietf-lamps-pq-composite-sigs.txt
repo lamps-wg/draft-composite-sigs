@@ -2057,9 +2057,9 @@ Deserialization Process:
    collision-resistance of the hash function used as PH because the
    ability to efficiently compute message pairs M1, M2 such that PH(M1)
    = PH(M2) does not help in finding a collision pair PH(r || M1) =
-   PH(r || M2) when r is unknown prior to the attacker.  However, this
-   construction still relies on the second pre-image resistance of the
-   hash function used as PH because given a signature value s = (r,
+   PH(r || M2) when r is unknown to the attacker in advance.  However,
+   this construction still relies on the second pre-image resistance of
+   the hash function used as PH because given a signature value s = (r,
    mldsaSig, tradSig), an attacker is free to find a pair (r2, M2) such
    that PH(r || M) = PH(r2 || M2) which will result in a signature s' =
    (r2, mldsaSig, tradSig) appearing to be a valid signature over M2.
