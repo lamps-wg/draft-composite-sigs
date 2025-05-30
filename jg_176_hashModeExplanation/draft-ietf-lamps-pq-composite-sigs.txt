@@ -2048,10 +2048,10 @@ Deserialization Process:
    Where len(ctx) is encoded as a single unsigned byte as is done in
    [FIPS.204].
 
-   The primary design motivation behind the pre-hashing is to only need
-   to perform a single pass over the potentially large input message M
-   and to allow for optimizations in cases such as signing the same
-   message digest with multiple different keys.
+   The primary design motivation behind pre-hashing is to only need to
+   perform a single pass over the potentially large input message M and
+   to allow for optimizations in cases such as signing the same message
+   digest with multiple different keys.
 
    Randomizing the pre-hash means that Composite-ML-DSA does not rely on
    collision-resistance of the hash function used as PH because the
@@ -2081,13 +2081,21 @@ Deserialization Process:
    application basis.
 
    Further, since introduction of the randomizer is a net-gain over both
-   the ML-DSA and Traditional components, a failure of randomness; i.e.
-   where r = {0} or r = "" reverts the overall collision resistance of
-   Composite-ML-DSA to the collision resistance of the hash function
-   used as PH, which is no worse than the security properties that
-   Composite-ML-DSA would have had without a randomizer, which is the
-   same collision resistance property that RSA, ECDSA, and HashML-DSA
-   have.
+   the ML-DSA and Traditional components, a failure of randomness
+   reverts the overall collision resistance of Composite-ML-DSA to the
+   collision resistance of the hash function used as PH, which is no
+   worse than the security properties that Composite-ML-DSA would have
+   had without a randomizer, which is the same collision resistance
+   property that RSA, ECDSA, and HashML-DSA have.
+
+   Another benefit to the randomizer is to prevent a forgery attack
+   across keys: Take two composite keys (mldsaPK1, tradPK1) and
+   (mldsaPK2, tradPK2) that produce signatures (r1, mldsaSig1, tradSig1)
+   and (r2, mldsaSig2, tradSig2) respectively over the same message M.
+   Consider whether it is possible to construct a forgery by swapping
+   components and presenting (r, mldsaSig1, tradSig2) that verifies
+   under a forged public key (mldsaPK1, tradPK2).  This forgery attack
+   is blocked by the randomizer r`.
 
    Introduction of the randomizer might introduce other benificial
    security properties (such as non-determinism), but these are outside
