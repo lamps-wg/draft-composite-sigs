@@ -154,9 +154,10 @@ Table of Contents
       discussions, some of which is captured in https://github.com/
       lamps-wg/draft-composite-sigs/issues/131
 
-      -  The construction has been enhanced by adding a pre-hash
-         randomizer PH( r || M ) so that we don't need to rely on
-         collision resistance of PH.
+   *  The construction has been enhanced by adding a pre-hash randomizer
+      PH( r || M ) to help mitigate the generation of message pairs M1,
+      M2 such that PH(M1) = PH(M2) before committing to the signature,
+      as well as to prevent mixed-component-key forgeries.
 
    *  Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64
       to match the hash functions used in ED448ph in RFC8032.
@@ -2053,13 +2054,12 @@ Deserialization Process:
    to allow for optimizations in cases such as signing the same message
    digest with multiple different keys.
 
-   Randomizing the pre-hash means that Composite-ML-DSA does not rely on
-   collision-resistance of the hash function used as PH because the
-   ability to efficiently compute message pairs M1, M2 such that PH(M1)
-   = PH(M2) does not help in finding a collision pair PH(r || M1) =
-   PH(r || M2) when r is unknown to the attacker in advance.  However,
-   this construction still relies on the second pre-image resistance of
-   the hash function used as PH because given a signature value s = (r,
+   Randomizing the pre-hash helps to mitigate the generation of message
+   pairs M1, M2 such that PH(M1) = PH(M2) before committing to the
+   signature.  This is because finding a collison pair PH(r || M1) =
+   PH(r || M2) when r is unknown to the attacker is not possible.  This
+   construction still relies on the second pre-image resistance of the
+   hash function used as PH because given a signature value s = (r,
    mldsaSig, tradSig), an attacker is free to find a pair (r2, M2) such
    that PH(r || M) = PH(r2 || M2) which will result in a signature s' =
    (r2, mldsaSig, tradSig) appearing to be a valid signature over M2.
@@ -2088,14 +2088,14 @@ Deserialization Process:
    had without a randomizer, which is the same collision resistance
    property that RSA, ECDSA, and HashML-DSA have.
 
-   Another benefit to the randomizer is to prevent a forgery attack
-   across keys: Take two composite keys (mldsaPK1, tradPK1) and
-   (mldsaPK2, tradPK2) that produce signatures (r1, mldsaSig1, tradSig1)
-   and (r2, mldsaSig2, tradSig2) respectively over the same message M.
-   Consider whether it is possible to construct a forgery by swapping
-   components and presenting (r, mldsaSig1, tradSig2) that verifies
-   under a forged public key (mldsaPK1, tradPK2).  This forgery attack
-   is blocked by the randomizer r`.
+   Another benefit to the randomizer is to prevent a mixed key forgery
+   attack: Take two composite keys (mldsaPK1, tradPK1) and (mldsaPK2,
+   tradPK2) that produce signatures (r1, mldsaSig1, tradSig1) and (r2,
+   mldsaSig2, tradSig2) respectively over the same message M.  Consider
+   whether it is possible to construct a forgery by swapping components
+   and presenting (r, mldsaSig1, tradSig2) that verifies under a forged
+   public key (mldsaPK1, tradPK2).  This forgery attack is blocked by
+   the randomizer r`.
 
    Introduction of the randomizer might introduce other benificial
    security properties (such as non-determinism), but these are outside
