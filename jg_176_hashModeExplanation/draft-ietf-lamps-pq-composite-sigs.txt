@@ -157,7 +157,7 @@ Table of Contents
    *  The construction has been enhanced by adding a pre-hash randomizer
       PH( r || M ) to help mitigate the generation of message pairs M1,
       M2 such that PH(M1) = PH(M2) before committing to the signature,
-      as well as to prevent mixed-component-key forgeries.
+      as well as to prevent mixed-key forgeries.
 
    *  Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64
       to match the hash functions used in ED448ph in RFC8032.
