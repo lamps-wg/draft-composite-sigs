@@ -172,6 +172,10 @@ Table of Contents
 
    *  Added complete test vectors.
 
+   *  Removed the "Use in CMS" section so that we can get this document
+      across the finish line, and defer CMS-related debates to a
+      separate document.
+
    Editorial changes:
 
    *  Since the serialization is now non-DER, drastically reduced the
@@ -205,7 +209,9 @@ Table of Contents
    such a way that an attacker would need to break all of them
    simultaneously to compromise the protected data.  These mechanisms
    are referred to as Post-Quantum/Traditional (PQ/T) Hybrids
-   [I-D.ietf-pquip-pqt-hybrid-terminology].
+   [I-D.ietf-pquip-pqt-hybrid-terminology].  Combining multiple
+   algorithms can help to eliminate single points of failure, where a
+   component algorithm is a technology that may fail in the future.
 
    Certain jurisdictions are already recommending or mandating that PQC
    lattice schemes be used exclusively within a PQ/T hybrid framework.
@@ -1996,7 +2002,16 @@ Deserialization Process:
    certificate for the same device, however in practice key reuse in
    such scenarios is not always catastrophic to security and therefore
    often tolerated, despite cross-protocol attacks having been shown.
-   (citation needed here)
+   (TODO citation needed here)
+
+   In the event that an application wishes to use two separate keys (for
+   example from two single-algorithm certificates) and use them to
+   construct a single Composite Signature, then it is RECOMMENDED to
+   provide a composite ctx to prevent this signature from being
+   validated under a composite key made up of the same two component
+   keys.  For example, an application or protocol called Foobar that
+   wishes to do this could invoke the Composite algorithm as: Composite-
+   ML-DSA.Sign( (sk1, sk2), M', ctx="Foobar-dual-cert-sig", PH).
 
    Within the broader context of PQ / Traditional hybrids, we need to
    consider new attack surfaces that arise due to the hybrid
@@ -8623,14 +8638,16 @@ Appendix H.  Contributors and Acknowledgements
    electronic mail and VOIP traffic over the past few years in pursuit
    of this document:
 
-   Daniel Van Geest (CryptoNext), Dr. Britta Hale (Naval Postgraduade
-   School), Tim Hollebeek (Digicert), Panos Kampanakis (Cisco Systems),
-   Richard Kisley (IBM), Serge Mister (Entrust), Piotr Popis, François
-   Rousseau, Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien
-   (Siemens), José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.
-   Chen, Chunghwa Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao
-   Peiduo (Seventh Sense AI), Varun Chatterji (Seventh Sense AI) and
-   Mojtaba Bisheh-Niasar
+   Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
+   (Entrust), Ali Noman (Entrust), Daniel Van Geest (CryptoNext), Dr.
+   Britta Hale (Naval Postgraduade School), Tim Hollebeek (Digicert),
+   Panos Kampanakis (Amazon), Richard Kisley (IBM), Piotr Popis,
+   François Rousseau, Falko Strenzke, Alexander Ralien (Siemens), José
+   Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
+   Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao Peiduo (Seventh
+   Sense AI), Phil Hallin (Microsoft), Samuel Lee (Microsoft), Alicja
+   Kario (Red Hat), Jean-Pierre Fiset (Crypto4A), Varun Chatterji
+   (Seventh Sense AI) and Mojtaba Bisheh-Niasar
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensely with strengthening the signature combiner

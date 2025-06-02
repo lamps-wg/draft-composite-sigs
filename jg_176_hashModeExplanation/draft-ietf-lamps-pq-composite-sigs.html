@@ -1415,6 +1415,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
         <li class="normal" id="section-1-2.7">
           <p id="section-1-2.7.1">Added complete test vectors.<a href="#section-1-2.7.1" class="pilcrow">¶</a></p>
 </li>
+        <li class="normal" id="section-1-2.8">
+          <p id="section-1-2.8.1">Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.<a href="#section-1-2.8.1" class="pilcrow">¶</a></p>
+</li>
       </ul>
 <p id="section-1-3">Editorial changes:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1437,7 +1440,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       </h2>
 <p id="section-2-1">The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>. Combining multiple algorithms can help to eliminate single points of failure, where a component algorithm is a technology that may fail in the future.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
@@ -3383,9 +3386,11 @@ END
         <h3 id="name-key-reuse">
 <a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-key-reuse" class="section-name selfRef">Key Reuse</a>
         </h3>
-<p id="section-10.3-1">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)<a href="#section-10.3-1" class="pilcrow">¶</a></p>
-<p id="section-10.3-2">Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 10.2</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
-<p id="section-10.3-3">In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
+<p id="section-10.3-1">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown.  (TODO citation needed here)<a href="#section-10.3-1" class="pilcrow">¶</a></p>
+<p id="section-10.3-2">In the event that an application wishes to use two separate keys (for example from two single-algorithm certificates) and use them to construct a single Composite Signature, then it is RECOMMENDED to provide a composite ctx to prevent this signature from being validated under a composite key made up of the same two component keys.  For example, an application or protocol called Foobar that wishes to do this could invoke the Composite algorithm as:
+Composite-ML-DSA.Sign( (sk1, sk2), M', ctx="Foobar-dual-cert-sig", PH).<a href="#section-10.3-2" class="pilcrow">¶</a></p>
+<p id="section-10.3-3">Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 10.2</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
+<p id="section-10.3-4">In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, even if both components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="use-of-prefix-to-for-attack-mitigation">
@@ -10094,22 +10099,28 @@ KsG5aGCJwRguZBPR0tvEIRYAZNY3o="
 <a href="#appendix-H" class="section-number selfRef">Appendix H. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
       </h2>
 <p id="appendix-H-1">This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:<a href="#appendix-H-1" class="pilcrow">¶</a></p>
-<p id="appendix-H-2">Daniel Van Geest (CryptoNext),
+<p id="appendix-H-2">Serge Mister (Entrust),
+Felipe Ventura (Entrust),
+Richard Kettlewell (Entrust),
+Ali Noman (Entrust),
+Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
-Panos Kampanakis (Cisco Systems),
+Panos Kampanakis (Amazon),
 Richard Kisley (IBM),
-Serge Mister (Entrust),
 Piotr Popis,
 François Rousseau,
 Falko Strenzke,
-Felipe Ventura (Entrust),
 Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
 林邦曄 (Austin Lin, Chunghwa Telecom),
 Zhao Peiduo (Seventh Sense AI),
+Phil Hallin (Microsoft),
+Samuel Lee (Microsoft),
+Alicja Kario (Red Hat),
+Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar<a href="#appendix-H-2" class="pilcrow">¶</a></p>
 <p id="appendix-H-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.<a href="#appendix-H-3" class="pilcrow">¶</a></p>
