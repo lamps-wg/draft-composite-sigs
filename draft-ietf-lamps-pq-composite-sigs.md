@@ -212,7 +212,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 Interop-affecting changes:
 
 * MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of the Mprime construction was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131
-* The construction has been enhanced by adding a pre-hash randomizer `PH( r || M )` to help mitigate the generation of message pairs `M1, M2` such that `PH(M1) = PH(M2)` before committing to the signature, as well as to prevent mixed-component-key forgeries.
+* The construction has been enhanced by adding a pre-hash randomizer `PH( r || M )` to help mitigate the generation of message pairs `M1, M2` such that `PH(M1) = PH(M2)` before committing to the signature, as well as to prevent mixed-key forgeries.
 * Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 * ML-DSA secret keys are now only seeds.
 * Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
