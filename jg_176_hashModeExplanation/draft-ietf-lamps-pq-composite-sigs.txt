@@ -2936,8 +2936,8 @@ E.1.  FIPS certification
    component algorithm with zero security, and the overall composite
    should be considered at least as strong and thus FIPS-approved.
 
-   The pre-hash randomizer r requires the composite implentation to have
-   access to a cryptographic random number generator; as noted in
+   The pre-hash randomizer r requires the composite implementation to
+   have access to a cryptographic random number generator; as noted in
    Section 10.5, this provides additional security properties on top of
    those provided by ML-DSA, RSA, and ECDSA, and failure of randomness
    does not compromise the Composite-ML-DSA algorithm, so it should be
