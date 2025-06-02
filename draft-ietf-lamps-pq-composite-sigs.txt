@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 December 2025                                         M. Pala
+Expires: 4 December 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             30 May 2025
+                                                             2 June 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 December 2025.
+   This Internet-Draft will expire on 4 December 2025.
 
 Copyright Notice
 
@@ -8435,11 +8435,12 @@ Appendix H.  Contributors and Acknowledgements
    electronic mail and VOIP traffic over the past few years in pursuit
    of this document:
 
-   Daniel Van Geest (CryptoNext), Dr. Britta Hale (Naval Postgraduade
-   School), Tim Hollebeek (Digicert), Panos Kampanakis (Amazon), Richard
-   Kisley (IBM), Serge Mister (Entrust), Piotr Popis, François Rousseau,
-   Falko Strenzke, Felipe Ventura (Entrust), Alexander Ralien (Siemens),
-   José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
+   Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
+   (Entrust), Ali Noman (Entrust), Daniel Van Geest (CryptoNext), Dr.
+   Britta Hale (Naval Postgraduade School), Tim Hollebeek (Digicert),
+   Panos Kampanakis (Amazon), Richard Kisley (IBM), Piotr Popis,
+   François Rousseau, Falko Strenzke, Alexander Ralien (Siemens), José
+   Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
    Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao Peiduo (Seventh
    Sense AI), Phil Hallin (Microsoft), Samuel Lee (Microsoft), Alicja
    Kario (Red Hat), Jean-Pierre Fiset (Crypto4A), Varun Chatterji
