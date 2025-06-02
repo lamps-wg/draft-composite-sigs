@@ -2137,8 +2137,8 @@ Deserialization Process:
    randomizer r so long as r1 != r2.
 
    Introduction of the randomizer might introduce other benificial
-   security properties (such as non-determinism), but these are outside
-   the scope of design consideration.
+   security properties, but these are outside the scope of design
+   consideration.
 
 10.6.  Policy for Deprecated and Acceptable Algorithms
 
