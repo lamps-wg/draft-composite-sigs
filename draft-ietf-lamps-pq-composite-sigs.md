@@ -218,6 +218,7 @@ Interop-affecting changes:
 * Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
 * Added new prototype OIDs to avoid interoperability issues with previous versions
 * Added complete test vectors.
+* Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.
 
 Editorial changes:
 
@@ -233,7 +234,7 @@ The advent of quantum computing poses a significant threat to current cryptograp
 
 Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.
 
-Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.ietf-pquip-pqt-hybrid-terminology}}.
+Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.ietf-pquip-pqt-hybrid-terminology}}. Combining multiple algorithms can help to eliminate single points of failure, where a component algorithm is a technology that may fail in the future.
 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
 
@@ -1273,7 +1274,10 @@ In theory this introduces complications for EUF-CMA and SUF-CMA security proofs.
 
 ## Key Reuse {#sec-cons-key-reuse}
 
-When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown. (citation needed here)
+When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device, however in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated, despite cross-protocol attacks having been shown.  (TODO citation needed here)
+
+In the event that an application wishes to use two separate keys (for example from two single-algorithm certificates) and use them to construct a single Composite Signature, then it is RECOMMENDED to provide a composite ctx to prevent this signature from being validated under a composite key made up of the same two component keys.  For example, an application or protocol called Foobar that wishes to do this could invoke the Composite algorithm as:
+Composite-ML-DSA.Sign( (sk1, sk2), M', ctx="Foobar-dual-cert-sig", PH).
 
 Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
 
@@ -1330,7 +1334,6 @@ Further, since introduction of the randomizer is a net-gain over both the ML-DSA
 Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
 Introduction of the randomizer might introduce other benificial security properties, but these are outside the scope of design consideration.
-
 
 
 ## Policy for Deprecated and Acceptable Algorithms
@@ -1896,24 +1899,32 @@ https://datatracker.ietf.org/ipr/3588/
 # Contributors and Acknowledgements
 This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
+
+Serge Mister (Entrust),
+Felipe Ventura (Entrust),
+Richard Kettlewell (Entrust),
+Ali Noman (Entrust),
 Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
-Panos Kampanakis (Cisco Systems),
+Panos Kampanakis (Amazon),
 Richard Kisley (IBM),
-Serge Mister (Entrust),
 Piotr Popis,
 François Rousseau,
 Falko Strenzke,
-Felipe Ventura (Entrust),
 Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
 陳志華 (Abel C. H. Chen, Chunghwa Telecom),
 林邦曄 (Austin Lin, Chunghwa Telecom),
 Zhao Peiduo (Seventh Sense AI),
+Phil Hallin (Microsoft),
+Samuel Lee (Microsoft),
+Alicja Kario (Red Hat),
+Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI) and
 Mojtaba Bisheh-Niasar
+
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
