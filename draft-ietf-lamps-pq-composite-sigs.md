@@ -1796,16 +1796,19 @@ https://datatracker.ietf.org/ipr/3588/
 # Contributors and Acknowledgements
 This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
 
+
+Serge Mister (Entrust),
+Felipe Ventura (Entrust),
+Richard Kettlewell (Entrust),
+Ali Noman (Entrust),
 Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
 Richard Kisley (IBM),
-Serge Mister (Entrust),
 Piotr Popis,
 François Rousseau,
 Falko Strenzke,
-Felipe Ventura (Entrust),
 Alexander Ralien (Siemens),
 José Ignacio Escribano,
 Jan Oupický,
