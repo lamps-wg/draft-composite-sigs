@@ -172,10 +172,6 @@ informative:
       - org: "Federal Office for Information Security (BSI)"
       - org: "Netherlands National Communications Security Agency (NLNCSA)"
       - org: "Swedish National Communications Security Authority, Swedish Armed Forces"
-  CNSA2.0:
-      title: "Commercial National Security Algorithm Suite 2.0"
-      org: National Security Agency
-      target: https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF
   eIDAS2014:
     title: "Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC"
     org: European Parliament and Council
@@ -991,10 +987,7 @@ EDNOTE: these domain separators are based on the prototyping OIDs assigned on th
 
 ## Rationale for choices
 
-In generating the list of Composite algorithms, the following general guidance was used, however during development of this specification several algorithms were added by direct request even though they do not fit this guidance.
-
-* Pair equivalent levels.
-* NIST-P-384 is CNSA approved [CNSA2.0] for all classification levels.
+In generating the list of Composite algorithms, the idea was to provide composite algorithms at various security levels. The choice of traditional algorithm pairing prioritizes choosing commonly-deployed algorithm rather than trying for exact security level matching since anyway there is no academic consensus on how to directly compare pre-quantum and post-quantum security levels.
 
 SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.
 
