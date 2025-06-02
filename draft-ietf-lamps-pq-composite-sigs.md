@@ -1329,7 +1329,7 @@ Further, since introduction of the randomizer is a net-gain over both the ML-DSA
 
 Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
-Introduction of the randomizer might introduce other benificial security properties (such as non-determinism), but these are outside the scope of design consideration.
+Introduction of the randomizer might introduce other benificial security properties, but these are outside the scope of design consideration.
 
 
 
