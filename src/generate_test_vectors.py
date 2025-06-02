@@ -77,7 +77,7 @@ class SIG:
   # raises cryptography.exceptions.InvalidSignature
   def verify(self, s, m):
     if self.pk == None:
-      raise Exception("Cannot Verify for a SIG with no PK.")
+      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
     pass
 
   def public_key_bytes(self):
@@ -119,7 +119,7 @@ class RSA2048PSS(SIG):
   # raises cryptography.exceptions.InvalidSignature
   def verify(self, s, m):
     if self.pk == None:
-      raise Exception("Cannot Verify for a SIG with no PK.")
+      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
     
     self.pk.verify(
                       s,
@@ -170,7 +170,7 @@ class RSA2048PKCS15(RSA2048PSS):
   # raises cryptography.exceptions.InvalidSignature
   def verify(self, s, m):
     if self.pk == None:
-      raise Exception("Cannot Verify for a SIG with no PK.")
+      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
     
     self.pk.verify(
                       s,
@@ -433,6 +433,7 @@ class CompositeSig(SIG):
          self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
+         r                           + \
          HashOID                     + \
          ph_m
 
@@ -458,13 +459,16 @@ class CompositeSig(SIG):
   # raises cryptography.exceptions.InvalidSignature
   def verify(self, s, m, ctx=b'', PH=None):
     if self.pk == None:
-      raise Exception("Cannot Verify for a SIG with no PK.")
+      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
     
     assert isinstance(s, bytes)
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
     (r, mldsaSig, tradSig) = self.deserializeSignatureValue(s)
+
+    if len(r) != 32:
+      raise InvalidSignature("r is the wrong length")
 
     Mp = self.computeMp(m, ctx, r)
     
