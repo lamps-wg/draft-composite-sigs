@@ -68,7 +68,7 @@ author:
 
 
 normative:
-  RFC2119:
+  #RFC2119: -- does not need to be explicit; added by bcp14 boilerplate
   RFC2986:
   RFC4210:
   RFC4211:
@@ -82,7 +82,7 @@ normative:
   RFC6234:
   RFC7748:
   RFC8032:
-  RFC8174:
+  #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
   RFC8411:
   X.690:
@@ -127,6 +127,8 @@ normative:
     author:
       org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
+    seriesinfo:
+      "FIPS PUB": "204"
 
 
 informative:
@@ -174,11 +176,13 @@ informative:
       - org: "Swedish National Communications Security Authority, Swedish Armed Forces"
   eIDAS2014:
     title: "Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC"
-    org: European Parliament and Council
+    author:
+     - org: European Parliament and Council
     target: https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng
   codesigningbrsv3.8:
     title: "Baseline Requirements for the Issuance and Management of Publicly‐Trusted Code Signing Certificates Version 3.8.0"
-    org: CA/Browser Forum
+    author:
+     - org: CA/Browser Forum
     target: https://cabforum.org/working-groups/code-signing/documents/
   BonehShoup:
     title: "A Graduate Course in Applied Cryptography v0.6"
@@ -207,7 +211,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 Interop-affecting changes:
 
-* MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of the Mprime construction was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131
+* MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of M' was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131
 * The construction has been enhanced by adding a pre-hash randomizer `PH( r || M )` to help mitigate the generation of message pairs `M1, M2` such that `PH(M1) = PH(M2)` before committing to the signature, as well as to prevent mixed-key forgeries.
 * Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 * ML-DSA secret keys are now only seeds.
@@ -324,7 +328,7 @@ We define the following algorithms which we use to serialize and deserialize the
 
    *  `DeserializeKey(bytes) -> pk`: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.
 
-We define the following algorithms which are used to serialize and deseralize the composite signature value
+We define the following algorithms which are used to serialize and deserialize the composite signature value
 
    *  `SerializeSignatureValue(signature) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
 
@@ -370,9 +374,9 @@ This section describes the composite ML-DSA functions needed to instantiate the 
 
 In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
 
-To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
+To generate a new key pair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
 
-The following describes how to instantiate a `KeyGen()` function for a given composite algorithm reperesented by `<OID>`.
+The following describes how to instantiate a `KeyGen()` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
 Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
@@ -392,7 +396,7 @@ Implicit inputs mapped from <OID>:
 
 Output:
 
-  (pk, sk)   The composite keypair.
+  (pk, sk)   The composite key pair.
 
 
 Key Generation Process:
@@ -438,7 +442,7 @@ See {{sec-prehash}} for a discussion of the pre-hashed design and randomizer `r`
 
 See {{sec-domsep-and-ctx}} for a discussion on the domain separator and context values.
 
-The following describes how to instantiate a `Sign(..)` function for a given composite algorithm reperesented by `<OID>`.
+The following describes how to instantiate a `Sign(..)` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
 Composite-ML-DSA<OID>.Sign (sk, M, ctx, PH) -> (signature)
@@ -527,7 +531,7 @@ This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Algo
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
-The following describes how to instantiate a `Verify(..)` function for a given composite algorithm reperesented by `<OID>`.
+The following describes how to instantiate a `Verify(..)` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
 Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)
@@ -637,7 +641,7 @@ When these values are required to be carried in an ASN.1 structure, they are wra
 
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
-* **ML-DSA**: MUST be encoded as specified in [FIPS204], using a 32-byte seed as the private key.
+* **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
 * **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
 * **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
 * **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032].
@@ -1478,7 +1482,7 @@ This section provides references to the full specification of the algorithms use
 | ----------- | ----------- | ----------- |
 | id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
 | id-sha512 | 2.16.840.1.101.3.4.2.3 | [RFC6234] |
-| id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS 202] |
+| id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS.202] |
 {: #tab-component-hash title="Hash algorithms used in pre-hashed Composite Constructions to build PH element"}
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
