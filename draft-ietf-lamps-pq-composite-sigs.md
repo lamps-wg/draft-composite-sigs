@@ -427,7 +427,7 @@ In order to ensure fresh keys, the key generation functions MUST be executed for
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
 Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
-For example, it is possible to use component private keys stored in separate software or hardware modules where it is not possible to do a joint keygen. It is also possible that the underlying cryptographic module does not expose a "ML-DSA.KeyGen(seed)` that accepts an externally-generated seed. 
+For example, it is possible to use component private keys stored in separate software or hardware modules where it is not possible to do a joint keygen. It is also possible that the underlying cryptographic module does not expose a "ML-DSA.KeyGen(seed)` that accepts an externally-generated seed.
 
 
 ## Sign {#sec-hash-comp-sig-sign}
