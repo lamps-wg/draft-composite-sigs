@@ -372,16 +372,16 @@ In order to maintain security properties of the composite, applications that use
 
 To generate a new keypair for Composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
 
-The following process is used to generate composite keypair values:
+The following describes how to instantiate a `KeyGen()` function for a given composite algorithm reperesented by `<OID>`.
 
 ~~~
-KeyGen() -> (pk, sk)
+Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
 
 Explicit inputs:
 
   None
 
-Implicit inputs:
+Implicit inputs mapped from <OID:
 
   ML-DSA     The underlying ML-DSA algorithm and
              parameter set, for example, could be "ML-DSA-65".
@@ -393,6 +393,7 @@ Implicit inputs:
 Output:
 
   (pk, sk)   The composite keypair.
+
 
 Key Generation Process:
 
@@ -437,8 +438,10 @@ See {{sec-prehash}} for a discussion of the pre-hashed design and randomizer `r`
 
 See {{sec-domsep-and-ctx}} for a discussion on the domain separator and context values.
 
+The following describes how to instantiate a `Sign(..)` function for a given composite algorithm reperesented by `<OID>`.
+
 ~~~
-Composite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
+Composite-ML-DSA<OID>.Sign (sk, M, ctx, PH) -> (signature)
 
 Explicit inputs:
 
@@ -453,7 +456,7 @@ Explicit inputs:
   PH    The Message Digest Algorithm for pre-hashing.
         See section on pre-hashing the message below.
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA    The underlying ML-DSA algorithm and
             parameter set, for example, could be "ML-DSA-65".
@@ -476,6 +479,7 @@ Implicit inputs:
 
 Output:
   signature   The composite signature, a CompositeSignatureValue.
+
 
 Signature Generation Process:
 
@@ -523,6 +527,8 @@ This mode mirrors `HashML-DSA.Verify(pk, M, signature, ctx, PH)` defined in Algo
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
+The following describes how to instantiate a `Verify(..)` function for a given composite algorithm reperesented by `<OID>`.
+
 ~~~
 Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
@@ -543,7 +549,7 @@ Explicit inputs:
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA    The underlying ML-DSA algorithm and
             parameter set, for example, could be "ML-DSA-65".
@@ -561,7 +567,7 @@ Implicit inputs:
             the underlying ML-DSA primitive as the ctx.
             Domain values are defined in the "Domain Separators" section below.
 
-  HashOID   The DER Encoding of the Object Identifier of the
+ HashOID    The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
 
 Output:
@@ -652,9 +658,14 @@ Explicit Input:
   tradPK   The traditional public key in the appropriate
            bytes-like encoding for the underlying component algorithm.
 
+Implicit inputs:
+
+  None
+
 Output:
 
   bytes   The encoded composite public key
+
 
 Serialization Process:
 
@@ -667,6 +678,8 @@ Serialization Process:
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component key is deserialized according to their respective standard as shown in {{appdx_components}}.
 
+The following describes how to instantiate a `DeserializePublicKey(bytes)` function for a given composite algorithm reperesented by `<OID>`.
+
 ~~~
 Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
@@ -674,7 +687,7 @@ Explicit Input:
 
   bytes   An encoded composite public key
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA   The underlying ML-DSA algorithm and
            parameter set to use, for example, could be "ML-DSA-65".
@@ -729,6 +742,10 @@ Explicit Input:
   tradSK     The traditional private key in the appropriate
              encoding for the underlying component algorithm.
 
+Implicit inputs:
+
+  None
+
 Output:
 
   bytes   The encoded composite private key
@@ -750,6 +767,10 @@ Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 Explicit Input:
 
   bytes   An encoded composite private key
+
+Implicit inputs:
+
+  That an ML-DSA private key is 32 bytes for all parameter sets.
 
 Output:
 
@@ -796,6 +817,10 @@ Explicit Inputs:
   tradSig   The traditional signature value in the appropriate
             encoding for the underlying component algorithm.
 
+Implicit inputs:
+
+  None
+
 Output:
 
   bytes   The encoded CompositeSignatureValue
@@ -812,8 +837,10 @@ Serialization Process:
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective standard as shown in {{appdx_components}}.
 
+The following describes how to instantiate a `DeserializeSignatureValue(bytes)` function for a given composite algorithm reperesented by `<OID>`.
+
 ~~~
-Composite-ML-DSA.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
+Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
 
 Explicit Input:
 
