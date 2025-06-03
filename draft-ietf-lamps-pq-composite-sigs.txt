@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 4 December 2025                                         M. Pala
+Expires: 5 December 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             2 June 2025
+                                                             3 June 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 December 2025.
+   This Internet-Draft will expire on 5 December 2025.
 
 Copyright Notice
 
@@ -439,15 +439,16 @@ Table of Contents
    the key generation functions in parallel for better key generation
    performance.
 
-   The following process is used to generate composite keypair values:
+   The following describes how to instantiate a KeyGen() function for a
+   given composite algorithm reperesented by <OID>.
 
-KeyGen() -> (pk, sk)
+Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
 
 Explicit inputs:
 
   None
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA     The underlying ML-DSA algorithm and
              parameter set, for example, could be "ML-DSA-65".
@@ -459,6 +460,7 @@ Implicit inputs:
 Output:
 
   (pk, sk)   The composite keypair.
+
 
 Key Generation Process:
 
@@ -519,7 +521,10 @@ Key Generation Process:
    See Section 3.2 for a discussion on the domain separator and context
    values.
 
-Composite-ML-DSA.Sign (sk, M, ctx, PH) -> (signature)
+   The following describes how to instantiate a Sign(..) function for a
+   given composite algorithm reperesented by <OID>.
+
+Composite-ML-DSA<OID>.Sign (sk, M, ctx, PH) -> (signature)
 
 Explicit inputs:
 
@@ -534,7 +539,7 @@ Explicit inputs:
   PH    The Message Digest Algorithm for pre-hashing.
         See section on pre-hashing the message below.
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA    The underlying ML-DSA algorithm and
             parameter set, for example, could be "ML-DSA-65".
@@ -557,6 +562,7 @@ Implicit inputs:
 
 Output:
   signature   The composite signature, a CompositeSignatureValue.
+
 
 Signature Generation Process:
 
@@ -610,6 +616,9 @@ Signature Generation Process:
    only if all component signatures were successfully validated, and
    "Invalid signature" (false) otherwise.
 
+   The following describes how to instantiate a Verify(..) function for
+   a given composite algorithm reperesented by <OID>.
+
 Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
 Explicit inputs:
@@ -629,7 +638,7 @@ Explicit inputs:
   PH          The Message Digest Algorithm for pre-hashing. See
               section on pre-hashing the message below.
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
   ML-DSA    The underlying ML-DSA algorithm and
             parameter set, for example, could be "ML-DSA-65".
@@ -647,7 +656,7 @@ Implicit inputs:
             the underlying ML-DSA primitive as the ctx.
             Domain values are defined in the "Domain Separators" section below.
 
-  HashOID   The DER Encoding of the Object Identifier of the
+ HashOID    The DER Encoding of the Object Identifier of the
             PreHash algorithm (PH) which is passed into the function.
 
 Output:
@@ -776,9 +785,14 @@ Signature Verification Process:
     tradPK   The traditional public key in the appropriate
              bytes-like encoding for the underlying component algorithm.
 
+  Implicit inputs:
+
+    None
+
   Output:
 
     bytes   The encoded composite public key
+
 
   Serialization Process:
 
@@ -792,13 +806,17 @@ Signature Verification Process:
    that the input is malformed.  Each component key is deserialized
    according to their respective standard as shown in Appendix C.
 
+   The following describes how to instantiate a
+   DeserializePublicKey(bytes) function for a given composite algorithm
+   reperesented by <OID>.
+
   Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
   Explicit Input:
 
     bytes   An encoded composite public key
 
-  Implicit inputs:
+  Implicit inputs mapped from <OID>:
 
     ML-DSA   The underlying ML-DSA algorithm and
              parameter set to use, for example, could be "ML-DSA-65".
@@ -852,6 +870,10 @@ Signature Verification Process:
      tradSK     The traditional private key in the appropriate
                 encoding for the underlying component algorithm.
 
+   Implicit inputs:
+
+     None
+
    Output:
 
      bytes   The encoded composite private key
@@ -872,6 +894,10 @@ Signature Verification Process:
  Explicit Input:
 
    bytes   An encoded composite private key
+
+ Implicit inputs:
+
+   That an ML-DSA private key is 32 bytes for all parameter sets.
 
  Output:
 
@@ -916,6 +942,10 @@ Signature Verification Process:
    tradSig   The traditional signature value in the appropriate
              encoding for the underlying component algorithm.
 
+ Implicit inputs:
+
+   None
+
  Output:
 
    bytes   The encoded CompositeSignatureValue
@@ -933,7 +963,11 @@ Signature Verification Process:
    deserialized according to their respective standard as shown in
    Appendix C.
 
-Composite-ML-DSA.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
+   The following describes how to instantiate a
+   DeserializeSignatureValue(bytes) function for a given composite
+   algorithm reperesented by <OID>.
+
+Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
 
 Explicit Input:
 
