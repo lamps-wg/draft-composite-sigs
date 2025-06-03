@@ -366,7 +366,7 @@ Note that there are two different context strings `ctx` here: the first is the a
 
 This section describes the composite ML-DSA functions needed to instantiate the public signature API in {{sec-sig-scheme}}.
 
-## Key Generation
+## Key Generation {#sec-keygen}
 
 In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
 
@@ -426,7 +426,8 @@ In order to ensure fresh keys, the key generation functions MUST be executed for
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
-It is possible to use component private keys stored in separate software or hardware keystores. Variations in the keygen and signature processes to accommodate particular private key storage mechanisms are considered to be conformant to this document so long as it produces the same output and error handling as the process sketched above.
+Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
+For example, it is possible to use component private keys stored in separate software or hardware modules where it is not possible to do a joint keygen. It is also possible that the underlying cryptographic module does not expose a "ML-DSA.KeyGen(seed)` that accepts an externally-generated seed. 
 
 
 ## Sign {#sec-hash-comp-sig-sign}
@@ -1836,7 +1837,9 @@ One of the primary design goals of this specification is for the overall composi
 
 Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
-The pre-hash randomizer `r` requires the composite implementation to have access to a cryptographic random number generator; as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, and ECDSA, and failure of randomness does not compromise the Composite-ML-DSA algorithm, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
+The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(mldsaSeed)`, but this is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive, although composite itself includes a pre-hash in order to ligthen the data transmission requirements in cases where, for example, FIPS compliance of the underlying primitive requires pre-hashing to be done remotely.
+
+The pre-hash randomizer `r` requires the composite implementation to have access to a cryptographic random number generator; as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite-ML-DSA algorithm or the underlying primitives, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
 
 The authors wish to note that composite algorithms have great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
 
