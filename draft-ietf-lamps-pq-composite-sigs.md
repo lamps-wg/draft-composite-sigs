@@ -381,7 +381,7 @@ Explicit inputs:
 
   None
 
-Implicit inputs mapped from <OID:
+Implicit inputs mapped from <OID>:
 
   ML-DSA     The underlying ML-DSA algorithm and
              parameter set, for example, could be "ML-DSA-65".
