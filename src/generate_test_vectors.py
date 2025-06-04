@@ -51,6 +51,7 @@ OID_TABLE = {
     "id-MLDSA87-ECDSA-P384-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,112)),
     "id-MLDSA87-ECDSA-brainpoolP384r1-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,113)),
     "id-MLDSA87-Ed448-SHAKE256": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,114)),
+    "id-MLDSA87-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,117)),
     "id-MLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,115)),
     "id-MLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,8,1,116)),
 }
@@ -651,6 +652,13 @@ class MLDSA87_Ed448_SHAKE256(CompositeSig):
   PH = hashes.SHAKE256(64)
 
 
+class MLDSA87_RSA3072_PSS_SHA512(CompositeSig):
+  id = "id-MLDSA87-RSA3072-PSS-SHA512"
+  mldsa = MLDSA87()
+  tradsig = RSA3072PSS()
+  PH = hashes.SHA512()
+
+
 class MLDSA87_RSA4096_PSS_SHA512(CompositeSig):
   id = "id-MLDSA87-RSA4096-PSS-SHA512"
   mldsa = MLDSA87()
@@ -992,6 +1000,7 @@ def main():
   doSig(MLDSA87_ECDSA_brainpoolP384r1_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_Ed448_SHAKE256() )
+  doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA65_ECDSA_P521_SHA512() )
   
