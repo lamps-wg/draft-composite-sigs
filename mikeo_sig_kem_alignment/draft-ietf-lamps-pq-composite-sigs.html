@@ -11,7 +11,7 @@
 <meta content="Jan Klaussner" name="author">
 <meta content="Scott Fluhrer" name="author">
 <meta content="
-       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA. 
+       This document defines combinations of ML-DSA   in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA. 
        
 
 
@@ -1103,7 +1103,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory requirements. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines combinations of ML-DSA <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1398,7 +1398,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
           <p id="section-1-2.1.1">MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of M' was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.2">
-          <p id="section-1-2.2.1">The construction has been enhanced by adding a pre-hash randomizer <code>PH( r || M )</code> to help mitigate the generation of message pairs <code>M1, M2</code> such that <code>PH(M1) = PH(M2)</code> before committing to the signature, as well as to prevent mixed-key forgeries.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.2.1">The construction has been enhanced by adding a pre-hash randomizer <code>PH( r || M )</code> to help mitigate the generation of message pairs <code>M1, M2</code> such that <code>PH(M1) = PH(M2)</code> before committing to the signature, as well as to prevent mixed-key forgeries. This construction is taken directly from <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> section 13.2.1.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.3">
           <p id="section-1-2.3.1">Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.<a href="#section-1-2.3.1" class="pilcrow">¶</a></p>
@@ -1428,7 +1428,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-5">Still to do in a future version:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">
-          <p id="section-1-6.1.1"><code>[ ]</code> Other outstanding github issues: https://github.com/lamps-wg/draft-composite-sigs/issues<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-6.1.1">Nothing. Authors believe this version to be complete.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1438,11 +1438,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-2-1">The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic algorithms such as RSA, Diffie-Hellman, DSA, and their elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify potential implementation flaws.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward. Even after the migration period, it may be advantageous for an entity's cryptographic identity to incorporate multiple public-key algorithms to enhance security.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>. Combining multiple algorithms can help to eliminate single points of failure, where a component algorithm is a technology that may fail in the future.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-1">The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify both algorithmic weaknesses as well as implementation flaws across all the new implementations.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward.
+For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against CVEs and other implementation flaws in the new implementations.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of Composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
-<p id="section-2-5">Composite ML-DSA is applicable in any application that would otherwise use ML-DSA, but wants the protection against breaks or catastrophic bugs in ML-DSA.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-5">This document defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sence of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this document, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Appendix E.2</a>.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-6">Composite ML-DSA is applicable in any PKIX-related application that would otherwise use ML-DSA.<a href="#section-2-6" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
 <section id="section-2.1">
         <h3 id="name-conventions-and-terminology">
@@ -1464,37 +1466,32 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
           loosely, but not precisely, aligns with the
           definitions of "cryptographic algorithm" and
           "cryptographic scheme" given in <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.1-4"><strong>BER</strong>:
-          Basic Encoding Rules (BER) as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
-<p id="section-2.1-5"><strong>CLIENT</strong>:
+<p id="section-2.1-4"><strong>CLIENT</strong>:
           Any software that is making use of a cryptographic key.
           This includes a signer, verifier, encrypter, decrypter.
           This is not meant to imply any sort of client-server
-          relationship between the communicating parties.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
-<p id="section-2.1-6"><strong>DER</strong>:
-          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
-<p id="section-2.1-7"><strong>PKI</strong>:
-          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
-<p id="section-2.1-8"><strong>PUBLIC / PRIVATE KEY</strong>:
-          The public and private portion of an asymmetric cryptographic
-          key, making no assumptions about which algorithm.<a href="#section-2.1-8" class="pilcrow">¶</a></p>
-<p id="section-2.1-9"><strong>SIGNATURE</strong>:
+          relationship between the communicating parties.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+<p id="section-2.1-5"><strong>DER</strong>:
+          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
+<p id="section-2.1-6"><strong>PKI</strong>:
+          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
+<p id="section-2.1-7"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-2.1-9" class="pilcrow">¶</a></p>
-<p id="section-2.1-10">Notation:
-The algorithm descriptions use python-like syntax. The following symbols deserve special mention:<a href="#section-2.1-10" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
+<p id="section-2.1-8">Notation:
+The algorithm descriptions use python-like syntax. The following symbols deserve special mention:<a href="#section-2.1-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.1-11.1">
-            <p id="section-2.1-11.1.1"><code>||</code> represents concatenation of two byte arrays.<a href="#section-2.1-11.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.1-9.1">
+            <p id="section-2.1-9.1.1"><code>||</code> represents concatenation of two byte arrays.<a href="#section-2.1-9.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-2.1-11.2">
-            <p id="section-2.1-11.2.1"><code>[:]</code> represents byte array slicing.<a href="#section-2.1-11.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-2.1-9.2">
+            <p id="section-2.1-9.2.1"><code>[:]</code> represents byte array slicing.<a href="#section-2.1-9.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-2.1-11.3">
-            <p id="section-2.1-11.3.1"><code>(a, b)</code> represents a pair of values <code>a</code> and <code>b</code>. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.<a href="#section-2.1-11.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-2.1-9.3">
+            <p id="section-2.1-9.3.1"><code>(a, b)</code> represents a pair of values <code>a</code> and <code>b</code>. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.<a href="#section-2.1-9.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-2.1-11.4">
-            <p id="section-2.1-11.4.1"><code>(a, _)</code>: represents a pair of values where one -- the second one in this case -- is ignored.<a href="#section-2.1-11.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-2.1-9.4">
+            <p id="section-2.1-9.4.1"><code>(a, _)</code>: represents a pair of values where one -- the second one in this case -- is ignored.<a href="#section-2.1-9.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1512,7 +1509,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
      type in a multi-algorithm scheme.<a href="#section-2.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-2.2-3">Composite keys, as defined here, follow this definition and should be regarded as a single key that performs a single cryptographic operation such as key generation, signing, verifying, encapsulating, or decapsulating -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, ciphertext and signature can be carried in existing fields in protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">Composite algorithms, as defined in this specification, follow this definition and should be regarded as a single key that performs a single cryptographic operation typical of a digital signature algorithm, such as key generation, signing, or verifying -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, and signature value can be carried in existing fields in protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span>. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">Discussion of the specific choices of algorithm pairings can be found in <a href="#sec-rationale" class="auto internal xref">Section 7.3</a>.<a href="#section-2.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2581,7 +2579,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 <p id="section-7.2-3">EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early allocation of these OIDs so that we can re-compute the domain separators over the final OIDs.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="rationale-for-choices">
+<div id="sec-rationale">
 <section id="section-7.3">
         <h3 id="name-rationale-for-choices">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-rationale-for-choices" class="section-name selfRef">Rationale for choices</a>
@@ -10123,8 +10121,13 @@ Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
+Chris Wood (Apple),
+Christopher Wood (Apple,)
+Sophie Schmieg (Google),
+Bas Westerbaan (Cloudflare),
+Deirdre Connolly (SandboxAQ),
 Richard Kisley (IBM),
-Piotr Popis,
+Piotr Popis (Enigma),
 François Rousseau,
 Falko Strenzke,
 Alexander Ralien (Siemens),

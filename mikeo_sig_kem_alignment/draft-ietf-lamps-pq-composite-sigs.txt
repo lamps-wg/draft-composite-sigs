@@ -22,7 +22,7 @@ Abstract
    This document defines combinations of ML-DSA [FIPS.204] in hybrid
    with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA,
    Ed25519, and Ed448.  These combinations are tailored to meet security
-   best practices and regulatory requirements.  Composite ML-DSA is
+   best practices and regulatory guidelines.  Composite ML-DSA is
    applicable in any application that uses X.509 or PKIX data structures
    that accept ML-DSA, but where the operator wants extra protection
    against breaks or catastrophic bugs in ML-DSA.
@@ -157,7 +157,8 @@ Table of Contents
    *  The construction has been enhanced by adding a pre-hash randomizer
       PH( r || M ) to help mitigate the generation of message pairs M1,
       M2 such that PH(M1) = PH(M2) before committing to the signature,
-      as well as to prevent mixed-key forgeries.
+      as well as to prevent mixed-key forgeries.  This construction is
+      taken directly from [BonehShoup] section 13.2.1.
 
    *  Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64
       to match the hash functions used in ED448ph in RFC8032.
@@ -183,35 +184,36 @@ Table of Contents
 
    Still to do in a future version:
 
-   *  [ ] Other outstanding github issues: https://github.com/lamps-wg/
-      draft-composite-sigs/issues
+   *  Nothing.  Authors believe this version to be complete.
 
 2.  Introduction
 
    The advent of quantum computing poses a significant threat to current
-   cryptographic systems.  Traditional cryptographic algorithms such as
-   RSA, Diffie-Hellman, DSA, and their elliptic curve variants are
+   cryptographic systems.  Traditional cryptographic signature
+   algorithms such as RSA, DSA and its elliptic curve variants are
    vulnerable to quantum attacks.  During the transition to post-quantum
    cryptography (PQC), there is considerable uncertainty regarding the
    robustness of both existing and new cryptographic algorithms.  While
    we can no longer fully trust traditional cryptography, we also cannot
    immediately place complete trust in post-quantum replacements until
    they have undergone extensive scrutiny and real-world testing to
-   uncover and rectify potential implementation flaws.
+   uncover and rectify both algorithmic weaknesses as well as
+   implementation flaws across all the new implementations.
 
    Unlike previous migrations between cryptographic algorithms, the
    decision of when to migrate and which algorithms to adopt is far from
-   straightforward.  Even after the migration period, it may be
-   advantageous for an entity's cryptographic identity to incorporate
-   multiple public-key algorithms to enhance security.
+   straightforward.  For instance, the aggressive migration timelines
+   may require deploying PQC algorithms before their implementations
+   have been fully hardened or certified, and dual-algorithm data
+   protection may be desirable over a longer time period to hedge
+   against CVEs and other implementation flaws in the new
+   implementations.
 
    Cautious implementers may opt to combine cryptographic algorithms in
    such a way that an attacker would need to break all of them
    simultaneously to compromise the protected data.  These mechanisms
    are referred to as Post-Quantum/Traditional (PQ/T) Hybrids
-   [I-D.ietf-pquip-pqt-hybrid-terminology].  Combining multiple
-   algorithms can help to eliminate single points of failure, where a
-   component algorithm is a technology that may fail in the future.
+   [I-D.ietf-pquip-pqt-hybrid-terminology].
 
    Certain jurisdictions are already recommending or mandating that PQC
    lattice schemes be used exclusively within a PQ/T hybrid framework.
@@ -219,9 +221,24 @@ Table of Contents
    of hybrid solutions compatible with (and advocated by) some
    governments and cybersecurity agencies [BSI2021].
 
-   Composite ML-DSA is applicable in any application that would
-   otherwise use ML-DSA, but wants the protection against breaks or
-   catastrophic bugs in ML-DSA.
+   This document defines a specific instantiation of the PQ/T Hybrid
+   paradigm called "composite" where multiple cryptographic algorithms
+   are combined to form a single signature algorithm presenting a single
+   public key and signature value such that it can be treated as a
+   single atomic algorithm at the protocol level; a property referred to
+   as "protocol backwards compatibility" since it can be applied to
+   protocols that are not explicitly hybrid-aware.  Composite algorithms
+   address algorithm strength uncertainty because the composite
+   algorithm remains strong so long as one of its components remains
+   strong.  Concrete instantiations of composite ML-DSA algorithms are
+   provided based on ML-DSA, RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA,
+   Ed25519, and Ed448.  Backwards compatibility in the sence of upgraded
+   systems continuing to inter-operate with legacy systems is not
+   directly covered in this document, but is the subject of
+   Appendix E.2.
+
+   Composite ML-DSA is applicable in any PKIX-related application that
+   would otherwise use ML-DSA.
 
 2.1.  Conventions and Terminology
 
@@ -244,8 +261,6 @@ Table of Contents
    "cryptographic algorithm" and "cryptographic scheme" given in
    [I-D.ietf-pquip-pqt-hybrid-terminology].
 
-   *BER*: Basic Encoding Rules (BER) as defined in [X.690].
-
    *CLIENT*: Any software that is making use of a cryptographic key.
    This includes a signer, verifier, encrypter, decrypter.  This is not
    meant to imply any sort of client-server relationship between the
@@ -254,10 +269,6 @@ Table of Contents
    *DER*: Distinguished Encoding Rules as defined in [X.690].
 
    *PKI*: Public Key Infrastructure, as defined in [RFC5280].
-
-   *PUBLIC / PRIVATE KEY*: The public and private portion of an
-   asymmetric cryptographic key, making no assumptions about which
-   algorithm.
 
    *SIGNATURE*: A digital cryptographic signature, making no assumptions
    about which algorithm.
@@ -285,21 +296,24 @@ Table of Contents
       incorporates multiple component cryptographic elements of the same
       type in a multi-algorithm scheme.
 
-   Composite keys, as defined here, follow this definition and should be
-   regarded as a single key that performs a single cryptographic
-   operation such as key generation, signing, verifying, encapsulating,
-   or decapsulating -- using its internal sequence of component keys as
-   if they form a single key.  This generally means that the complexity
-   of combining algorithms can and should be handled by the
-   cryptographic library or cryptographic module, and the single
-   composite public key, private key, ciphertext and signature can be
-   carried in existing fields in protocols such as PKCS#10 [RFC2986],
-   CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652], and the Trust Anchor
-   Format [RFC5914].  In this way, composites achieve "protocol
-   backwards-compatibility" in that they will drop cleanly into any
-   protocol that accepts an analogous single-algorithm cryptographic
-   scheme without requiring any modification of the protocol to handle
-   multiple algorithms.
+   Composite algorithms, as defined in this specification, follow this
+   definition and should be regarded as a single key that performs a
+   single cryptographic operation typical of a digital signature
+   algorithm, such as key generation, signing, or verifying -- using its
+   internal sequence of component keys as if they form a single key.
+   This generally means that the complexity of combining algorithms can
+   and should be handled by the cryptographic library or cryptographic
+   module, and the single composite public key, private key, and
+   signature value can be carried in existing fields in protocols such
+   as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652],
+   and the Trust Anchor Format [RFC5914].  In this way, composites
+   achieve "protocol backwards-compatibility" in that they will drop
+   cleanly into any protocol that accepts an analogous single-algorithm
+   cryptographic scheme without requiring any modification of the
+   protocol to handle multiple algorithms.
+
+   Discussion of the specific choices of algorithm pairings can be found
+   in Section 7.3.
 
 3.  Overview of the Composite ML-DSA Signature Scheme
 
@@ -8692,13 +8706,15 @@ Appendix H.  Contributors and Acknowledgements
    Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
    (Entrust), Ali Noman (Entrust), Daniel Van Geest (CryptoNext), Dr.
    Britta Hale (Naval Postgraduade School), Tim Hollebeek (Digicert),
-   Panos Kampanakis (Amazon), Richard Kisley (IBM), Piotr Popis,
-   François Rousseau, Falko Strenzke, Alexander Ralien (Siemens), José
-   Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa
-   Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao Peiduo (Seventh
-   Sense AI), Phil Hallin (Microsoft), Samuel Lee (Microsoft), Alicja
-   Kario (Red Hat), Jean-Pierre Fiset (Crypto4A), Varun Chatterji
-   (Seventh Sense AI) and Mojtaba Bisheh-Niasar
+   Panos Kampanakis (Amazon), Chris Wood (Apple), Christopher Wood
+   (Apple,) Sophie Schmieg (Google), Bas Westerbaan (Cloudflare),
+   Deirdre Connolly (SandboxAQ), Richard Kisley (IBM), Piotr Popis
+   (Enigma), François Rousseau, Falko Strenzke, Alexander Ralien
+   (Siemens), José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.
+   Chen, Chunghwa Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao
+   Peiduo (Seventh Sense AI), Phil Hallin (Microsoft), Samuel Lee
+   (Microsoft), Alicja Kario (Red Hat), Jean-Pierre Fiset (Crypto4A),
+   Varun Chatterji (Seventh Sense AI) and Mojtaba Bisheh-Niasar
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensely with strengthening the signature combiner
