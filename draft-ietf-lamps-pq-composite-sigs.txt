@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 5 December 2025                                         M. Pala
+Expires: 6 December 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             3 June 2025
+                                                             4 June 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 December 2025.
+   This Internet-Draft will expire on 6 December 2025.
 
 Copyright Notice
 
@@ -148,11 +148,11 @@ Table of Contents
    *  MAJOR CHANGE: Authors decided to remove all "pure" composites and
       leave only the pre-hashed variants (which were renamed to simply
       be "Composite" instead of "HashComposite").  The core construction
-      of the Mprime construction was not modified, simply re-named.
-      This results in a ~50% reduction in the length of the draft since
-      we removed ~50% of the content.  This is the result of long design
-      discussions, some of which is captured in https://github.com/
-      lamps-wg/draft-composite-sigs/issues/131
+      of M' was not modified, simply re-named.  This results in a ~50%
+      reduction in the length of the draft since we removed ~50% of the
+      content.  This is the result of long design discussions, some of
+      which is captured in https://github.com/lamps-wg/draft-composite-
+      sigs/issues/131
 
    *  The construction has been enhanced by adding a pre-hash randomizer
       PH( r || M ) to help mitigate the generation of message pairs M1,
@@ -334,7 +334,7 @@ Table of Contents
       string is malformed.
 
    We define the following algorithms which are used to serialize and
-   deseralize the composite signature value
+   deserialize the composite signature value
 
    *  SerializeSignatureValue(signature) -> bytes: Produce a byte string
       encoding the CompositeSignatureValue.
@@ -432,15 +432,15 @@ Table of Contents
    generations of both component keys and MUST NOT reuse existing key
    material.  See Section 10.3 for a discussion.
 
-   To generate a new keypair for Composite schemes, the KeyGen() -> (pk,
-   sk) function is used.  The KeyGen() function calls the two key
+   To generate a new key pair for Composite schemes, the KeyGen() ->
+   (pk, sk) function is used.  The KeyGen() function calls the two key
    generation functions of the component algorithms independently.
    Multi-process or multi-threaded applications might choose to execute
    the key generation functions in parallel for better key generation
    performance.
 
    The following describes how to instantiate a KeyGen() function for a
-   given composite algorithm reperesented by <OID>.
+   given composite algorithm represented by <OID>.
 
 Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
 
@@ -459,7 +459,7 @@ Implicit inputs mapped from <OID>:
 
 Output:
 
-  (pk, sk)   The composite keypair.
+  (pk, sk)   The composite key pair.
 
 
 Key Generation Process:
@@ -525,7 +525,7 @@ Key Generation Process:
    values.
 
    The following describes how to instantiate a Sign(..) function for a
-   given composite algorithm reperesented by <OID>.
+   given composite algorithm represented by <OID>.
 
 Composite-ML-DSA<OID>.Sign (sk, M, ctx, PH) -> (signature)
 
@@ -620,7 +620,7 @@ Signature Generation Process:
    "Invalid signature" (false) otherwise.
 
    The following describes how to instantiate a Verify(..) function for
-   a given composite algorithm reperesented by <OID>.
+   a given composite algorithm represented by <OID>.
 
 Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)
 
@@ -750,7 +750,7 @@ Signature Verification Process:
    obtain interoperability, composite algorithms MUST use the following
    encodings of the underlying components:
 
-   *  *ML-DSA*: MUST be encoded as specified in [FIPS204], using a
+   *  *ML-DSA*: MUST be encoded as specified in [FIPS.204], using a
       32-byte seed as the private key.
 
    *  *RSA*: MUST be encoded with the (n,e) public key representation as
@@ -2259,8 +2259,9 @@ Deserialization Process:
               NIST.FIPS.202.pdf>.
 
    [FIPS.204] National Institute of Standards and Technology (NIST),
-              "Module-Lattice-Based Digital Signature Standard", August
-              2024, <https://nvlpubs.nist.gov/nistpubs/FIPS/
+              "Module-Lattice-Based Digital Signature Standard", FIPS
+              PUB 204, August 2024,
+              <https://nvlpubs.nist.gov/nistpubs/FIPS/
               NIST.FIPS.204.pdf>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -2396,17 +2397,17 @@ Deserialization Process:
               Publications/Brochure/quantum-safe-cryptography.pdf>.
 
    [codesigningbrsv3.8]
-              "Baseline Requirements for the Issuance and Management of
-              Publicly‐Trusted Code Signing Certificates Version 3.8.0",
-              n.d., <https://cabforum.org/working-groups/code-signing/
-              documents/>.
+              CA/Browser Forum, "Baseline Requirements for the Issuance
+              and Management of Publicly‐Trusted Code Signing
+              Certificates Version 3.8.0", n.d., <https://cabforum.org/
+              working-groups/code-signing/documents/>.
 
    [eIDAS2014]
-              "Regulation (EU) No 910/2014 of the European Parliament
-              and of the Council of 23 July 2014 on electronic
-              identification and trust services for electronic
-              transactions in the internal market and repealing
-              Directive 1999/93/EC", n.d.,
+              European Parliament and Council, "Regulation (EU) No
+              910/2014 of the European Parliament and of the Council of
+              23 July 2014 on electronic identification and trust
+              services for electronic transactions in the internal
+              market and repealing Directive 1999/93/EC", n.d.,
               <https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng>.
 
    [I-D.ietf-lamps-dilithium-certificates]
@@ -2653,7 +2654,7 @@ Appendix C.  Component Algorithm Reference
          +-------------+-------------------------+---------------+
          | id-sha512   | 2.16.840.1.101.3.4.2.3  | [RFC6234]     |
          +-------------+-------------------------+---------------+
-         | id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS 202]    |
+         | id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS.202]    |
          +-------------+-------------------------+---------------+
 
                 Table 10: Hash algorithms used in pre-hashed
