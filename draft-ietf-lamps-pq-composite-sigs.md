@@ -89,43 +89,43 @@ normative:
       title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
       date: November 2015
       author:
-        org: ITU-T
+        - org: ITU-T
       seriesinfo:
         ISO/IEC: 8825-1:2015
   SEC1:
     title: "SEC 1: Elliptic Curve Cryptography"
     date: May 21, 2009
     author:
-      org: "Certicom Research"
+      - org: "Certicom Research"
     target: https://www.secg.org/sec1-v2.pdf
   SEC2:
     title: "SEC 2: Recommended Elliptic Curve Domain Parameters"
     date: January 27, 2010
     author:
-      org: "Certicom Research"
+      - org: "Certicom Research"
     target: https://www.secg.org/sec2-v2.pdf
   X9.62–2005:
     title: "Public Key Cryptography for the Financial Services Industry The Elliptic Curve Digital Signature Algorithm (ECDSA)"
     date: "November 16, 2005"
     author:
-      org: "American National Standards Institute"
+      - org: "American National Standards Institute"
   FIPS.186-5:
     title: "Digital Signature Standard (DSS)"
     date: February 3, 2023
     author:
-      org: "National Institute of Standards and Technology (NIST)"
+      - org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf
   FIPS.202:
     title: "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions"
     date: August 2015
     author:
-      org: "National Institute of Standards and Technology (NIST)"
+      - org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
   FIPS.204:
     title: "Module-Lattice-Based Digital Signature Standard"
     date: August 13, 2024
     author:
-      org: "National Institute of Standards and Technology (NIST)"
+      - org: "National Institute of Standards and Technology (NIST)"
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.204.pdf
     seriesinfo:
       "FIPS PUB": "204"
