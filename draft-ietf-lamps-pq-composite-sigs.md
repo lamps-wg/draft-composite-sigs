@@ -140,6 +140,7 @@ informative:
   RFC8446:
   RFC8551:
   RFC8017:
+  RFC9180:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
   I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
   I-D.draft-ietf-lamps-dilithium-certificates-04:
@@ -302,39 +303,35 @@ Discussion of the specific choices of algorithm pairings can be found in {{sec-r
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite schemes are defined as cryptographic primitives that consist of three algorithms:
+Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs keyed prehashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+
+Composite signature schemes are defined as cryptographic primitives that consist of three algorithms:
 
    * `KeyGen() -> (pk, sk)`: A probabilistic key generation algorithm
-      which generates a public key pk and a secret key sk.
+      which generates a public key `pk` and a secret key `sk`. Some cryptographic modules may also expose a `KeyGen(seed) -> (pk, sk)`, which generates `pk` and `sk` deterministically from a seed. This specification assumes a seed-based keygen for ML-DSA.
 
-   * `KeyGen(seed) -> (pk, sk)`: A deterministic key generation algorithm
-      which generates a public key pk and a secret key sk from a seed.
+   * `Sign(sk, M) -> s`: A signing algorithm which takes
+      as input a secret key `sk` and a message `M`, and outputs a signature `s`. Signing routines may take additional parameters such as a context string or a hash function to use for pre-hashing the message.
 
-   * `Sign(sk, Message) -> (signature)`: A signing algorithm which takes
-      as input a secret key sk and a Message, and outputs a signature.
+   * `Verify(pk, M, s) -> true or false`: A verification algorithm
+      which takes as input a public key `pk`, a message `M` and a signature `s`, and outputs `true` if the signature verifies correctly and `false` or an error otherwise. Verification routines may take additional parameters such as a context string or a hash function to use for pre-hashing the message.
 
-   * `Verify(pk, Message, signature) -> true or false`: A verification algorithm
-      which takes as input a public key, a Message, and a signature and outputs true
-      if the signature verifies correctly.  Thus it proves the Message was signed
-      with the secret key associated with the public key and verifies the integrity
-      of the Message.  If the signature and public key cannot verify the Message,
-      it returns false.
+The following algorithms are defined for serializing and deserializing component values. These algorithms are inspired by similar algorithms in {{RFC9180}}.
 
-We define the following algorithms which we use to serialize and deserialize the public and private keys
+   * `SerializePublicKey(mlkdsaPK, tradPK) -> bytes`: Produce a byte string encoding of the component public keys.
 
-   *  `SerializeKey(key) -> bytes`: Produce a byte string encoding the public or private key.
+   * `DeserializePublicKey(bytes) -> (mldsaPK, tradPK)`: Parse a byte string to recover the component public keys.
 
-   *  `DeserializeKey(bytes) -> pk`: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.
+  * `SerializePrivateKey(mldsaSeed, tradSK) -> bytes`: Produce a byte string encoding of the component private keys. Note that the keygen seed is used as the interoperable private key format for ML-DSA.
 
-We define the following algorithms which are used to serialize and deserialize the composite signature value
+   * `DeserializePrivateKey(bytes) -> (mlkemSeed, tradSK)`: Parse a byte string to recover the component private keys.
 
-   *  `SerializeSignatureValue(signature) -> bytes`: Produce a byte string encoding the CompositeSignatureValue.
+   * `SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes`: Produce a byte string encoding of the component signature values. The randomizer `r` is explained in {{sec-prehash}}.
 
-   *  `DeserializeSignatureValue(bytes) -> signature`: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.
+   * `DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)`: Parse a byte string to recover the randomizer and the component signature values.
 
-A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations `Sign()` and `Verify()`.
+Full definitions of serialization and deserialization algorithms can be found in {{sec-serialization}}.
 
-This specification uses the Post-Quantum signature scheme ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}}. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], and Ed25519 / Ed448 which are defined in [RFC8410]. A simple "signature combiner" function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.
 
 ## Pre-hashing and Randomizer {#sec-prehash}
 
@@ -1263,7 +1260,7 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
 
 <!-- End of IANA Considerations section -->
 
-# Security Considerations
+# Security Considerations {#sec-cons}
 
 ## Why Hybrids?
 
