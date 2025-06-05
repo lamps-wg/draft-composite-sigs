@@ -217,6 +217,7 @@ Interop-affecting changes:
 * Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
 * ML-DSA secret keys are now only seeds.
 * Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
+* Added id-MLDSA87-RSA3072-PSS-SHA512 as a more performant alternative to id-MLDSA87-RSA4096-PSS-SHA512.
 * Added new prototype OIDs to avoid interoperability issues with previous versions
 * Added complete test vectors.
 * Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.
@@ -1036,6 +1037,7 @@ Composite-ML-DSA Signature public key types:
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
 | id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | id-ML-DSA-87 | id-Ed448                               | id-shake256/64 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
@@ -1081,9 +1083,8 @@ Also note that this specification fixes the Public Key OID of RSASSA-PSS to id-R
 
 ### RSA2048-PSS
 
-The RSA component keys MUST be generated at the 2048-bit security level in order to match that of ML-DSA-44.
+As with the other composite signature algorithms, when a composite algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier, the parameters MUST be absent. The RSA-PSS component within a composite SHALL instantiate RSASSA-PSS with the following parameters:
 
-As with the other composite signature algorithms, when `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA44-RSA2048-PSS` and `id-HashMLDSA44-RSA2048-PSS-SHA256` SHALL instantiate RSASSA-PSS with the following parameters:
 
 | RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
@@ -1101,9 +1102,7 @@ where:
 
 ### RSA3072-PSS
 
-The RSA component keys MUST be generated at the 3072-bit security level in order to match that of ML-DSA-65.
-
-As with the other composite signature algorithms, when `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512`  is used in an AlgorithmIdentifier, the parameters MUST be absent. `id-MLDSA65-RSA3072-PSS` or `id-HashMLDSA65-RSA3072-PSS-SHA512` SHALL instantiate RSASSA-PSS with the following parameters:
+As with the other composite signature algorithms, when a composite algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier, the parameters MUST be absent. The RSA-PSS component within a composite SHALL instantiate RSASSA-PSS with the following parameters:
 
 | RSASSA-PSS Parameter       | Value                      |
 | -------------------------- | -------------------------- |
@@ -1246,6 +1245,12 @@ EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{
   - Decimal: IANA Assigned
   - Description:  id-MLDSA87-Ed448-SHAKE256
   - References: This Document
+
+- id-MLDSA87-RSA3072-PSS-SHA512
+  - Decimal: IANA Assigned
+  - Description:  id-MLDSA87-RSA3072-PSS-SHA512
+  - References: This Document
+
 
 - id-MLDSA87-RSA4096-PSS-SHA512
   - Decimal: IANA Assigned

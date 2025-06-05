@@ -257,6 +257,20 @@ sa-MLDSA87-Ed448-SHAKE256 SIGNATURE-ALGORITHM ::=
 
 
 -- TODO: OID to be replaced by IANA
+id-MLDSA87-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
+   joint-iso-itu-t(2) country(16) us(840) organization(1)
+   entrust(114027) algorithm(80) composite(8) signature(1) 117 }
+
+pk-MLDSA87-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA87-RSA3072-PSS-SHA512}
+
+sa-MLDSA87-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA87-RSA3072-PSS-SHA512,
+       pk-MLDSA87-RSA3072-PSS-SHA512 }
+     
+
+-- TODO: OID to be replaced by IANA
 id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
    entrust(114027) algorithm(80) composite(8) signature(1) 115 }
@@ -300,6 +314,7 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA87-ECDSA-P384-SHA512 |
   sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |
   sa-MLDSA87-Ed448-SHA512 |
+  sa-MLDSA87-RSA3072-PSS-SHA512 |
   sa-MLDSA87-RSA4096-PSS-SHA512,
   ... }
 
