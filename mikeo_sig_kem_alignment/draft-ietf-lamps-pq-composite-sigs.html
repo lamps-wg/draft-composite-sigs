@@ -1520,49 +1520,44 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
       <h2 id="name-overview-of-the-composite-m">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview-of-the-composite-m" class="section-name selfRef">Overview of the Composite ML-DSA Signature Scheme</a>
       </h2>
-<p id="section-3-1">Composite schemes are defined as cryptographic primitives that consist of three algorithms:<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, or Ed25519 / Ed448 defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs keyed prehashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in <a href="#sec-cons" class="auto internal xref">Section 10</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Composite signature schemes are defined as cryptographic primitives that consist of three algorithms:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1"><code>KeyGen() -&gt; (pk, sk)</code>: A probabilistic key generation algorithm
- which generates a public key pk and a secret key sk.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-3.1">
+          <p id="section-3-3.1.1"><code>KeyGen() -&gt; (pk, sk)</code>: A probabilistic key generation algorithm
+ which generates a public key <code>pk</code> and a secret key <code>sk</code>. Some cryptographic modules may also expose a <code>KeyGen(seed) -&gt; (pk, sk)</code>, which generates <code>pk</code> and <code>sk</code> deterministically from a seed. This specification assumes a seed-based keygen for ML-DSA.<a href="#section-3-3.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1"><code>KeyGen(seed) -&gt; (pk, sk)</code>: A deterministic key generation algorithm
- which generates a public key pk and a secret key sk from a seed.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-3.2">
+          <p id="section-3-3.2.1"><code>Sign(sk, M) -&gt; s</code>: A signing algorithm which takes
+ as input a secret key <code>sk</code> and a message <code>M</code>, and outputs a signature <code>s</code>. Signing routines may take additional parameters such as a context string or a hash function to use for pre-hashing the message.<a href="#section-3-3.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-2.3">
-          <p id="section-3-2.3.1"><code>Sign(sk, Message) -&gt; (signature)</code>: A signing algorithm which takes
- as input a secret key sk and a Message, and outputs a signature.<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1"><code>Verify(pk, Message, signature) -&gt; true or false</code>: A verification algorithm
- which takes as input a public key, a Message, and a signature and outputs true
- if the signature verifies correctly.  Thus it proves the Message was signed
- with the secret key associated with the public key and verifies the integrity
- of the Message.  If the signature and public key cannot verify the Message,
- it returns false.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-3.3">
+          <p id="section-3-3.3.1"><code>Verify(pk, M, s) -&gt; true or false</code>: A verification algorithm
+ which takes as input a public key <code>pk</code>, a message <code>M</code> and a signature <code>s</code>, and outputs <code>true</code> if the signature verifies correctly and <code>false</code> or an error otherwise. Verification routines may take additional parameters such as a context string or a hash function to use for pre-hashing the message.<a href="#section-3-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-3">We define the following algorithms which we use to serialize and deserialize the public and private keys<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-4">The following algorithms are defined for serializing and deserializing component values. These algorithms are inspired by similar algorithms in <span>[<a href="#RFC9180" class="cite xref">RFC9180</a>]</span>.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3-4.1">
-          <p id="section-3-4.1.1"><code>SerializeKey(key) -&gt; bytes</code>: Produce a byte string encoding the public or private key.<a href="#section-3-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3-5.1">
+          <p id="section-3-5.1.1"><code>SerializePublicKey(mlkdsaPK, tradPK) -&gt; bytes</code>: Produce a byte string encoding of the component public keys.<a href="#section-3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-3-4.2">
-          <p id="section-3-4.2.1"><code>DeserializeKey(bytes) -&gt; pk</code>: Parse a byte string to recover a public or private key. This function can fail if the input byte string is malformed.<a href="#section-3-4.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="section-3-5.2">
+          <p id="section-3-5.2.1"><code>DeserializePublicKey(bytes) -&gt; (mldsaPK, tradPK)</code>: Parse a byte string to recover the component public keys.<a href="#section-3-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.3">
+          <p id="section-3-5.3.1"><code>SerializePrivateKey(mldsaSeed, tradSK) -&gt; bytes</code>: Produce a byte string encoding of the component private keys. Note that the keygen seed is used as the interoperable private key format for ML-DSA.<a href="#section-3-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.4">
+          <p id="section-3-5.4.1"><code>DeserializePrivateKey(bytes) -&gt; (mlkemSeed, tradSK)</code>: Parse a byte string to recover the component private keys.<a href="#section-3-5.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.5">
+          <p id="section-3-5.5.1"><code>SerializeSignatureValue(r, mldsaSig, tradSig) -&gt; bytes</code>: Produce a byte string encoding of the component signature values. The randomizer <code>r</code> is explained in <a href="#sec-prehash" class="auto internal xref">Section 3.1</a>.<a href="#section-3-5.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-3-5.6">
+          <p id="section-3-5.6.1"><code>DeserializeSignatureValue(bytes) -&gt; (r, mldsaSig, tradSig)</code>: Parse a byte string to recover the randomizer and the component signature values.<a href="#section-3-5.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-3-5">We define the following algorithms which are used to serialize and deserialize the composite signature value<a href="#section-3-5" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3-6.1">
-          <p id="section-3-6.1.1"><code>SerializeSignatureValue(signature) -&gt; bytes</code>: Produce a byte string encoding the CompositeSignatureValue.<a href="#section-3-6.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-6.2">
-          <p id="section-3-6.2.1"><code>DeserializeSignatureValue(bytes) -&gt; signature</code>: Parse a byte string to recover a CompositeSignatureValue. This function can fail if the input byte string is malformed.<a href="#section-3-6.2.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-3-7">A composite signature allows the security properties of the two underlying algorithms to be combined via standard signature operations <code>Sign()</code> and <code>Verify()</code>.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<p id="section-3-8">This specification uses the Post-Quantum signature scheme ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span>. For Traditional signature schemes, this document uses the RSASSA-PKCS1-v1_5 and RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, and Ed25519 / Ed448 which are defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. A simple "signature combiner" function which prepends a domain separator value specific to the composite algorithm is used to bind the two component signatures to the composite algorithm and achieve weak non-separability.<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-6">Full definitions of serialization and deserialization algorithms can be found in <a href="#sec-serialization" class="auto internal xref">Section 5</a>.<a href="#section-3-6" class="pilcrow">¶</a></p>
 <div id="sec-prehash">
 <section id="section-3.1">
         <h3 id="name-pre-hashing-and-randomizer">
@@ -3358,7 +3353,7 @@ END
 </div>
 </section>
 </div>
-<div id="security-considerations">
+<div id="sec-cons">
 <section id="section-10">
       <h2 id="name-security-considerations">
 <a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
@@ -3674,8 +3669,12 @@ H(r, m) := SHA256(r ‖ m) may still be secure as a TCR.<a href="#section-10.5-1
 <span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8446">https://www.rfc-editor.org/info/rfc8446</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8551">[RFC8551]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Schaad, J.</span>, <span class="refAuthor">Ramsdell, B.</span>, and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification"</span>, <span class="seriesInfo">RFC 8551</span>, <span class="seriesInfo">DOI 10.17487/RFC8551</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8551">https://www.rfc-editor.org/info/rfc8551</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9180">[RFC9180]</dt>
+      <dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lipp, B.</span>, and <span class="refAuthor">C. Wood</span>, <span class="refTitle">"Hybrid Public Key Encryption"</span>, <span class="seriesInfo">RFC 9180</span>, <span class="seriesInfo">DOI 10.17487/RFC9180</span>, <time datetime="2022-02" class="refDate">February 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9180">https://www.rfc-editor.org/info/rfc9180</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
