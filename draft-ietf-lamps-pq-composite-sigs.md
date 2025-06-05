@@ -288,6 +288,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 
  * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
 
+ * `Func<TYPE>()`: represents a function that is parametrized by `<TYPE>` meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.
+
 
 ## Composite Design Philosophy
 
@@ -446,8 +448,8 @@ Explicit inputs:
 
   M     The message to be signed, an octet string.
 
-  ctx     The application context string used in the composite signature
-          combiner, which defaults to the empty string.
+  ctx     The application context string used in the composite
+          signature combiner, which defaults to the empty string.
 
   PH      The hash function to use for pre-hashing.
 
@@ -546,8 +548,8 @@ Explicit inputs:
   s       A composite signature value containing the component
           signature values (mldsaSig and tradSig) to be verified.
 
-  ctx     The Message context string used in the composite signature
-          combiner, which defaults to the empty string.
+  ctx     The application context string used in the composite
+          signature combiner, which defaults to the empty string.
 
   PH      The Message Digest Algorithm for pre-hashing. See
           section on pre-hashing the message below.
@@ -577,7 +579,6 @@ Implicit inputs mapped from <OID>:
           HashML-DSA in [FIPS.204], however this specification
           allows only one choice of PH and HashOID for each
           Composite ML-DSA algorithm and so this MAY be hard-coded.
-
 
 Output:
 
@@ -630,7 +631,7 @@ Note that in step 4 above, the function fails early if the first component fails
 
 # Serialization {#sec-serialization}
 
-This section presents routines for serializing and deserializing composite public keys, private keys (seeds), and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
+This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 The functions defined in this section are considered internal implementation detail and are referenced from within the public API definitions in {{sec-sigs}}.
 
 Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
@@ -642,7 +643,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 | ML-DSA-87 |     2592    |      32     |    4627   |
 {: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
-When these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
+For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
@@ -651,21 +652,23 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 * **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
 * **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032].
 
-In the event that a composite implementation uses an underlying implementation of the traditional component that requires a different encoding, it is the responsibility of the composite implementation to perform the necessary transcoding. Even with fixed encodings for the traditional component, there may be slight differences in encoded size of the traditional component due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
+Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
+
+The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.
 
 ## SerializePublicKey and DeserializePublicKey {#sec-serialize-pubkey}
 
-The serialization routine for keys simply concatenates the fixed-length public keys of the component signature algorithms, as defined below:
+The serialization routine for keys simply concatenates the public keys of the component signature algorithms, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
-Explicit Input:
+Explicit Inputs:
 
-  mldsaPK  The ML-DSA public key, which is bytes.
+  mldsaPK The ML-DSA public key, which is bytes.
 
-  tradPK   The traditional public key in the appropriate
-           bytes-like encoding for the underlying component algorithm.
+  tradPK  The traditional public key in the appropriate
+          encoding for the underlying component algorithm.
 
 Implicit inputs:
 
@@ -673,7 +676,7 @@ Implicit inputs:
 
 Output:
 
-  bytes   The encoded composite public key
+  bytes   The encoded composite public key.
 
 
 Serialization Process:
@@ -685,16 +688,16 @@ Serialization Process:
 {: #alg-composite-serialize-pk title="SerializePublicKey(mldsaPK, tradPK) -> bytes"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component key is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
 
 The following describes how to instantiate a `DeserializePublicKey(bytes)` function for a given composite algorithm reperesented by `<OID>`.
 
 ~~~
-Composite-ML-DSA.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
+Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
-Explicit Input:
+Explicit Inputs:
 
-  bytes   An encoded composite public key
+  bytes   An encoded composite public key.
 
 Implicit inputs mapped from <OID>:
 
@@ -706,13 +709,13 @@ Output:
   mldsaPK  The ML-DSA public key, which is bytes.
 
   tradPK   The traditional public key in the appropriate
-           bytes-like encoding for the underlying component algorithm.
+           encoding for the underlying component algorithm.
 
 Deserialization Process:
 
   1. Parse each constituent encoded public key.
        The length of the mldsaKey is known based on the size of
-       the ML-DSA component key length specified by the Object ID
+       the ML-DSA component key length specified by the Object ID.
 
      switch ML-DSA do
         case ML-DSA-44:
@@ -739,12 +742,12 @@ Deserialization Process:
 
 ## SerializePrivateKey and DeserializePrivateKey {#sec-serialize-privkey}
 
-The serialization routine for keys simply concatenates the fixed-length private keys of the component signature algorithms, as defined below:
+The serialization routine for keys simply concatenates the private keys of the component signature algorithms, as defined below:
 
 ~~~
 Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes
 
-Explicit Input:
+Explicit Inputs:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
@@ -757,25 +760,28 @@ Implicit inputs:
 
 Output:
 
-  bytes   The encoded composite private key
+  bytes   The encoded composite private key.
+
 
 Serialization Process:
 
-  1. Combine and output the encoded private key
+  1. Combine and output the encoded private key.
 
      output mldsaSeed || tradSK
 ~~~
 {: #alg-composite-serialize-sk title="SerializePrivateKey(mldsaSeed, tradSK) -> bytes"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.
+Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
+
+The following describes how to instantiate a `DeserializePrivateKey(bytes)` function. Since ML-DSA private keys are 32 bytes for all paramater sets, this function does not need to be parametrized.
 
 ~~~
 Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 
-Explicit Input:
+Explicit Inputs:
 
-  bytes   An encoded composite private key
+  bytes   An encoded composite private key.
 
 Implicit inputs:
 
@@ -791,13 +797,13 @@ Output:
 Deserialization Process:
 
   1. Parse each constituent encoded key.
-       The length of an ML-DSA private key is always a 32 byte seed
-       for all parameter sets.
+     The length of an ML-DSA private key is always a 32 byte seed
+     for all parameter sets.
 
-      mldsaSeed = bytes[:32]
-      tradSK  = bytes[32:]
+     mldsaSeed = bytes[:32]
+     tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys (seeds), RSA and ECDH
+     Note that while ML-KEM has fixed-length keys, RSA and ECDH
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -831,7 +837,7 @@ Implicit inputs:
 
 Output:
 
-  bytes   The encoded composite signature value
+  bytes   The encoded composite signature value.
 
 Serialization Process:
 
@@ -843,21 +849,22 @@ Serialization Process:
 {: #alg-composite-serialize-sig title="SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes"}
 
 
-Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective standard as shown in {{appdx_components}}.
+Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in {{appdx_components}}.
 
 The following describes how to instantiate a `DeserializeSignatureValue(bytes)` function for a given composite algorithm reperesented by `<OID>`.
 
 ~~~
-Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
+Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
+                                            -> (r, mldsaSig, tradSig)
 
-Explicit Input:
+Explicit inputs:
 
   bytes   An encoded composite signature value.
 
-Implicit inputs:
+Implicit inputs mapped from <OID>:
 
-  ML-DSA   The underlying ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and
+          parameter set to use, for example, could be "ML-DSA-65".
 
 Output:
 
@@ -876,8 +883,8 @@ Deserialization Process:
      sigs = bytes[32:]  # truncate off the randomizer
 
   2. Parse each constituent encoded signature.
-       The length of the mldsaSig is known based on the size of
-       the ML-DSA component signature length specified by the Object ID.
+     The length of the mldsaSig is known based on the size of
+     the ML-DSA component signature length specified by the Object ID.
 
      switch ML-DSA do
         case ML-DSA-44:
@@ -1944,7 +1951,8 @@ Daniel Van Geest (CryptoNext),
 Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
-Chris Wood (Apple),
+Chris A. Wood (Apple),
+Christopher D. Wood (Apple),
 Sophie Schmieg (Google),
 Bas Westerbaan (Cloudflare),
 Deirdre Connolly (SandboxAQ),
