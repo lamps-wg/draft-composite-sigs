@@ -1933,7 +1933,7 @@ Dr. Britta Hale (Naval Postgraduade School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
 Chris Wood (Apple),
-Christopher Wood (Apple,)
+Christopher Wood (Apple),
 Sophie Schmieg (Google),
 Bas Westerbaan (Cloudflare),
 Deirdre Connolly (SandboxAQ),
