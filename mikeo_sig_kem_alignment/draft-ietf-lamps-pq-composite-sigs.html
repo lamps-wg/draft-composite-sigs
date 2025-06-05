@@ -2234,14 +2234,14 @@ Deserialization Process:
       <h2 id="name-use-within-x509-and-pkix">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-use-within-x509-and-pkix" class="section-name selfRef">Use within X.509 and PKIX</a>
       </h2>
-<p id="section-6-1">The following sections provide processing logic and the necessary ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols, including defining ASN.1-based wrappers for the binary composite values such that these structures can be used as a drop-in replacement for existing public key and ciphertext fields such as those found in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-1">The following sections provide processing logic and the necessary ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols such that Composite ML-DSA can be used as a drop-in replacement for existing digital signature algorithms in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and related protocols.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="sec-encoding-to-der">
 <section id="section-6.1">
         <h3 id="name-encoding-to-der">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-encoding-to-der" class="section-name selfRef">Encoding to DER</a>
         </h3>
-<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-endeded message format such as an X.509's <code>subjectPublicKey BIT STRING</code> and <code>signatureValue</code> <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a CMS <code>SignerInfo.signature OCTET STRING</code> <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-endeded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a CMS <code>SignerInfo.signature OCTET STRING</code> <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">When a BIT STRING is required, the octets of the composite data value SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.1-3">When an OCTET STRING is required, the DER encoding of the composite data value SHALL be used directly.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
@@ -2251,9 +2251,9 @@ Deserialization Process:
         <h3 id="name-key-usage-bits">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-key-usage-bits" class="section-name selfRef">Key Usage Bits</a>
         </h3>
-<p id="section-6.2-1">When any Composite ML-DSA <code>AlgorithmIdentifier</code> appears in the <code>SubjectPublicKeyInfo</code> field of an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the key usage certificate extension MUST only contain only signing-type key usages.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-1">When any Composite ML-DSA Object Identifier appears within the <code>SubjectPublicKeyInfo.AlgorithmIdentifier</code> field of an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the key usage certificate extension MUST only contain signing-type key usages.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <p id="section-6.2-2">The normal keyUsage rules for signing-type keys from <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> apply, and are reproduced here for completeness.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.2-3">For Certification Authority (CA) certificates that carry a composite public key, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+<p id="section-6.2-3">For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-6.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.2-4">
 <pre>
 digitalSignature;
@@ -2271,7 +2271,7 @@ nonRepudiation;
 </div>
 <p id="section-6.2-7">Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
 traditional component key supports both signing and encryption,
-the post-quantum algorithms do not and therefore the overall composite algorithm does not.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
+the post-quantum algorithms do not and therefore the overall composite algorithm does not. Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.<a href="#section-6.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-asn1-defs">
@@ -2279,32 +2279,21 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
         <h3 id="name-asn1-definitions">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-asn1-definitions" class="section-name selfRef">ASN.1 Definitions</a>
         </h3>
-<p id="section-6.3-1">The wire encoding of a Composite ML-DSA public key is:<a href="#section-6.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.3-2">The following ASN.1 Information Object Class is defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-6.3-3">
+<p id="section-6.3-1">Composite ML-KEM uses a substantially non-ASN.1 based encoding, as specified in <a href="#sec-serialization" class="auto internal xref">Section 5</a>. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">The following ASN.1 Information Object Classes are are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<span id="name-asn1-object-information-cla"></span><div id="asn1-info-classes">
+<figure id="figure-10">
+          <div class="lang-ASN.1 sourcecode" id="section-6.3-3.1">
 <pre>
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     PUBLIC-KEY ::= {
       IDENTIFIER id
       KEY BIT STRING
       PARAMS ARE absent
-      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
+      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
+                                                             cRLSign}
     }
-</pre><a href="#section-6.3-3" class="pilcrow">¶</a>
-</div>
-<p id="section-6.3-4">As an example, the public key type <code>id-MLDSA44-ECDSA-P256-SHA256</code> is defined as:<a href="#section-6.3-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.3-5">
-<pre>
-id-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{
-    id-MLDSA44-ECDSA-P256,
-    CompositeMLDSAPublicKey }
-</pre><a href="#section-6.3-5" class="pilcrow">¶</a>
-</div>
-<p id="section-6.3-6">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 8</a>.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
-<p id="section-6.3-7">The ASN.1 algorithm object for a composite signature is:<a href="#section-6.3-7" class="pilcrow">¶</a></p>
-<div class="lang-asn.1 sourcecode" id="section-6.3-8">
-<pre>
+
 sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
@@ -2313,10 +2302,28 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
-</pre><a href="#section-6.3-8" class="pilcrow">¶</a>
+</pre>
 </div>
-<p id="section-6.3-9">Use cases that require an interoperable encoding for composite private keys will often need to place a composite private key inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-6.3-9" class="pilcrow">¶</a></p>
-<div class="lang-ASN.1 sourcecode" id="section-6.3-10">
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<a href="#name-asn1-object-information-cla" class="selfRef">ASN.1 Object Information Classes for Composite ML-DSA</a>
+          </figcaption></figure>
+</div>
+<p id="section-6.3-4">As an example, the public key and signature algorithm types associated with <code>id-MLDSA44-ECDSA-P256-SHA256</code> are defined as:<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.3-5">
+<pre>
+pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
+  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
+
+sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
+    sa-CompositeSignature{
+       id-MLDSA44-ECDSA-P256-SHA256,
+       pk-MLDSA44-ECDSA-P256-SHA256 }
+</pre><a href="#section-6.3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6.3-6">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 8</a>.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<p id="section-6.3-7">Use cases that require an interoperable encoding for composite private keys will often need to place a composite private key inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-6.3-7" class="pilcrow">¶</a></p>
+<span id="name-oneasymmetrickey-as-defined"></span><figure id="figure-11">
+          <div class="lang-ASN.1 sourcecode" id="section-6.3-8.1">
 <pre>
  OneAsymmetricKey ::= SEQUENCE {
        version                   Version,
@@ -2332,11 +2339,14 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
                         -- Content varies based on type of key.  The
                         -- algorithm identifier dictates the format of
                         -- the key.
-</pre><a href="#section-6.3-10" class="pilcrow">¶</a>
+</pre>
 </div>
-<p id="section-6.3-11">When a composite private key is conveyed inside a <code>OneAsymmetricKey</code> structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the privateKeyAlgorithm field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent.  The <code>privateKey</code> field SHALL contain the OCTET STRING reperesentation of the serialized composite private key as per <a href="#sec-serialize-privkey" class="auto internal xref">Section 5.2</a>. The <code>publicKey</code> field remains OPTIONAL. If the <code>publicKey</code> field is present, it MUST be a composite public key as per <a href="#sec-serialize-pubkey" class="auto internal xref">Section 5.1</a>.<a href="#section-6.3-11" class="pilcrow">¶</a></p>
-<p id="section-6.3-12">Some applications may need to reconstruct the <code>OneAsymmetricKey</code> objects corresponding to each component private key. <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-6.3-12" class="pilcrow">¶</a></p>
-<p id="section-6.3-13">Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a>.<a href="#section-6.3-13" class="pilcrow">¶</a></p>
+<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
+<a href="#name-oneasymmetrickey-as-defined" class="selfRef">OneAsymmetricKey as defined in [RFC5958]</a>
+          </figcaption></figure>
+<p id="section-6.3-9">When a composite private key is conveyed inside a <code>OneAsymmetricKey</code> structure (version 1 of which is also known as PrivateKeyInfo) <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, the <code>privateKeyAlgorithm</code> field SHALL be set to the corresponding composite algorithm identifier defined according to <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> and its parameters field MUST be absent.  The <code>privateKey</code> field SHALL contain the OCTET STRING reperesentation of the serialized composite private key as per <a href="#sec-serialize-privkey" class="auto internal xref">Section 5.2</a>. The <code>publicKey</code> field remains OPTIONAL. If the <code>publicKey</code> field is present, it MUST be a composite public key as per <a href="#sec-serialize-pubkey" class="auto internal xref">Section 5.1</a>.<a href="#section-6.3-9" class="pilcrow">¶</a></p>
+<p id="section-6.3-10">Some applications might need to reconstruct the <code>SubjectPublicKeyInfo</code> or <code>OneAsymmetricKey</code> objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. <a href="#sec-alg-ids" class="auto internal xref">Section 7</a> provides the necessary mapping between composite and their component algorithms for doing this reconstruction.<a href="#section-6.3-10" class="pilcrow">¶</a></p>
+<p id="section-6.3-11">Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a>.<a href="#section-6.3-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3491,7 +3501,7 @@ output (r, mldsaSig, tradSig)
 </div>
 <p id="section-10.5-6">This follows closely the construction given in section 13.2.1 of <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> which is also referend to as a "keyed pre-hash" and is given as:<a href="#section-10.5-6" class="pilcrow">¶</a></p>
 <span id="name-listing-132-from-boneh-shou"></span><div id="tab-bonehshoup-tcr">
-<figure id="figure-10">
+<figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-10.5-7.1">
 <pre>
 S'(sk, m) :=
@@ -3501,7 +3511,7 @@ S'(sk, m) :=
   output (s, r)
 </pre>
 </div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
 <a href="#name-listing-132-from-boneh-shou" class="selfRef">Listing 13.2 from Boneh-Shoup showing how to extend a signature scheme with a Target Collision Resistant hash</a>
           </figcaption></figure>
 </div>
