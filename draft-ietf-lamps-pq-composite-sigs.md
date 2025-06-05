@@ -303,7 +303,7 @@ Discussion of the specific choices of algorithm pairings can be found in {{sec-r
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs keyed prehashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs randomized prehashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
 
 Composite signature schemes are defined as cryptographic primitives that consist of three algorithms:
 
@@ -335,9 +335,9 @@ Full definitions of serialization and deserialization algorithms can be found in
 
 ## Pre-hashing and Randomizer {#sec-prehash}
 
-In [FIPS.204] NIST defines separate algorithms for "pure" ML-DSA and "pre-hashed" signing modes, referred to as "ML-DSA" and "HashML-DSA" respectively. This document takes a middle-ground approach which borrows some design elements from each of ML-DSA and HashML-DSA and introduces a new design element -- the pre-hash randomizer inspired by [BonehShoup] -- which together provides a compromised balance between performance and security.
+In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA with the addition of a pre-hash randomizer inspired by [BonehShoup]. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
 
-Composite-ML-DSA offers improved performance by pre-hashing the potentially large message only once and then passing the shorter digest into the component algorithms. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the length of `HashOID` and the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple different keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the length of `HashOID` and the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
 
 See {{sec-cons-randomizer}} for a discussion of security implications of the randomized pre-hash.
 
@@ -347,23 +347,23 @@ This simplification into a single strongly-pre-hashed algorithm avoids the need 
 
 ## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
 
-When constructing the message representative `M'`, first a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
+When constructing the to-be-signed message representative `M'`, several domain separator values are  pre-pended to the message pre-hash prior to signing.
+
+First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
 "CompositeAlgorithmSignatures2025" which in hex is:
 
      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
 This allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
 
-The Domain separator defined in {{sec-domsep-values}} is concatenated with the length of the context in bytes, the context, an additional DER encoded value that represents the OID of the Hash function and finally the hash of the message to be signed.  After that, the signature process for each component algorithm is invoked and the values are serialized into a composite signature value as per {{sec-serialize-sig}}.
+Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, an additional DER encoded value that represents the OID of the hash function `PH`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}. And finally the OID of the hash function `PH` protects against substituting for a weaker hash function, although in practice each composite algorithm specifies only one allowed hash function.
 
-A composite signature's value MUST include two signature components and MUST be in the same order as the components from the corresponding signing key.
-
-Note that there are two different context strings `ctx` here: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the composite signature combiner. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite-ML-DSA itself is the application that we wish to bind, and outer `ctx` is already contained within the `M'` message.
+Note that there are two different context strings`ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
 
 
 # Composite ML-DSA Functions {#sec-sigs}
 
-This section describes the composite ML-DSA functions needed to instantiate the public signature API in {{sec-sig-scheme}}.
+This section describes the composite ML-DSA functions needed to instantiate the public API of a digital signature scheme as defined in {{sec-sig-scheme}}.
 
 ## Key Generation {#sec-keygen}
 
@@ -1285,7 +1285,7 @@ In addition to the classic EUF-CMA game, we should also consider a “cross-prot
 
 In the case of CompositeML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction added to M. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either ML-DSA.Verify() or Trad.Verify(). In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
 
-### Implications of mupliple encodings {#sec-cons-multiple-encodings}
+### Implications of multiple encodings {#sec-cons-multiple-encodings}
 
 As noted in {{sec-serialization}}, this specification leaves open the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations `(mldsaPK, tradPK1)` and `(mldsaPK, tradPK2)` where `tradPK1` and `tradPK2` are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.
 
@@ -1312,7 +1312,7 @@ The Prefix value specified in the message format calculated in {{sec-sigs}} can 
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
 
-To combat collision and second pre-image weaknesses introduced by the pre-hash, Composite-ML-DSA introduces a 32-byte randomizer into the pre-hash:
+To combat potential collision and second pre-image weaknesses introduced by the pre-hash, Composite-ML-DSA introduces a 32-byte randomizer into the pre-hash:
 
     PH( r || M )
 
@@ -1324,7 +1324,7 @@ as part of the overall construction of the to-be-signed message:
     ...
     output (r, mldsaSig, tradSig)
 
-This follows closely the construction given in section 13.2.1 of [BonehShoup] which is given as:
+This follows closely the construction given in section 13.2.1 of [BonehShoup] which is also referend to as a "keyed prehash" and is given as:
 
 ~~~
 S'(sk, m) :=
@@ -1333,25 +1333,23 @@ S'(sk, m) :=
   s <- S(sk, (r,h))
   output (s, r)
 ~~~
-{: #tab-bonehshoup-tcr title="Equation 13.2 from Boneh-Shoup showing how to extend a signature scheme with a Target Collision Resistant hash"}
+{: #tab-bonehshoup-tcr title="Listing 13.2 from Boneh-Shoup showing how to extend a signature scheme with a Target Collision Resistant hash"}
 
-This construction's security hinges on the assumption that `H(r, m)` is "Target Collision Resistant" -- a weaker version of second pre-image resistance which applies to keyed hash functions.
+Randomizing the pre-hash strongly protects against pre-computed collision attacks where an attacker pre-computes a message pair `M1, M2` such that `PH(M1) = PH(M2)` and submits one to the signing oracle, thus obtaining a valid signature for both. However, collision-finding pre-computation cannot be performed against `PH(r || M1) = PH(r || M2)` when `r` is unknown to the attacker in advance.  We also consider signature forgeries via finding a second pre-image after the signature has been created honestly.  In this case, the attack is only possible if the attacker can perform what [BonehShoup] calls a target collision attack where the attacker takes the honestly-produced signature `s = (r, mldsaSig, tradSig)` over the message `M` and finds a second message `M2` such that `PH(r || M) = PH(r || M2)` for the same randomizer `r`.
 
-Randomizing the pre-hash strongly protects against pre-computed collision attacks where an attacker pre-computes a message pair `M1, M2` such that `PH(M1) = PH(M2)` and submits one to the signing oracle, thus obtaining a valid signature for both. However, collision-finding pre-computation cannot be performed against `PH(r || M1) = PH(r || M2)` when `r` is unknown to the attacker in advance.  We also consider signature collision forgeries via finding a second pre-image after the signature has been created.  In this case, the attack is only possible only if the attacker can perform what [BonehShoup] calls a Target Collision attack where the attacker can take the honestly-produced signature `s = (r, mldsaSig, tradSig)` over the message `M` and find a second message `M2` such that `PH( r || M) = PH( r || M2)` for the same randomizer `r`. [BonehShoup] defines Target Collision Resistance (TCR) as a security notion that applies to keyed hash functions and is weaker requirement of the hash function compared second pre-image resistance.
-
-
-[BonehShoup] notes:
+[BonehShoup] defines Target Collision Resistance (TCR) as a security notion that applies to keyed hash functions and notes in section 13.2.1:
 
 > The benefit of the TCR construction is that security only relies on H being TCR, which is a
 much weaker property than collision resistance and hence more likely to hold for H. For example,
 the function SHA256 may eventually be broken as a collision-resistant hash, but the function
-H(r, m) := SHA256(r ‖ m) may still be secure as a TCR.
+>
+>`H(r, m) := SHA256(r || m)` may still be secure as a TCR.
 
-To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite-ML-DSA signing routine MUST be perfermed on a per-application basis.
-
-Further, since introduction of the randomizer is a net-gain over both the ML-DSA and Traditional components, a failure of randomness reverts the overall collision resistance of Composite-ML-DSA to the collision resistance of the hash function used as `PH`, which is no worse than the security properties that Composite-ML-DSA would have had without a randomizer, which is the same collision resistance property that RSA, ECDSA, and HashML-DSA have.
+To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be perfermed on a per-application basis.
 
 Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
+
+A failure of randomness, for example `r = 0`, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as `PH`, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and HashML-DSA have.
 
 Introduction of the randomizer might introduce other benificial security properties, but these are outside the scope of design consideration.
 
