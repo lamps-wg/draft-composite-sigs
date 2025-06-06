@@ -469,7 +469,7 @@ Implicit inputs mapped from <OID>:
   Domain  Domain separator value for binding the signature to the
           Composite ML-DSA OID. Additionally, the composite Domain
           is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separators"
+          Domain values are defined in the "Domain Separator Values"
           section below.
 
   HashOID The DER Encoding of the Object Identifier of the
@@ -1023,52 +1023,47 @@ Component keys of a composite MUST NOT be used in any other type of key or as a 
 
 # Algorithm Identifiers {#sec-alg-ids}
 
-This table summarizes the list of Composite ML-DSA algorithms and lists the OID and the two component algorithms. Domain separator values are defined below in {{sec-domsep-values}}.
+This table summarizes the OID and the component algorithms for each Composite ML-DSA algorithm.
 
 EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
 &lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1
 
-## Composite-ML-DSA Algorithm Identifiers
 
-Composite ML-DSA Signature public key types:
-
-| Composite Signature Algorithm | OID | First Algorithm | Second Algorithm | Pre-Hash |
+| Composite Signature Algorithm | OID | ML-DSA | Trad | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.100   | id-ML-DSA-44 | id-RSASSA-PSS with id-sha256           | id-sha256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.101   | id-ML-DSA-44 | sha256WithRSAEncryption                | id-sha256 |
-| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.102   | id-ML-DSA-44 | id-Ed25519                             | id-sha512 |
-| id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.103   | id-ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | id-sha256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.104   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha256           | id-sha512 |
-| id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.105   | id-ML-DSA-65 | sha256WithRSAEncryption                | id-sha512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.106   | id-ML-DSA-65 | id-RSASSA-PSS with id-sha384           | id-sha512 |
-| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.107   | id-ML-DSA-65 | sha384WithRSAEncryption                | id-sha512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.108   | id-ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | id-sha512 |
-| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.109   | id-ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.110   | id-ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | id-sha512 |
-| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | id-ML-DSA-65 | id-Ed25519                             | id-sha512 |
-| id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | id-ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | id-sha512 |
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | id-ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | id-sha512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | id-ML-DSA-87 | id-Ed448                               | id-shake256/64 |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
-| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | id-ML-DSA-87 | id-RSASSA-PSS with id-sha384           | id-sha512 |
-| id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | id-ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | id-sha512 |
+| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.100   | ML-DSA-44 | RSASSA-PSS with id-sha256           | SHA256 |
+| id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.101   | ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
+| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.102   | ML-DSA-44 | Ed25519                             | SHA512 |
+| id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.103   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
+| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.104   | ML-DSA-65 | RSASSA-PSS with id-sha256           | SHA512 |
+| id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.105   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.106   | ML-DSA-65 | RSASSA-PSS with id-sha384           | SHA512 |
+| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.107   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
+| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.108   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
+| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.109   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.110   | ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
+| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                             | SHA512 |
+| id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                               | SHAKE256/64 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
+| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
+| id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-Note that pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64) (that is, 64 bytes of SHAKE256 output) for Ed448
-
-See the ASN.1 module in {{sec-asn1-module}} for the explicit definitions of the above Composite ML-DSA algorithms.
-
-The Pre-Hash algorithm is used as the PH algorithm and the DER Encoded OID value of this Hash is used as HashOID for the Message format in step 2 of `Composite-ML-DSA.Sign` in section {{sec-hash-comp-sig-sign}} and `Composite-ML-DSA.Verify` in {{sec-hash-comp-sig-verify}}.
-
-As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
+The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes of output, for Ed448
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
+As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
 
-## Domain Separators {#sec-domsep-values}
 
-As mentioned above, the OID input value is used as a domain separator for the composite signature generation and verification process and is the DER encoding of the OID. The following table shows the HEX encoding for each Signature Algorithm.
+## Domain Separator Values {#sec-domsep-values}
+
+Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
+
+The domain separator is simply the DER encoding of the OID. The following table shows the HEX-encoded domain separator value for each Composite ML-DSA algorithm.
 
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
@@ -1078,7 +1073,7 @@ As mentioned above, the OID input value is used as a domain separator for the co
 {::include src/domSepTable.md}
 {: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
 
-EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early allocation of these OIDs so that we can re-compute the domain separators over the final OIDs.
+EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early assignment of these OIDs so that we can re-compute the domain separators over the final OIDs.
 
 ## Rationale for choices {#sec-rationale}
 
