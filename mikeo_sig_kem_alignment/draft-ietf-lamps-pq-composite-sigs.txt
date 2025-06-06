@@ -99,10 +99,7 @@ Table of Contents
    7.  Algorithm Identifiers
      7.1.  Domain Separator Values
      7.2.  Rationale for choices
-     7.3.  RSASSA-PSS
-       7.3.1.  RSA2048-PSS
-       7.3.2.  RSA3072-PSS
-       7.3.3.  RSA4096-PSS
+     7.3.  RSASSA-PSS Parameters
    8.  ASN.1 Module
    9.  IANA Considerations
      9.1.  Object Identifier Allocations
@@ -1447,99 +1444,52 @@ Table of Contents
    algorithms since ecdsa-with-SHA256 with secp256r1 is far more common
    than, for example, ecdsa-with-SHA512 with secp256r1.
 
-7.3.  RSASSA-PSS
+7.3.  RSASSA-PSS Parameters
 
    Use of RSASSA-PSS [RFC8017] requires extra parameters to be
-   specified, which differ for each security level.
-
-   Also note that this specification fixes the Public Key OID of RSASSA-
-   PSS to id-RSASSA-PSS (1.2.840.113549.1.1.10), although most
-   implementations also would accept rsaEncryption
-   (1.2.840.113549.1.1.1).
-
-7.3.1.  RSA2048-PSS
+   specified.
 
    As with the other composite signature algorithms, when a composite
    algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier,
-   the parameters MUST be absent.  The RSA-PSS component within a
-   composite SHALL instantiate RSASSA-PSS with the following parameters:
+   the parameters MUST be absent.
 
-                  +==========================+=========+
-                  | RSASSA-PSS Parameter     | Value   |
-                  +==========================+=========+
-                  | Mask Generation Function | mgf1    |
-                  +--------------------------+---------+
-                  | Mask Generation params   | SHA-256 |
-                  +--------------------------+---------+
-                  | Message Digest Algorithm | SHA-256 |
-                  +--------------------------+---------+
-                  | Salt Length in bits      | 256     |
-                  +--------------------------+---------+
+   When RSA-PSS is used at the 2048-bit security level, RSASSA-PSS SHALL
+   be instantiated with the following parameters:
 
-                   Table 4: RSASSA-PSS 2048 Parameters
+                +=============================+===========+
+                | RSASSA-PSS Parameter        | Value     |
+                +=============================+===========+
+                | MaskGenAlgorithm.algorithm  | id-mgf1   |
+                +-----------------------------+-----------+
+                | maskGenAlgorithm.parameters | id-sha256 |
+                +-----------------------------+-----------+
+                | Message Digest Algorithm    | id-sha256 |
+                +-----------------------------+-----------+
+                | Salt Length in bits         | 256       |
+                +-----------------------------+-----------+
 
-   where:
+                    Table 4: RSASSA-PSS 2048 Parameters
 
-   *  Mask Generation Function (mgf1) is defined in [RFC8017]
+   When RSA-PSS is used at the 3072-bit or 4096-bit security level,
+   RSASSA-PSS SHALL be instantiated with the following parameters:
 
-   *  SHA-256 is defined in [RFC6234].
+                +=============================+===========+
+                | RSASSA-PSS Parameter        | Value     |
+                +=============================+===========+
+                | MaskGenAlgorithm.algorithm  | id-mgf1   |
+                +-----------------------------+-----------+
+                | maskGenAlgorithm.parameters | id-sha512 |
+                +-----------------------------+-----------+
+                | Message Digest Algorithm    | id-sha512 |
+                +-----------------------------+-----------+
+                | Salt Length in bits         | 512       |
+                +-----------------------------+-----------+
 
-7.3.2.  RSA3072-PSS
+                     Table 5: RSASSA-PSS 3072 and 4096
+                                 Parameters
 
-   As with the other composite signature algorithms, when a composite
-   algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier,
-   the parameters MUST be absent.  The RSA-PSS component within a
-   composite SHALL instantiate RSASSA-PSS with the following parameters:
-
-                  +==========================+=========+
-                  | RSASSA-PSS Parameter     | Value   |
-                  +==========================+=========+
-                  | Mask Generation Function | mgf1    |
-                  +--------------------------+---------+
-                  | Mask Generation params   | SHA-256 |
-                  +--------------------------+---------+
-                  | Message Digest Algorithm | SHA-256 |
-                  +--------------------------+---------+
-                  | Salt Length in bits      | 256     |
-                  +--------------------------+---------+
-
-                   Table 5: RSASSA-PSS 3072 Parameters
-
-   where:
-
-   *  Mask Generation Function (mgf1) is defined in [RFC8017]
-
-   *  SHA-256 is defined in [RFC6234].
-
-7.3.3.  RSA4096-PSS
-
-   The RSA component keys MUST be generated at the 4096-bit security
-   level in order to match that of ML-DSA-65 or ML-DSA-87.
-
-   When * id-MLDSA65-RSA4096-PSS, * id-HashMLDSA65-RSA4096-PSS-SHA512, *
-   id-MLDSA87-RSA4096-PSS or * id-HashMLDSA87-RSA4096-PSS-SHA512 is used
-   in an AlgorithmIdentifier, the parameters MUST be absent and RSASSA-
-   PSS SHALL be instantiated with the following parameters:
-
-                  +==========================+=========+
-                  | RSASSA-PSS Parameter     | Value   |
-                  +==========================+=========+
-                  | Mask Generation Function | mgf1    |
-                  +--------------------------+---------+
-                  | Mask Generation params   | SHA-384 |
-                  +--------------------------+---------+
-                  | Message Digest Algorithm | SHA-384 |
-                  +--------------------------+---------+
-                  | Salt Length in bits      | 384     |
-                  +--------------------------+---------+
-
-                   Table 6: RSASSA-PSS 4096 Parameters
-
-   where:
-
-   *  Mask Generation Function (mgf1) is defined in [RFC8017]
-
-   *  SHA-384 is defined in [RFC6234].
+   Full specifications for the referenced algorithms can be found in
+   Appendix C.
 
 8.  ASN.1 Module
 
@@ -2682,7 +2632,7 @@ Appendix A.  Approximate Key and Signature Sizes
    | id-MLDSA87-ECDSA-P521-SHA512            |2085  |273    |3480     |
    +-----------------------------------------+------+-------+---------+
 
-           Table 7: Approximate size values of composite ML-DSA
+           Table 6: Approximate size values of composite ML-DSA
 
 Appendix B.  Samples
 
@@ -2765,7 +2715,7 @@ Appendix C.  Component Algorithm Reference
     | id-RSASSA-PSS           | 1.2.840.113549.1.1.10   |[RFC8017]    |
     +-------------------------+-------------------------+-------------+
 
-         Table 8: Component Signature Algorithms used in Composite
+         Table 7: Component Signature Algorithms used in Composite
                                Constructions
 
      +==================+=======================+===================+
@@ -2784,7 +2734,7 @@ Appendix C.  Component Algorithm Reference
      | brainpoolP384r1  | 1.3.36.3.3.2.8.1.1.11 | [RFC5639]         |
      +------------------+-----------------------+-------------------+
 
-         Table 9: Elliptic Curves used in Composite Constructions
+         Table 8: Elliptic Curves used in Composite Constructions
 
          +=============+=========================+===============+
          | HashID      | OID                     | Specification |
@@ -2795,9 +2745,11 @@ Appendix C.  Component Algorithm Reference
          +-------------+-------------------------+---------------+
          | id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS.202]    |
          +-------------+-------------------------+---------------+
+         | id-mgf1     | 1.2.840.113549.1.1.8    | [RFC8017]     |
+         +-------------+-------------------------+---------------+
 
-                Table 10: Hash algorithms used in pre-hashed
-                Composite Constructions to build PH element
+           Table 9: Hash algorithms used in pre-hashed Composite
+                     Constructions to build PH element
 
 Appendix D.  Component AlgorithmIdentifiers for Public Keys and
              Signatures
@@ -2846,6 +2798,11 @@ Appendix D.  Component AlgorithmIdentifiers for Public Keys and
      30 0B 06 09 60 86 48 01 65 03 04 03 13
 
    *RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key*
+
+   Note that we suggest here to use id-RSASSA-PSS
+   (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although
+   most implementations also would accept rsaEncryption
+   (1.2.840.113549.1.1.1), and some might in fact prefer or require it.
 
    ASN.1:
      algorithm AlgorithmIdentifier ::= {
