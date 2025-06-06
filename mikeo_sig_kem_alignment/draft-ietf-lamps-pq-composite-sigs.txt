@@ -110,7 +110,7 @@ Table of Contents
      10.2.  Non-separability, EUF-CMA and SUF
        10.2.1.  Implications of multiple encodings
      10.3.  Key Reuse
-     10.4.  Use of Prefix to for attack mitigation
+     10.4.  Use of Prefix for attack mitigation
      10.5.  Implications of pre-hash randomizer
      10.6.  Policy for Deprecated and Acceptable Algorithms
    11. References
@@ -257,11 +257,6 @@ Table of Contents
    This loosely, but not precisely, aligns with the definitions of
    "cryptographic algorithm" and "cryptographic scheme" given in
    [I-D.ietf-pquip-pqt-hybrid-terminology].
-
-   *CLIENT*: Any software that is making use of a cryptographic key.
-   This includes a signer, verifier, encrypter, decrypter.  This is not
-   meant to imply any sort of client-server relationship between the
-   communicating parties.
 
    *COMPONENT / PRIMITIVE*: The words "component" or "primitive" are
    used interchangeably to refer to a cryptographic algorithm that is
@@ -432,14 +427,7 @@ Table of Contents
 
     436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-   This allows for cautious implementers to wrap their existing
-   Traditional Verify() implementations with a guard that looks for
-   messages starting with this string and fail with an error -- i.e.
-   this can act as an extra protection against taking a composite
-   signature and splitting it back into components.  However, an
-   implementation that does this will be unable to perform a Traditional
-   signature and verification on a message which happens to start with
-   this string.  The designers accepted this trade-off.
+   Additional discussion of the prefix can be found in Section 10.4.
 
    Next, the Domain separator defined in Section 7.1 which is the DER
    encoding of the OID of the specific composite algorithm is
@@ -1524,7 +1512,8 @@ Table of Contents
          IDENTIFIER id
          KEY BIT STRING
          PARAMS ARE absent
-         CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
+         CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
+                                                               cRLSign}
        }
 
    sa-CompositeSignature{OBJECT IDENTIFIER:id,
@@ -2010,20 +1999,20 @@ Table of Contents
    continue to be used and to provide value.
 
    Migration flexibility.  Some PQ/T hybrids exist to provide a sort of
-   "OR" mode where the client can choose to use one algorithm or the
-   other or both.  The intention is that the PQ/T hybrid mechanism
+   "OR" mode where the application can choose to use one algorithm or
+   the other or both.  The intention is that the PQ/T hybrid mechanism
    builds in backwards compatibility to allow legacy and upgraded
-   clients to co-exist and communicate.  The composites presented in
-   this specification do not provide this since they operate in a strict
-   "AND" mode, but they do provide codebase migration flexibility.
-   Consider that an organization has today a mature, validated,
-   certified, hardened implementation of RSA or ECC.  Composites allow
-   them to add to this an ML-DSA implementation which immediately starts
-   providing benefits against long-term document integrity attacks even
-   if that ML-DSA implementation is still experimental, non-validated,
-   non-certified, non-hardened implementation.  More details of
-   obtaining FIPS certification of a composite algorithm can be found in
-   Appendix E.1.
+   applications to co-exist and communicate.  The composites presented
+   in this specification do not provide this since they operate in a
+   strict "AND" mode.  They do, however, provide codebase migration
+   flexibility.  Consider that an organization has today a mature,
+   validated, certified, hardened implementation of RSA or ECC;
+   composites allow them to add an ML-DSA implementation which
+   immediately starts providing benefits against long-term document
+   integrity attacks even if that ML-DSA implementation is still an
+   experimental, non-validated, non-certified, non-hardened
+   implementation.  More details of obtaining FIPS certification of a
+   composite algorithm can be found in Appendix E.1.
 
 10.2.  Non-separability, EUF-CMA and SUF
 
@@ -2039,13 +2028,14 @@ Table of Contents
 
    Unforgeability properties are somewhat more nuanced.  We recall first
    the definitions of Existential Unforgeability under Chosen Message
-   Attack (EUF-CMA) and Strong Unforgeability (SUF).The classic EUF-CMA
-   game is in reference to a pair of algorithms ( Sign(), Verify() )
+   Attack (EUF-CMA) and Strong Unforgeability (SUF).  The classic EUF-
+   CMA game is in reference to a pair of algorithms ( Sign(), Verify() )
    where the attacker has access to a signing oracle using the Sign()
    and must produce a message-signature pair (m', s') that is accepted
-   by the verifier using Verify() and where m was never signed by the
-   oracle.  SUF requires that the attacker cannot construct a new
-   signature to an already-signed message.
+   by the verifier using Verify() and where m' was never signed by the
+   oracle.  SUF is similar but requires only that (m', s') != (m, s) for
+   any honestly-generated (m, s), i.e. that the attacker cannot
+   construct a new signature to an already-signed message.
 
    The pair ( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() ) is EUF-
    CMA secure so long as at least one component algorithm is EUF-CMA
@@ -2056,28 +2046,30 @@ Table of Contents
    Composite ML-DSA only achieves SUF security if both components are
    SUF secure, which is not a useful property; the argument is that if
    the first component algorithm is not SUF secure then by definition it
-   admits at least one (m, s1*) pair where s1* was not produced by the
-   honest signer and it then can be combined with an honestly-signed (m,
-   s2) signature over the same message m to create (m, (s1*, s2)) which
-   violates SUF for the composite algorithm.  Of the traditional
-   signature component algorithms used in this specification, only
-   Ed25519 and Ed448 are SUF secure and therefore applications that
-   require SUF security to be maintained even in the event that ML-DSA
-   is broken SHOULD use it in composite with Ed25519 or Ed448.
+   admits at least one (m, s1') pair where s1' was not produced by the
+   honest signer, and the attacker can then combine it with an honestly-
+   signed (m, s2) signature produced by the second algorithm over the
+   same message m to create (m, (s1', s2)) which violates SUF for the
+   composite algorithm.  Of the traditional signature component
+   algorithms used in this specification, only Ed25519 and Ed448 are SUF
+   secure and therefore applications that require SUF security to be
+   maintained even in the event that ML-DSA is broken SHOULD use it in
+   composite with Ed25519 or Ed448.
 
-   In addition to the classic EUF-CMA game, we should also consider a
-   “cross-protocol” version of the EUF-CMA game that is relevant to
-   hybrids.  Specifically, we want to consider a modified version of the
-   EUF-CMA game where the attacker has access to either a signing oracle
-   over the two component algorithms in isolation, Trad.Sign() and ML-
+   In addition to the classic EUF-CMA game, we also consider a “cross-
+   protocol” version of the EUF-CMA game that is relevant to hybrids.
+   Specifically, we want to consider a modified version of the EUF-CMA
+   game where the attacker has access to either a signing oracle over
+   the two component algorithms in isolation, Trad.Sign() and ML-
    DSA.Sign(), and attempts to fraudulently present them as a composite,
-   or where the attacker has access to a composite oracle for signing
-   and then attempts to split the signature back into components and
-   present them to either ML-DSA.Verify() or Trad.Verify().
+   or where the attacker has access to a composite signing oracle and
+   then attempts to split the signature back into components and present
+   them to either ML-DSA.Verify() or Trad.Verify().
 
    In the case of Composite ML-DSA, a specific message forgery exists
    for a cross-protocol EUF-CMA attack, namely introduced by the prefix
-   construction added to M.  This applies to use of individual component
+   construction used to construct the to-be-signed message
+   representative M'.  This applies to use of individual component
    signing oracles with fraudulent presentation of the signature to a
    composite verification oracle, and use of a composite signing oracle
    with fraudulent splitting of the signature for presentation to
@@ -2097,41 +2089,32 @@ Table of Contents
 
 10.2.1.  Implications of multiple encodings
 
-   As noted in Section 5, this specification leaves open the choice of
-   encoding of the traditional component.  As such it is possible for
-   the same composite public key to carry multiple valid representations
-   (mldsaPK, tradPK1) and (mldsaPK, tradPK2) where tradPK1 and tradPK2
-   are alternate encodings of the same key, for example compressed vs
-   uncompressed EC points.  In theory alternate encodings of the
-   traditional signature value are also possible, although the authors
-   are not aware of any.
+   As noted in Section 5, this specification leaves some flexibility the
+   choice of encoding of the traditional component.  As such it is
+   possible for the same composite public key to carry multiple valid
+   representations (mldsaPK, tradPK1) and (mldsaPK, tradPK2) where
+   tradPK1 and tradPK2 are alternate encodings of the same key, for
+   example compressed vs uncompressed EC points.  In theory alternate
+   encodings of the traditional signature value are also possible,
+   although the authors are not aware of any.
 
    In theory this introduces complications for EUF-CMA and SUF-CMA
    security proofs.  Implementors who are concerned with this SHOULD
    choose implementations of the traditional component that only accept
    a single encoding and performs appropriate length-checking, and
-   reject composites which contain any other encodings.  This is
-   permitted by this specification.
+   reject composites which contain any other encodings.  This would
+   reduce interoperability with other Composite ML-DSA implementations,
+   but it is permitted by this specification.
 
 10.3.  Key Reuse
 
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
    renewing a certificate, or obtaining both a TLS and S/MIME
-   certificate for the same device, however in practice key reuse in
+   certificate for the same device.However, in practice key reuse in
    such scenarios is not always catastrophic to security and therefore
-   often tolerated, despite cross-protocol attacks having been shown.
-   (TODO citation needed here)
-
-   In the event that an application wishes to use two separate keys (for
-   example from two single-algorithm certificates) and use them to
-   construct a single composite Signature, then it is RECOMMENDED to
-   provide a composite ctx to prevent this signature from being
-   validated under a composite key made up of the same two component
-   keys.  For example, an application or protocol called Foobar that
-   wishes to do this could invoke the composite algorithm as:
-
- Composite-ML-DSA.Sign( (sk1, sk2), M', ctx="Foobar-dual-cert-sig", PH).
+   often tolerated.  However this reasoning does not hold in the PQ /
+   Traditional hybrid setting.
 
    Within the broader context of PQ / Traditional hybrids, we need to
    consider new attack surfaces that arise due to the hybrid
@@ -2153,7 +2136,7 @@ Table of Contents
    request, many certification authorities will check if the requested
    public key has been previously revoked due to key compromise.  Often
    a CA will perform this check by using the public key hash.
-   Therefore, even if both components of a composite have been
+   Therefore, if one, or even both, components of a composite have been
    previously revoked, the CA may only check the hash of the combined
    composite key and not find the revocations.  Therefore, because the
    possibility of key reuse exists even though forbidden in this
@@ -2161,17 +2144,30 @@ Table of Contents
    SHOULD also check both component keys independently to verify that
    the component keys have not been revoked.
 
-10.4.  Use of Prefix to for attack mitigation
+   Despite all these warnings, some implementers will undoubtedly still
+   re-use keys into a composite; for example because this provides a
+   convenient way to have two unrelated certificates produce a single
+   signature to fit into a protocol that can only carry a single
+   signature.  While this is still NOT RECOMMENDED, one mitigation that
+   SHOULD be applied in such scenarios is to invoke Composite-ML-
+   DSA.Sign() with a context string ctx which clearly indicates the
+   dual-key context, and prevents this signature from being validated
+   under a composite key even if it is made up of the same two component
+   keys.  For example, an application or protocol called "Foobar" that
+   wishes to do this could invoke the composite algorithm with
+   ctx="Foobar-dual-cert-sig".
 
-   The Prefix value specified in the message format calculated in
-   Section 4 can be used by a traditional verifier to detect if the
-   composite signature has been stripped apart.  An attacker would need
-   to compute M' := Prefix || Domain || len(ctx) || ctx || HashOID ||
-   PH(r || M).  Since the Prefix is the constant String
-   "CompositeAlgorithmSignatures2025" (Byte encoding
-   436F6D706F73697465416C676F726974686D5369676E61747572657332303235 ) a
-   traditional verifier can check if the Message starts with this prefix
-   and reject the message.
+10.4.  Use of Prefix for attack mitigation
+
+   The Prefix value specified in Section 3.2 allows for cautious
+   implementers to wrap their existing Traditional Verify()
+   implementations with a guard that looks for messages starting with
+   this string and fail with an error -- i.e. this can act as an extra
+   protection against taking a composite signature and splitting it back
+   into components.  However, an implementation that does this will be
+   unable to perform a Traditional signature and verification on a
+   message which happens to start with this string.  The designers
+   accepted this trade-off.
 
 10.5.  Implications of pre-hash randomizer
 
@@ -2273,56 +2269,24 @@ Table of Contents
 
 10.6.  Policy for Deprecated and Acceptable Algorithms
 
-   Traditionally, a public key, certificate, or signature contains a
-   single cryptographic algorithm.  If and when an algorithm becomes
-   deprecated (for example, RSA-512, or SHA1), then clients performing
-   signatures or verifications should be updated to adhere to
-   appropriate policies.
+   Traditionally, a public key or certificate contains a single
+   cryptographic algorithm.  If and when an algorithm becomes deprecated
+   (for example, RSA-512, or SHA1), the path to deprecating it through
+   policy and removing it from operational environments is, at least is
+   principle, straightforward.
 
-   In the composite model this is less obvious since implementers may
-   decide that certain cryptographic algorithms have complementary
-   security properties and are acceptable in combination even though one
-   or both algorithms are deprecated for individual use.  As such, a
-   single composite public key or certificate may contain a mixture of
-   deprecated and non-deprecated algorithms.
-
-   Since composite algorithms are registered independently of their
-   component algorithms, their deprecation can be handled independently
-   from that of their component algorithms.  For example a cryptographic
-   policy might continue to allow id-MLDSA65-ECDSA-P256-SHA512 even
-   after ECDSA-P256 is deprecated.
-
-   When considering stripping attacks, one need consider the case where
-   an attacker has fully compromised one of the component algorithms to
-   the point that they can produce forged signatures that appear valid
-   under one of the component public keys, and thus fool a victim
-   verifier into accepting a forged signature.  The protection against
-   this attack relies on the victim verifier trusting the pair of public
-   keys as a single composite key, and not trusting the individual
-   component keys by themselves.
-
-   Specifically, in order to achieve this non-separability property,
-   this specification makes two assumptions about how the verifier will
-   establish trust in a composite public key:
-
-   1.  This specification assumes that all of the component keys within
-       a composite key are freshly generated for the composite; i.e. a
-       given public key MUST NOT appear as a component within a
-       composite key and also within single-algorithm constructions.
-
-   2.  This specification assumes that composite public keys will be
-       bound in a structure that contains a signature over the public
-       key (for example, an X.509 Certificate [RFC5280]), which is
-       chained back to a trust anchor, and where that signature
-       algorithm is at least as strong as the composite public key that
-       it is protecting.
-
-   There are mechanisms within Internet PKI where trusted public keys do
-   not appear within signed structures -- such as the Trust Anchor
-   format defined in [RFC5914].  In such cases, it is the responsibility
-   of implementers to ensure that trusted composite keys are distributed
-   in a way that is tamper-resistant and does not allow the component
-   keys to be trusted independently.
+   In the composite model this is less obvious since a PQ/T hybrid is
+   expected to still be considered valid after the traditional component
+   is deprecated for individual use.  As such, a single composite public
+   key or certificate may contain a mixture of deprecated and non-
+   deprecated algorithms.  In general this should be managable through
+   policy by removing OIDs for the standalone component algorithms while
+   still allowing OIDs for composite algorithms.  However, complications
+   may arise when the composite implementation needs to invoke the
+   cryptographic module for a deprecated component algorithm.  In
+   particular, this could lead to complex Cryptographic Bills of
+   Materials that show implementations of deprecated algorithms still
+   present and being used.
 
 11.  References
 
@@ -3140,10 +3104,10 @@ E.2.1.  Hybrid Extensions (Keys and Signatures)
    engines/libraries, it is possible to leverage X.509 extensions to
    encode the additional keys and signatures.  When the custom
    extensions are not marked critical, although this approach provides
-   the most backward-compatible approach where clients can simply ignore
-   the post-quantum (or extra) keys and signatures, it also requires all
-   applications to be updated for correctly processing multiple
-   algorithms together.
+   the most backward-compatible approach where applications can simply
+   ignore the post-quantum (or extra) keys and signatures, it also
+   requires all applications to be updated for correctly processing
+   multiple algorithms together.
 
 E.3.  Profiling down the number of options
 
