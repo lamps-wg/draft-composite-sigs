@@ -217,7 +217,7 @@ Table of Contents
    lattice schemes be used exclusively within a PQ/T hybrid framework.
    The use of a composite scheme provides a straightforward
    implementation of hybrid solutions compatible with (and advocated by)
-   some governments and cybersecurity agencies [BSI2021].
+   some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
    This specification defines a specific instantiation of the PQ/T
    Hybrid paradigm called "composite" where multiple cryptographic
@@ -324,17 +324,17 @@ Table of Contents
 3.  Overview of the Composite ML-DSA Signature Scheme
 
    Composite ML-DSA is a Post-Quantum / Traditional hybrid signature
-   scheme which combines ML-DSA as specified in [FIPS.204] with one of
-   RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the
-   Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in
-   section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410].
-   The two component signatures are combined into a composite algorithm
-   via a "signature combiner" function which performs randomized pre-
-   hashing and prepends several domain separator values to the message
-   prior to passing it to the component algorithms.  Composite ML-DSA
-   achieves weak non-separability as well as several other security
-   properties which are described in the Security Considerations in
-   Section 10.
+   scheme which combines ML-DSA as specified in [FIPS.204] and
+   [I-D.ietf-lamps-dilithium-certificates] with one of RSASSA-PKCS1-v1_5
+   or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve
+   Digital Signature Algorithm ECDSA scheme defined in section 6 of
+   [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410].  The two
+   component signatures are combined into a composite algorithm via a
+   "signature combiner" function which performs randomized pre-hashing
+   and prepends several domain separator values to the message prior to
+   passing it to the component algorithms.  Composite ML-DSA achieves
+   weak non-separability as well as several other security properties
+   which are described in the Security Considerations in Section 10.
 
    Composite signature schemes are defined as cryptographic primitives
    that consist of three algorithms:
@@ -2593,10 +2593,6 @@ Table of Contents
               DOI 10.17487/RFC6234, May 2011,
               <https://www.rfc-editor.org/info/rfc6234>.
 
-   [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
-              for Security", RFC 7748, DOI 10.17487/RFC7748, January
-              2016, <https://www.rfc-editor.org/info/rfc7748>.
-
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
               DOI 10.17487/RFC8032, January 2017,
@@ -2611,11 +2607,6 @@ Table of Contents
               X.509 Public Key Infrastructure", RFC 8410,
               DOI 10.17487/RFC8410, August 2018,
               <https://www.rfc-editor.org/info/rfc8410>.
-
-   [RFC8411]  Schaad, J. and R. Andrews, "IANA Registration for the
-              Cryptographic Algorithm Object Identifier Range",
-              RFC 8411, DOI 10.17487/RFC8411, August 2018,
-              <https://www.rfc-editor.org/info/rfc8411>.
 
    [SEC1]     Certicom Research, "SEC 1: Elliptic Curve Cryptography",
               May 2009, <https://www.secg.org/sec1-v2.pdf>.
@@ -2680,31 +2671,26 @@ Table of Contents
 
    [I-D.ietf-lamps-dilithium-certificates]
               Massimo, J., Kampanakis, P., Turner, S., and B.
-              Westerbaan, "Internet X.509 Public Key Infrastructure:
-              Algorithm Identifiers for ML-DSA", Work in Progress,
-              Internet-Draft, draft-ietf-lamps-dilithium-certificates-
-              04, 22 July 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-lamps-dilithium-certificates-04>.
+              Westerbaan, "Internet X.509 Public Key Infrastructure -
+              Algorithm Identifiers for the Module-Lattice-Based Digital
+              Signature Algorithm (ML-DSA)", Work in Progress, Internet-
+              Draft, draft-ietf-lamps-dilithium-certificates-11, 22 May
+              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              lamps-dilithium-certificates-11>.
 
    [I-D.ietf-pquip-hybrid-signature-spectrums]
               Bindel, N., Hale, B., Connolly, D., and F. D, "Hybrid
               signature spectrums", Work in Progress, Internet-Draft,
-              draft-ietf-pquip-hybrid-signature-spectrums-00, 24 May
-              2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              pquip-hybrid-signature-spectrums-00>.
+              draft-ietf-pquip-hybrid-signature-spectrums-06, 9 January
+              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              pquip-hybrid-signature-spectrums-06>.
 
    [I-D.ietf-pquip-pqt-hybrid-terminology]
               D, F., P, M., and B. Hale, "Terminology for Post-Quantum
               Traditional Hybrid Schemes", Work in Progress, Internet-
-              Draft, draft-ietf-pquip-pqt-hybrid-terminology-04, 10
-              September 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-pquip-pqt-hybrid-terminology-04>.
-
-   [RFC3279]  Bassham, L., Polk, W., and R. Housley, "Algorithms and
-              Identifiers for the Internet X.509 Public Key
-              Infrastructure Certificate and Certificate Revocation List
-              (CRL) Profile", RFC 3279, DOI 10.17487/RFC3279, April
-              2002, <https://www.rfc-editor.org/info/rfc3279>.
+              Draft, draft-ietf-pquip-pqt-hybrid-terminology-06, 10
+              January 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-pquip-pqt-hybrid-terminology-06>.
 
    [RFC5914]  Housley, R., Ashmore, S., and C. Wallace, "Trust Anchor
               Format", RFC 5914, DOI 10.17487/RFC5914, June 2010,
@@ -2728,6 +2714,11 @@ Table of Contents
               "PKCS #1: RSA Cryptography Specifications Version 2.2",
               RFC 8017, DOI 10.17487/RFC8017, November 2016,
               <https://www.rfc-editor.org/info/rfc8017>.
+
+   [RFC8411]  Schaad, J. and R. Andrews, "IANA Registration for the
+              Cryptographic Algorithm Object Identifier Range",
+              RFC 8411, DOI 10.17487/RFC8411, August 2018,
+              <https://www.rfc-editor.org/info/rfc8411>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
