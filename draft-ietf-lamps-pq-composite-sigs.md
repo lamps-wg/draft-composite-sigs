@@ -80,11 +80,9 @@ normative:
   RFC5958:
   RFC6090:
   RFC6234:
-  RFC7748:
   RFC8032:
   #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
-  RFC8411:
   X.690:
       title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
       date: November 2015
@@ -132,19 +130,19 @@ normative:
 
 
 informative:
-  RFC3279:
   RFC5914:
   RFC7292:
   RFC7296:
   RFC7299:
+  RFC8017:
+  RFC8411:
   RFC8446:
   RFC8551:
-  RFC8017:
   RFC9180:
-  I-D.draft-ietf-pquip-hybrid-signature-spectrums-00:
-  I-D.draft-ietf-pquip-pqt-hybrid-terminology-04:
-  I-D.draft-ietf-lamps-dilithium-certificates-04:
-  Bindel2017:
+  I-D.draft-ietf-lamps-dilithium-certificates-11:
+  I-D.draft-ietf-pquip-hybrid-signature-spectrums-06:
+  I-D.draft-ietf-pquip-pqt-hybrid-terminology-06:
+  Bindel2017: # Not referenced, but I think it's important to included.
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
     author:
@@ -239,7 +237,7 @@ For instance, the aggressive migration timelines may require deploying PQC algor
 
 Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{I-D.ietf-pquip-pqt-hybrid-terminology}}.
 
-Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021].
+Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
 This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sence of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}.
 
@@ -307,7 +305,7 @@ Discussion of the specific choices of algorithm pairings can be found in {{sec-r
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs randomized pre-hashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}} with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs randomized pre-hashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
 
 Composite signature schemes are defined as cryptographic primitives that consist of three algorithms:
 
