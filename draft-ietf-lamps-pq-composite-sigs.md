@@ -343,9 +343,11 @@ In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of 
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple different keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the length of `HashOID` and the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
 
+This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
+
 See {{sec-cons-randomizer}} for a discussion of security implications of the randomized pre-hash.
 
-This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
+See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 
 
@@ -430,17 +432,20 @@ For example, component private keys stored in separate software or hardware modu
 
 ## Sign {#sec-hash-comp-sig-sign}
 
-The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `HashML-DSA.Sign(sk, M, ctx, PH)` defined in Algorithm 4 Section 5.4.1 of [FIPS.204].
-Note that while the external behaviour of Composite ML-DSA mirrors that of HashML-DSA, internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
+The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 3 Section 5.2 of [FIPS.204].
+Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
+Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
 See {{sec-prehash}} for a discussion of the pre-hashed design and randomizer `r`.
 
 See {{sec-domsep-and-ctx}} for a discussion on the domain separator and context values.
 
+See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+
 The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`.
 
 ~~~
-Composite-ML-DSA<OID>.Sign(sk, M, ctx, PH) -> signature
+Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
 
 Explicit inputs:
 
@@ -451,8 +456,6 @@ Explicit inputs:
 
   ctx     The application context string used in the composite
           signature combiner, which defaults to the empty string.
-
-  PH      The hash function to use for pre-hashing.
 
 Implicit inputs mapped from <OID>:
 
@@ -472,6 +475,8 @@ Implicit inputs mapped from <OID>:
           is passed into the underlying ML-DSA primitive as the ctx.
           Domain values are defined in the "Domain Separator Values"
           section below.
+
+  PH      The hash function to use for pre-hashing.
 
   HashOID The DER Encoding of the Object Identifier of the
           PreHash algorithm (PH) which is passed into the function.
@@ -528,15 +533,16 @@ It is possible to use component private keys stored in separate software or hard
 
 ## Verify {#sec-hash-comp-sig-verify}
 
-The `Verify()` algorithm of Composite ML-DSA mirrors the construction of `HashML-DSA.Verify(pk, M, s, ctx, PH)` defined in Algorithm 5 Section 5.4.1 of [FIPS.204].
-Note that while the external behaviour of Composite ML-DSA mirrors that of HashML-DSA, internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
+The `Verify()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.Verify(pk, M, s, ctx)` defined in Algorithm 3 Section 5.3 of [FIPS.204].
+Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
+Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
 The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
-Composite-ML-DSA.Verify(pk, M, s, ctx, PH)
+Composite-ML-DSA.Verify(pk, M, s, ctx)
 
 Explicit inputs:
 
@@ -551,9 +557,6 @@ Explicit inputs:
 
   ctx     The application context string used in the composite
           signature combiner, which defaults to the empty string.
-
-  PH      The Message Digest Algorithm for pre-hashing. See
-          section on pre-hashing the message below.
 
 Implicit inputs mapped from <OID>:
 
@@ -573,6 +576,9 @@ Implicit inputs mapped from <OID>:
           is passed into the underlying ML-DSA primitive as the ctx.
           Domain values are defined in the "Domain Separators"
           section below.
+
+  PH      The Message Digest Algorithm for pre-hashing. See
+          section on pre-hashing the message below.
 
   HashOID The DER Encoding of the Object Identifier of the
           PreHash algorithm (PH) which is passed into the function.
@@ -1352,6 +1358,153 @@ In the composite model this is less obvious since a PQ/T hybrid is expected to s
 
 <!-- End of Security Considerations section -->
 
+
+# Implementation Considerations {#sec-imp-considers}
+
+## FIPS certification {#sec-fips}
+
+One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
+
+Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
+
+The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(mldsaSeed)`, but this is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive, although composite itself includes a pre-hash in order to ligthen the data transmission requirements in cases where, for example, FIPS compliance of the underlying primitive requires pre-hashing to be done remotely.
+
+The pre-hash randomizer `r` requires the composite implementation to have access to a cryptographic random number generator; as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
+
+The authors wish to note that composite algorithms have great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
+
+
+## Backwards Compatibility {#sec-backwards-compat}
+
+The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
+
+If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
+
+### Hybrid Extensions (Keys and Signatures)
+
+The use of composite crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where applications can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
+
+
+
+## Profiling down the number of options {#sec-impl-profile}
+
+One immediately daunting aspect of this specification is the number of composite algorithm combinations.
+Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.
+
+However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.
+
+This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:
+
+    id-MLDSA65-ECDSA-P256-SHA512
+
+
+In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
+
+    id-MLDSA65-RSA3072-PSS-SHA512
+
+
+In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:
+
+    id-MLDSA87-ECDSA-P384-SHA512
+
+
+## External Pre-hashing {#impl-cons-external-ph}
+
+The Composite ML-DSA uses a non-trivial pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how [FIPS.204] allows the message representative mu (µ) to be computed externally. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
+
+Below is a suggested implementation for splitting the pre-hashing and signing between two parties.
+
+~~~
+Composite-ML-DSA<OID>.Pre-hash(M, ctx) -> M'
+
+Explicit inputs:
+
+  sk    Composite private key consisting of signing private keys for
+        each component.
+
+  M     The message to be signed, an octet string.
+
+  ctx     The application context string used in the composite
+          signature combiner, which defaults to the empty string.
+
+Implicit inputs mapped from <OID>:
+
+ Prefix  The prefix String which is the byte encoding of the String
+          "CompositeAlgorithmSignatures2025" which in hex is
+      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+  Domain  Domain separator value for binding the signature to the
+          Composite ML-DSA OID. Additionally, the composite Domain
+          is passed into the underlying ML-DSA primitive as the ctx.
+          Domain values are defined in the "Domain Separator Values"
+          section below.
+
+  PH      The hash function to use for pre-hashing.
+
+  HashOID The DER Encoding of the Object Identifier of the
+          PreHash algorithm (PH) which is passed into the function.
+          Note that this construction is designed to mirror that of
+          HashML-DSA in [FIPS.204], however this specification
+          allows only one choice of PH and HashOID for each
+          Composite ML-DSA algorithm and so this MAY be hard-coded.
+
+Output:
+
+  M'     The message representative to be signed.
+
+
+Process:
+
+1. If len(ctx) > 255:
+      return error
+
+2. Compute the Message format M'.
+    As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
+    Randomize the pre-hash.
+
+      r = Random(32)
+      M' :=  Prefix || Domain || len(ctx) || ctx || r
+                              || HashOID || PH( r || M )
+
+3.
+   output M'
+
+
+
+
+
+Composite-ML-DSA<OID>.Sign_ph(sk, M') -> s
+
+Explicit inputs:
+
+  sk    Composite private key consisting of signing private keys for
+        each component.
+
+  M'    The message representative to be signed, an octet string.
+
+Implicit inputs mapped from <OID>:
+
+  ML-DSA  The underlying ML-DSA algorithm and
+          parameter set, for example, could be "ML-DSA-65".
+
+  Trad    The underlying traditional algorithm and
+          parameter set, for example "RSASSA-PSS with id-sha256"
+          or "Ed25519".
+
+Process:
+
+   Identical to Composite-ML-DSA.Sign(sk, M, ctx), but skipping
+   steps 1 and 2.
+
+~~~
+{: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
+
+
+
+<!-- End of Implementation Considerations section -->
+
+
 <!-- Start of Appendices -->
 
 --- back
@@ -1807,57 +1960,6 @@ DER:
   30 05 06 03 2B 65 71
 ~~~
 
-
-# Implementation Considerations {#sec-imp-considers}
-
-## FIPS certification {#sec-fips}
-
-One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
-
-Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
-
-The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(mldsaSeed)`, but this is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive, although composite itself includes a pre-hash in order to ligthen the data transmission requirements in cases where, for example, FIPS compliance of the underlying primitive requires pre-hashing to be done remotely.
-
-The pre-hash randomizer `r` requires the composite implementation to have access to a cryptographic random number generator; as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
-
-The authors wish to note that composite algorithms have great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.
-
-
-## Backwards Compatibility {#sec-backwards-compat}
-
-The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
-
-If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
-
-### Hybrid Extensions (Keys and Signatures)
-
-The use of composite crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where applications can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.
-
-
-
-## Profiling down the number of options {#sec-impl-profile}
-
-One immediately daunting aspect of this specification is the number of composite algorithm combinations.
-Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.
-
-However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.
-
-This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implemtation effort on:
-
-    id-MLDSA65-ECDSA-P256-SHA512
-
-
-In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
-
-    id-MLDSA65-RSA3072-PSS-SHA512
-
-
-In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implemtation effort on:
-
-    id-MLDSA87-ECDSA-P384-SHA512
-
-<!-- End of Implementation Considerations section -->
 
 
 # Test Vectors {#appdx-samples}
