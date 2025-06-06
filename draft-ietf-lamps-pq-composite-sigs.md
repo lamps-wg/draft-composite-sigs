@@ -1059,7 +1059,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448
+The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1084,11 +1084,14 @@ EDNOTE: these domain separators are based on the prototyping OIDs assigned on th
 
 ## Rationale for choices {#sec-rationale}
 
-In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels. Rather than trying for exact security level matching, the choice of traditional algorithm pairing prioritizes choosing commonly-deployed algorithms since there is no academic consensus on how to directly compare pre-quantum and post-quantum security levels.
+In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance charactaristics.
 
-SHA2 is used throughout in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA function.
+The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardeneded and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical attackers and "qubits of security" against quantum attackers.
 
-At the higher security levels of pre-hashed Composite ML-DSA, for example `id-MLDSA87-ECDSA-brainpoolP384r1-SHA512`, the 384-bit elliptic curve component is used with SHA2-384 which is its pre-hash (ie the pre-hash that is considered to be internal to the ECDSA component), yet SHA2-512 is used as the pre-hash for the overall composite because in this case the pre-hash must not weaken the ML-DSA-87 component against a collision attack.
+SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHA3 is used with Ed25519 and Ed448 since this is already the recommended hash functions chosen for Ed25519ph and ED448ph in [RFC8032].
+
+In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
+While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
 
 ## RSASSA-PSS
 
