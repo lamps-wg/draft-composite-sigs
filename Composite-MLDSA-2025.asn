@@ -29,7 +29,8 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id}
       IDENTIFIER id
       KEY BIT STRING
       PARAMS ARE absent
-      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
+      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, 
+                                                            cRLSign}
     }
 
 sa-CompositeSignature{OBJECT IDENTIFIER:id,
