@@ -1151,12 +1151,17 @@ IANA is requested to allocate a value from the "SMI Security for PKIX Module Ide
 ##  Object Identifier Allocations
 EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{tab-hash-sig-algs}}.
 
-###  Module Registration - SMI Security for PKIX Module Identifier
+###  Module Registration
+
+The following is to be registered in "SMI Security for PKIX Module Identifier":
+
 -  Decimal: IANA Assigned - **Replace TBDMOD**
 -  Description: Composite-Signatures-2025 - id-mod-composite-signatures
 -  References: This Document
 
-###  Object Identifier Registrations - SMI Security for PKIX Algorithms
+###  Object Identifier Registrations
+
+The following are to be regiseterd in "SMI Security for PKIX Algorithms":
 
 - id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned

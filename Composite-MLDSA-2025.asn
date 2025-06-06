@@ -20,10 +20,6 @@ IMPORTS
 -- Object Identifiers
 --
 
--- Defined in ITU-T X.690
-der OBJECT IDENTIFIER ::=
-  {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
-
 --
 -- Information Object Classes
 --
