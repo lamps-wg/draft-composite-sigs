@@ -266,6 +266,13 @@ This specification is consistent with the terminology defined in {{I-D.ietf-pqui
           This is not meant to imply any sort of client-server
           relationship between the communicating parties.
 
+**COMPONENT / PRIMITIVE**:
+  The words "component" or "primitive" are used interchangeably
+  to refer to a cryptographic algorithm that is used internally
+  within a composite algorithm. For example this could be an
+  asymmetric algorithm such as "ML-KEM-768" or "RSA-OAEP", or a KDF such
+  as "HMAC-SHA256".
+
 **DER**:
           Distinguished Encoding Rules as defined in [X.690].
 
@@ -1046,13 +1053,13 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                             | SHA512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                               | SHAKE256/64 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                               | SHAKE256/512 |
 | id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
-The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes of output, for Ed448
+The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
