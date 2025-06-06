@@ -103,10 +103,8 @@ Table of Contents
    8.  ASN.1 Module
    9.  IANA Considerations
      9.1.  Object Identifier Allocations
-       9.1.1.  Module Registration - SMI Security for PKIX Module
-               Identifier
-       9.1.2.  Object Identifier Registrations - SMI Security for PKIX
-               Algorithms
+       9.1.1.  Module Registration
+       9.1.2.  Object Identifier Registrations
    10. Security Considerations
      10.1.  Why Hybrids?
      10.2.  Non-separability, EUF-CMA and SUF
@@ -1517,10 +1515,6 @@ Table of Contents
    -- Object Identifiers
    --
 
-   -- Defined in ITU-T X.690
-   der OBJECT IDENTIFIER ::=
-     {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
-
    --
    -- Information Object Classes
    --
@@ -1831,7 +1825,10 @@ Table of Contents
    EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1
    module and in Table 2.
 
-9.1.1.  Module Registration - SMI Security for PKIX Module Identifier
+9.1.1.  Module Registration
+
+   The following is to be registered in "SMI Security for PKIX Module
+   Identifier":
 
    *  Decimal: IANA Assigned - *Replace TBDMOD*
 
@@ -1840,8 +1837,10 @@ Table of Contents
 
    *  References: This Document
 
-9.1.2.  Object Identifier Registrations - SMI Security for PKIX
-        Algorithms
+9.1.2.  Object Identifier Registrations
+
+   The following are to be regiseterd in "SMI Security for PKIX
+   Algorithms":
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
 
