@@ -1817,17 +1817,13 @@ Signature Verification Process:
    length for the given component algorithm then output
    "Invalid signature" and stop.
 
-  3. Check the length of r
-     if len(r) != 32
-       return error
-
-  4. Compute a Hash of the Message.
+  3. Compute a Hash of the Message.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || r
                             || HashOID || PH( r || M )
 
-  5. Check each component signature individually, according to its
+  4. Check each component signature individually, according to its
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
@@ -1907,7 +1903,7 @@ The functions defined in this section are considered internal implementation det
           <p id="section-5-6.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.<a href="#section-5-6.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-6.4">
-          <p id="section-5-6.4.1"><strong>EdDSA</strong>: MUST be encoded as per section 3.1 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>.<a href="#section-5-6.4.1" class="pilcrow">¶</a></p>
+          <p id="section-5-6.4.1"><strong>EdDSA</strong>: MUST be encoded as per section 3 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>.<a href="#section-5-6.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-5-7">Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for further discussion of encoded size of each composite algorithm.<a href="#section-5-7" class="pilcrow">¶</a></p>
@@ -2187,7 +2183,7 @@ Deserialization Process:
      may not, depending on encoding, so rigorous length-checking is
      not always possible here.
 
-  2. Output the component signature values
+  3. Output the component signature values
 
      output (r, mldsaSig, tradSig)
 </pre>
@@ -2205,7 +2201,7 @@ Deserialization Process:
       <h2 id="name-use-within-x509-and-pkix">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-use-within-x509-and-pkix" class="section-name selfRef">Use within X.509 and PKIX</a>
       </h2>
-<p id="section-6-1">The following sections provide processing logic and the necessary ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">The following sections provide processing logic and the ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols such that Composite ML-DSA can be used as a drop-in replacement for existing digital signature algorithms in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and related protocols.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="sec-encoding-to-der">
 <section id="section-6.1">

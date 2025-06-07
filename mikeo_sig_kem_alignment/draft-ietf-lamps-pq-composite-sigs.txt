@@ -737,17 +737,13 @@ Table of Contents
      length for the given component algorithm then output
      "Invalid signature" and stop.
 
-    3. Check the length of r
-       if len(r) != 32
-         return error
-
-    4. Compute a Hash of the Message.
+    3. Compute a Hash of the Message.
        As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
         M' = Prefix || Domain || len(ctx) || ctx || r
                               || HashOID || PH( r || M )
 
-    5. Check each component signature individually, according to its
+    4. Check each component signature individually, according to its
        algorithm specification.
        If any fail, then the entire signature validation fails.
 
@@ -817,7 +813,7 @@ Table of Contents
       keys supported.  For maximum interoperability, it is RECOMMENEDED
       to use uncompressed points.
 
-   *  *EdDSA*: MUST be encoded as per section 3.1 of [RFC8032].
+   *  *EdDSA*: MUST be encoded as per section 3 of [RFC8032].
 
    Even with fixed encodings for the traditional component, there may be
    slight differences in size of the encoded value due to, for example,
@@ -1078,7 +1074,7 @@ Table of Contents
        may not, depending on encoding, so rigorous length-checking is
        not always possible here.
 
-    2. Output the component signature values
+    3. Output the component signature values
 
        output (r, mldsaSig, tradSig)
 
@@ -1086,10 +1082,10 @@ Table of Contents
 
 6.  Use within X.509 and PKIX
 
-   The following sections provide processing logic and the necessary
-   ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX
-   protocols.  Use within the Cryptographic Message Syntax (CMS) will be
-   covered in a separate specification.
+   The following sections provide processing logic and the ASN.1 modules
+   necessary to use composite ML-DSA within X.509 and PKIX protocols.
+   Use within the Cryptographic Message Syntax (CMS) will be covered in
+   a separate specification.
 
    While composite ML-DSA keys and signature values MAY be used raw, the
    following sections provide conventions for using them within X.509
