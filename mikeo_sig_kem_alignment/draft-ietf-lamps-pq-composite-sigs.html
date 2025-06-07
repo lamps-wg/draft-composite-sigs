@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 8 December 2025</td>
+<td class="center">Expires 9 December 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-06" class="published">6 June 2025</time>
+<time datetime="2025-06-07" class="published">7 June 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-08">8 December 2025</time></dd>
+<dd class="expires"><time datetime="2025-12-09">9 December 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1305,11 +1305,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
                 <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-backwards-compatibility" class="internal xref">Backwards Compatibility</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.1">
-                    <p id="section-toc.1-1.11.2.2.2.1.1"><a href="#section-11.2.1" class="auto internal xref">11.2.1</a>.  <a href="#name-hybrid-extensions-keys-and-" class="internal xref">Hybrid Extensions (Keys and Signatures)</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
                 <p id="section-toc.1-1.11.2.3.1"><a href="#section-11.3" class="auto internal xref">11.3</a>.  <a href="#name-profiling-down-the-number-o" class="internal xref">Profiling down the number of options</a></p>
@@ -3341,14 +3336,14 @@ END
 <p id="section-10.2-3">The pair <code>( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )</code> is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its <code>Verify()</code> which in turn will cause <code>CompositeML-DSA.Verify()</code> to fail.<a href="#section-10.2-3" class="pilcrow">¶</a></p>
 <p id="section-10.2-4">Composite ML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(m, s1')</code> pair where <code>s1'</code> was not produced by the honest signer, and the attacker can then combine it with an honestly-signed <code>(m, s2)</code> signature produced by the second algorithm over the same message <code>m</code> to create <code>(m, (s1', s2))</code> which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.<a href="#section-10.2-4" class="pilcrow">¶</a></p>
 <p id="section-10.2-5">In addition to the classic EUF-CMA game, we also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
-<p id="section-10.2-6">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M’</code> and then trivially assemble a composite. In the second case, the message <code>M’</code> (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementors strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
+<p id="section-10.2-6">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M’</code> and then trivially assemble a composite. In the second case, the message <code>M’</code> (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
 <div id="sec-cons-multiple-encodings">
 <section id="section-10.2.1">
           <h4 id="name-implications-of-multiple-en">
 <a href="#section-10.2.1" class="section-number selfRef">10.2.1. </a><a href="#name-implications-of-multiple-en" class="section-name selfRef">Implications of multiple encodings</a>
           </h4>
 <p id="section-10.2.1-1">As noted in <a href="#sec-serialization" class="auto internal xref">Section 5</a>, this specification leaves some flexibility the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations <code>(mldsaPK, tradPK1)</code> and <code>(mldsaPK, tradPK2)</code> where <code>tradPK1</code> and <code>tradPK2</code> are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.<a href="#section-10.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-10.2.1-2">In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementors who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This would reduce interoperability with other Composite ML-DSA implementations, but it is permitted by this specification.<a href="#section-10.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-10.2.1-2">In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementers who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This would reduce interoperability with other Composite ML-DSA implementations, but it is permitted by this specification.<a href="#section-10.2.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3447,11 +3442,13 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
         <h3 id="name-fips-certification">
 <a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-fips-certification" class="section-name selfRef">FIPS certification</a>
         </h3>
-<p id="section-11.1-1">One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
-<p id="section-11.1-2">Implementors seeking FIPS certification of a composite Signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#section-11.1-2" class="pilcrow">¶</a></p>
-<p id="section-11.1-3">The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the <code>KeyGen</code> defined in <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> invokes <code>ML-DSA.KeyGen(mldsaSeed)</code>, but this is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive, although composite itself includes a pre-hash in order to ligthen the data transmission requirements in cases where, for example, FIPS compliance of the underlying primitive requires pre-hashing to be done remotely.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
-<p id="section-11.1-4">The pre-hash randomizer <code>r</code> requires the composite implementation to have access to a cryptographic random number generator; as noted in <a href="#sec-cons-randomizer" class="auto internal xref">Section 10.5</a>, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives, so it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.<a href="#section-11.1-4" class="pilcrow">¶</a></p>
-<p id="section-11.1-5">The authors wish to note that composite algorithms have great future utility both for future cryptographic migrations as well as bridging across jurisdictions, for example defining composite algorithms which combine FIPS cryptography with cryptography from a different national standards body.<a href="#section-11.1-5" class="pilcrow">¶</a></p>
+<p id="section-11.1-1">The following sections give guidance to implementers wishing to FIPS-certify a composite implentation.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
+<p id="section-11.1-2">This guidance is not authoritative and has not been endorsed by NIST.<a href="#section-11.1-2" class="pilcrow">¶</a></p>
+<p id="section-11.1-3">One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
+<p id="section-11.1-4">Implementers seeking FIPS certification of a composite signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#section-11.1-4" class="pilcrow">¶</a></p>
+<p id="section-11.1-5">The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the <code>KeyGen</code> defined in <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> invokes <code>ML-DSA.KeyGen(seed)</code> which might not be available in a cryptographic module running in FIPS-mode, but <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.<a href="#section-11.1-5" class="pilcrow">¶</a></p>
+<p id="section-11.1-6">The pre-hash randomizer <code>r</code> requires the composite implementation to have access to a cryptographic random number generator. However, as noted in <a href="#sec-cons-randomizer" class="auto internal xref">Section 10.5</a>, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
+<p id="section-11.1-7">The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.<a href="#section-11.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-backwards-compat">
@@ -3459,16 +3456,8 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
         <h3 id="name-backwards-compatibility">
 <a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-backwards-compatibility" class="section-name selfRef">Backwards Compatibility</a>
         </h3>
-<p id="section-11.2-1">The term "backwards compatibility" is used here to mean something more specific; that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-11.2-1" class="pilcrow">¶</a></p>
+<p id="section-11.2-1">The term "backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-11.2-1" class="pilcrow">¶</a></p>
 <p id="section-11.2-2">If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations <span>[<a href="#eIDAS2014" class="cite xref">eIDAS2014</a>]</span>, and publicly trusted code signing <span>[<a href="#codesigningbrsv3.8" class="cite xref">codesigningbrsv3.8</a>]</span>, as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#section-11.2-2" class="pilcrow">¶</a></p>
-<div id="hybrid-extensions-keys-and-signatures">
-<section id="section-11.2.1">
-          <h4 id="name-hybrid-extensions-keys-and-">
-<a href="#section-11.2.1" class="section-number selfRef">11.2.1. </a><a href="#name-hybrid-extensions-keys-and-" class="section-name selfRef">Hybrid Extensions (Keys and Signatures)</a>
-          </h4>
-<p id="section-11.2.1-1">The use of composite crypto provides the possibility to process multiple algorithms without changing the logic of applications but updating the cryptographic libraries: one-time change across the whole system. However, when it is not possible to upgrade the crypto engines/libraries, it is possible to leverage X.509 extensions to encode the additional keys and signatures. When the custom extensions are not marked critical, although this approach provides the most backward-compatible approach where applications can simply ignore the post-quantum (or extra) keys and signatures, it also requires all applications to be updated for correctly processing multiple algorithms together.<a href="#section-11.2.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 </section>
 </div>
 <div id="sec-impl-profile">
@@ -3476,7 +3465,7 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
         <h3 id="name-profiling-down-the-number-o">
 <a href="#section-11.3" class="section-number selfRef">11.3. </a><a href="#name-profiling-down-the-number-o" class="section-name selfRef">Profiling down the number of options</a>
         </h3>
-<p id="section-11.3-1">One immediately daunting aspect of this specification is the number of composite algorithm combinations.
+<p id="section-11.3-1">One daunting aspect of this specification is the number of composite algorithm combinations.
 Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <p id="section-11.3-2">However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.<a href="#section-11.3-2" class="pilcrow">¶</a></p>
 <p id="section-11.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
@@ -3505,7 +3494,7 @@ id-MLDSA87-ECDSA-P384-SHA512
         <h3 id="name-external-pre-hashing">
 <a href="#section-11.4" class="section-number selfRef">11.4. </a><a href="#name-external-pre-hashing" class="section-name selfRef">External Pre-hashing</a>
         </h3>
-<p id="section-11.4-1">The Composite ML-DSA uses a non-trivial pre-hash <code>PH( r || m )</code> to construct the to-be-signed message representative <code>M'</code>. Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> allows the message representative mu (µ) to be computed externally. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
+<p id="section-11.4-1">Composite ML-DSA uses a randomized pre-hash <code>PH( r || m )</code> to construct the to-be-signed message representative <code>M'</code>. Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> allows the message representative mu (µ) to be computed externally. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
 <p id="section-11.4-2">Below is a suggested implementation for splitting the pre-hashing and signing between two parties.<a href="#section-11.4-2" class="pilcrow">¶</a></p>
 <span id="name-suggested-implementation-of"></span><div id="external-pre-hash-alg">
 <figure id="figure-13">

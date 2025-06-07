@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 8 December 2025                                         M. Pala
+Expires: 9 December 2025                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             6 June 2025
+                                                             7 June 2025
 
 
   Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 December 2025.
+   This Internet-Draft will expire on 9 December 2025.
 
 Copyright Notice
 
@@ -116,7 +116,6 @@ Table of Contents
    11. Implementation Considerations
      11.1.  FIPS certification
      11.2.  Backwards Compatibility
-       11.2.1.  Hybrid Extensions (Keys and Signatures)
      11.3.  Profiling down the number of options
      11.4.  External Pre-hashing
    12. References
@@ -2089,7 +2088,7 @@ Table of Contents
    of the context string for domain separation enables Weak Non-
    Separability and auditable checks on hybrid use, which is deemed a
    reasonable trade-off.  Moreover and very importantly, the cross-
-   protocol EUF-CMA attack in either direction is foiled if implementors
+   protocol EUF-CMA attack in either direction is foiled if implementers
    strictly follow the prohibition on key reuse presented in
    Section 10.3 since there cannot exist simultaneously composite and
    non-composite signers and verifiers for the same keys.
@@ -2106,7 +2105,7 @@ Table of Contents
    although the authors are not aware of any.
 
    In theory this introduces complications for EUF-CMA and SUF-CMA
-   security proofs.  Implementors who are concerned with this SHOULD
+   security proofs.  Implementers who are concerned with this SHOULD
    choose implementations of the traditional component that only accept
    a single encoding and performs appropriate length-checking, and
    reject composites which contain any other encodings.  This would
@@ -2299,11 +2298,16 @@ Table of Contents
 
 11.1.  FIPS certification
 
+   The following sections give guidance to implementers wishing to FIPS-
+   certify a composite implentation.
+
+   This guidance is not authoritative and has not been endorsed by NIST.
+
    One of the primary design goals of this specification is for the
    overall composite algorithm to be able to be considered FIPS-approved
    even when one of the component algorithms is not.
 
-   Implementors seeking FIPS certification of a composite Signature
+   Implementers seeking FIPS certification of a composite signature
    algorithm where only one of the component algorithms has been FIPS-
    validated or FIPS-approved should credit the FIPS-validated component
    algorithm with full security strength, the non-FIPS-validated
@@ -2315,40 +2319,38 @@ Table of Contents
    additional requirements on them that could require an existing
    implementation of an underlying primitive to run in a mode different
    from the one under which it was certified.  For example, the KeyGen
-   defined in Section 4.1 invokes ML-DSA.KeyGen(mldsaSeed), but this is
-   only a suggested implementation and the composite KeyGen MAY be
-   implemented using a different available interface for ML-DSA.KeyGen.
-   Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA,
-   and ML-DSA (mu), and composite makes no assumptions or requirements
-   about whether component-specific pre-hashing is done locally as part
-   of the composite, or remotely as part of the component primitive,
-   although composite itself includes a pre-hash in order to ligthen the
-   data transmission requirements in cases where, for example, FIPS
-   compliance of the underlying primitive requires pre-hashing to be
-   done remotely.
+   defined in Section 4.1 invokes ML-DSA.KeyGen(seed) which might not be
+   available in a cryptographic module running in FIPS-mode, but
+   Section 4.1 is only a suggested implementation and the composite
+   KeyGen MAY be implemented using a different available interface for
+   ML-DSA.KeyGen.  Another example is pre-hashing; a pre-hash is
+   inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no
+   assumptions or requirements about whether component-specific pre-
+   hashing is done locally as part of the composite, or remotely as part
+   of the component primitive.
 
    The pre-hash randomizer r requires the composite implementation to
-   have access to a cryptographic random number generator; as noted in
-   Section 10.5, this provides additional security properties on top of
-   those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of
-   randomness does not compromise the Composite ML-DSA algorithm or the
-   underlying primitives, so it should be possible to exclude this RNG
-   invocation from the FIPS boundary if an implementation is not able to
-   guarantee use of a FIPS-approved RNG.
+   have access to a cryptographic random number generator.  However, as
+   noted in Section 10.5, this provides additional security properties
+   on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and
+   failure of randomness does not compromise the Composite ML-DSA
+   algorithm or the underlying primitives.  Therefore it should be
+   possible to exclude this RNG invocation from the FIPS boundary if an
+   implementation is not able to guarantee use of a FIPS-approved RNG.
 
-   The authors wish to note that composite algorithms have great future
-   utility both for future cryptographic migrations as well as bridging
-   across jurisdictions, for example defining composite algorithms which
-   combine FIPS cryptography with cryptography from a different national
-   standards body.
+   The authors wish to note that composite algorithms provide a design
+   pattern to provide utility in future situations that require care to
+   remain FIPS-compliant, such as future cryptographic migrations as
+   well as bridging across jurisdictions with non-intersecting
+   cryptographic requirements.
 
 11.2.  Backwards Compatibility
 
-   The term "backwards compatibility" is used here to mean something
-   more specific; that existing systems as they are deployed today can
-   interoperate with the upgraded systems of the future.  This draft
-   explicitly does not provide backwards compatibility, only upgraded
-   systems will understand the OIDs defined in this specification.
+   The term "backwards compatibility" is used here to mean that existing
+   systems as they are deployed today can interoperate with the upgraded
+   systems of the future.  This draft explicitly does not provide
+   backwards compatibility, only upgraded systems will understand the
+   OIDs defined in this specification.
 
    If backwards compatibility is required, then additional mechanisms
    will be needed.  Migration and interoperability concerns need to be
@@ -2364,28 +2366,14 @@ Table of Contents
    design work because it can be implemented as a signature algorithm
    that fits into existing systems.
 
-11.2.1.  Hybrid Extensions (Keys and Signatures)
-
-   The use of composite crypto provides the possibility to process
-   multiple algorithms without changing the logic of applications but
-   updating the cryptographic libraries: one-time change across the
-   whole system.  However, when it is not possible to upgrade the crypto
-   engines/libraries, it is possible to leverage X.509 extensions to
-   encode the additional keys and signatures.  When the custom
-   extensions are not marked critical, although this approach provides
-   the most backward-compatible approach where applications can simply
-   ignore the post-quantum (or extra) keys and signatures, it also
-   requires all applications to be updated for correctly processing
-   multiple algorithms together.
-
 11.3.  Profiling down the number of options
 
-   One immediately daunting aspect of this specification is the number
-   of composite algorithm combinations.  Each option has been specified
-   because there is a community that has a direct application for it;
-   typically because the traditional component is already deployed in a
-   change-managed environment, or because that specific traditional
-   component is required for regulatory reasons.
+   One daunting aspect of this specification is the number of composite
+   algorithm combinations.  Each option has been specified because there
+   is a community that has a direct application for it; typically
+   because the traditional component is already deployed in a change-
+   managed environment, or because that specific traditional component
+   is required for regulatory reasons.
 
    However, this large number of combinations leads either to fracturing
    of the ecosystem into non-interoperable sub-groups when different
@@ -2415,14 +2403,14 @@ Table of Contents
 
 11.4.  External Pre-hashing
 
-   The Composite ML-DSA uses a non-trivial pre-hash PH( r || m ) to
-   construct the to-be-signed message representative M'.  Implementers
-   MAY externalize the pre-hash computation outside the module that
-   computes Composite-ML-DSA.Sign() in an analogous way to how
-   [FIPS.204] allows the message representative mu (µ) to be computed
-   externally.  Such a modification to the Composite-ML-DSA.Sign()
-   algorithm is considered compliant to this specification so long as it
-   produces the same output and error conditions.
+   Composite ML-DSA uses a randomized pre-hash PH( r || m ) to construct
+   the to-be-signed message representative M'.  Implementers MAY
+   externalize the pre-hash computation outside the module that computes
+   Composite-ML-DSA.Sign() in an analogous way to how [FIPS.204] allows
+   the message representative mu (µ) to be computed externally.  Such a
+   modification to the Composite-ML-DSA.Sign() algorithm is considered
+   compliant to this specification so long as it produces the same
+   output and error conditions.
 
    Below is a suggested implementation for splitting the pre-hashing and
    signing between two parties.
