@@ -1329,26 +1329,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-approximate-key-and-signatu" class="internal xref">Approximate Key and Signature Sizes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-samples" class="internal xref">Samples</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
-                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-message-format-examples" class="internal xref">Message Format Examples</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1.2.1">
-                    <p id="section-toc.1-1.14.2.1.2.1.1"><a href="#appendix-B.1.1" class="auto internal xref">B.1.1</a>.  <a href="#name-example-of-mldsa44-ecdsa-p2" class="internal xref">Example of MLDSA44-ECDSA-P256-SHA256 with Context</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1.2.2">
-                    <p id="section-toc.1-1.14.2.1.2.2.1"><a href="#appendix-B.1.2" class="auto internal xref">B.1.2</a>.  <a href="#name-example-of-mldsa44-ecdsa-p25" class="internal xref">Example of MLDSA44-ECDSA-P256-SHA256 without Context</a></p>
-</li>
-                </ul>
-</li>
-            </ul>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-component-algorithm-referen" class="internal xref">Component Algorithm Reference</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-component-algorithm-referen" class="internal xref">Component Algorithm Reference</a></p>
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-component-algorithmidentifi" class="internal xref">Component AlgorithmIdentifiers for Public Keys and Signatures</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
-            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="auto internal xref">Appendix D</a>.  <a href="#name-component-algorithmidentifi" class="internal xref">Component AlgorithmIdentifiers for Public Keys and Signatures</a></p>
+            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="auto internal xref">Appendix D</a>.  <a href="#name-message-representative-exam" class="internal xref">Message Representative Examples</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
             <p id="section-toc.1-1.17.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-test-vectors" class="internal xref">Test Vectors</a></p>
@@ -1358,11 +1345,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19">
             <p id="section-toc.1-1.19.1"><a href="#appendix-G" class="auto internal xref">Appendix G</a>.  <a href="#name-contributors-and-acknowledg" class="internal xref">Contributors and Acknowledgements</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19.2.1">
-                <p id="section-toc.1-1.19.2.1.1"><a href="#appendix-G.1" class="auto internal xref">G.1</a>.  <a href="#name-making-contributions" class="internal xref">Making contributions</a></p>
-</li>
-            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20">
             <p id="section-toc.1-1.20.1"><a href="#appendix-H" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
@@ -1969,7 +1951,7 @@ Serialization Process:
 <a href="#name-serializepublickeymldsapk-t" class="selfRef">SerializePublicKey(mldsaPK, tradPK) -&gt; bytes</a>
           </figcaption></figure>
 </div>
-<p id="section-5.1-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <p id="section-5.1-4">The following describes how to instantiate a <code>DeserializePublicKey(bytes)</code> function for a given composite algorithm reperesented by <code>&lt;OID&gt;</code>.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <span id="name-deserializepublickeybytes-m"></span><div id="alg-composite-deserialize-pk">
 <figure id="figure-5">
@@ -2064,7 +2046,7 @@ Serialization Process:
 <a href="#name-serializeprivatekeymldsasee" class="selfRef">SerializePrivateKey(mldsaSeed, tradSK) -&gt; bytes</a>
           </figcaption></figure>
 </div>
-<p id="section-5.2-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <p id="section-5.2-4">The following describes how to instantiate a <code>DeserializePrivateKey(bytes)</code> function. Since ML-DSA private keys are 32 bytes for all paramater sets, this function does not need to be parametrized.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 <span id="name-deserializekeybytes-mldsase"></span><div id="alg-composite-deserialize-sk">
 <figure id="figure-7">
@@ -2152,7 +2134,7 @@ Serialization Process:
 <a href="#name-serializesignaturevaluer-ml" class="selfRef">SerializeSignatureValue(r, mldsaSig, tradSig) -&gt; bytes</a>
           </figcaption></figure>
 </div>
-<p id="section-5.3-3">Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">The following describes how to instantiate a <code>DeserializeSignatureValue(bytes)</code> function for a given composite algorithm reperesented by <code>&lt;OID&gt;</code>.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <span id="name-deserializesignaturevalueby"></span><div id="alg-composite-deserialize-sig">
 <figure id="figure-9">
@@ -2494,7 +2476,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
       </table>
 </div>
 <p id="section-7-5">The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-5" class="pilcrow">¶</a></p>
-<p id="section-7-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
+<p id="section-7-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <p id="section-7-7">As the number of algorithms can be daunting to implementers, see <a href="#sec-impl-profile" class="auto internal xref">Section 11.3</a> for a discussion of choosing a subset to support.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <div id="sec-domsep-values">
 <section id="section-7.1">
@@ -2675,7 +2657,7 @@ While this increases the implementation burden of needing to carry multiple hash
           </tbody>
         </table>
 </div>
-<p id="section-7.3-7">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix C</a>.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
+<p id="section-7.3-7">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -3781,7 +3763,7 @@ Process:
       <h2 id="name-approximate-key-and-signatu">
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-approximate-key-and-signatu" class="section-name selfRef">Approximate Key and Signature Sizes</a>
       </h2>
-<p id="appendix-A-1">Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">The sizes listed below are approximate: these values are measured from the test vectors, however, several factors could cause fluctuations in the size of the traditional component. For example, this could be due to:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A-2.1">
           <p id="appendix-A-2.1.1">Compressed vs uncompressed EC point.<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
@@ -3793,8 +3775,8 @@ Process:
           <p id="appendix-A-2.3.1">When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-A-3">Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation signing the same message over different keys. EdDSA values are always fixed size, so the size values for ML-DSA + EdDSA variants can be treated as constants.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
-<p id="appendix-A-4">Implementations MUST NOT perform strict length checking based on the values in this table.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">Implementations MUST NOT perform strict length checking based on the values in this table except for ML-DSA + EdDSA; since these algorithms produce fixed-size outputs, the values in the table below for these variants MAY be treated as constants.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
 <p id="appendix-A-5">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 <span id="name-approximate-size-values-of-"></span><div id="tab-size-values">
 <table class="center" id="table-6">
@@ -3936,76 +3918,12 @@ Process:
 </div>
 </section>
 </div>
-<div id="samples">
-<section id="appendix-B">
-      <h2 id="name-samples">
-<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-samples" class="section-name selfRef">Samples</a>
-      </h2>
-<div id="appdx-messageFormat-examples">
-<section id="appendix-B.1">
-        <h3 id="name-message-format-examples">
-<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-message-format-examples" class="section-name selfRef">Message Format Examples</a>
-        </h3>
-<div id="example-of-mldsa44-ecdsa-p256-sha256-with-context">
-<section id="appendix-B.1.1">
-          <h4 id="name-example-of-mldsa44-ecdsa-p2">
-<a href="#appendix-B.1.1" class="section-number selfRef">B.1.1. </a><a href="#name-example-of-mldsa44-ecdsa-p2" class="section-name selfRef">Example of MLDSA44-ECDSA-P256-SHA256 with Context</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="appendix-B.1.1-1">
-<pre>
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
-len(ctx): 08:
-ctx: 08:0D:06:0C:05:10:19:17:
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-</pre><a href="#appendix-B.1.1-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="example-of-mldsa44-ecdsa-p256-sha256-without-context">
-<section id="appendix-B.1.2">
-          <h4 id="name-example-of-mldsa44-ecdsa-p25">
-<a href="#appendix-B.1.2" class="section-number selfRef">B.1.2. </a><a href="#name-example-of-mldsa44-ecdsa-p25" class="section-name selfRef">Example of MLDSA44-ECDSA-P256-SHA256 without Context</a>
-          </h4>
-<div class="alignLeft art-text artwork" id="appendix-B.1.2-1">
-<pre>
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = not used
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
-len(ctx): 00:
-ctx: empty
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-</pre><a href="#appendix-B.1.2-1" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-</section>
-</div>
-</section>
-</div>
 <div id="appdx_components">
-<section id="appendix-C">
+<section id="appendix-B">
       <h2 id="name-component-algorithm-referen">
-<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-component-algorithm-referen" class="section-name selfRef">Component Algorithm Reference</a>
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-component-algorithm-referen" class="section-name selfRef">Component Algorithm Reference</a>
       </h2>
-<p id="appendix-C-1">This section provides references to the full specification of the algorithms used in the composite constructions.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">This section provides references to the full specification of the algorithms used in the composite constructions.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-component-signature-algorit"></span><div id="tab-component-sig-algs">
 <table class="center" id="table-7">
         <caption>
@@ -4200,14 +4118,15 @@ PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:3
 </section>
 </div>
 <div id="component-algorithmidentifiers-for-public-keys-and-signatures">
-<section id="appendix-D">
+<section id="appendix-C">
       <h2 id="name-component-algorithmidentifi">
-<a href="#appendix-D" class="section-number selfRef">Appendix D. </a><a href="#name-component-algorithmidentifi" class="section-name selfRef">Component AlgorithmIdentifiers for Public Keys and Signatures</a>
+<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-component-algorithmidentifi" class="section-name selfRef">Component AlgorithmIdentifiers for Public Keys and Signatures</a>
       </h2>
-<p id="appendix-D-1">To ease implementing composite signatures, this section specifies the Algorithms Identifiers for each component algorithm. They are provided as ASN.1 value notation and copy and paste DER encoding to avoid any ambiguity. Developers may use this information to reconstruct non hybrid public keys and signatures from each component that can be fed to crypto APIs to create or verify a single component signature.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
-<p id="appendix-D-2">For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
-<p id="appendix-D-3"><strong>ML-DSA-44 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-D-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-4">
+<p id="appendix-C-1">The following sections list explicitly the DER encoded <code>AlgorithmIdentifier</code> that MUST be used when reconstructing <code>SubjectPublicKeyInfo</code> and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key <code>BIT STRING</code> should be taken directly from the respective component of the Composite ML-KEM public key.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2">For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
+<p id="appendix-C-3"><strong>ML-DSA-44</strong><a href="#appendix-C-3" class="pilcrow">¶</a></p>
+<p id="appendix-C-4">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-5">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4216,10 +4135,11 @@ ASN.1:
 
 DER:
   30 0B 06 09 60 86 48 01 65 03 04 03 11
-</pre><a href="#appendix-D-4" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-5" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-5"><strong>ML-DSA-65 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-D-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-6">
+<p id="appendix-C-6"><strong>ML-DSA-65</strong><a href="#appendix-C-6" class="pilcrow">¶</a></p>
+<p id="appendix-C-7">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-8">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4228,10 +4148,11 @@ ASN.1:
 
 DER:
   30 0B 06 09 60 86 48 01 65 03 04 03 12
-</pre><a href="#appendix-D-6" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-8" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-7"><strong>ML-DSA-87 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-D-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-8">
+<p id="appendix-C-9"><strong>ML-DSA-87</strong><a href="#appendix-C-9" class="pilcrow">¶</a></p>
+<p id="appendix-C-10">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-10" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-11">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4240,11 +4161,12 @@ ASN.1:
 
 DER:
   30 0B 06 09 60 86 48 01 65 03 04 03 13
-</pre><a href="#appendix-D-8" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-11" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-9"><strong>RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-9" class="pilcrow">¶</a></p>
-<p id="appendix-D-10">Note that we suggest here to use id-RSASSA-PSS (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1), and some might in fact prefer or require it.<a href="#appendix-D-10" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-11">
+<p id="appendix-C-12"><strong>RSASSA-PSS 2048</strong><a href="#appendix-C-12" class="pilcrow">¶</a></p>
+<p id="appendix-C-13">AlgorithmIdentifier of Public Key<a href="#appendix-C-13" class="pilcrow">¶</a></p>
+<p id="appendix-C-14">Note that we suggest here to use id-RSASSA-PSS (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1), and some might in fact prefer or require it.<a href="#appendix-C-14" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-15">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4253,10 +4175,10 @@ ASN.1:
 
 DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
-</pre><a href="#appendix-D-11" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-15" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-12"><strong>RSASSA-PSS 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-12" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-13">
+<p id="appendix-C-16">AlgorithmIdentifier of Signature<a href="#appendix-C-16" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-17">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4281,10 +4203,11 @@ DER:
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
   48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
-</pre><a href="#appendix-D-13" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-17" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-14"><strong>RSASSA-PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-14" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-15">
+<p id="appendix-C-18"><strong>RSASSA-PSS 3072 &amp; 4096</strong><a href="#appendix-C-18" class="pilcrow">¶</a></p>
+<p id="appendix-C-19">AlgorithmIdentifier of Public Key<a href="#appendix-C-19" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-20">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4293,10 +4216,10 @@ ASN.1:
 
 DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
-</pre><a href="#appendix-D-15" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-20" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-16"><strong>RSASSA-PSS 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-16" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-17">
+<p id="appendix-C-21">AlgorithmIdentifier of Signature<a href="#appendix-C-21" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-22">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4321,10 +4244,11 @@ DER:
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
   48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
-</pre><a href="#appendix-D-17" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-22" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-18"><strong>RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-18" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-19">
+<p id="appendix-C-23"><strong>RSASSA-PKCS1-v1_5 2048</strong><a href="#appendix-C-23" class="pilcrow">¶</a></p>
+<p id="appendix-C-24">AlgorithmIdentifier of Public Key<a href="#appendix-C-24" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-25">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4334,10 +4258,10 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-</pre><a href="#appendix-D-19" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-25" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-20"><strong>RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-20" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-21">
+<p id="appendix-C-26">AlgorithmIdentifier of Signature<a href="#appendix-C-26" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-27">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4347,10 +4271,11 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-</pre><a href="#appendix-D-21" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-27" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-22"><strong>RSASSA-PKCS1-v1_5 3072 &amp; 4096 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-22" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-23">
+<p id="appendix-C-28"><strong>RSASSA-PKCS1-v1_5 3072 &amp; 4096</strong><a href="#appendix-C-28" class="pilcrow">¶</a></p>
+<p id="appendix-C-29">AlgorithmIdentifier of Public Key<a href="#appendix-C-29" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-30">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4360,10 +4285,10 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-</pre><a href="#appendix-D-23" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-30" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-24"><strong>RSASSA-PKCS1-v1_5 3072 &amp; 4096 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-24" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-25">
+<p id="appendix-C-31">AlgorithmIdentifier of Signature<a href="#appendix-C-31" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-32">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4373,10 +4298,11 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-</pre><a href="#appendix-D-25" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-32" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-26"><strong>ECDSA NIST 256 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-26" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-27">
+<p id="appendix-C-33"><strong>ECDSA NIST P256</strong><a href="#appendix-C-33" class="pilcrow">¶</a></p>
+<p id="appendix-C-34">AlgorithmIdentifier of Public Key<a href="#appendix-C-34" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-35">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4390,10 +4316,10 @@ ASN.1:
 
 DER:
   30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
-</pre><a href="#appendix-D-27" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-35" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-28"><strong>ECDSA NIST 256 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-28" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-29">
+<p id="appendix-C-36">AlgorithmIdentifier of Signature<a href="#appendix-C-36" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-37">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4402,10 +4328,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
-</pre><a href="#appendix-D-29" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-37" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-30"><strong>ECDSA NIST-384 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-30" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-31">
+<p id="appendix-C-38"><strong>ECDSA NIST P384</strong><a href="#appendix-C-38" class="pilcrow">¶</a></p>
+<p id="appendix-C-39">AlgorithmIdentifier of Public Key<a href="#appendix-C-39" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-40">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4419,10 +4346,10 @@ ASN.1:
 
 DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
-</pre><a href="#appendix-D-31" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-40" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-32"><strong>ECDSA NIST-384 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-32" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-33">
+<p id="appendix-C-41">AlgorithmIdentifier of Signature<a href="#appendix-C-41" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-42">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4431,10 +4358,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
-</pre><a href="#appendix-D-33" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-42" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-34"><strong>ECDSA NIST-521 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-34" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-35">
+<p id="appendix-C-43"><strong>ECDSA NIST P521</strong><a href="#appendix-C-43" class="pilcrow">¶</a></p>
+<p id="appendix-C-44">AlgorithmIdentifier of Public Key<a href="#appendix-C-44" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-45">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4448,10 +4376,10 @@ ASN.1:
 
 DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
-</pre><a href="#appendix-D-35" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-45" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-36"><strong>ECDSA NIST-521 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-36" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-37">
+<p id="appendix-C-46">AlgorithmIdentifier of Signature<a href="#appendix-C-46" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-47">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4460,10 +4388,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 04
-</pre><a href="#appendix-D-37" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-47" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-38"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-38" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-39">
+<p id="appendix-C-48"><strong>ECDSA Brainpool-P256</strong><a href="#appendix-C-48" class="pilcrow">¶</a></p>
+<p id="appendix-C-49">AlgorithmIdentifier of Public Key<a href="#appendix-C-49" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-50">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4477,10 +4406,10 @@ ASN.1:
 
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
-</pre><a href="#appendix-D-39" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-50" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-40"><strong>ECDSA Brainpool-256 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-40" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-41">
+<p id="appendix-C-51">AlgorithmIdentifier of Signature<a href="#appendix-C-51" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-52">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4489,10 +4418,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
-</pre><a href="#appendix-D-41" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-52" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-42"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Public Key</strong><a href="#appendix-D-42" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-43">
+<p id="appendix-C-53"><strong>ECDSA Brainpool-P384</strong><a href="#appendix-C-53" class="pilcrow">¶</a></p>
+<p id="appendix-C-54">AlgorithmIdentifier of Public Key<a href="#appendix-C-54" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-55">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4506,10 +4436,10 @@ ASN.1:
 
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
-</pre><a href="#appendix-D-43" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-55" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-44"><strong>ECDSA Brainpool-384 -- AlgorithmIdentifier of Signature</strong><a href="#appendix-D-44" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-45">
+<p id="appendix-C-56">AlgorithmIdentifier of Signature<a href="#appendix-C-56" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-57">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4518,10 +4448,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
-</pre><a href="#appendix-D-45" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-57" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-46"><strong>Ed25519 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-D-46" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-47">
+<p id="appendix-C-58"><strong>Ed25519</strong><a href="#appendix-C-58" class="pilcrow">¶</a></p>
+<p id="appendix-C-59">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-59" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-60">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4530,10 +4461,11 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 70
-</pre><a href="#appendix-D-47" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-60" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-48"><strong>Ed448 -- AlgorithmIdentifier of Public Key and Signature</strong><a href="#appendix-D-48" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-D-49">
+<p id="appendix-C-61"><strong>Ed448</strong><a href="#appendix-C-61" class="pilcrow">¶</a></p>
+<p id="appendix-C-62">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-62" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-63">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4542,7 +4474,52 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 71
-</pre><a href="#appendix-D-49" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-63" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="appdx-messageFormat-examples">
+<section id="appendix-D">
+      <h2 id="name-message-representative-exam">
+<a href="#appendix-D" class="section-number selfRef">Appendix D. </a><a href="#name-message-representative-exam" class="section-name selfRef">Message Representative Examples</a>
+      </h2>
+<p id="appendix-D-1">Example of constructing <code>M'</code> for MLDSA44-ECDSA-P256-SHA256 with a context string.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-D-2">
+<pre>
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+</pre><a href="#appendix-D-2" class="pilcrow">¶</a>
+</div>
+<p id="appendix-D-3">Example of constructing <code>M'</code> for MLDSA44-ECDSA-P256-SHA256 without a context string.<a href="#appendix-D-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-D-4">
+<pre>
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
+len(ctx): 00:
+ctx: empty
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+</pre><a href="#appendix-D-4" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -4552,45 +4529,45 @@ DER:
 <a href="#appendix-E" class="section-number selfRef">Appendix E. </a><a href="#name-test-vectors" class="section-name selfRef">Test Vectors</a>
       </h2>
 <p id="appendix-E-1">The following test vectors are provided in a format similar to the NIST ACVP Known-Answer-Tests (KATs).<a href="#appendix-E-1" class="pilcrow">¶</a></p>
-<p id="appendix-E-2">The structure is that a global message <code>m</code> is signed over in all test cases. <code>m</code> is the ASCII string "The quick brown fox jumps over the lazy dog."
-Within each test case there are the following values:<a href="#appendix-E-2" class="pilcrow">¶</a></p>
+<p id="appendix-E-2">The structure is that a global message <code>m</code> is signed over in all test cases. <code>m</code> is the ASCII string "The quick brown fox jumps over the lazy dog."<a href="#appendix-E-2" class="pilcrow">¶</a></p>
+<p id="appendix-E-3">Within each test case there are the following values:<a href="#appendix-E-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-E-3.1">
-          <p id="appendix-E-3.1.1"><code>tcId</code> the name of the algorithm.<a href="#appendix-E-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-E-4.1">
+          <p id="appendix-E-4.1.1"><code>tcId</code> the name of the algorithm.<a href="#appendix-E-4.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-E-3.2">
-          <p id="appendix-E-3.2.1"><code>pk</code> the verification public key.<a href="#appendix-E-3.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-E-4.2">
+          <p id="appendix-E-4.2.1"><code>pk</code> the verification public key.<a href="#appendix-E-4.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-E-3.3">
-          <p id="appendix-E-3.3.1"><code>x5c</code> a self-signed X.509 certificate of the public key.<a href="#appendix-E-3.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-E-4.3">
+          <p id="appendix-E-4.3.1"><code>x5c</code> a self-signed X.509 certificate of the public key.<a href="#appendix-E-4.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-E-3.4">
-          <p id="appendix-E-3.4.1"><code>sk</code> the raw signature private key.<a href="#appendix-E-3.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-E-4.4">
+          <p id="appendix-E-4.4.1"><code>sk</code> the raw signature private key.<a href="#appendix-E-4.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-E-3.5">
-          <p id="appendix-E-3.5.1"><code>sk_pkcs8</code> the signature private key in a PKCS#8 object.<a href="#appendix-E-3.5.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-E-4.5">
+          <p id="appendix-E-4.5.1"><code>sk_pkcs8</code> the signature private key in a PKCS#8 object.<a href="#appendix-E-4.5.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-E-3.6">
-          <p id="appendix-E-3.6.1"><code>s</code> the signature value.<a href="#appendix-E-3.6.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-E-4.6">
+          <p id="appendix-E-4.6.1"><code>s</code> the signature value.<a href="#appendix-E-4.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-E-4">Implementers should be able to perform the following tests using the test vectors below:<a href="#appendix-E-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="appendix-E-5">
-<li id="appendix-E-5.1">
-          <p id="appendix-E-5.1.1">Load the public key <code>pk</code> or certificate <code>x5c</code> and use it to verify the signature <code>s</code> over the message <code>m</code>.<a href="#appendix-E-5.1.1" class="pilcrow">¶</a></p>
+<p id="appendix-E-5">Implementers should be able to perform the following tests using the test vectors below:<a href="#appendix-E-5" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="appendix-E-6">
+<li id="appendix-E-6.1">
+          <p id="appendix-E-6.1.1">Load the public key <code>pk</code> or certificate <code>x5c</code> and use it to verify the signature <code>s</code> over the message <code>m</code>.<a href="#appendix-E-6.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="appendix-E-5.2">
-          <p id="appendix-E-5.2.1">Validate the self-signed certificate <code>x5c</code>.<a href="#appendix-E-5.2.1" class="pilcrow">¶</a></p>
+        <li id="appendix-E-6.2">
+          <p id="appendix-E-6.2.1">Validate the self-signed certificate <code>x5c</code>.<a href="#appendix-E-6.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="appendix-E-5.3">
-          <p id="appendix-E-5.3.1">Load the signing private key <code>sk</code> and use it to produce a new signature which can be verified using the provided <code>pk</code> or <code>x5c</code>.<a href="#appendix-E-5.3.1" class="pilcrow">¶</a></p>
+        <li id="appendix-E-6.3">
+          <p id="appendix-E-6.3.1">Load the signing private key <code>sk</code> or <code>sk_pkcs8</code> and use it to produce a new signature which can be verified using the provided <code>pk</code> or <code>x5c</code>.<a href="#appendix-E-6.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
-<p id="appendix-E-6">Test vectors are provided for each underlying component in isolation for the purposes of debugging.<a href="#appendix-E-6" class="pilcrow">¶</a></p>
-<p id="appendix-E-7">Due to the length of the test vectors, you may prefer to retrieve them from GitHub. The reference implementation that generated them is also available:<a href="#appendix-E-7" class="pilcrow">¶</a></p>
-<p id="appendix-E-8">https://github.com/lamps-wg/draft-composite-sigs/tree/main/src<a href="#appendix-E-8" class="pilcrow">¶</a></p>
-<p id="appendix-E-9">TODO: lock this to a specific commit.<a href="#appendix-E-9" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-E-10">
+<p id="appendix-E-7">Test vectors are provided for each underlying ML-DSA algorithm in isolation for the purposes of debugging.<a href="#appendix-E-7" class="pilcrow">¶</a></p>
+<p id="appendix-E-8">Due to the length of the test vectors, some readers will prefer to retrieve the non-word-wrapped copy from GitHub. The reference implementation written in python that generated them is also available:<a href="#appendix-E-8" class="pilcrow">¶</a></p>
+<p id="appendix-E-9">https://github.com/lamps-wg/draft-composite-sigs/tree/main/src<a href="#appendix-E-9" class="pilcrow">¶</a></p>
+<p id="appendix-E-10">TODO: lock this to a specific commit.<a href="#appendix-E-10" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-E-11">
 <pre>
 {
 "m":
@@ -10539,7 +10516,7 @@ GGsaPxLn/3aG/SB/aEBMSYYXpONa+3PYZS2SKeqbG+roK/2wCHLzbGgE0ShY09hfZUo1
 }
 ]
 }
-</pre><a href="#appendix-E-10" class="pilcrow">¶</a>
+</pre><a href="#appendix-E-11" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -10557,7 +10534,7 @@ GGsaPxLn/3aG/SB/aEBMSYYXpONa+3PYZS2SKeqbG+roK/2wCHLzbGgE0ShY09hfZUo1
       <h2 id="name-contributors-and-acknowledg">
 <a href="#appendix-G" class="section-number selfRef">Appendix G. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
       </h2>
-<p id="appendix-G-1">This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:<a href="#appendix-G-1" class="pilcrow">¶</a></p>
+<p id="appendix-G-1">This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:<a href="#appendix-G-1" class="pilcrow">¶</a></p>
 <p id="appendix-G-2">Serge Mister (Entrust),
 Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
@@ -10585,21 +10562,13 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
-Varun Chatterji (Seventh Sense AI) and
-Mojtaba Bisheh-Niasar<a href="#appendix-G-2" class="pilcrow">¶</a></p>
+Varun Chatterji (Seventh Sense AI),
+Mojtaba Bisheh-Niasar and
+Douglas Stebila (University of Waterloo).<a href="#appendix-G-2" class="pilcrow">¶</a></p>
 <p id="appendix-G-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.<a href="#appendix-G-3" class="pilcrow">¶</a></p>
-<p id="appendix-G-4">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-G-4" class="pilcrow">¶</a></p>
-<p id="appendix-G-5">This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
-   documents.  "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-G-5" class="pilcrow">¶</a></p>
-<div id="making-contributions">
-<section id="appendix-G.1">
-        <h3 id="name-making-contributions">
-<a href="#appendix-G.1" class="section-number selfRef">G.1. </a><a href="#name-making-contributions" class="section-name selfRef">Making contributions</a>
-        </h3>
-<p id="appendix-G.1-1">Additional contributions to this draft are welcome. Please see the working copy of this draft at, as well as open issues at:<a href="#appendix-G.1-1" class="pilcrow">¶</a></p>
-<p id="appendix-G.1-2">https://github.com/lamps-wg/draft-composite-sigs<a href="#appendix-G.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="appendix-G-4">Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.<a href="#appendix-G-4" class="pilcrow">¶</a></p>
+<p id="appendix-G-5">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-G-5" class="pilcrow">¶</a></p>
+<p id="appendix-G-6">Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-G-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
