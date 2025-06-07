@@ -1508,15 +1508,15 @@ Process:
 
 # Approximate Key and Signature Sizes {#sec-sizetable}
 
-Note that the sizes listed below are approximate: these values are measured from the test vectors, but other implementations could produce values where the traditional component has a different size. For example, this could be due to:
+The sizes listed below are approximate: these values are measured from the test vectors, however, several factors could cause fluctuations in the size of the traditional component. For example, this could be due to:
 
 * Compressed vs uncompressed EC point.
 * The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017].
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occaisionally be shorter than expected due to leading zeros being dropped from the encoding.
 
-Note that by contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation signing the same message over different keys. EdDSA values are always fixed size, so the size values for ML-DSA + EdDSA variants can be treated as constants.
+By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.
 
-Implementations MUST NOT perform strict length checking based on the values in this table.
+Implementations MUST NOT perform strict length checking based on the values in this table except for ML-DSA + EdDSA; since these algorithms produce fixed-size outputs, the values in the table below for these variants MAY be treated as constants.
 
 Non-hybrid ML-DSA is included for reference.
 
@@ -1529,48 +1529,6 @@ Non-hybrid ML-DSA is included for reference.
 {: #tab-size-values title="Approximate size values of composite ML-DSA"}
 
 
-
-# Samples
-
-## Message Format Examples {#appdx-messageFormat-examples}
-
-### Example of MLDSA44-ECDSA-P256-SHA256 with Context
-
-~~~
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
-len(ctx): 08:
-ctx: 08:0D:06:0C:05:10:19:17:
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-~~~
-
-### Example of MLDSA44-ECDSA-P256-SHA256 without Context
-
-~~~
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = not used
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
-len(ctx): 00:
-ctx: empty
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-~~~
 
 
 # Component Algorithm Reference {#appdx_components}
@@ -1611,11 +1569,13 @@ This section provides references to the full specification of the algorithms use
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
 
-To ease implementing composite signatures, this section specifies the Algorithms Identifiers for each component algorithm. They are provided as ASN.1 value notation and copy and paste DER encoding to avoid any ambiguity. Developers may use this information to reconstruct non hybrid public keys and signatures from each component that can be fed to crypto APIs to create or verify a single component signature.
+The following sections list explicitly the DER encoded `AlgorithmIdentifier` that MUST be used when reconstructing `SubjectPublicKeyInfo` and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key `BIT STRING` should be taken directly from the respective component of the Composite ML-KEM public key.
 
 For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.
 
-**ML-DSA-44 -- AlgorithmIdentifier of Public Key and Signature**
+**ML-DSA-44**
+
+AlgorithmIdentifier of Public Key and Signature
 
 ~~~
 ASN.1:
@@ -1628,7 +1588,9 @@ DER:
 ~~~
 
 
-**ML-DSA-65 -- AlgorithmIdentifier of Public Key and Signature**
+**ML-DSA-65**
+
+AlgorithmIdentifier of Public Key and Signature
 
 ~~~
 ASN.1:
@@ -1641,7 +1603,9 @@ DER:
 ~~~
 
 
-**ML-DSA-87 -- AlgorithmIdentifier of Public Key and Signature**
+**ML-DSA-87**
+
+AlgorithmIdentifier of Public Key and Signature
 
 ~~~
 ASN.1:
@@ -1654,7 +1618,9 @@ DER:
 ~~~
 
 
-**RSASSA-PSS 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 2048**
+
+AlgorithmIdentifier of Public Key
 
 Note that we suggest here to use id-RSASSA-PSS (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1), and some might in fact prefer or require it.
 
@@ -1668,7 +1634,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSASSA-PSS 2048 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1696,7 +1662,9 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 ~~~
 
-**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PSS 3072 & 4096**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1708,7 +1676,7 @@ DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
 ~~~
 
-**RSASSA-PSS 3072 & 4096 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1736,7 +1704,9 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 ~~~
 
-**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 2048**
+
+ AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1749,7 +1719,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSASSA-PKCS1-v1_5 2048 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1762,7 +1732,9 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Public Key**
+**RSASSA-PKCS1-v1_5 3072 & 4096**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1775,7 +1747,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
 ~~~
 
-**RSASSA-PKCS1-v1_5 3072 & 4096 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1788,7 +1760,9 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**ECDSA NIST 256 -- AlgorithmIdentifier of Public Key**
+**ECDSA NIST P256**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1805,7 +1779,7 @@ DER:
   30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
 ~~~
 
-**ECDSA NIST 256 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1817,7 +1791,9 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
 ~~~
 
-**ECDSA NIST-384 -- AlgorithmIdentifier of Public Key**
+**ECDSA NIST P384**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1834,7 +1810,7 @@ DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
 ~~~
 
-**ECDSA NIST-384 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1846,7 +1822,9 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
 ~~~
 
-**ECDSA NIST-521 -- AlgorithmIdentifier of Public Key**
+**ECDSA NIST P521**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1863,7 +1841,7 @@ DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
 ~~~
 
-**ECDSA NIST-521 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1875,7 +1853,9 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 04
 ~~~
 
-**ECDSA Brainpool-256 -- AlgorithmIdentifier of Public Key**
+**ECDSA Brainpool-P256**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1892,7 +1872,7 @@ DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
 ~~~
 
-**ECDSA Brainpool-256 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1904,7 +1884,9 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
 ~~~
 
-**ECDSA Brainpool-384 -- AlgorithmIdentifier of Public Key**
+**ECDSA Brainpool-P384**
+
+AlgorithmIdentifier of Public Key
 
 ~~~
 ASN.1:
@@ -1921,7 +1903,7 @@ DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
 ~~~
 
-**ECDSA Brainpool-384 -- AlgorithmIdentifier of Signature**
+AlgorithmIdentifier of Signature
 
 ~~~
 ASN.1:
@@ -1933,7 +1915,9 @@ DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
 ~~~
 
-**Ed25519 -- AlgorithmIdentifier of Public Key and Signature**
+**Ed25519**
+
+AlgorithmIdentifier of Public Key and Signature
 
 ~~~
 ASN.1:
@@ -1945,7 +1929,9 @@ DER:
   30 05 06 03 2B 65 70
 ~~~
 
-**Ed448 -- AlgorithmIdentifier of Public Key and Signature**
+**Ed448**
+
+AlgorithmIdentifier of Public Key and Signature
 
 ~~~
 ASN.1:
@@ -1958,12 +1944,55 @@ DER:
 ~~~
 
 
+# Message Representative Examples {#appdx-messageFormat-examples}
+
+Example of constructing `M'` for MLDSA44-ECDSA-P256-SHA256 with a context string.
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
+len(ctx): 08:
+ctx: 08:0D:06:0C:05:10:19:17:
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
+
+Example of constructing `M'` for MLDSA44-ECDSA-P256-SHA256 without a context string.
+
+~~~
+M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
+
+M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+ctx = not used
+
+Encoded Message:
+43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+
+Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
+Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
+len(ctx): 00:
+ctx: empty
+HashOID: 06:09:60:86:48:01:65:03:04:02:01:
+PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
+~~~
+
+
 
 # Test Vectors {#appdx-samples}
 
 The following test vectors are provided in a format similar to the NIST ACVP Known-Answer-Tests (KATs).
 
 The structure is that a global message `m` is signed over in all test cases. `m` is the ASCII string "The quick brown fox jumps over the lazy dog."
+
+
 Within each test case there are the following values:
 
 * `tcId` the name of the algorithm.
@@ -1977,11 +2006,11 @@ Implementers should be able to perform the following tests using the test vector
 
 1. Load the public key `pk` or certificate `x5c` and use it to verify the signature `s` over the message `m`.
 2. Validate the self-signed certificate `x5c`.
-3. Load the signing private key `sk` and use it to produce a new signature which can be verified using the provided `pk` or `x5c`.
+3. Load the signing private key `sk` or `sk_pkcs8` and use it to produce a new signature which can be verified using the provided `pk` or `x5c`.
 
-Test vectors are provided for each underlying component in isolation for the purposes of debugging.
+Test vectors are provided for each underlying ML-DSA algorithm in isolation for the purposes of debugging.
 
-Due to the length of the test vectors, you may prefer to retrieve them from GitHub. The reference implementation that generated them is also available:
+Due to the length of the test vectors, some readers will prefer to retrieve the non-word-wrapped copy from GitHub. The reference implementation written in python that generated them is also available:
 
 https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 
@@ -2000,7 +2029,7 @@ https://datatracker.ietf.org/ipr/3588/
 
 
 # Contributors and Acknowledgements
-This document incorporates contributions and comments from a large group of experts. The Editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past few years in pursuit of this document:
+This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:
 
 
 Serge Mister (Entrust),
@@ -2030,21 +2059,18 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
-Varun Chatterji (Seventh Sense AI) and
-Mojtaba Bisheh-Niasar
+Varun Chatterji (Seventh Sense AI),
+Mojtaba Bisheh-Niasar and
+Douglas Stebila (University of Waterloo).
 
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
+Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.
+
 We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.
 
-This document borrows text from similar documents, including those referenced below. Thanks go to the authors of those
-   documents.  "Copying always makes things easier and less error prone" - [RFC8411].
+Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - [RFC8411].
 
-## Making contributions
-
-Additional contributions to this draft are welcome. Please see the working copy of this draft at, as well as open issues at:
-
-https://github.com/lamps-wg/draft-composite-sigs
 
 <!-- End of Contributors section -->
