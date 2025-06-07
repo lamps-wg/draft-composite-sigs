@@ -606,17 +606,13 @@ Signature Verification Process:
    length for the given component algorithm then output
    "Invalid signature" and stop.
 
-  3. Check the length of r
-     if len(r) != 32
-       return error
-
-  4. Compute a Hash of the Message.
+  3. Compute a Hash of the Message.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || r
                             || HashOID || PH( r || M )
 
-  5. Check each component signature individually, according to its
+  4. Check each component signature individually, according to its
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
@@ -655,7 +651,7 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 * **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
 * **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
 * **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENEDED to use uncompressed points.
-* **EdDSA**: MUST be encoded as per section 3.1 of [RFC8032].
+* **EdDSA**: MUST be encoded as per section 3 of [RFC8032].
 
 Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
@@ -906,7 +902,7 @@ Deserialization Process:
      may not, depending on encoding, so rigorous length-checking is
      not always possible here.
 
-  2. Output the component signature values
+  3. Output the component signature values
 
      output (r, mldsaSig, tradSig)
 ~~~
@@ -915,7 +911,7 @@ Deserialization Process:
 
 # Use within X.509 and PKIX
 
-The following sections provide processing logic and the necessary ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.
+The following sections provide processing logic and the ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.
 
 While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols such that Composite ML-DSA can be used as a drop-in replacement for existing digital signature algorithms in PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], and related protocols.
 
