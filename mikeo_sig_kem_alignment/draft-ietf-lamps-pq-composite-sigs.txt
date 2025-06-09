@@ -2106,6 +2106,12 @@ Table of Contents
 
 10.3.  Key Reuse
 
+   While conformance with this specification requires that both
+   components of a componite key MUST be freshly generated, the
+   designers are aware that some implementers may be forced to break
+   this rule due to operational constrainst.  This section documents the
+   implications of doing so.
+
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
    renewing a certificate, or obtaining both a TLS and S/MIME
