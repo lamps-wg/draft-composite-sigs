@@ -3506,7 +3506,7 @@ Process:
 
 3. Generate the pre-hash token T:
 
-   T = Composite-ML-DSA.SerializePrehashToken(r,ph)
+   T = SerializePrehashToken(r,ph)
 
 4. Output T
 </pre>
@@ -3555,7 +3555,7 @@ Process:
 
    1.  separate r and ph from T:
 
-       (r, ph) = Composite-ML-DSA.DeserializePrehashToken(T)
+       (r, ph) = DeserializePrehashToken(T)
 
    2.  Identical to Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx)
@@ -3569,7 +3569,7 @@ Serialization simply concatenates the two PreHashToken values r and ph together.
 
 </pre><a href="#section-11.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-11.4-5">Composite-ML-DSA.SerializePrehashToken(r, ph) -&gt; bytes<a href="#section-11.4-5" class="pilcrow">¶</a></p>
+<p id="section-11.4-5">SerializePrehashToken(r, ph) -&gt; bytes<a href="#section-11.4-5" class="pilcrow">¶</a></p>
 <p id="section-11.4-6">Explicit Inputs:<a href="#section-11.4-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-11.4-7">
 <pre>
@@ -3605,27 +3605,26 @@ bytes    The encoded pre-hash Token T
           </figcaption></figure>
 </div>
 <p id="section-11.4-14">Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
-The following describes how to instantiate a DeserializePreHashToken(bytes) function for a given composite algorithm
-represented by <code>&lt;OID&gt;</code>.<a href="#section-11.4-14" class="pilcrow">¶</a></p>
+The following describes how to instantiate a DeserializePreHashToken(bytes) function.<a href="#section-11.4-14" class="pilcrow">¶</a></p>
 <span id="name-deserializeprehashtokenbyte"></span><div id="alg-composite-deserialize-ph">
 <figure id="figure-15">
           <div class="alignLeft art-text artwork" id="section-11.4-15.1">
 <pre>
-Composite-ML-DSA&lt;OID&gt;.DeserializePreHashToken(bytes) -&gt; (r, ph)
+DeserializePreHashToken(bytes) -&gt; (r, ph)
 
 Explicit inputs:
 
   bytes   An encoded prehash token
 
-Implicit inputs mapped from &lt;OID&gt;:
+Implicit inputs:
 
-  PH      The Message Digest Algorithm for pre-hashing.
+  None
 
 Output:
 
   r       The 32 byte signature randomizer.
 
- ph       The pre-hashed value representating the has of the randomizer
+  ph      The pre-hashed value representating the has of the randomizer
           concatenated with the Message which is 'PH(r || M)'.
 
 Deserialization Process:
@@ -3637,13 +3636,7 @@ Deserialization Process:
   2. Parse the Prehash. The length of the Prehash is based on the size of the
      pre-hash algorithm for the specificed composite algorithm.
 
-     switch PH do
-        case SHA-256:
-          ph = bytes[32:64]
-        case SHA-512:
-          ph = bytes[32:96]
-        case SHAKE256/512:
-           ph = bytes[32:96]
+     ph = bytes[32:]
 
   3. Output (r, ph)
 </pre>
