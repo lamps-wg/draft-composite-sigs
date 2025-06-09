@@ -1406,7 +1406,7 @@ In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus imp
 
 ## External Pre-hashing {#impl-cons-external-ph}
 
-Composite ML-DSA uses a randomized pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or ML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
+Composite ML-DSA uses a randomized pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
 
 Below is a suggested implementation for splitting the pre-hashing and signing between two parties.
 
@@ -1441,9 +1441,9 @@ Process:
    T = Composite-ML-DSA.SerializePrehashToken(r,ph)
 
 4. Output T
-
 ~~~
 {: #external-pre-hash-token title="Generation of the external pre-hash token"}
+
 
 ~~~
 Composite-ML-DSA<OID>.Sign_ph(sk, T, ctx) -> s
@@ -1489,7 +1489,6 @@ Process:
    2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
        with r and ph from step 1 of this function.
-
  ~~~
 {: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
@@ -1518,10 +1517,10 @@ Serialization Process:
 
     1.  Combine r with ph
 
-        output r || ph
-     
+        output r || ph   
 ~~~
 {: #alg-composite-serialize-ph title="SerializePreHashToken(r, ph) -> bytes"}
+
 
 Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
 The following describes how to instantiate a DeserializePreHashToken(bytes) function for a given composite algorithm
@@ -1563,9 +1562,8 @@ Deserialization Process:
            ph = bytes[32:96]
 
   3. Output (r, ph)
-     
 ~~~
-{: #alg-composite-deserialize-sig title="DeserializePreHashToken(bytes) -> (r, ph)"}
+{: #alg-composite-deserialize-ph title="DeserializePreHashToken(bytes) -> (r, ph)"}
 
 
 <!-- End of Implementation Considerations section -->
