@@ -1438,7 +1438,7 @@ Process:
 
 3. Generate the pre-hash token T:
 
-   T = Composite-ML-DSA.SerializePrehashToken(r,ph)
+   T = SerializePrehashToken(r,ph)
 
 4. Output T
 ~~~
@@ -1484,7 +1484,7 @@ Process:
 
    1.  separate r and ph from T:
 
-       (r, ph) = Composite-ML-DSA.DeserializePrehashToken(T)
+       (r, ph) = DeserializePrehashToken(T)
 
    2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
@@ -1497,7 +1497,7 @@ Process:
 Serialization simply concatenates the two PreHashToken values r and ph together.
 
 ~~~
- Composite-ML-DSA.SerializePrehashToken(r, ph) -> bytes
+ SerializePrehashToken(r, ph) -> bytes
 
  Explicit Inputs:
 
@@ -1523,25 +1523,24 @@ Serialization Process:
 
 
 Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
-The following describes how to instantiate a DeserializePreHashToken(bytes) function for a given composite algorithm
-represented by `<OID>`.
+The following describes how to instantiate a DeserializePreHashToken(bytes) function.
 
 ~~~
-Composite-ML-DSA<OID>.DeserializePreHashToken(bytes) -> (r, ph)
+DeserializePreHashToken(bytes) -> (r, ph)
 
 Explicit inputs:
 
   bytes   An encoded prehash token
 
-Implicit inputs mapped from <OID>:
+Implicit inputs:
 
-  PH      The Message Digest Algorithm for pre-hashing.
+  None
 
 Output:
 
   r       The 32 byte signature randomizer.
 
- ph       The pre-hashed value representating the has of the randomizer
+  ph      The pre-hashed value representating the has of the randomizer
           concatenated with the Message which is 'PH(r || M)'.
 
 Deserialization Process:
@@ -1553,13 +1552,7 @@ Deserialization Process:
   2. Parse the Prehash. The length of the Prehash is based on the size of the
      pre-hash algorithm for the specificed composite algorithm.
 
-     switch PH do
-        case SHA-256:
-          ph = bytes[32:64]
-        case SHA-512:
-          ph = bytes[32:96]
-        case SHAKE256/512:
-           ph = bytes[32:96]
+     ph = bytes[32:]
 
   3. Output (r, ph)
 ~~~
