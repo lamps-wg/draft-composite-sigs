@@ -1517,7 +1517,7 @@ Serialization Process:
 
     1.  Combine r with ph
 
-        output r || ph   
+        output r || ph
 ~~~
 {: #alg-composite-serialize-ph title="SerializePreHashToken(r, ph) -> bytes"}
 
@@ -1552,7 +1552,7 @@ Deserialization Process:
 
   2. Parse the Prehash. The length of the Prehash is based on the size of the
      pre-hash algorithm for the specificed composite algorithm.
-   
+
      switch PH do
         case SHA-256:
           ph = bytes[32:64]
