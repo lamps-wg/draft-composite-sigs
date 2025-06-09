@@ -3473,97 +3473,183 @@ id-MLDSA87-ECDSA-P384-SHA512
         <h3 id="name-external-pre-hashing">
 <a href="#section-11.4" class="section-number selfRef">11.4. </a><a href="#name-external-pre-hashing" class="section-name selfRef">External Pre-hashing</a>
         </h3>
-<p id="section-11.4-1">Composite ML-DSA uses a randomized pre-hash <code>PH( r || m )</code> to construct the to-be-signed message representative <code>M'</code>. Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> allows the message representative mu (µ) to be computed externally. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
+<p id="section-11.4-1">Composite ML-DSA uses a randomized pre-hash <code>PH( r || m )</code> to construct the to-be-signed message representative <code>M'</code>. Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
 <p id="section-11.4-2">Below is a suggested implementation for splitting the pre-hashing and signing between two parties.<a href="#section-11.4-2" class="pilcrow">¶</a></p>
-<span id="name-suggested-implementation-of"></span><div id="external-pre-hash-alg">
+<span id="name-generation-of-the-external-"></span><div id="external-pre-hash-token">
 <figure id="figure-13">
           <div class="alignLeft art-text artwork" id="section-11.4-3.1">
 <pre>
-Composite-ML-DSA&lt;OID&gt;.Pre-hash(M, ctx) -&gt; M'
+Composite-ML-DSA&lt;OID&gt;.PrehashToken(M) -&gt;  T
 
 Explicit inputs:
 
-  sk    Composite private key consisting of signing private keys for
-        each component.
-
-  M     The message to be signed, an octet string.
-
-  ctx     The application context string used in the composite
-          signature combiner, which defaults to the empty string.
+  M       The message to be signed, an octet string.
 
 Implicit inputs mapped from &lt;OID&gt;:
-
- Prefix  The prefix String which is the byte encoding of the String
-          "CompositeAlgorithmSignatures2025" which in hex is
-      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
-
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
-          is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separator Values"
-          section below.
 
   PH      The hash function to use for pre-hashing.
 
-  HashOID The DER Encoding of the Object Identifier of the
-          PreHash algorithm (PH) which is passed into the function.
-          Note that this construction is designed to mirror that of
-          HashML-DSA in [FIPS.204], however this specification
-          allows only one choice of PH and HashOID for each
-          Composite ML-DSA algorithm and so this MAY be hard-coded.
-
 Output:
 
-  M'     The message representative to be signed.
-
+   T     The pre-hash token which equals r || PH (r || M)
 
 Process:
 
-1. If len(ctx) &gt; 255:
-      return error
+1. Compute the random 32-byte value r:
 
-2. Compute the Message format M'.
-    As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-    Randomize the pre-hash.
+   r = Random(32)
 
-      r = Random(32)
-      M' :=  Prefix || Domain || len(ctx) || ctx || r
-                              || HashOID || PH( r || M )
+2. Compute the Prehash of the message using the Hash function
+    defined by PH
 
-3.
-   output M'
+   ph = PH (r || M)
 
+3. Generate the pre-hash token T:
 
+   T = Composite-ML-DSA.SerializePrehashToken(r,ph)
 
-
-
-Composite-ML-DSA&lt;OID&gt;.Sign_ph(sk, M') -&gt; s
+4. Output T
+</pre>
+</div>
+<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
+<a href="#name-generation-of-the-external-" class="selfRef">Generation of the external pre-hash token</a>
+          </figcaption></figure>
+</div>
+<div class="alignLeft art-text artwork" id="section-11.4-4">
+<pre>
+Composite-ML-DSA&lt;OID&gt;.Sign_ph(sk, T, ctx) -&gt; s
 
 Explicit inputs:
 
   sk    Composite private key consisting of signing private keys for
         each component.
 
-  M'    The message representative to be signed, an octet string.
+  T     The pre-hash token used to sign the message
+
+ ctx    The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
+
 
 Implicit inputs mapped from &lt;OID&gt;:
 
-  ML-DSA  The underlying ML-DSA algorithm and
-          parameter set, for example, could be "ML-DSA-65".
+  ML-DSA    The underlying ML-DSA algorithm and
+            parameter set, for example, could be "ML-DSA-65".
 
-  Trad    The underlying traditional algorithm and
-          parameter set, for example "RSASSA-PSS with id-sha256"
-          or "Ed25519".
+  Trad      The underlying traditional algorithm and
+            parameter set, for example "RSASSA-PSS with id-sha256"
+            or "Ed25519".
+
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+  Domain    Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
+
+  HashOID   The DER Encoding of the Object Identifier of the
+            PreHash algorithm (PH) which is passed into the function.
 
 Process:
 
-   Identical to Composite-ML-DSA.Sign(sk, M, ctx), but skipping
-   steps 1 and 2.
+   1.  separate r and ph from T:
 
+       (r, ph) = Composite-ML-DSA.DeserializePrehashToken(T)
+
+   2.  Identical to Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx) but replace the internally
+       generated r and PH(r || M) from step 2 of Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx)
+       with r and ph from step 1 of this function.
+ ~~~
+{: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
+
+
+### Serialization and Deserialization of the PreHashToken
+Serialization simply concatenates the two PreHashToken values r and ph together.
+
+</pre><a href="#section-11.4-4" class="pilcrow">¶</a>
+</div>
+<p id="section-11.4-5">Composite-ML-DSA.SerializePrehashToken(r, ph) -&gt; bytes<a href="#section-11.4-5" class="pilcrow">¶</a></p>
+<p id="section-11.4-6">Explicit Inputs:<a href="#section-11.4-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.4-7">
+<pre>
+r   32-bytes of externally generated random data
+
+ph  The result of computing PH(r || M)
+</pre><a href="#section-11.4-7" class="pilcrow">¶</a>
+</div>
+<p id="section-11.4-8">Implicit inputs:<a href="#section-11.4-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.4-9">
+<pre>
+None
+</pre><a href="#section-11.4-9" class="pilcrow">¶</a>
+</div>
+<p id="section-11.4-10">Output:<a href="#section-11.4-10" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.4-11">
+<pre>
+bytes    The encoded pre-hash Token T
+</pre><a href="#section-11.4-11" class="pilcrow">¶</a>
+</div>
+<p id="section-11.4-12">Serialization Process:<a href="#section-11.4-12" class="pilcrow">¶</a></p>
+<span id="name-serializeprehashtokenr-ph-b"></span><div id="alg-composite-serialize-ph">
+<figure id="figure-14">
+          <div class="alignLeft art-text artwork" id="section-11.4-13.1">
+<pre>
+1.  Combine r with ph
+
+    output r || ph ~~~
 </pre>
 </div>
-<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
-<a href="#name-suggested-implementation-of" class="selfRef">Suggested implementation of external pre-hashing</a>
+<figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
+<a href="#name-serializeprehashtokenr-ph-b" class="selfRef">SerializePreHashToken(r, ph) -&gt; bytes</a>
+          </figcaption></figure>
+</div>
+<p id="section-11.4-14">Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
+The following describes how to instantiate a DeserializePreHashToken(bytes) function for a given composite algorithm
+represented by <code>&lt;OID&gt;</code>.<a href="#section-11.4-14" class="pilcrow">¶</a></p>
+<span id="name-deserializeprehashtokenbyte"></span><div id="alg-composite-deserialize-ph">
+<figure id="figure-15">
+          <div class="alignLeft art-text artwork" id="section-11.4-15.1">
+<pre>
+Composite-ML-DSA&lt;OID&gt;.DeserializePreHashToken(bytes) -&gt; (r, ph)
+
+Explicit inputs:
+
+  bytes   An encoded prehash token
+
+Implicit inputs mapped from &lt;OID&gt;:
+
+  PH      The Message Digest Algorithm for pre-hashing.
+
+Output:
+
+  r       The 32 byte signature randomizer.
+
+ ph       The pre-hashed value representating the has of the randomizer
+          concatenated with the Message which is 'PH(r || M)'.
+
+Deserialization Process:
+
+  1. Parse the randomizer r which is the first 32 bytes.
+
+     r = bytes[:32]
+
+  2. Parse the Prehash. The length of the Prehash is based on the size of the
+     pre-hash algorithm for the specificed composite algorithm.
+
+     switch PH do
+        case SHA-256:
+          ph = bytes[32:64]
+        case SHA-512:
+          ph = bytes[32:96]
+        case SHAKE256/512:
+           ph = bytes[32:96]
+
+  3. Output (r, ph)
+</pre>
+</div>
+<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
+<a href="#name-deserializeprehashtokenbyte" class="selfRef">DeserializePreHashToken(bytes) -&gt; (r, ph)</a>
           </figcaption></figure>
 </div>
 </section>
