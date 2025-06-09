@@ -1406,95 +1406,166 @@ In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus imp
 
 ## External Pre-hashing {#impl-cons-external-ph}
 
-Composite ML-DSA uses a randomized pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how [FIPS.204] allows the message representative mu (µ) to be computed externally. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
+Composite ML-DSA uses a randomized pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or ML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
 
 Below is a suggested implementation for splitting the pre-hashing and signing between two parties.
 
 ~~~
-Composite-ML-DSA<OID>.Pre-hash(M, ctx) -> M'
+Composite-ML-DSA<OID>.PrehashToken(M) ->  T
 
 Explicit inputs:
 
-  sk    Composite private key consisting of signing private keys for
-        each component.
-
-  M     The message to be signed, an octet string.
-
-  ctx     The application context string used in the composite
-          signature combiner, which defaults to the empty string.
+  M       The message to be signed, an octet string.
 
 Implicit inputs mapped from <OID>:
-
- Prefix  The prefix String which is the byte encoding of the String
-          "CompositeAlgorithmSignatures2025" which in hex is
-      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
-
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
-          is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separator Values"
-          section below.
 
   PH      The hash function to use for pre-hashing.
 
-  HashOID The DER Encoding of the Object Identifier of the
-          PreHash algorithm (PH) which is passed into the function.
-          Note that this construction is designed to mirror that of
-          HashML-DSA in [FIPS.204], however this specification
-          allows only one choice of PH and HashOID for each
-          Composite ML-DSA algorithm and so this MAY be hard-coded.
-
 Output:
 
-  M'     The message representative to be signed.
-
+   T     The pre-hash token which equals r || PH (r || M)
 
 Process:
 
-1. If len(ctx) > 255:
-      return error
+1. Compute the random 32-byte value r:
 
-2. Compute the Message format M'.
-    As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-    Randomize the pre-hash.
+   r = Random(32)
 
-      r = Random(32)
-      M' :=  Prefix || Domain || len(ctx) || ctx || r
-                              || HashOID || PH( r || M )
+2. Compute the Prehash of the message using the Hash function
+    defined by PH
 
-3.
-   output M'
+   ph = PH (r || M)
 
+3. Generate the pre-hash token T:
 
+   T = Composite-ML-DSA.SerializePrehashToken(r,ph)
 
+4. Output T
 
+~~~
+{: #external-pre-hash-token title="Generation of the external pre-hash token"}
 
-Composite-ML-DSA<OID>.Sign_ph(sk, M') -> s
+~~~
+Composite-ML-DSA<OID>.Sign_ph(sk, T, ctx) -> s
 
 Explicit inputs:
 
   sk    Composite private key consisting of signing private keys for
         each component.
 
-  M'    The message representative to be signed, an octet string.
+  T     The pre-hash token used to sign the message
+
+ ctx    The Message context string used in the composite signature
+        combiner, which defaults to the empty string.
+
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA  The underlying ML-DSA algorithm and
-          parameter set, for example, could be "ML-DSA-65".
+  ML-DSA    The underlying ML-DSA algorithm and
+            parameter set, for example, could be "ML-DSA-65".
 
-  Trad    The underlying traditional algorithm and
-          parameter set, for example "RSASSA-PSS with id-sha256"
-          or "Ed25519".
+  Trad      The underlying traditional algorithm and
+            parameter set, for example "RSASSA-PSS with id-sha256"
+            or "Ed25519".
+
+  Prefix    The prefix String which is the byte encoding of the String
+            "CompositeAlgorithmSignatures2025" which in hex is
+            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+
+  Domain    Domain separator value for binding the signature to the
+            Composite OID. Additionally, the composite Domain is passed into
+            the underlying ML-DSA primitive as the ctx.
+            Domain values are defined in the "Domain Separators" section below.
+
+  HashOID   The DER Encoding of the Object Identifier of the
+            PreHash algorithm (PH) which is passed into the function.
 
 Process:
 
-   Identical to Composite-ML-DSA.Sign(sk, M, ctx), but skipping
-   steps 1 and 2.
+   1.  separate r and ph from T:
 
-~~~
+       (r, ph) = Composite-ML-DSA.DeserializePrehashToken(T)
+
+   2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
+       generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
+       with r and ph from step 1 of this function.
+
+ ~~~
 {: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
+
+### Serialization and Deserialization of the PreHashToken
+Serialization simply concatenates the two PreHashToken values r and ph together.
+
+~~~
+ Composite-ML-DSA.SerializePrehashToken(r, ph) -> bytes
+
+ Explicit Inputs:
+
+    r   32-bytes of externally generated random data
+
+    ph  The result of computing PH(r || M)
+
+Implicit inputs:
+
+    None
+
+Output:
+
+    bytes    The encoded pre-hash Token T
+
+Serialization Process:
+
+    1.  Combine r with ph
+
+        output r || ph
+     
+~~~
+{: #alg-composite-serialize-ph title="SerializePreHashToken(r, ph) -> bytes"}
+
+Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
+The following describes how to instantiate a DeserializePreHashToken(bytes) function for a given composite algorithm
+represented by `<OID>`.
+
+~~~
+Composite-ML-DSA<OID>.DeserializePreHashToken(bytes) -> (r, ph)
+
+Explicit inputs:
+
+  bytes   An encoded prehash token
+
+Implicit inputs mapped from <OID>:
+
+  PH      The Message Digest Algorithm for pre-hashing.
+
+Output:
+
+  r       The 32 byte signature randomizer.
+
+ ph       The pre-hashed value representating the has of the randomizer
+          concatenated with the Message which is 'PH(r || M)'.
+
+Deserialization Process:
+
+  1. Parse the randomizer r which is the first 32 bytes.
+
+     r = bytes[:32]
+
+  2. Parse the Prehash. The length of the Prehash is based on the size of the
+     pre-hash algorithm for the specificed composite algorithm.
+   
+     switch PH do
+        case SHA-256:
+          ph = bytes[32:64]
+        case SHA-512:
+          ph = bytes[32:96]
+        case SHAKE256/512:
+           ph = bytes[32:96]
+
+  3. Output (r, ph)
+     
+~~~
+{: #alg-composite-deserialize-sig title="DeserializePreHashToken(bytes) -> (r, ph)"}
 
 
 <!-- End of Implementation Considerations section -->
