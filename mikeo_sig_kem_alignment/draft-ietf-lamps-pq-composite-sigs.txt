@@ -5,16 +5,16 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 9 December 2025                                         M. Pala
+Expires: 11 December 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             7 June 2025
+                                                             9 June 2025
 
 
-  Composite ML-DSA for use in X.509 Public Key Infrastructure and CMS
+      Composite ML-DSA for use in X.509 Public Key Infrastructure
                draft-ietf-lamps-pq-composite-sigs-latest
 
 Abstract
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 December 2025.
+   This Internet-Draft will expire on 11 December 2025.
 
 Copyright Notice
 
@@ -306,12 +306,12 @@ Table of Contents
    and should be handled by the cryptographic library or cryptographic
    module, and the single composite public key, private key, and
    signature value can be carried in existing fields in protocols such
-   as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], CMS [RFC5652],
-   and the Trust Anchor Format [RFC5914].  In this way, composites
-   achieve "protocol backwards-compatibility" in that they will drop
-   cleanly into any protocol that accepts an analogous single-algorithm
-   cryptographic scheme without requiring any modification of the
-   protocol to handle multiple algorithms.
+   as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], the CMS
+   [RFC5652], and the Trust Anchor Format [RFC5914].  In this way,
+   composites achieve "protocol backwards-compatibility" in that they
+   will drop cleanly into any protocol that accepts an analogous single-
+   algorithm cryptographic scheme without requiring any modification of
+   the protocol to handle multiple algorithms.
 
    Discussion of the specific choices of algorithm pairings can be found
    in Section 7.2.
