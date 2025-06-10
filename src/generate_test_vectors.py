@@ -869,7 +869,7 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
-    domain = base64.b16encode(encode(OID_TABLE[alg]))
+    domain = encode(OID_TABLE[alg])
     DOMAIN_TABLE[alg] = (domain, False)
 
 # run this statically
@@ -959,7 +959,7 @@ def writeDomainTable():
 
     for alg in DOMAIN_TABLE:
       if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
-        f.write('| ' + alg.ljust(46, ' ') + " | " + str(DOMAIN_TABLE[alg][0].decode('ascii')) + " |\n")
+        f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
 
 
