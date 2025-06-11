@@ -411,7 +411,7 @@ class CompositeSig(SIG):
     self.pk = self.public_key_bytes()
 
 
-  def computeMp(self, m, ctx, r):
+  def computeMp(self, m, ctx, r, output=False, file_handle=None ):
 
     if (self.PH.name == hashes.SHA256.name):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01'
@@ -423,7 +423,7 @@ class CompositeSig(SIG):
       HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0c'
     # elif ...
 
-    h = hashes.Hash(self.PH)
+    h = hashes.Hash(self.PH) 
     h.update(r)
     h.update(m)
     ph_m = h.finalize()
@@ -437,6 +437,23 @@ class CompositeSig(SIG):
          r                           + \
          HashOID                     + \
          ph_m
+         
+    if (output):
+      if file_handle is None:
+         print("No data written to the file")
+
+      else:         
+         file_handle.write("\nM: " + m.hex())
+         file_handle.write("\nctx: " + ctx.hex())
+         file_handle.write("\n\nEncodedMessage:\n")
+         file_handle.write(Mp.hex() + "\n")      
+         file_handle.write("\nPrefix: " + self.prefix.hex()) 
+         file_handle.write("\nDomain: " + self.domain.hex()) 
+         file_handle.write("\nlen(ctx): " + len(ctx).to_bytes(1, 'big').hex())      
+         file_handle.write("\nctx: " + ctx.hex()) 
+         file_handle.write("\nr: " + r.hex()) 
+         file_handle.write("\nHashOID: " + HashOID.hex()) 
+         file_handle.write("\nPH(r||M): " + ph_m.hex())       
 
     return Mp  
 
@@ -803,10 +820,6 @@ def signSigCert(sig):
 
 
 
-
-
-
-
 def formatResults(sig, s ):
 
   jsonTest = {}
@@ -851,6 +864,7 @@ def output_artifacts_certs_r5(jsonTestVectors):
 
 # Setup the test vector output
 _m = b'The quick brown fox jumps over the lazy dog.'
+_mf = bytes.fromhex("00010203040506070809")
 testVectorOutput = {}
 testVectorOutput['m'] = base64.b64encode(_m).decode('ascii')
 testVectorOutput['tests'] = []
@@ -894,10 +908,8 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
     sizeRow['sk'] = len(sig.private_key_bytes())
     sizeRow['s'] = len(s)
     SIZE_TABLE[sig.id] = sizeRow
-
-
-
-
+    
+    
 def writeTestVectors():
   with open('testvectors.json', 'w') as f:
     f.write(json.dumps(testVectorOutput, indent=2))
@@ -962,9 +974,32 @@ def writeDomainTable():
         f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
 
+def writeMessageFormatExamples(sig,mf,ctx=b''):
+  """
+  Writes the Message format examples section for the draft
+  """
+
+  with open('messageFormatSamples.md', 'w') as f:
+    f.write("Example of constructing 'M' for MLDSA65-ECDSA-P256-SHA256 without a context string.\n\n")
+    f.write('~~~\n')
+    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || HashOID || PH(r || M)\n")
+    doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f)
+    f.write('\n~~~\n\n')
+    
+    f.write("Example of constructing `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string.\n\n")
+    f.write('~~~\n')
+    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || HashOID || PH(r || M)\n")
+    doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f, bytes.fromhex("0813061205162623"))
+    f.write('\n~~~\n')
+    f.close()
+
+def doMessageFormat(sig, file_handle=None, ctx=b''):
+  r = secrets.token_bytes(32)
+  Mp = sig.computeMp(_mf, ctx, r,True,file_handle)
+  
 
 def main():
-
+  
   # Single algs - remove these, just for testing
   # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
@@ -1003,12 +1038,12 @@ def main():
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA65_ECDSA_P521_SHA512() )
-  
 
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
   writeDomainTable()
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),_mf)
 
 
 if __name__ == "__main__":
