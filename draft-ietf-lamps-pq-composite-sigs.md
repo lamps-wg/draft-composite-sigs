@@ -2006,44 +2006,7 @@ DER:
 
 # Message Representative Examples {#appdx-messageFormat-examples}
 
-Example of constructing `M'` for MLDSA44-ECDSA-P256-SHA256 with a context string.
-
-~~~
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = new byte[] { 8, 13, 6, 12, 5, 16, 25, 23 }
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:08:08:0D:06:0C:05:10:19:17:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53:
-len(ctx): 08:
-ctx: 08:0D:06:0C:05:10:19:17:
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-~~~
-
-Example of constructing `M'` for MLDSA44-ECDSA-P256-SHA256 without a context string.
-
-~~~
-M' = Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-
-M = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-ctx = not used
-
-Encoded Message:
-43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:06:0B:60:86:48:01:86:FA:6B:50:08:01:53:00:06:09:60:86:48:01:65:03:04:02:01:1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-
-Prefix: 43:6F:6D:70:6F:73:69:74:65:41:6C:67:6F:72:69:74:68:6D:53:69:67:6E:61:74:75:72:65:73:32:30:32:35:
-Domain: :06:0B:60:86:48:01:86:FA:6B:50:08:01:53
-len(ctx): 00:
-ctx: empty
-HashOID: 06:09:60:86:48:01:65:03:04:02:01:
-PH(M): 1F:82:5A:A2:F0:02:0E:F7:CF:91:DF:A3:0D:A4:66:8D:79:1C:5D:48:24:FC:8E:41:35:4B:89:EC:05:79:5A:B3
-~~~
-
+{::include src/messageFormatSamples.md}
 
 
 # Test Vectors {#appdx-samples}
