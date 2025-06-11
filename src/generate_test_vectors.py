@@ -411,17 +411,7 @@ class CompositeSig(SIG):
     self.pk = self.public_key_bytes()
 
 
-  def computeMp(self, m, ctx, r, output=False, file_handle=None ):
-
-    if (self.PH.name == hashes.SHA256.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01'
-    elif (self.PH.name == hashes.SHA512.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x03'
-    elif (self.PH.name == hashes.SHAKE128.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0b'
-    elif (self.PH.name == hashes.SHAKE256.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0c'
-    # elif ...
+  def computeMprime(self, m, ctx, r, output=False, file_handle=None ):
 
     h = hashes.Hash(self.PH) 
     h.update(r)
@@ -429,13 +419,12 @@ class CompositeSig(SIG):
     ph_m = h.finalize()
 
 
-    # M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-    Mp = self.prefix                 + \
+    # M' :=  Prefix || Domain || len(ctx) || ctx || PH(r || M)
+    Mprime = self.prefix                 + \
          self.domain                 + \
          len(ctx).to_bytes(1, 'big') + \
          ctx                         + \
          r                           + \
-         HashOID                     + \
          ph_m
          
     if (output):
@@ -446,16 +435,15 @@ class CompositeSig(SIG):
          file_handle.write("\nM: " + m.hex())
          file_handle.write("\nctx: " + ctx.hex())
          file_handle.write("\n\nEncodedMessage:\n")
-         file_handle.write(Mp.hex() + "\n")      
+         file_handle.write(Mprime.hex() + "\n")      
          file_handle.write("\nPrefix: " + self.prefix.hex()) 
          file_handle.write("\nDomain: " + self.domain.hex()) 
          file_handle.write("\nlen(ctx): " + len(ctx).to_bytes(1, 'big').hex())      
          file_handle.write("\nctx: " + ctx.hex()) 
          file_handle.write("\nr: " + r.hex()) 
-         file_handle.write("\nHashOID: " + HashOID.hex()) 
          file_handle.write("\nPH(r||M): " + ph_m.hex())       
 
-    return Mp  
+    return Mprime  
 
 
   def sign(self, m, ctx=b'', PH=hashes.SHA256()):
@@ -466,10 +454,10 @@ class CompositeSig(SIG):
     assert isinstance(ctx, bytes)
 
     r = secrets.token_bytes(32)
-    Mp = self.computeMp(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx, r)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
-    tradSig = self.tradsig.sign( Mp )
+    mldsaSig = self.mldsa.sign( Mprime, ctx=self.domain )
+    tradSig = self.tradsig.sign( Mprime )
     
     return self.serializeSignatureValue(r, mldsaSig, tradSig)
   
@@ -488,11 +476,11 @@ class CompositeSig(SIG):
     if len(r) != 32:
       raise InvalidSignature("r is the wrong length")
 
-    Mp = self.computeMp(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx, r)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaSig, Mp, ctx=self.domain)
-    self.tradsig.verify(tradSig, Mp)
+    self.mldsa.verify(mldsaSig, Mprime, ctx=self.domain)
+    self.tradsig.verify(tradSig, Mprime)
 
 
   def serializeKey(self):
@@ -863,8 +851,13 @@ def output_artifacts_certs_r5(jsonTestVectors):
 
 
 # Setup the test vector output
+
+# This is the raw message to be signed for the test vectors
 _m = b'The quick brown fox jumps over the lazy dog.'
+
+# This is the raw message to be signed for the "Message Format Example" section
 _mf = bytes.fromhex("00010203040506070809")
+
 testVectorOutput = {}
 testVectorOutput['m'] = base64.b64encode(_m).decode('ascii')
 testVectorOutput['tests'] = []
@@ -982,20 +975,20 @@ def writeMessageFormatExamples(sig,mf,ctx=b''):
   with open('messageFormatSamples.md', 'w') as f:
     f.write("Example of constructing 'M' for MLDSA65-ECDSA-P256-SHA256 without a context string.\n\n")
     f.write('~~~\n')
-    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || HashOID || PH(r || M)\n")
+    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || PH(r || M)\n")
     doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f)
     f.write('\n~~~\n\n')
     
     f.write("Example of constructing `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string.\n\n")
     f.write('~~~\n')
-    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || HashOID || PH(r || M)\n")
+    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || PH(r || M)\n")
     doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f, bytes.fromhex("0813061205162623"))
     f.write('\n~~~\n')
     f.close()
 
 def doMessageFormat(sig, file_handle=None, ctx=b''):
   r = secrets.token_bytes(32)
-  Mp = sig.computeMp(_mf, ctx, r,True,file_handle)
+  Mprime = sig.computeMprime(_mf, ctx, r,True,file_handle)
   
 
 def main():

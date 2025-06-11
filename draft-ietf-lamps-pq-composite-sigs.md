@@ -339,7 +339,7 @@ Full definitions of serialization and deserialization algorithms can be found in
 
 In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA with the addition of a pre-hash randomizer inspired by [BonehShoup]. See {{sec-cons-randomizer}} for detailed discussion of the security properties of the randomized pre-hash. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
 
-The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple different keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the length of `HashOID` and the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple different keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
 
 This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
 
@@ -476,12 +476,6 @@ Implicit inputs mapped from <OID>:
 
   PH      The hash function to use for pre-hashing.
 
-  HashOID The DER Encoding of the Object Identifier of the
-          PreHash algorithm (PH) which is passed into the function.
-          Note that this construction is designed to mirror that of
-          HashML-DSA in [FIPS.204], however this specification
-          allows only one choice of PH and HashOID for each
-          Composite ML-DSA algorithm and so this MAY be hard-coded.
 
 Output:
   s      The composite signature value.
@@ -492,13 +486,13 @@ Signature Generation Process:
   1. If len(ctx) > 255:
       return error
 
-  2. Compute the Message format M'.
+  2. Compute the Message representative M'.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
      Randomize the pre-hash.
 
         r = Random(32)
         M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                || HashOID || PH( r || M )
+                                            || PH( r || M )
 
   3. Separate the private key into component keys
      and re-generate the ML-DSA key from seed.
@@ -520,8 +514,8 @@ Signature Generation Process:
 
   6. Output the encoded composite signature value.
 
-      signature = SerializeSignatureValue(r, mldsaSig, tradSig)
-      return signature
+      s = SerializeSignatureValue(r, mldsaSig, tradSig)
+      return s
 ~~~
 {: #alg-composite-sign title="Composite-ML-DSA.Sign(sk, M, ctx, PH)"}
 
@@ -550,8 +544,7 @@ Explicit inputs:
   M       Message whose signature is to be verified, an octet
           string.
 
-  s       A composite signature value containing the component
-          signature values (mldsaSig and tradSig) to be verified.
+  s       A composite signature value to be verified.
 
   ctx     The application context string used in the composite
           signature combiner, which defaults to the empty string.
@@ -578,13 +571,6 @@ Implicit inputs mapped from <OID>:
   PH      The Message Digest Algorithm for pre-hashing. See
           section on pre-hashing the message below.
 
-  HashOID The DER Encoding of the Object Identifier of the
-          PreHash algorithm (PH) which is passed into the function.
-          Note that this construction is designed to mirror that of
-          HashML-DSA in [FIPS.204], however this specification
-          allows only one choice of PH and HashOID for each
-          Composite ML-DSA algorithm and so this MAY be hard-coded.
-
 Output:
 
   Validity (bool)   "Valid signature" (true) if the composite
@@ -610,7 +596,7 @@ Signature Verification Process:
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || r
-                            || HashOID || PH( r || M )
+                                        || PH( r || M )
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -1033,23 +1019,23 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
 | Composite Signature Algorithm | OID | ML-DSA | Trad | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.100   | ML-DSA-44 | RSASSA-PSS with id-sha256           | SHA256 |
+| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.100   | ML-DSA-44 | RSASSA-PSS with SHA256                 | SHA256 |
 | id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.101   | ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
-| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.102   | ML-DSA-44 | Ed25519                             | SHA512 |
+| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.102   | ML-DSA-44 | Ed25519                                | SHA512 |
 | id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.103   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.104   | ML-DSA-65 | RSASSA-PSS with id-sha256           | SHA512 |
+| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.104   | ML-DSA-65 | RSASSA-PSS with SHA256                 | SHA512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.105   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.106   | ML-DSA-65 | RSASSA-PSS with id-sha384           | SHA512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.106   | ML-DSA-65 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.107   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
 | id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.108   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
 | id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.109   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.110   | ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                             | SHA512 |
+| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                                | SHA512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                               | SHAKE256/512 |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
-| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with id-sha384           | SHA512 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                                  | SHAKE256/512 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
 
@@ -1312,7 +1298,7 @@ as part of the overall construction of the to-be-signed message:
 
     r = Random(32)
     M' :=  Prefix || Domain || len(ctx) || ctx || r
-                            || HashOID || PH( r || M )
+                                        || PH( r || M )
     ...
     output (r, mldsaSig, tradSig)
 
@@ -1476,9 +1462,6 @@ Implicit inputs mapped from <OID>:
             Composite OID. Additionally, the composite Domain is passed into
             the underlying ML-DSA primitive as the ctx.
             Domain values are defined in the "Domain Separators" section below.
-
-  HashOID   The DER Encoding of the Object Identifier of the
-            PreHash algorithm (PH) which is passed into the function.
 
 Process:
 
