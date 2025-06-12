@@ -411,7 +411,13 @@ class CompositeSig(SIG):
     self.pk = self.public_key_bytes()
 
 
-  def computeMprime(self, m, ctx, r, output=False, file_handle=None ):
+  def computeMprime(self, m, ctx, r, return_intermediates=False ):
+    """
+    Computes the message representative M'.
+
+    return_intermediates=False is the default mode, and returns a single value: Mprime
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, r, ph_m, Mprime)
+    """
 
     h = hashes.Hash(self.PH) 
     h.update(r)
@@ -420,38 +426,18 @@ class CompositeSig(SIG):
 
 
     # M' :=  Prefix || Domain || len(ctx) || ctx || PH(r || M)
+    len_ctx = len(ctx).to_bytes(1, 'big')
     Mprime = self.prefix                 + \
          self.domain                 + \
-         len(ctx).to_bytes(1, 'big') + \
+         len_ctx + \
          ctx                         + \
          r                           + \
          ph_m
          
-    if (output):
-      if file_handle is None:
-         print("No data written to the file")
-
-      else: 
-         file_handle.write("\n# Inputs: ")          
-         file_handle.write("\n\nM: " + m.hex())
-         if (ctx == b''):
-             file_handle.write("\nctx: empty")
-         else:
-             file_handle.write("\nctx: " + ctx.hex())
-         file_handle.write("\n\n# Components of M':\n")
-         file_handle.write("\nPrefix: " + self.prefix.hex()) 
-         file_handle.write("\nDomain: " + self.domain.hex()) 
-         file_handle.write("\nlen(ctx): " + len(ctx).to_bytes(1, 'big').hex())  
-         if (ctx == b''):
-             file_handle.write("\nctx: empty")
-         else:
-             file_handle.write("\nctx: " + ctx.hex())         
-         file_handle.write("\nr: " + r.hex()) 
-         file_handle.write("\nPH(r||M): " + ph_m.hex()) 
-         file_handle.write("\n\n# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)")
-         file_handle.write("\nM': " + Mprime.hex() + "\n")               
-
-    return Mprime  
+    if return_intermediates:
+      return (self.prefix, self.domain, len_ctx, ctx, r, ph_m, Mprime)
+    else:
+      return Mprime  
 
 
   def sign(self, m, ctx=b'', PH=hashes.SHA256()):
@@ -863,9 +849,6 @@ def output_artifacts_certs_r5(jsonTestVectors):
 # This is the raw message to be signed for the test vectors
 _m = b'The quick brown fox jumps over the lazy dog.'
 
-# This is the raw message to be signed for the "Message Format Example" section
-_mf = bytes.fromhex("00010203040506070809")
-
 testVectorOutput = {}
 testVectorOutput['m'] = base64.b64encode(_m).decode('ascii')
 testVectorOutput['tests'] = []
@@ -975,21 +958,48 @@ def writeDomainTable():
         f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
 
-def writeMessageFormatExamples(sig,filename,ctx=b''):
+def writeMessageFormatExamples(sig, file_handle,  m=b'', ctx=b''):
   """
   Writes the Message format examples section for the draft
   """
 
-  with open(filename, 'w') as f:
-    r = secrets.token_bytes(32)
-    Mprime = sig.computeMprime(_mf, ctx, r,True,f)
-    f.close()
+  # Compute the values
+  sig.keyGen()
+
+  r = secrets.token_bytes(32)
+  (prefix, domain, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
+
+
+
+  # Dump the values to file
+  wrap_width = 70
+  file_handle.write("# Inputs: ")
+  file_handle.write("\n\n")     
+  file_handle.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )
+  if (ctx == b''):
+      file_handle.write("ctx: <empty>\n")
+  else:
+      file_handle.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
+  file_handle.write("\n")
+  file_handle.write("# Components of M':\n\n")
+  file_handle.write( '\n'.join(textwrap.wrap("Prefix: " + prefix.hex(), width=wrap_width)) +"\n" )
+  file_handle.write( '\n'.join(textwrap.wrap("Domain: " + domain.hex(), width=wrap_width)) +"\n" )
+  file_handle.write( '\n'.join(textwrap.wrap("len(ctx): " + len_ctx.hex(), width=wrap_width)) +"\n" )
+  if (ctx == b''):
+      file_handle.write("ctx: <empty>\n")
+  else:
+      file_handle.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
+  file_handle.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
+  file_handle.write( '\n'.join(textwrap.wrap("PH(r||M): " + ph_m.hex(), width=wrap_width)) +"\n" )
+  file_handle.write("\n") 
+  file_handle.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)\n")
+  file_handle.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n" )
+
+
 
 
 def main():
   
-  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),"messageFormatSample_noctx.md")
-  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),"messageFormatSample_ctx.md",bytes.fromhex("0813061205162623"))
   # Single algs - remove these, just for testing
   # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
@@ -1033,6 +1043,16 @@ def main():
   writeDumpasn1Cfg()
   writeSizeTable()
   writeDomainTable()
+
+
+  # Write the message representative examples
+
+  with open('messageFormatSample_noctx.md', 'w') as f:
+    writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), f, m=bytes.fromhex("00010203040506070809"), ctx=b'' )
+
+  
+  with open('messageFormatSample_ctx.md', 'w') as f:
+    writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), f, m=bytes.fromhex("00010203040506070809"), ctx=bytes.fromhex("0813061205162623") )
 
 
 

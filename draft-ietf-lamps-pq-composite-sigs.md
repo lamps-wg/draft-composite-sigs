@@ -1996,10 +1996,10 @@ Each input component is shown. Note that values are shown hex-encoded for displa
 
 * `Prefix` is the fixed constant defined in {{sec-domsep-and-ctx}}.
 * `Domain` is the specific domain separator for this composite algorithm, as defined in {{sec-domsep-values}}.
-* `r` is a random 32-byte value chosen by the signer.
-* `PH(r||M)` is the output of hashing the randomizer together with the message `M`.
 * `len(ctx)` is the length of the Message context String which is 00 when no context is used.
 * `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
+* `r` is a random 32-byte value chosen by the signer.
+* `PH(r||M)` is the output of hashing the randomizer together with the message `M`.
 
 Finally, the fully assembled `M'` is given, which is simply the concatenation of the above values.
 
