@@ -431,17 +431,25 @@ class CompositeSig(SIG):
       if file_handle is None:
          print("No data written to the file")
 
-      else:         
-         file_handle.write("\nM: " + m.hex())
-         file_handle.write("\nctx: " + ctx.hex())
-         file_handle.write("\n\nEncodedMessage:\n")
-         file_handle.write(Mprime.hex() + "\n")      
+      else: 
+         file_handle.write("\n# Inputs: ")          
+         file_handle.write("\n\nM: " + m.hex())
+         if (ctx == b''):
+             file_handle.write("\nctx: empty")
+         else:
+             file_handle.write("\nctx: " + ctx.hex())
+         file_handle.write("\n\n# Components of M':\n")
          file_handle.write("\nPrefix: " + self.prefix.hex()) 
          file_handle.write("\nDomain: " + self.domain.hex()) 
-         file_handle.write("\nlen(ctx): " + len(ctx).to_bytes(1, 'big').hex())      
-         file_handle.write("\nctx: " + ctx.hex()) 
+         file_handle.write("\nlen(ctx): " + len(ctx).to_bytes(1, 'big').hex())  
+         if (ctx == b''):
+             file_handle.write("\nctx: empty")
+         else:
+             file_handle.write("\nctx: " + ctx.hex())         
          file_handle.write("\nr: " + r.hex()) 
-         file_handle.write("\nPH(r||M): " + ph_m.hex())       
+         file_handle.write("\nPH(r||M): " + ph_m.hex()) 
+         file_handle.write("\n\n# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)")
+         file_handle.write("\nM': " + Mprime.hex() + "\n")               
 
     return Mprime  
 
@@ -967,32 +975,21 @@ def writeDomainTable():
         f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
 
-def writeMessageFormatExamples(sig,mf,ctx=b''):
+def writeMessageFormatExamples(sig,filename,ctx=b''):
   """
   Writes the Message format examples section for the draft
   """
 
-  with open('messageFormatSamples.md', 'w') as f:
-    f.write("Example of constructing 'M' for MLDSA65-ECDSA-P256-SHA256 without a context string.\n\n")
-    f.write('~~~\n')
-    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || PH(r || M)\n")
-    doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f)
-    f.write('\n~~~\n\n')
-    
-    f.write("Example of constructing `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string.\n\n")
-    f.write('~~~\n')
-    f.write("M' = Prefix || Domain || len(ctx) || ctx || r || PH(r || M)\n")
-    doMessageFormat(MLDSA65_ECDSA_P256_SHA512(),f, bytes.fromhex("0813061205162623"))
-    f.write('\n~~~\n')
+  with open(filename, 'w') as f:
+    r = secrets.token_bytes(32)
+    Mprime = sig.computeMprime(_mf, ctx, r,True,f)
     f.close()
 
-def doMessageFormat(sig, file_handle=None, ctx=b''):
-  r = secrets.token_bytes(32)
-  Mprime = sig.computeMprime(_mf, ctx, r,True,file_handle)
-  
 
 def main():
   
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),"messageFormatSample_noctx.md")
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),"messageFormatSample_ctx.md",bytes.fromhex("0813061205162623"))
   # Single algs - remove these, just for testing
   # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
@@ -1036,7 +1033,7 @@ def main():
   writeDumpasn1Cfg()
   writeSizeTable()
   writeDomainTable()
-  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(),_mf)
+
 
 
 if __name__ == "__main__":
