@@ -1986,10 +1986,34 @@ DER:
   30 05 06 03 2B 65 71
 ~~~
 
+# Message Representative Examples
 
-# Message Representative Examples {#appdx-messageFormat-examples}
+First is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 without a context string `ctx`.
 
-{::include src/messageFormatSamples.md}
+The input message for this example is the hex string "00 01 02 03 04 05 06 07 08 09".
+
+Each input component is shown. Note that values are shown hex-encoded for display purposes only, they are actually raw binary values.
+
+* `Prefix` is the fixed constant defined in {{sec-domsep-and-ctx}}.
+* `Domain` is the specific domain separator for this composite algorithm, as defined in {{sec-domsep-values}}.
+* `r` is a random 32-byte value chosen by the signer.
+* `PH(r||M)` is the output of hashing the randomizer together with the message `M`.
+* `len(ctx)` is the length of the Message context String which is 00 when no context is used.
+* `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
+
+Finally, the fully assembled `M'` is given, which is simply the concatenation of the above values.
+
+~~~
+{::include ./src/messageFormatSample_noctx.md}
+~~~
+
+Second is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string `ctx`.
+
+The inputs are similar to the first example with the exception that there is an 8 byte context string 'ctx'
+
+~~~
+{::include ./src/messageFormatSample_ctx.md}
+~~~
 
 
 # Test Vectors {#appdx-samples}
