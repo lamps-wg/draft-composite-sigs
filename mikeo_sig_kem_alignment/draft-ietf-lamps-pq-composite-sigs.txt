@@ -226,7 +226,7 @@ Table of Contents
    components remains strong.  Concrete instantiations of composite ML-
    DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5,
    RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
-   the sence of upgraded systems continuing to inter-operate with legacy
+   the sense of upgraded systems continuing to inter-operate with legacy
    systems is not directly covered in this specification, but is the
    subject of Section 11.2.
 
@@ -847,7 +847,7 @@ Table of Contents
 
    The following describes how to instantiate a
    DeserializePublicKey(bytes) function for a given composite algorithm
-   reperesented by <OID>.
+   represented by <OID>.
 
   Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
@@ -1010,7 +1010,7 @@ Table of Contents
 
    The following describes how to instantiate a
    DeserializeSignatureValue(bytes) function for a given composite
-   algorithm reperesented by <OID>.
+   algorithm represented by <OID>.
 
   Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
                                               -> (r, mldsaSig, tradSig)
@@ -1204,10 +1204,10 @@ Table of Contents
    [RFC5958], the privateKeyAlgorithm field SHALL be set to the
    corresponding composite algorithm identifier defined according to
    Section 7 and its parameters field MUST be absent.  The privateKey
-   field SHALL contain the OCTET STRING reperesentation of the
-   serialized composite private key as per Section 5.2.  The publicKey
-   field remains OPTIONAL.  If the publicKey field is present, it MUST
-   be a composite public key as per Section 5.1.
+   field SHALL contain the OCTET STRING representation of the serialized
+   composite private key as per Section 5.2.  The publicKey field
+   remains OPTIONAL.  If the publicKey field is present, it MUST be a
+   composite public key as per Section 5.1.
 
    Some applications might need to reconstruct the SubjectPublicKeyInfo
    or OneAsymmetricKey objects corresponding to each component key
@@ -1382,13 +1382,13 @@ Table of Contents
 
    In generating the list of composite algorithms, the idea was to
    provide composite algorithms at various security levels with varying
-   performance charactaristics.
+   performance characteristics.
 
    The main design consideration in choosing pairings is to prioritize
    providing pairings of each ML-DSA security level with commonly-
    deployed traditional algorithms.  This supports the design goal of
    using composites as a stepping stone to efficiently deploy post-
-   quantum on top of existing hardeneded and certified traditional
+   quantum on top of existing hardened and certified traditional
    algorithm implementations.  This was prioritized rather than
    attempting to exactly match the security level of the post-quantum
    and traditional components -- which in general is difficult to do
@@ -2092,9 +2092,9 @@ Table of Contents
 10.3.  Key Reuse
 
    While conformance with this specification requires that both
-   components of a componite key MUST be freshly generated, the
+   components of a composite key MUST be freshly generated, the
    designers are aware that some implementers may be forced to break
-   this rule due to operational constrainst.  This section documents the
+   this rule due to operational constraints.  This section documents the
    implications of doing so.
 
    When using single-algorithm cryptography, the best practice is to
@@ -2252,7 +2252,7 @@ Table of Contents
    which is the same collision and second pre-image resistance
    properties that RSA, ECDSA, and HashML-DSA have.
 
-   Introduction of the randomizer might introduce other benificial
+   Introduction of the randomizer might introduce other beneficial
    security properties, but these are outside the scope of design
    consideration.
 
@@ -2268,7 +2268,7 @@ Table of Contents
    expected to still be considered valid after the traditional component
    is deprecated for individual use.  As such, a single composite public
    key or certificate may contain a mixture of deprecated and non-
-   deprecated algorithms.  In general this should be managable through
+   deprecated algorithms.  In general this should be manageable through
    policy by removing OIDs for the standalone component algorithms while
    still allowing OIDs for composite algorithms.  However, complications
    may arise when the composite implementation needs to invoke the
@@ -2282,7 +2282,7 @@ Table of Contents
 11.1.  FIPS certification
 
    The following sections give guidance to implementers wishing to FIPS-
-   certify a composite implentation.
+   certify a composite implementation.
 
    This guidance is not authoritative and has not been endorsed by NIST.
 
@@ -2370,7 +2370,7 @@ Table of Contents
    select a small number of composites appropriate for that application
    domain.  For applications that do not have any regulatory
    requirements or legacy implementations to consider, it is RECOMMENDED
-   to focus implemtation effort on:
+   to focus implementation effort on:
 
    id-MLDSA65-ECDSA-P256-SHA512
 
@@ -2380,7 +2380,7 @@ Table of Contents
    id-MLDSA65-RSA3072-PSS-SHA512
 
    In applications that only allow NIST PQC Level 5, it is RECOMMENDED
-   to focus implemtation effort on:
+   to focus implementation effort on:
 
    id-MLDSA87-ECDSA-P384-SHA512
 
@@ -2771,11 +2771,11 @@ Appendix A.  Approximate Key and Signature Sizes
 
    *  Compressed vs uncompressed EC point.
 
-   *  The RSA public key (n, e) allows e to vary is size between 3 and n
+   *  The RSA public key (n, e) allows e to vary in size between 3 and n
       - 1 [RFC8017].
 
    *  When the underlying RSA or EC value is itself DER-encoded, integer
-      values could occaisionally be shorter than expected due to leading
+      values could occasionally be shorter than expected due to leading
       zeros being dropped from the encoding.
 
    By contrast, ML-DSA values are always fixed size, so composite values
