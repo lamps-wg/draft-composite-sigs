@@ -958,10 +958,13 @@ def writeDomainTable():
         f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
 
-def writeMessageFormatExamples(sig, file_handle,  m=b'', ctx=b''):
+def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   """
   Writes the Message format examples section for the draft
   """
+  f = open(filename, 'w')
+
+  f.write("Example of " + sig.id +" construction of M'.\n\n")
 
   # Compute the values
   sig.keyGen()
@@ -973,27 +976,28 @@ def writeMessageFormatExamples(sig, file_handle,  m=b'', ctx=b''):
 
   # Dump the values to file
   wrap_width = 70
-  file_handle.write("# Inputs: ")
-  file_handle.write("\n\n")     
-  file_handle.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )
+  f.write("# Inputs:")
+  f.write("\n\n")     
+  f.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )
   if (ctx == b''):
-      file_handle.write("ctx: <empty>\n")
+      f.write("ctx: <empty>\n")
   else:
-      file_handle.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
-  file_handle.write("\n")
-  file_handle.write("# Components of M':\n\n")
-  file_handle.write( '\n'.join(textwrap.wrap("Prefix: " + prefix.hex(), width=wrap_width)) +"\n" )
-  file_handle.write( '\n'.join(textwrap.wrap("Domain: " + domain.hex(), width=wrap_width)) +"\n" )
-  file_handle.write( '\n'.join(textwrap.wrap("len(ctx): " + len_ctx.hex(), width=wrap_width)) +"\n" )
+      f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
+  f.write("\n")
+  f.write("# Components of M':\n\n")
+  f.write( '\n'.join(textwrap.wrap("Prefix: " + prefix.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("Domain: " + domain.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("len(ctx): " + len_ctx.hex(), width=wrap_width)) +"\n\n" )
   if (ctx == b''):
-      file_handle.write("ctx: <empty>\n")
+      f.write("ctx: <empty>\n")
   else:
-      file_handle.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
-  file_handle.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
-  file_handle.write( '\n'.join(textwrap.wrap("PH(r||M): " + ph_m.hex(), width=wrap_width)) +"\n" )
-  file_handle.write("\n") 
-  file_handle.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)\n")
-  file_handle.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n" )
+      f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
+  f.write( '\n'.join(textwrap.wrap("PH(r||M): " + ph_m.hex(), width=wrap_width)) +"\n\n" )
+  f.write("\n")
+  f.write("# Outputs:\n")
+  f.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)\n\n")
+  f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
 
@@ -1047,12 +1051,10 @@ def main():
 
   # Write the message representative examples
 
-  with open('messageFormatSample_noctx.md', 'w') as f:
-    writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), f, m=bytes.fromhex("00010203040506070809"), ctx=b'' )
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_noctx.md', m=bytes.fromhex("00010203040506070809"), ctx=b'' )
 
   
-  with open('messageFormatSample_ctx.md', 'w') as f:
-    writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), f, m=bytes.fromhex("00010203040506070809"), ctx=bytes.fromhex("0813061205162623") )
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_ctx.md', m=bytes.fromhex("00010203040506070809"), ctx=bytes.fromhex("0813061205162623") )
 
 
 

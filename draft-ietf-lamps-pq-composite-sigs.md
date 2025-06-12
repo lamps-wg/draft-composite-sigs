@@ -1988,7 +1988,8 @@ DER:
 
 # Message Representative Examples
 
-First is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 without a context string `ctx`.
+This section provides examples of constructing the message representative `M'`, showing all intermediate values. This is intended to be useful for debugging purposes.
+
 
 The input message for this example is the hex string "00 01 02 03 04 05 06 07 08 09".
 
@@ -2003,13 +2004,15 @@ Each input component is shown. Note that values are shown hex-encoded for displa
 
 Finally, the fully assembled `M'` is given, which is simply the concatenation of the above values.
 
+First is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 without a context string `ctx`.
+
 ~~~
 {::include ./src/messageFormatSample_noctx.md}
 ~~~
 
 Second is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string `ctx`.
 
-The inputs are similar to the first example with the exception that there is an 8 byte context string 'ctx'
+The inputs are similar to the first example with the exception that there is an 8 byte context string 'ctx'.
 
 ~~~
 {::include ./src/messageFormatSample_ctx.md}
