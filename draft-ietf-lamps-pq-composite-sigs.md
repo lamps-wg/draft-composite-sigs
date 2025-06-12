@@ -650,7 +650,7 @@ The serialization routine for keys simply concatenates the public keys of the co
 ~~~
 Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   mldsaPK The ML-DSA public key, which is bytes.
 
@@ -682,7 +682,7 @@ The following describes how to instantiate a `DeserializePublicKey(bytes)` funct
 ~~~
 Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
-Explicit Inputs:
+Explicit inputs:
 
   bytes   An encoded composite public key.
 
@@ -734,7 +734,7 @@ The serialization routine for keys simply concatenates the private keys of the c
 ~~~
 Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
@@ -766,7 +766,7 @@ The following describes how to instantiate a `DeserializePrivateKey(bytes)` func
 ~~~
 Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 
-Explicit Inputs:
+Explicit inputs:
 
   bytes   An encoded composite private key.
 
@@ -809,7 +809,7 @@ The serialization routine for the composite signature value simply concatenates 
 ~~~
 Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   r         The 32 byte signature randomizer.
 
