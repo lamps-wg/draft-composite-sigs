@@ -2232,7 +2232,7 @@ Table of Contents
    be used in a future signature then this ought to satisfy the stated
    security requirements, but detailed security analysis of such a
    modification of the Composite ML-DSA signing routine MUST be
-   perfermed on a per-application basis.
+   performed on a per-application basis.
 
    Another benefit to the randomizer is to prevent a class of attacks
    unique to composites, which we define as a "mixed-key forgery
