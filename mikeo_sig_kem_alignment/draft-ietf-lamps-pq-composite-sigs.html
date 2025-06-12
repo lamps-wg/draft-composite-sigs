@@ -1906,7 +1906,7 @@ The functions defined in this section are considered internal implementation det
 <pre>
 Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -&gt; bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   mldsaPK The ML-DSA public key, which is bytes.
 
@@ -1941,7 +1941,7 @@ Serialization Process:
 <pre>
 Composite-ML-DSA&lt;OID&gt;.DeserializePublicKey(bytes) -&gt; (mldsaPK, tradPK)
 
-Explicit Inputs:
+Explicit inputs:
 
   bytes   An encoded composite public key.
 
@@ -2001,7 +2001,7 @@ Deserialization Process:
 <pre>
 Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -&gt; bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
 
@@ -2036,7 +2036,7 @@ Serialization Process:
 <pre>
 Composite-ML-DSA.DeserializePrivateKey(bytes) -&gt; (mldsaSeed, tradSK)
 
-Explicit Inputs:
+Explicit inputs:
 
   bytes   An encoded composite private key.
 
@@ -2087,7 +2087,7 @@ Deserialization Process:
 <pre>
 Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -&gt; bytes
 
-Explicit Inputs:
+Explicit inputs:
 
   r         The 32 byte signature randomizer.
 
