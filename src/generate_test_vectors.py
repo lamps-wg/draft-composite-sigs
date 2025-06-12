@@ -411,34 +411,33 @@ class CompositeSig(SIG):
     self.pk = self.public_key_bytes()
 
 
-  def computeMp(self, m, ctx, r):
+  def computeMprime(self, m, ctx, r, return_intermediates=False ):
+    """
+    Computes the message representative M'.
 
-    if (self.PH.name == hashes.SHA256.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x01'
-    elif (self.PH.name == hashes.SHA512.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x03'
-    elif (self.PH.name == hashes.SHAKE128.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0b'
-    elif (self.PH.name == hashes.SHAKE256.name):
-      HashOID = b'\x06\x09\x60\x86\x48\x01\x65\x03\x04\x02\x0c'
-    # elif ...
+    return_intermediates=False is the default mode, and returns a single value: Mprime
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, r, ph_m, Mprime)
+    """
 
-    h = hashes.Hash(self.PH)
+    h = hashes.Hash(self.PH) 
     h.update(r)
     h.update(m)
     ph_m = h.finalize()
 
 
-    # M' :=  Prefix || Domain || len(ctx) || ctx || HashOID || PH(M)
-    Mp = self.prefix                 + \
+    # M' :=  Prefix || Domain || len(ctx) || ctx || PH(r || M)
+    len_ctx = len(ctx).to_bytes(1, 'big')
+    Mprime = self.prefix                 + \
          self.domain                 + \
-         len(ctx).to_bytes(1, 'big') + \
+         len_ctx + \
          ctx                         + \
          r                           + \
-         HashOID                     + \
          ph_m
-
-    return Mp  
+         
+    if return_intermediates:
+      return (self.prefix, self.domain, len_ctx, ctx, r, ph_m, Mprime)
+    else:
+      return Mprime  
 
 
   def sign(self, m, ctx=b'', PH=hashes.SHA256()):
@@ -449,10 +448,10 @@ class CompositeSig(SIG):
     assert isinstance(ctx, bytes)
 
     r = secrets.token_bytes(32)
-    Mp = self.computeMp(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx, r)
 
-    mldsaSig = self.mldsa.sign( Mp, ctx=self.domain )
-    tradSig = self.tradsig.sign( Mp )
+    mldsaSig = self.mldsa.sign( Mprime, ctx=self.domain )
+    tradSig = self.tradsig.sign( Mprime )
     
     return self.serializeSignatureValue(r, mldsaSig, tradSig)
   
@@ -471,11 +470,11 @@ class CompositeSig(SIG):
     if len(r) != 32:
       raise InvalidSignature("r is the wrong length")
 
-    Mp = self.computeMp(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx, r)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaSig, Mp, ctx=self.domain)
-    self.tradsig.verify(tradSig, Mp)
+    self.mldsa.verify(mldsaSig, Mprime, ctx=self.domain)
+    self.tradsig.verify(tradSig, Mprime)
 
 
   def serializeKey(self):
@@ -803,10 +802,6 @@ def signSigCert(sig):
 
 
 
-
-
-
-
 def formatResults(sig, s ):
 
   jsonTest = {}
@@ -850,7 +845,10 @@ def output_artifacts_certs_r5(jsonTestVectors):
 
 
 # Setup the test vector output
+
+# This is the raw message to be signed for the test vectors
 _m = b'The quick brown fox jumps over the lazy dog.'
+
 testVectorOutput = {}
 testVectorOutput['m'] = base64.b64encode(_m).decode('ascii')
 testVectorOutput['tests'] = []
@@ -869,7 +867,7 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
-    domain = base64.b16encode(encode(OID_TABLE[alg]))
+    domain = encode(OID_TABLE[alg])
     DOMAIN_TABLE[alg] = (domain, False)
 
 # run this statically
@@ -894,10 +892,8 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
     sizeRow['sk'] = len(sig.private_key_bytes())
     sizeRow['s'] = len(s)
     SIZE_TABLE[sig.id] = sizeRow
-
-
-
-
+    
+    
 def writeTestVectors():
   with open('testvectors.json', 'w') as f:
     f.write(json.dumps(testVectorOutput, indent=2))
@@ -959,12 +955,55 @@ def writeDomainTable():
 
     for alg in DOMAIN_TABLE:
       if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
-        f.write('| ' + alg.ljust(46, ' ') + " | " + str(DOMAIN_TABLE[alg][0].decode('ascii')) + " |\n")
+        f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
         
+
+def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
+  """
+  Writes the Message format examples section for the draft
+  """
+  f = open(filename, 'w')
+
+  f.write("Example of " + sig.id +" construction of M'.\n\n")
+
+  # Compute the values
+  sig.keyGen()
+
+  r = secrets.token_bytes(32)
+  (prefix, domain, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
+
+
+
+  # Dump the values to file
+  wrap_width = 70
+  f.write("# Inputs:")
+  f.write("\n\n")     
+  f.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )
+  if (ctx == b''):
+      f.write("ctx: <empty>\n")
+  else:
+      f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n" )
+  f.write("\n")
+  f.write("# Components of M':\n\n")
+  f.write( '\n'.join(textwrap.wrap("Prefix: " + prefix.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("Domain: " + domain.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("len(ctx): " + len_ctx.hex(), width=wrap_width)) +"\n\n" )
+  if (ctx == b''):
+      f.write("ctx: <empty>\n")
+  else:
+      f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
+  f.write( '\n'.join(textwrap.wrap("PH(r||M): " + ph_m.hex(), width=wrap_width)) +"\n\n" )
+  f.write("\n")
+  f.write("# Outputs:\n")
+  f.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)\n\n")
+  f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
+
+
 
 
 def main():
-
+  
   # Single algs - remove these, just for testing
   # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
   # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
@@ -1003,12 +1042,20 @@ def main():
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA65_ECDSA_P521_SHA512() )
-  
 
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
   writeDomainTable()
+
+
+  # Write the message representative examples
+
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_noctx.md', m=bytes.fromhex("00010203040506070809"), ctx=b'' )
+
+  
+  writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_ctx.md', m=bytes.fromhex("00010203040506070809"), ctx=bytes.fromhex("0813061205162623") )
+
 
 
 if __name__ == "__main__":

@@ -20,10 +20,6 @@ IMPORTS
 -- Object Identifiers
 --
 
--- Defined in ITU-T X.690
-der OBJECT IDENTIFIER ::=
-  {joint-iso-itu-t asn1(1) ber-derived(2) distinguished-encoding(1)}
-
 --
 -- Information Object Classes
 --
@@ -33,7 +29,8 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id}
       IDENTIFIER id
       KEY BIT STRING
       PARAMS ARE absent
-      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, cRLSign}
+      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, 
+                                                            cRLSign}
     }
 
 sa-CompositeSignature{OBJECT IDENTIFIER:id,
