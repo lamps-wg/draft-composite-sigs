@@ -591,7 +591,7 @@ class MLDSA65_RSA4096_PSS_SHA512(CompositeSig):
 class MLDSA65_RSA4096_PKCS15_SHA512(CompositeSig):
   id = "id-MLDSA65-RSA4096-PKCS15-SHA512"
   mldsa = MLDSA65()
-  tradsig = RSA4096PSS()
+  tradsig = RSA4096PKCS15()
   PH = hashes.SHA512()
 
 

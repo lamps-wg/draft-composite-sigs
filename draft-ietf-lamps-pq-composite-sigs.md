@@ -605,7 +605,7 @@ Signature Verification Process:
       if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Domain ) then
           output "Invalid signature"
 
-      if not Trad.Verify( tradPK, M', tradPK ) then
+      if not Trad.Verify( tradPK, M', tradSig ) then
           output "Invalid signature"
 
       if all succeeded, then
