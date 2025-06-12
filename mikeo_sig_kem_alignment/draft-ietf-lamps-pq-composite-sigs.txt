@@ -3275,36 +3275,42 @@ Appendix D.  Message Representative Examples
    *  Domain is the specific domain separator for this composite
       algorithm, as defined in Section 7.1.
 
-   *  r is a random 32-byte value chosen by the signer.
-
-   *  PH(r||M) is the output of hashing the randomizer together with the
-      message M.
-
    *  len(ctx) is the length of the Message context String which is 00
       when no context is used.
 
    *  ctx is the Message context string used in the composite signature
       combiner.  It is empty in this example.
 
+   *  r is a random 32-byte value chosen by the signer.
+
+   *  PH(r||M) is the output of hashing the randomizer together with the
+      message M.
+
    Finally, the fully assembled M' is given, which is simply the
    concatenation of the above values.
 
-# Inputs:
+  # Inputs:
 
-M: 00010203040506070809
-ctx: empty
+  M: 00010203040506070809
+  ctx: <empty>
 
-# Components of M':
+  # Components of M':
 
-Prefix: 436f6d706f73697465416c676f726974686d5369676e61747572657332303235
-Domain: 060b6086480186fa6b5008016c
-len(ctx): 00
-ctx: empty
-r: d93cdcb59446e2adb9d6633fdf3442c7a952b8e560e028faaf2d47a2a90f8e83
-PH(r||M): 8c11f2daab0b7f8b775d34d9f7aa9f96d3b9a457d004194524739d089acbfdd218fbd939b1d28389fd51f8cc60a0ce5f573b081b7c511821b24b5fe39396288f
+  Prefix:
+  436f6d706f73697465416c676f726974686d5369676e61747572657332303235
+  Domain: 060b6086480186fa6b5008016c
+  len(ctx): 00
+  ctx: <empty>
+  r: bf8d4d6a79b70885717ea1a309713a180a9f49da353f01922d1e25b709da3774
+  PH(r||M): c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d2924b6ca1bba
+  47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e4f2f69a4
 
-# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
-M': 436f6d706f73697465416c676f726974686d5369676e61747572657332303235060b6086480186fa6b5008016c00d93cdcb59446e2adb9d6633fdf3442c7a952b8e560e028faaf2d47a2a90f8e838c11f2daab0b7f8b775d34d9f7aa9f96d3b9a457d004194524739d089acbfdd218fbd939b1d28389fd51f8cc60a0ce5f573b081b7c511821b24b5fe39396288f
+  # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
+  M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
+  0b6086480186fa6b5008016c00bf8d4d6a79b70885717ea1a309713a180a9f49da353f
+  01922d1e25b709da3774c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d29
+  24b6ca1bba47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e
+  4f2f69a4
 
    Second is an example of constructing the message representative M'
    for MLDSA65-ECDSA-P256-SHA256 with a context string ctx.
@@ -3312,22 +3318,28 @@ M': 436f6d706f73697465416c676f726974686d5369676e61747572657332303235060b60864801
    The inputs are similar to the first example with the exception that
    there is an 8 byte context string 'ctx'
 
-# Inputs:
+  # Inputs:
 
-M: 00010203040506070809
-ctx: 0813061205162623
+  M: 00010203040506070809
+  ctx: 0813061205162623
 
-# Components of M':
+  # Components of M':
 
-Prefix: 436f6d706f73697465416c676f726974686d5369676e61747572657332303235
-Domain: 060b6086480186fa6b5008016c
-len(ctx): 08
-ctx: 0813061205162623
-r: f6ec219c5209c02200d0fae642a1b5127859160bcd04a283330a0747058df73b
-PH(r||M): e7c271890dd9c1c9b753892ad0e8673717555aa911b0d196a4ac4bc0fa76b0e28b38c5135d4e3e8a11aa4ceb48c6c32570fd79bb391e49a50b2aa0d2d1fac815
+  Prefix:
+  436f6d706f73697465416c676f726974686d5369676e61747572657332303235
+  Domain: 060b6086480186fa6b5008016c
+  len(ctx): 08
+  ctx: 0813061205162623
+  r: 613b8a654aa5f342841414cb4d73704f80ac185d9f789686ebe2431df069660d
+  PH(r||M): 7fb97d705b19d596749255286d7e88feb3b7db1bd6af59315ab187abf659
+  e9d49421f86902f36409c3eeb19b8422171c8e66d0e12b4383761f7b964f4ca6f6f9
 
-# M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
-M': 436f6d706f73697465416c676f726974686d5369676e61747572657332303235060b6086480186fa6b5008016c080813061205162623f6ec219c5209c02200d0fae642a1b5127859160bcd04a283330a0747058df73be7c271890dd9c1c9b753892ad0e8673717555aa911b0d196a4ac4bc0fa76b0e28b38c5135d4e3e8a11aa4ceb48c6c32570fd79bb391e49a50b2aa0d2d1fac815
+  # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
+  M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
+  0b6086480186fa6b5008016c080813061205162623613b8a654aa5f342841414cb4d73
+  704f80ac185d9f789686ebe2431df069660d7fb97d705b19d596749255286d7e88feb3
+  b7db1bd6af59315ab187abf659e9d49421f86902f36409c3eeb19b8422171c8e66d0e1
+  2b4383761f7b964f4ca6f6f9
 
 Appendix E.  Test Vectors
 

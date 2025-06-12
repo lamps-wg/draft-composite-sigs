@@ -4553,16 +4553,16 @@ DER:
           <p id="appendix-D-4.2.1"><code>Domain</code> is the specific domain separator for this composite algorithm, as defined in <a href="#sec-domsep-values" class="auto internal xref">Section 7.1</a>.<a href="#appendix-D-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-4.3">
-          <p id="appendix-D-4.3.1"><code>r</code> is a random 32-byte value chosen by the signer.<a href="#appendix-D-4.3.1" class="pilcrow">¶</a></p>
+          <p id="appendix-D-4.3.1"><code>len(ctx)</code> is the length of the Message context String which is 00 when no context is used.<a href="#appendix-D-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-4.4">
-          <p id="appendix-D-4.4.1"><code>PH(r||M)</code> is the output of hashing the randomizer together with the message <code>M</code>.<a href="#appendix-D-4.4.1" class="pilcrow">¶</a></p>
+          <p id="appendix-D-4.4.1"><code>ctx</code> is the Message context string used in the composite signature combiner.  It is empty in this example.<a href="#appendix-D-4.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-4.5">
-          <p id="appendix-D-4.5.1"><code>len(ctx)</code> is the length of the Message context String which is 00 when no context is used.<a href="#appendix-D-4.5.1" class="pilcrow">¶</a></p>
+          <p id="appendix-D-4.5.1"><code>r</code> is a random 32-byte value chosen by the signer.<a href="#appendix-D-4.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-4.6">
-          <p id="appendix-D-4.6.1"><code>ctx</code> is the Message context string used in the composite signature combiner.  It is empty in this example.<a href="#appendix-D-4.6.1" class="pilcrow">¶</a></p>
+          <p id="appendix-D-4.6.1"><code>PH(r||M)</code> is the output of hashing the randomizer together with the message <code>M</code>.<a href="#appendix-D-4.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-5">Finally, the fully assembled <code>M'</code> is given, which is simply the concatenation of the above values.<a href="#appendix-D-5" class="pilcrow">¶</a></p>
@@ -4571,19 +4571,25 @@ DER:
 # Inputs:
 
 M: 00010203040506070809
-ctx: empty
+ctx: &lt;empty&gt;
 
 # Components of M':
 
-Prefix: 436f6d706f73697465416c676f726974686d5369676e61747572657332303235
+Prefix:
+436f6d706f73697465416c676f726974686d5369676e61747572657332303235
 Domain: 060b6086480186fa6b5008016c
 len(ctx): 00
-ctx: empty
-r: d93cdcb59446e2adb9d6633fdf3442c7a952b8e560e028faaf2d47a2a90f8e83
-PH(r||M): 8c11f2daab0b7f8b775d34d9f7aa9f96d3b9a457d004194524739d089acbfdd218fbd939b1d28389fd51f8cc60a0ce5f573b081b7c511821b24b5fe39396288f
+ctx: &lt;empty&gt;
+r: bf8d4d6a79b70885717ea1a309713a180a9f49da353f01922d1e25b709da3774
+PH(r||M): c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d2924b6ca1bba
+47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e4f2f69a4
 
 # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
-M': 436f6d706f73697465416c676f726974686d5369676e61747572657332303235060b6086480186fa6b5008016c00d93cdcb59446e2adb9d6633fdf3442c7a952b8e560e028faaf2d47a2a90f8e838c11f2daab0b7f8b775d34d9f7aa9f96d3b9a457d004194524739d089acbfdd218fbd939b1d28389fd51f8cc60a0ce5f573b081b7c511821b24b5fe39396288f
+M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
+0b6086480186fa6b5008016c00bf8d4d6a79b70885717ea1a309713a180a9f49da353f
+01922d1e25b709da3774c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d29
+24b6ca1bba47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e
+4f2f69a4
 </pre><a href="#appendix-D-6" class="pilcrow">¶</a>
 </div>
 <p id="appendix-D-7">Second is an example of constructing the message representative <code>M'</code> for MLDSA65-ECDSA-P256-SHA256 with a context string <code>ctx</code>.<a href="#appendix-D-7" class="pilcrow">¶</a></p>
@@ -4597,15 +4603,21 @@ ctx: 0813061205162623
 
 # Components of M':
 
-Prefix: 436f6d706f73697465416c676f726974686d5369676e61747572657332303235
+Prefix:
+436f6d706f73697465416c676f726974686d5369676e61747572657332303235
 Domain: 060b6086480186fa6b5008016c
 len(ctx): 08
 ctx: 0813061205162623
-r: f6ec219c5209c02200d0fae642a1b5127859160bcd04a283330a0747058df73b
-PH(r||M): e7c271890dd9c1c9b753892ad0e8673717555aa911b0d196a4ac4bc0fa76b0e28b38c5135d4e3e8a11aa4ceb48c6c32570fd79bb391e49a50b2aa0d2d1fac815
+r: 613b8a654aa5f342841414cb4d73704f80ac185d9f789686ebe2431df069660d
+PH(r||M): 7fb97d705b19d596749255286d7e88feb3b7db1bd6af59315ab187abf659
+e9d49421f86902f36409c3eeb19b8422171c8e66d0e12b4383761f7b964f4ca6f6f9
 
 # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
-M': 436f6d706f73697465416c676f726974686d5369676e61747572657332303235060b6086480186fa6b5008016c080813061205162623f6ec219c5209c02200d0fae642a1b5127859160bcd04a283330a0747058df73be7c271890dd9c1c9b753892ad0e8673717555aa911b0d196a4ac4bc0fa76b0e28b38c5135d4e3e8a11aa4ceb48c6c32570fd79bb391e49a50b2aa0d2d1fac815
+M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
+0b6086480186fa6b5008016c080813061205162623613b8a654aa5f342841414cb4d73
+704f80ac185d9f789686ebe2431df069660d7fb97d705b19d596749255286d7e88feb3
+b7db1bd6af59315ab187abf659e9d49421f86902f36409c3eeb19b8422171c8e66d0e1
+2b4383761f7b964f4ca6f6f9
 </pre><a href="#appendix-D-9" class="pilcrow">¶</a>
 </div>
 </section>
