@@ -3260,8 +3260,9 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
 
 Appendix D.  Message Representative Examples
 
-   First is an example of constructing the message representative M' for
-   MLDSA65-ECDSA-P256-SHA256 without a context string ctx.
+   This section provides examples of constructing the message
+   representative M', showing all intermediate values.  This is intended
+   to be useful for debugging purposes.
 
    The input message for this example is the hex string "00 01 02 03 04
    05 06 07 08 09".
@@ -3289,6 +3290,11 @@ Appendix D.  Message Representative Examples
    Finally, the fully assembled M' is given, which is simply the
    concatenation of the above values.
 
+   First is an example of constructing the message representative M' for
+   MLDSA65-ECDSA-P256-SHA256 without a context string ctx.
+
+  # Example of id-MLDSA65-ECDSA-P256-SHA512 construction of M'.
+
   # Inputs:
 
   M: 00010203040506070809
@@ -3301,22 +3307,26 @@ Appendix D.  Message Representative Examples
   Domain: 060b6086480186fa6b5008016c
   len(ctx): 00
   ctx: <empty>
-  r: bf8d4d6a79b70885717ea1a309713a180a9f49da353f01922d1e25b709da3774
-  PH(r||M): c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d2924b6ca1bba
-  47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e4f2f69a4
+  r: e3dbba900237c50b7280947b31e73af2c621ebfd9598a8f0b108a7dfb59ac243
+  PH(r||M): b1f1f0582eebe5e4f5dce8ab8e3e10ba7f7272249e843581f3f42a410422
+  96c070f326abd030cb610fdeab8a7036406ce9ff07518a56ad3682cd00a6c3d0eedf
 
+  # Outputs:
   # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
+
   M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
-  0b6086480186fa6b5008016c00bf8d4d6a79b70885717ea1a309713a180a9f49da353f
-  01922d1e25b709da3774c05fc9b767d3d6c0b55fc06ad349b04c976994244ffac90d29
-  24b6ca1bba47f53790ee5c2eb4021c1cd170d9b0512887bb603300957c96321f4db16e
-  4f2f69a4
+  0b6086480186fa6b5008016c00e3dbba900237c50b7280947b31e73af2c621ebfd9598
+  a8f0b108a7dfb59ac243b1f1f0582eebe5e4f5dce8ab8e3e10ba7f7272249e843581f3
+  f42a41042296c070f326abd030cb610fdeab8a7036406ce9ff07518a56ad3682cd00a6
+  c3d0eedf
 
    Second is an example of constructing the message representative M'
    for MLDSA65-ECDSA-P256-SHA256 with a context string ctx.
 
    The inputs are similar to the first example with the exception that
-   there is an 8 byte context string 'ctx'
+   there is an 8 byte context string 'ctx'.
+
+  # Example of id-MLDSA65-ECDSA-P256-SHA512 construction of M'.
 
   # Inputs:
 
@@ -3330,16 +3340,18 @@ Appendix D.  Message Representative Examples
   Domain: 060b6086480186fa6b5008016c
   len(ctx): 08
   ctx: 0813061205162623
-  r: 613b8a654aa5f342841414cb4d73704f80ac185d9f789686ebe2431df069660d
-  PH(r||M): 7fb97d705b19d596749255286d7e88feb3b7db1bd6af59315ab187abf659
-  e9d49421f86902f36409c3eeb19b8422171c8e66d0e12b4383761f7b964f4ca6f6f9
+  r: ddebb86c0f795fed812967b224986ce52555d854b0a2b5856307e009491b662d
+  PH(r||M): 76f1c45453d692f52b514c2fafa37a22efea6da416e3c99cf8cc0b0f84f8
+  e9c9c93216e3dbad8e64a987b323f1cb53af6c8054b6cfce73c5634060a3dac6d86f
 
+  # Outputs:
   # M' = Prefix || Domain || len(ctx) || ctx || r || PH(r||M)
+
   M': 436f6d706f73697465416c676f726974686d5369676e6174757265733230323506
-  0b6086480186fa6b5008016c080813061205162623613b8a654aa5f342841414cb4d73
-  704f80ac185d9f789686ebe2431df069660d7fb97d705b19d596749255286d7e88feb3
-  b7db1bd6af59315ab187abf659e9d49421f86902f36409c3eeb19b8422171c8e66d0e1
-  2b4383761f7b964f4ca6f6f9
+  0b6086480186fa6b5008016c080813061205162623ddebb86c0f795fed812967b22498
+  6ce52555d854b0a2b5856307e009491b662d76f1c45453d692f52b514c2fafa37a22ef
+  ea6da416e3c99cf8cc0b0f84f8e9c9c93216e3dbad8e64a987b323f1cb53af6c8054b6
+  cfce73c5634060a3dac6d86f
 
 Appendix E.  Test Vectors
 
