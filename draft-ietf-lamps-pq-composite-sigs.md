@@ -1037,7 +1037,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
-{: #tab-hash-sig-algs title="Hash ML-DSA Composite Signature Algorithms"}
+{: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 
 The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
@@ -1058,7 +1058,7 @@ The domain separator is simply the DER encoding of the OID. The following table 
      This is mainly to save resources and build time on the github commits. -->
 
 {::include src/domSepTable.md}
-{: #tab-sig-alg-oids title="Pure ML-DSA Composite Signature Domain Separators"}
+{: #tab-sig-alg-oids title="ML-DSA Composite Signature Domain Separators"}
 
 EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early assignment of these OIDs so that we can re-compute the domain separators over the final OIDs.
 
@@ -1070,7 +1070,7 @@ In generating the list of composite algorithms, the idea was to provide composit
 
 The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical attackers and "qubits of security" against quantum attackers.
 
-SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHA3 is used with Ed25519 and Ed448 since this is already the recommended hash functions chosen for Ed25519ph and ED448ph in [RFC8032].
+SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
 
 In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
 While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
@@ -1126,7 +1126,7 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 
 # IANA Considerations {#sec-iana}
-IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry [RFC7299] for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the fourteen Algorithms defined within.
+IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry [RFC7299] for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the eighteen algorithms defined within.
 
 ##  Object Identifier Allocations
 EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{tab-hash-sig-algs}}.
@@ -1141,7 +1141,7 @@ The following is to be registered in "SMI Security for PKIX Module Identifier":
 
 ###  Object Identifier Registrations
 
-The following are to be regiseterd in "SMI Security for PKIX Algorithms":
+The following are to be registered in "SMI Security for PKIX Algorithms":
 
 - id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
@@ -1273,13 +1273,14 @@ In theory this introduces complications for EUF-CMA and SUF-CMA security proofs.
 
 While conformance with this specification requires that both components of a composite key MUST be freshly generated, the designers are aware that some implementers may be forced to break this rule due to operational constraints. This section documents the implications of doing so.
 
-When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device.However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ / Traditional hybrid setting.
+When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ/T hybrid setting.
 
-Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
+Within the broader context of PQ/T hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
 
 In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
 Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
+
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
 
@@ -1301,7 +1302,7 @@ as part of the overall construction of the to-be-signed message:
     ...
     output (r, mldsaSig, tradSig)
 
-This follows closely the construction given in section 13.2.1 of [BonehShoup] which is also referend to as a "keyed pre-hash" and is given as:
+This follows closely the construction given in section 13.2.1 of [BonehShoup] which is also referred to as a "keyed pre-hash" and is given as:
 
 ~~~
 S'(sk, m) :=
@@ -1324,11 +1325,11 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
 
 Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.
 
-To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
+To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA<OID>.Sign(sk, M, ctx)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
 
 Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
-A failure of randomness, for example `r = 0`, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as `PH`, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and HashML-DSA have.
+A failure of randomness, for example `r = 0`, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as `PH`, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and ML-DSA have.
 
 Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.
 
@@ -1473,7 +1474,7 @@ Process:
    2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
        with r and ph from step 1 of this function.
- ~~~
+~~~
 {: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
 
