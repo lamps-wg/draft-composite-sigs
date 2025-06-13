@@ -715,7 +715,7 @@ Deserialization Process:
           mldsaPK = bytes[:2592]
           tradPK  = bytes[2592:]
 
-     Note that while ML-DSA has fixed-length keys, RSA and ECDH
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -790,7 +790,7 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys, RSA and ECDH
+     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -1289,7 +1289,7 @@ The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious impleme
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
 
-To combat potential collision and second pre-image weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
+To combat potential collision weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
 
     PH( r || M )
 
@@ -1321,6 +1321,8 @@ much weaker property than collision resistance and hence more likely to hold for
 the function SHA256 may eventually be broken as a collision-resistant hash, but the function
 >
 >`H(r, m) := SHA256(r || m)` may still be secure as a TCR.
+
+Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.
 
 To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
 
