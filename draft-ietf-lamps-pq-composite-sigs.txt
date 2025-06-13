@@ -257,8 +257,8 @@ Table of Contents
    *COMPONENT / PRIMITIVE*: The words "component" or "primitive" are
    used interchangeably to refer to a cryptographic algorithm that is
    used internally within a composite algorithm.  For example this could
-   be an asymmetric algorithm such as "ML-KEM-768" or "RSA-OAEP", or a
-   KDF such as "HMAC-SHA256".
+   be an asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS", or a
+   Hash such as "SHA256".
 
    *DER*: Distinguished Encoding Rules as defined in [X.690].
 
@@ -510,7 +510,7 @@ Table of Contents
         sk = SerializePrivateKey(mldsaSeed, tradSK)
         return (pk, sk)
 
-              Figure 1: Composite-ML-DSA.KeyGen() -> (pk, sk)
+            Figure 1: Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
 
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
@@ -635,7 +635,7 @@ Table of Contents
        s = SerializeSignatureValue(r, mldsaSig, tradSig)
        return s
 
-            Figure 2: Composite-ML-DSA.Sign(sk, M, ctx, PH)
+         Figure 2: Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
 
    Note that in step 4 above, both component signature processes are
    invoked, and no indication is given about which one failed.  This
@@ -664,7 +664,7 @@ Table of Contents
    The following describes how to instantiate a Verify() function for a
    given composite algorithm represented by <OID>.
 
-  Composite-ML-DSA.Verify(pk, M, s, ctx)
+  Composite-ML-DSA<OID>.Verify(pk, M, s, ctx) -> true or false
 
   Explicit inputs:
 
@@ -741,7 +741,7 @@ Table of Contents
         if all succeeded, then
            output "Valid signature"
 
-       Figure 3: Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)
+      Figure 3: Composite-ML-DSA<OID>.Verify(pk, M, signature, ctx)
 
    Note that in step 4 above, the function fails early if the first
    component fails to verify.  Since no private keys are involved in a
@@ -839,7 +839,8 @@ Table of Contents
 
         output mldsaPK || tradPK
 
-           Figure 4: SerializePublicKey(mldsaPK, tradPK) -> bytes
+     Figure 4: Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) ->
+                                   bytes
 
    Deserialization reverses this process.  Each component key is
    deserialized according to their respective specification as shown in
@@ -892,7 +893,8 @@ Table of Contents
 
        output (mldsaPK, tradPK)
 
-        Figure 5: DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
+      Figure 5: Composite-ML-DSA<OID>.DeserializePublicKey(bytes) ->
+                            (mldsaPK, tradPK)
 
 5.2.  SerializePrivateKey and DeserializePrivateKey
 
@@ -923,7 +925,8 @@ Table of Contents
 
         output mldsaSeed || tradSK
 
-         Figure 6: SerializePrivateKey(mldsaSeed, tradSK) -> bytes
+     Figure 6: Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK)
+                                  -> bytes
 
    Deserialization reverses this process.  Each component key is
    deserialized according to their respective specification as shown in
@@ -931,7 +934,7 @@ Table of Contents
 
    The following describes how to instantiate a
    DeserializePrivateKey(bytes) function.  Since ML-DSA private keys are
-   32 bytes for all paramater sets, this function does not need to be
+   32 bytes for all parameter sets, this function does not need to be
    parametrized.
 
    Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
@@ -960,7 +963,7 @@ Table of Contents
         mldsaSeed = bytes[:32]
         tradSK  = bytes[32:]
 
-        Note that while ML-KEM has fixed-length keys, RSA and ECDSA
+        Note that while ML-DSA has fixed-length keys, RSA and ECDSA
         may not, depending on encoding, so rigorous length-checking
         of the overall composite key is not always possible.
 
@@ -968,7 +971,8 @@ Table of Contents
 
         output (mldsaSeed, tradSK)
 
-           Figure 7: DeserializeKey(bytes) -> (mldsaSeed, tradSK)
+         Figure 7: Composite-ML-DSA.DeserializePrivateKey(bytes) ->
+                            (mldsaSeed, tradSK)
 
 5.3.  SerializeSignatureValue and DeserializeSignatureValue
 
@@ -1001,7 +1005,8 @@ Table of Contents
 
       output r || mldsaSig || tradSig
 
-    Figure 8: SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes
+    Figure 8: Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig,
+                           tradSig) -> bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.  Each component signature is
@@ -1063,7 +1068,8 @@ Table of Contents
 
        output (r, mldsaSig, tradSig)
 
-   Figure 9: DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)
+     Figure 9: Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
+                        -> (r, mldsaSig, tradSig)
 
 6.  Use within X.509 and PKIX
 
@@ -1132,7 +1138,7 @@ Table of Contents
 
 6.3.  ASN.1 Definitions
 
-   Composite ML-KEM uses a substantially non-ASN.1 based encoding, as
+   Composite ML-DSA uses a substantially non-ASN.1 based encoding, as
    specified in Section 5.  However, as composite algorithms will be
    used within ASN.1-based X.509 and PKIX protocols, some conventions
    for ASN.1 wrapping are necessary.
@@ -2926,7 +2932,7 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
    cryptographic library requires the public key in this form in order
    to process each component algorithm.  The public key BIT STRING
    should be taken directly from the respective component of the
-   Composite ML-KEM public key.
+   Composite ML-DSA public key.
 
    For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers
    are the same for Public Key and Signature.  Older Algorithms have

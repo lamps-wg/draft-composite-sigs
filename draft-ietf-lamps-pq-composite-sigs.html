@@ -1439,8 +1439,8 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
   The words "component" or "primitive" are used interchangeably
   to refer to a cryptographic algorithm that is used internally
   within a composite algorithm. For example this could be an
-  asymmetric algorithm such as "ML-KEM-768" or "RSA-OAEP", or a KDF such
-  as "HMAC-SHA256".<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS", or a Hash such
+  as "SHA256".<a href="#section-2.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.1-5"><strong>DER</strong>:
           Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
 <p id="section-2.1-6"><strong>PKI</strong>:
@@ -1577,7 +1577,7 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 <p id="section-4.1-1">In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> for a discussion.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2">To generate a new key pair for composite schemes, the <code>KeyGen() -&gt; (pk, sk)</code> function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.1-3">The following describes how to instantiate a <code>KeyGen()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
-<span id="name-composite-ml-dsakeygen-pk-s"></span><div id="alg-composite-keygen">
+<span id="name-composite-ml-dsaoidkeygen-p"></span><div id="alg-composite-keygen">
 <figure id="figure-1">
           <div class="alignLeft art-text artwork" id="section-4.1-4.1">
 <pre>
@@ -1623,7 +1623,7 @@ Key Generation Process:
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-composite-ml-dsakeygen-pk-s" class="selfRef">Composite-ML-DSA.KeyGen() -&gt; (pk, sk)</a>
+<a href="#name-composite-ml-dsaoidkeygen-p" class="selfRef">Composite-ML-DSA&lt;OID&gt;.KeyGen() -&gt; (pk, sk)</a>
           </figcaption></figure>
 </div>
 <p id="section-4.1-5">In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a>.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
@@ -1644,7 +1644,7 @@ Internally it uses pure ML-DSA as the component algorithm since there is no adva
 <p id="section-4.2-3">See <a href="#sec-domsep-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the domain separator and context values.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">The following describes how to instantiate a <code>Sign()</code> function for a given Composite ML-DSA algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
-<span id="name-composite-ml-dsasignsk-m-ct"></span><div id="alg-composite-sign">
+<span id="name-composite-ml-dsaoidsignsk-m"></span><div id="alg-composite-sign">
 <figure id="figure-2">
           <div class="alignLeft art-text artwork" id="section-4.2-6.1">
 <pre>
@@ -1724,7 +1724,7 @@ Signature Generation Process:
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-composite-ml-dsasignsk-m-ct" class="selfRef">Composite-ML-DSA.Sign(sk, M, ctx, PH)</a>
+<a href="#name-composite-ml-dsaoidsignsk-m" class="selfRef">Composite-ML-DSA&lt;OID&gt;.Sign(sk, M, ctx) -&gt; s</a>
           </figcaption></figure>
 </div>
 <p id="section-4.2-7">Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
@@ -1741,11 +1741,11 @@ Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">The following describes how to instantiate a <code>Verify()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
-<span id="name-composite-ml-dsaverifypk-m-"></span><div id="alg-composite-verify">
+<span id="name-composite-ml-dsaoidverifypk"></span><div id="alg-composite-verify">
 <figure id="figure-3">
           <div class="alignLeft art-text artwork" id="section-4.3-4.1">
 <pre>
-Composite-ML-DSA.Verify(pk, M, s, ctx)
+Composite-ML-DSA&lt;OID&gt;.Verify(pk, M, s, ctx) -&gt; true or false
 
 Explicit inputs:
 
@@ -1824,7 +1824,7 @@ Signature Verification Process:
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-composite-ml-dsaverifypk-m-" class="selfRef">Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)</a>
+<a href="#name-composite-ml-dsaoidverifypk" class="selfRef">Composite-ML-DSA&lt;OID&gt;.Verify(pk, M, signature, ctx)</a>
           </figcaption></figure>
 </div>
 <p id="section-4.3-5">Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
@@ -1900,7 +1900,7 @@ The functions defined in this section are considered internal implementation det
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-serializepublickey-and-dese" class="section-name selfRef">SerializePublicKey and DeserializePublicKey</a>
         </h3>
 <p id="section-5.1-1">The serialization routine for keys simply concatenates the public keys of the component signature algorithms, as defined below:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<span id="name-serializepublickeymldsapk-t"></span><div id="alg-composite-serialize-pk">
+<span id="name-composite-ml-dsaserializepu"></span><div id="alg-composite-serialize-pk">
 <figure id="figure-4">
           <div class="alignLeft art-text artwork" id="section-5.1-2.1">
 <pre>
@@ -1930,12 +1930,12 @@ Serialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
-<a href="#name-serializepublickeymldsapk-t" class="selfRef">SerializePublicKey(mldsaPK, tradPK) -&gt; bytes</a>
+<a href="#name-composite-ml-dsaserializepu" class="selfRef">Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -&gt; bytes</a>
           </figcaption></figure>
 </div>
 <p id="section-5.1-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <p id="section-5.1-4">The following describes how to instantiate a <code>DeserializePublicKey(bytes)</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<span id="name-deserializepublickeybytes-m"></span><div id="alg-composite-deserialize-pk">
+<span id="name-composite-ml-dsaoiddeserial"></span><div id="alg-composite-deserialize-pk">
 <figure id="figure-5">
           <div class="alignLeft art-text artwork" id="section-5.1-5.1">
 <pre>
@@ -1984,7 +1984,7 @@ Deserialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
-<a href="#name-deserializepublickeybytes-m" class="selfRef">DeserializePublicKey(bytes) -&gt; (mldsaPK, tradPK)</a>
+<a href="#name-composite-ml-dsaoiddeserial" class="selfRef">Composite-ML-DSA&lt;OID&gt;.DeserializePublicKey(bytes) -&gt; (mldsaPK, tradPK)</a>
           </figcaption></figure>
 </div>
 </section>
@@ -1995,7 +1995,7 @@ Deserialization Process:
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-serializeprivatekey-and-des" class="section-name selfRef">SerializePrivateKey and DeserializePrivateKey</a>
         </h3>
 <p id="section-5.2-1">The serialization routine for keys simply concatenates the private keys of the component signature algorithms, as defined below:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<span id="name-serializeprivatekeymldsasee"></span><div id="alg-composite-serialize-sk">
+<span id="name-composite-ml-dsaserializepr"></span><div id="alg-composite-serialize-sk">
 <figure id="figure-6">
           <div class="alignLeft art-text artwork" id="section-5.2-2.1">
 <pre>
@@ -2025,12 +2025,12 @@ Serialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
-<a href="#name-serializeprivatekeymldsasee" class="selfRef">SerializePrivateKey(mldsaSeed, tradSK) -&gt; bytes</a>
+<a href="#name-composite-ml-dsaserializepr" class="selfRef">Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -&gt; bytes</a>
           </figcaption></figure>
 </div>
 <p id="section-5.2-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">The following describes how to instantiate a <code>DeserializePrivateKey(bytes)</code> function. Since ML-DSA private keys are 32 bytes for all paramater sets, this function does not need to be parametrized.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
-<span id="name-deserializekeybytes-mldsase"></span><div id="alg-composite-deserialize-sk">
+<p id="section-5.2-4">The following describes how to instantiate a <code>DeserializePrivateKey(bytes)</code> function. Since ML-DSA private keys are 32 bytes for all parameter sets, this function does not need to be parametrized.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<span id="name-composite-ml-dsadeserialize"></span><div id="alg-composite-deserialize-sk">
 <figure id="figure-7">
           <div class="alignLeft art-text artwork" id="section-5.2-5.1">
 <pre>
@@ -2060,7 +2060,7 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -2070,7 +2070,7 @@ Deserialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
-<a href="#name-deserializekeybytes-mldsase" class="selfRef">DeserializeKey(bytes) -&gt; (mldsaSeed, tradSK)</a>
+<a href="#name-composite-ml-dsadeserialize" class="selfRef">Composite-ML-DSA.DeserializePrivateKey(bytes) -&gt; (mldsaSeed, tradSK)</a>
           </figcaption></figure>
 </div>
 </section>
@@ -2081,7 +2081,7 @@ Deserialization Process:
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-serializesignaturevalue-and" class="section-name selfRef">SerializeSignatureValue and DeserializeSignatureValue</a>
         </h3>
 <p id="section-5.3-1">The serialization routine for the composite signature value simply concatenates the fixed-length ML-DSA signature value with the signature value from the traditional algorithm, as defined below:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<span id="name-serializesignaturevaluer-ml"></span><div id="alg-composite-serialize-sig">
+<span id="name-composite-ml-dsaserializesi"></span><div id="alg-composite-serialize-sig">
 <figure id="figure-8">
           <div class="alignLeft art-text artwork" id="section-5.3-2.1">
 <pre>
@@ -2113,12 +2113,12 @@ Serialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
-<a href="#name-serializesignaturevaluer-ml" class="selfRef">SerializeSignatureValue(r, mldsaSig, tradSig) -&gt; bytes</a>
+<a href="#name-composite-ml-dsaserializesi" class="selfRef">Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -&gt; bytes</a>
           </figcaption></figure>
 </div>
 <p id="section-5.3-3">Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">The following describes how to instantiate a <code>DeserializeSignatureValue(bytes)</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<span id="name-deserializesignaturevalueby"></span><div id="alg-composite-deserialize-sig">
+<span id="name-composite-ml-dsaoiddeseriali"></span><div id="alg-composite-deserialize-sig">
 <figure id="figure-9">
           <div class="alignLeft art-text artwork" id="section-5.3-5.1">
 <pre>
@@ -2175,7 +2175,7 @@ Deserialization Process:
 </pre>
 </div>
 <figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
-<a href="#name-deserializesignaturevalueby" class="selfRef">DeserializeSignatureValue(bytes) -&gt; (r, mldsaSig, tradSig)</a>
+<a href="#name-composite-ml-dsaoiddeseriali" class="selfRef">Composite-ML-DSA&lt;OID&gt;.DeserializeSignatureValue(bytes) -&gt; (r, mldsaSig, tradSig)</a>
           </figcaption></figure>
 </div>
 </section>
@@ -2232,7 +2232,7 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
         <h3 id="name-asn1-definitions">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-asn1-definitions" class="section-name selfRef">ASN.1 Definitions</a>
         </h3>
-<p id="section-6.3-1">Composite ML-KEM uses a substantially non-ASN.1 based encoding, as specified in <a href="#sec-serialization" class="auto internal xref">Section 5</a>. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-1">Composite ML-DSA uses a substantially non-ASN.1 based encoding, as specified in <a href="#sec-serialization" class="auto internal xref">Section 5</a>. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <p id="section-6.3-2">The following ASN.1 Information Object Classes are are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
 <span id="name-asn1-object-information-cla"></span><div id="asn1-info-classes">
 <figure id="figure-10">
@@ -4182,7 +4182,7 @@ Deserialization Process:
       <h2 id="name-component-algorithmidentifi">
 <a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-component-algorithmidentifi" class="section-name selfRef">Component AlgorithmIdentifiers for Public Keys and Signatures</a>
       </h2>
-<p id="appendix-C-1">The following sections list explicitly the DER encoded <code>AlgorithmIdentifier</code> that MUST be used when reconstructing <code>SubjectPublicKeyInfo</code> and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key <code>BIT STRING</code> should be taken directly from the respective component of the Composite ML-KEM public key.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-1">The following sections list explicitly the DER encoded <code>AlgorithmIdentifier</code> that MUST be used when reconstructing <code>SubjectPublicKeyInfo</code> and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key <code>BIT STRING</code> should be taken directly from the respective component of the Composite ML-DSA public key.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <p id="appendix-C-2">For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
 <p id="appendix-C-3"><strong>ML-DSA-44</strong><a href="#appendix-C-3" class="pilcrow">¶</a></p>
 <p id="appendix-C-4">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-4" class="pilcrow">¶</a></p>
