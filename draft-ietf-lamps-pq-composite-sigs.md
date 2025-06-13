@@ -262,8 +262,8 @@ This specification is consistent with the terminology defined in {{I-D.ietf-pqui
   The words "component" or "primitive" are used interchangeably
   to refer to a cryptographic algorithm that is used internally
   within a composite algorithm. For example this could be an
-  asymmetric algorithm such as "ML-KEM-768" or "RSA-OAEP", or a KDF such
-  as "HMAC-SHA256".
+  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS", or a Hash such
+  as "SHA256".
 
 **DER**:
           Distinguished Encoding Rules as defined in [X.690].
@@ -418,7 +418,7 @@ Key Generation Process:
      return (pk, sk)
 
 ~~~
-{: #alg-composite-keygen title="Composite-ML-DSA.KeyGen() -> (pk, sk)"}
+{: #alg-composite-keygen title="Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)"}
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
@@ -517,7 +517,7 @@ Signature Generation Process:
       s = SerializeSignatureValue(r, mldsaSig, tradSig)
       return s
 ~~~
-{: #alg-composite-sign title="Composite-ML-DSA.Sign(sk, M, ctx, PH)"}
+{: #alg-composite-sign title="Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s"}
 
 Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
@@ -534,7 +534,7 @@ Compliant applications MUST output "Valid signature" (true) if and only if all c
 The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
-Composite-ML-DSA.Verify(pk, M, s, ctx)
+Composite-ML-DSA<OID>.Verify(pk, M, s, ctx) -> true or false
 
 Explicit inputs:
 
@@ -611,7 +611,7 @@ Signature Verification Process:
       if all succeeded, then
          output "Valid signature"
 ~~~
-{: #alg-composite-verify title="Composite-ML-DSA.Verify(pk, M, signature, ctx, PH)"}
+{: #alg-composite-verify title="Composite-ML-DSA<OID>.Verify(pk, M, signature, ctx)"}
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
@@ -672,7 +672,7 @@ Serialization Process:
 
      output mldsaPK || tradPK
 ~~~
-{: #alg-composite-serialize-pk title="SerializePublicKey(mldsaPK, tradPK) -> bytes"}
+{: #alg-composite-serialize-pk title="Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes"}
 
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -723,7 +723,7 @@ Deserialization Process:
 
      output (mldsaPK, tradPK)
 ~~~
-{: #alg-composite-deserialize-pk title="DeserializePublicKey(bytes) -> (mldsaPK, tradPK)"}
+{: #alg-composite-deserialize-pk title="Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)"}
 
 
 
@@ -756,12 +756,12 @@ Serialization Process:
 
      output mldsaSeed || tradSK
 ~~~
-{: #alg-composite-serialize-sk title="SerializePrivateKey(mldsaSeed, tradSK) -> bytes"}
+{: #alg-composite-serialize-sk title="Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes"}
 
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
 
-The following describes how to instantiate a `DeserializePrivateKey(bytes)` function. Since ML-DSA private keys are 32 bytes for all paramater sets, this function does not need to be parametrized.
+The following describes how to instantiate a `DeserializePrivateKey(bytes)` function. Since ML-DSA private keys are 32 bytes for all parameter sets, this function does not need to be parametrized.
 
 ~~~
 Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
@@ -790,7 +790,7 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -798,7 +798,7 @@ Deserialization Process:
 
      output (mldsaSeed, tradSK)
 ~~~
-{: #alg-composite-deserialize-sk title="DeserializeKey(bytes) -> (mldsaSeed, tradSK)"}
+{: #alg-composite-deserialize-sk title="Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)"}
 
 
 
@@ -833,7 +833,7 @@ Serialization Process:
      output r || mldsaSig || tradSig
 
 ~~~
-{: #alg-composite-serialize-sig title="SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes"}
+{: #alg-composite-serialize-sig title="Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -892,7 +892,7 @@ Deserialization Process:
 
      output (r, mldsaSig, tradSig)
 ~~~
-{: #alg-composite-deserialize-sig title="DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)"}
+{: #alg-composite-deserialize-sig title="Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)"}
 
 
 # Use within X.509 and PKIX
@@ -941,7 +941,7 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
 
 ## ASN.1 Definitions {#sec-asn1-defs}
 
-Composite ML-KEM uses a substantially non-ASN.1 based encoding, as specified in {{sec-serialization}}. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.
+Composite ML-DSA uses a substantially non-ASN.1 based encoding, as specified in {{sec-serialization}}. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.
 
 The following ASN.1 Information Object Classes are are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
@@ -1613,7 +1613,7 @@ This section provides references to the full specification of the algorithms use
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
 
-The following sections list explicitly the DER encoded `AlgorithmIdentifier` that MUST be used when reconstructing `SubjectPublicKeyInfo` and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key `BIT STRING` should be taken directly from the respective component of the Composite ML-KEM public key.
+The following sections list explicitly the DER encoded `AlgorithmIdentifier` that MUST be used when reconstructing `SubjectPublicKeyInfo` and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key `BIT STRING` should be taken directly from the respective component of the Composite ML-DSA public key.
 
 For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.
 
