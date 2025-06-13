@@ -790,7 +790,11 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
+<<<<<<< janklaussner-patch-1
      Note that while ML-DSA has fixed-length keys, RSA and ECDSA
+=======
+     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
+>>>>>>> main
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -1279,8 +1283,7 @@ Within the broader context of PQ / Traditional hybrids, we need to consider new 
 
 In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
-
-Despite all these warnings, some implementers will undoubtedly still re-use keys into a composite; for example because this provides a convenient way to have two unrelated certificates produce a single signature to fit into a protocol that can only carry a single signature. While this is still NOT RECOMMENDED, one mitigation that SHOULD be applied in such scenarios is to invoke `Composite-ML-DSA.Sign()` with a context string `ctx` which clearly indicates the dual-key context, and prevents this signature from being validated under a composite key even if it is made up of the same two component keys.  For example, an application or protocol called "Foobar" that wishes to do this could invoke the composite algorithm with `ctx="Foobar-dual-cert-sig"`.
+Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
 
@@ -1290,7 +1293,7 @@ The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious impleme
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
 
-To combat potential collision and second pre-image weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
+To combat potential collision weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
 
     PH( r || M )
 
@@ -1322,6 +1325,8 @@ much weaker property than collision resistance and hence more likely to hold for
 the function SHA256 may eventually be broken as a collision-resistant hash, but the function
 >
 >`H(r, m) := SHA256(r || m)` may still be secure as a TCR.
+
+Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.
 
 To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
 
