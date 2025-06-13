@@ -884,7 +884,7 @@ Table of Contents
             mldsaPK = bytes[:2592]
             tradPK  = bytes[2592:]
 
-       Note that while ML-DSA has fixed-length keys, RSA and ECDH
+       Note that while ML-DSA has fixed-length keys, RSA and ECDSA
        may not, depending on encoding, so rigorous length-checking
        of the overall composite key is not always possible.
 
@@ -960,7 +960,7 @@ Table of Contents
         mldsaSeed = bytes[:32]
         tradSK  = bytes[32:]
 
-        Note that while ML-KEM has fixed-length keys, RSA and ECDH
+        Note that while ML-KEM has fixed-length keys, RSA and ECDSA
         may not, depending on encoding, so rigorous length-checking
         of the overall composite key is not always possible.
 
@@ -2162,9 +2162,8 @@ Table of Contents
    for optimizations in cases such as signing the same message digest
    with multiple different keys.
 
-   To combat potential collision and second pre-image weaknesses
-   introduced by the pre-hash, Composite ML-DSA introduces a 32-byte
-   randomizer into the pre-hash:
+   To combat potential collision weaknesses introduced by the pre-hash,
+   Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
 
    PH( r || M )
 
@@ -2214,6 +2213,9 @@ Table of Contents
       hash, but the function
 
       H(r, m) := SHA256(r || m) may still be secure as a TCR.
+
+   Note that, with this construction, H is TCR if the hash function
+   (SHA256 in this example) is second preimage resistant.
 
    To this goal, it is sufficient that the randomizer be un-predictable
    from outside the signing oracle -- i.e. the caller of Composite-ML-

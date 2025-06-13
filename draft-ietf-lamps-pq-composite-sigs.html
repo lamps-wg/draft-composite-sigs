@@ -1974,7 +1974,7 @@ Deserialization Process:
           mldsaPK = bytes[:2592]
           tradPK  = bytes[2592:]
 
-     Note that while ML-DSA has fixed-length keys, RSA and ECDH
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -2060,7 +2060,7 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys, RSA and ECDH
+     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -3338,7 +3338,7 @@ END
 <a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-implications-of-pre-hash-ra" class="section-name selfRef">Implications of pre-hash randomizer</a>
         </h3>
 <p id="section-10.5-1">The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message <code>M</code> and to allow for optimizations in cases such as signing the same message digest with multiple different keys.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
-<p id="section-10.5-2">To combat potential collision and second pre-image weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:<a href="#section-10.5-2" class="pilcrow">¶</a></p>
+<p id="section-10.5-2">To combat potential collision weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:<a href="#section-10.5-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-10.5-3">
 <pre>
 PH( r || M )
@@ -3380,10 +3380,11 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
 <p id="section-10.5-10.1.2"><code>H(r, m) := SHA256(r || m)</code> may still be secure as a TCR.<a href="#section-10.5-10.1.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-10.5-11">To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of <code>Composite-ML-DSA.Sign (sk, M, ctx, PH)</code> cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.<a href="#section-10.5-11" class="pilcrow">¶</a></p>
-<p id="section-10.5-12">Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys <code>(mldsaPK1, tradPK1)</code> and <code>(mldsaPK2, tradPK2)</code> which do not share any key material and have them produce signatures <code>(r1, mldsaSig1, tradSig1)</code> and <code>(r2, mldsaSig2, tradSig2)</code> respectively over the same message <code>M</code>. Consider whether it is possible to construct a forgery by swapping components and presenting <code>(r, mldsaSig1, tradSig2)</code> that verifies under a forged public key <code>(mldsaPK1, tradPK2)</code>. This forgery attack is blocked by the randomizer <code>r</code> so long as <code>r1 != r2</code>.<a href="#section-10.5-12" class="pilcrow">¶</a></p>
-<p id="section-10.5-13">A failure of randomness, for example <code>r = 0</code>, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as <code>PH</code>, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and HashML-DSA have.<a href="#section-10.5-13" class="pilcrow">¶</a></p>
-<p id="section-10.5-14">Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.<a href="#section-10.5-14" class="pilcrow">¶</a></p>
+<p id="section-10.5-11">Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.<a href="#section-10.5-11" class="pilcrow">¶</a></p>
+<p id="section-10.5-12">To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of <code>Composite-ML-DSA.Sign (sk, M, ctx, PH)</code> cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.<a href="#section-10.5-12" class="pilcrow">¶</a></p>
+<p id="section-10.5-13">Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys <code>(mldsaPK1, tradPK1)</code> and <code>(mldsaPK2, tradPK2)</code> which do not share any key material and have them produce signatures <code>(r1, mldsaSig1, tradSig1)</code> and <code>(r2, mldsaSig2, tradSig2)</code> respectively over the same message <code>M</code>. Consider whether it is possible to construct a forgery by swapping components and presenting <code>(r, mldsaSig1, tradSig2)</code> that verifies under a forged public key <code>(mldsaPK1, tradPK2)</code>. This forgery attack is blocked by the randomizer <code>r</code> so long as <code>r1 != r2</code>.<a href="#section-10.5-13" class="pilcrow">¶</a></p>
+<p id="section-10.5-14">A failure of randomness, for example <code>r = 0</code>, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as <code>PH</code>, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and HashML-DSA have.<a href="#section-10.5-14" class="pilcrow">¶</a></p>
+<p id="section-10.5-15">Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.<a href="#section-10.5-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="policy-for-deprecated-and-acceptable-algorithms">
