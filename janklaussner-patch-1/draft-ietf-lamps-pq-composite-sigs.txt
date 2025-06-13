@@ -510,7 +510,7 @@ Table of Contents
         sk = SerializePrivateKey(mldsaSeed, tradSK)
         return (pk, sk)
 
-                  Figure 1: Composite KeyGen() -> (pk, sk)
+              Figure 1: Composite-ML-DSA.KeyGen() -> (pk, sk)
 
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
