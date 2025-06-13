@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 14 December 2025                                        M. Pala
+Expires: 15 December 2025                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            12 June 2025
+                                                            13 June 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 December 2025.
+   This Internet-Draft will expire on 15 December 2025.
 
 Copyright Notice
 
@@ -2133,18 +2133,15 @@ Table of Contents
    SHOULD also check both component keys independently to verify that
    the component keys have not been revoked.
 
-   Despite all these warnings, some implementers will undoubtedly still
-   re-use keys into a composite; for example because this provides a
-   convenient way to have two unrelated certificates produce a single
-   signature to fit into a protocol that can only carry a single
-   signature.  While this is still NOT RECOMMENDED, one mitigation that
-   SHOULD be applied in such scenarios is to invoke Composite-ML-
-   DSA.Sign() with a context string ctx which clearly indicates the
-   dual-key context, and prevents this signature from being validated
-   under a composite key even if it is made up of the same two component
-   keys.  For example, an application or protocol called "Foobar" that
-   wishes to do this could invoke the composite algorithm with
-   ctx="Foobar-dual-cert-sig".
+   Some application might disregard the requirements of this
+   specification to not reuse key material between single-algorithm and
+   composite contexts.  While doing so is still a violation of this
+   specification, the weakening of security from doing so can be
+   mitigated by using an appropriate ctx value, such as ctx=Foobar-dual-
+   cert-sig to indicate that this signature belongs to the Foobar
+   protocol where two certificates were used to create a single
+   composite signature.  This specification does not endorse such uses,
+   and per-application security analysis is needed.
 
 10.4.  Use of Prefix for attack mitigation
 
