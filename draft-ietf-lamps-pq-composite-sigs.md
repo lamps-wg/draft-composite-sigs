@@ -715,7 +715,7 @@ Deserialization Process:
           mldsaPK = bytes[:2592]
           tradPK  = bytes[2592:]
 
-     Note that while ML-DSA has fixed-length keys, RSA and ECDH
+     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
@@ -790,7 +790,7 @@ Deserialization Process:
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
 
-     Note that while ML-KEM has fixed-length keys, RSA and ECDH
+     Note that while ML-KEM has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
      of the overall composite key is not always possible.
 
