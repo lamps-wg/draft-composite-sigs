@@ -440,7 +440,7 @@ Table of Contents
    weaker hash function, although in practice each composite algorithm
    specifies only one allowed hash function.
 
-   Note that there are two different context stringsctx at play: the
+   Note that there are two different context strings ctx at play: the
    first is the application context that is passed in to Composite-ML-
    DSA.Sign and bound to the to-be-signed message M'.  The second is the
    ctx that is passed down into the underlying ML-DSA.Sign and here
@@ -510,7 +510,7 @@ Table of Contents
         sk = SerializePrivateKey(mldsaSeed, tradSK)
         return (pk, sk)
 
-                  Figure 1: Composite KeyGen() -> (pk, sk)
+              Figure 1: Composite-ML-DSA.KeyGen() -> (pk, sk)
 
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
