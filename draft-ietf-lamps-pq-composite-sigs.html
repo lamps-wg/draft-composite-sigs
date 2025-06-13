@@ -1311,6 +1311,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4">
                 <p id="section-toc.1-1.11.2.4.1"><a href="#section-11.4" class="auto internal xref">11.4</a>.  <a href="#name-external-pre-hashing" class="internal xref">External Pre-hashing</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4.2.1">
+                    <p id="section-toc.1-1.11.2.4.2.1.1"><a href="#section-11.4.1" class="auto internal xref">11.4.1</a>.  <a href="#name-serialization-and-deseriali" class="internal xref">Serialization and Deserialization of the PreHashToken</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -2312,11 +2317,11 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
 <p id="section-7-1">This table summarizes the OID and the component algorithms for each Composite ML-DSA algorithm.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">EDNOTE: these are prototyping OIDs to be replaced by IANA.<a href="#section-7-2" class="pilcrow">¶</a></p>
 <p id="section-7-3">&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1<a href="#section-7-3" class="pilcrow">¶</a></p>
-<span id="name-hash-ml-dsa-composite-signa"></span><div id="tab-hash-sig-algs">
+<span id="name-ml-dsa-composite-signature-"></span><div id="tab-hash-sig-algs">
 <table class="center" id="table-2">
         <caption>
 <a href="#table-2" class="selfRef">Table 2</a>:
-<a href="#name-hash-ml-dsa-composite-signa" class="selfRef">Hash ML-DSA Composite Signature Algorithms</a>
+<a href="#name-ml-dsa-composite-signature-" class="selfRef">ML-DSA Composite Signature Algorithms</a>
         </caption>
 <thead>
           <tr>
@@ -2467,11 +2472,11 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
         </h3>
 <p id="section-7.1-1">Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative <code>M'</code> in the <code>Composite-ML-DSA.Sign()</code> (<a href="#sec-hash-comp-sig-sign" class="auto internal xref">Section 4.2</a>) and <code>Composite-ML-DSA.Verify()</code> (<a href="#sec-hash-comp-sig-verify" class="auto internal xref">Section 4.3</a>). This helps protect against component signature values being removed from the composite and used out of context.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">The domain separator is simply the DER encoding of the OID. The following table shows the HEX-encoded domain separator value for each Composite ML-DSA algorithm.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<span id="name-pure-ml-dsa-composite-signa"></span><div id="tab-sig-alg-oids">
+<span id="name-ml-dsa-composite-signature-d"></span><div id="tab-sig-alg-oids">
 <table class="center" id="table-3">
           <caption>
 <a href="#table-3" class="selfRef">Table 3</a>:
-<a href="#name-pure-ml-dsa-composite-signa" class="selfRef">Pure ML-DSA Composite Signature Domain Separators</a>
+<a href="#name-ml-dsa-composite-signature-d" class="selfRef">ML-DSA Composite Signature Domain Separators</a>
           </caption>
 <thead>
             <tr>
@@ -2561,7 +2566,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
         </h3>
 <p id="section-7.2-1">In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.2-2">The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical attackers and "qubits of security" against quantum attackers.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
-<p id="section-7.2-3">SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHA3 is used with Ed25519 and Ed448 since this is already the recommended hash functions chosen for Ed25519ph and ED448ph in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <p id="section-7.2-4">In some cases, multiple hash functions are used within the same composite algorithm. Consider for example <code>id-MLDSA65-ECDSA-P256-SHA512</code> which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the <code>ecdsa-with-SHA256 with secp256r1</code> traditional component.
 While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since <code>ecdsa-with-SHA256 with secp256r1</code> is far more common than, for example, <code>ecdsa-with-SHA512 with secp256r1</code>.<a href="#section-7.2-4" class="pilcrow">¶</a></p>
 </section>
@@ -2965,9 +2970,10 @@ SignatureAlgorithmSet SIGNATURE-ALGORITHM ::= {
   sa-MLDSA65-Ed25519-SHA512 |
   sa-MLDSA87-ECDSA-P384-SHA512 |
   sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |
-  sa-MLDSA87-Ed448-SHA512 |
+  sa-MLDSA87-Ed448-SHAKE256 |
   sa-MLDSA87-RSA3072-PSS-SHA512 |
-  sa-MLDSA87-RSA4096-PSS-SHA512,
+  sa-MLDSA87-RSA4096-PSS-SHA512 |
+  sa-MLDSA87-ECDSA-P521-SHA512,
   ... }
 
 END
@@ -2983,7 +2989,7 @@ END
       <h2 id="name-iana-considerations">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-9-1">IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry <span>[<a href="#RFC7299" class="cite xref">RFC7299</a>]</span> for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the fourteen Algorithms defined within.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-1">IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry <span>[<a href="#RFC7299" class="cite xref">RFC7299</a>]</span> for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the eighteen algorithms defined within.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <div id="object-identifier-allocations">
 <section id="section-9.1">
         <h3 id="name-object-identifier-allocatio">
@@ -3014,7 +3020,7 @@ END
           <h4 id="name-object-identifier-registrat">
 <a href="#section-9.1.2" class="section-number selfRef">9.1.2. </a><a href="#name-object-identifier-registrat" class="section-name selfRef">Object Identifier Registrations</a>
           </h4>
-<p id="section-9.1.2-1">The following are to be regiseterd in "SMI Security for PKIX Algorithms":<a href="#section-9.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.1.2-1">The following are to be registered in "SMI Security for PKIX Algorithms":<a href="#section-9.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-9.1.2-2.1">
               <p id="section-9.1.2-2.1.1">id-MLDSA44-RSA2048-PSS-SHA256<a href="#section-9.1.2-2.1.1" class="pilcrow">¶</a></p>
@@ -3318,8 +3324,8 @@ END
 <a href="#section-10.3" class="section-number selfRef">10.3. </a><a href="#name-key-reuse" class="section-name selfRef">Key Reuse</a>
         </h3>
 <p id="section-10.3-1">While conformance with this specification requires that both components of a composite key MUST be freshly generated, the designers are aware that some implementers may be forced to break this rule due to operational constraints. This section documents the implications of doing so.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
-<p id="section-10.3-2">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device.However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ / Traditional hybrid setting.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
-<p id="section-10.3-3">Within the broader context of PQ / Traditional hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 10.2</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
+<p id="section-10.3-2">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ/T hybrid setting.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
+<p id="section-10.3-3">Within the broader context of PQ/T hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 10.2</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
 <p id="section-10.3-4">In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
 <p id="section-10.3-5">Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate <code>ctx</code> value, such as <code>ctx=Foobar-dual-cert-sig</code> to indicate that this signature belongs to the Foobar protocol where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.<a href="#section-10.3-5" class="pilcrow">¶</a></p>
 </section>
@@ -3354,7 +3360,7 @@ M' :=  Prefix || Domain || len(ctx) || ctx || r
 output (r, mldsaSig, tradSig)
 </pre><a href="#section-10.5-5" class="pilcrow">¶</a>
 </div>
-<p id="section-10.5-6">This follows closely the construction given in section 13.2.1 of <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> which is also referend to as a "keyed pre-hash" and is given as:<a href="#section-10.5-6" class="pilcrow">¶</a></p>
+<p id="section-10.5-6">This follows closely the construction given in section 13.2.1 of <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> which is also referred to as a "keyed pre-hash" and is given as:<a href="#section-10.5-6" class="pilcrow">¶</a></p>
 <span id="name-listing-132-from-boneh-shou"></span><div id="tab-bonehshoup-tcr">
 <figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-10.5-7.1">
@@ -3381,9 +3387,9 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
 </li>
         </ul>
 <p id="section-10.5-11">Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.<a href="#section-10.5-11" class="pilcrow">¶</a></p>
-<p id="section-10.5-12">To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of <code>Composite-ML-DSA.Sign (sk, M, ctx, PH)</code> cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.<a href="#section-10.5-12" class="pilcrow">¶</a></p>
+<p id="section-10.5-12">To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of <code>Composite-ML-DSA&lt;OID&gt;.Sign(sk, M, ctx)</code> cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.<a href="#section-10.5-12" class="pilcrow">¶</a></p>
 <p id="section-10.5-13">Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys <code>(mldsaPK1, tradPK1)</code> and <code>(mldsaPK2, tradPK2)</code> which do not share any key material and have them produce signatures <code>(r1, mldsaSig1, tradSig1)</code> and <code>(r2, mldsaSig2, tradSig2)</code> respectively over the same message <code>M</code>. Consider whether it is possible to construct a forgery by swapping components and presenting <code>(r, mldsaSig1, tradSig2)</code> that verifies under a forged public key <code>(mldsaPK1, tradPK2)</code>. This forgery attack is blocked by the randomizer <code>r</code> so long as <code>r1 != r2</code>.<a href="#section-10.5-13" class="pilcrow">¶</a></p>
-<p id="section-10.5-14">A failure of randomness, for example <code>r = 0</code>, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as <code>PH</code>, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and HashML-DSA have.<a href="#section-10.5-14" class="pilcrow">¶</a></p>
+<p id="section-10.5-14">A failure of randomness, for example <code>r = 0</code>, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as <code>PH</code>, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and ML-DSA have.<a href="#section-10.5-14" class="pilcrow">¶</a></p>
 <p id="section-10.5-15">Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.<a href="#section-10.5-15" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3502,7 +3508,9 @@ Process:
 <a href="#name-generation-of-the-external-" class="selfRef">Generation of the external pre-hash token</a>
           </figcaption></figure>
 </div>
-<div class="alignLeft art-text artwork" id="section-11.4-4">
+<span id="name-suggested-implementation-of"></span><div id="external-pre-hash-alg">
+<figure id="figure-14">
+          <div class="alignLeft art-text artwork" id="section-11.4-4.1">
 <pre>
 Composite-ML-DSA&lt;OID&gt;.Sign_ph(sk, T, ctx) -&gt; s
 
@@ -3544,55 +3552,54 @@ Process:
    2.  Identical to Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx)
        with r and ph from step 1 of this function.
- ~~~
-{: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
-
-
-### Serialization and Deserialization of the PreHashToken
-Serialization simply concatenates the two PreHashToken values r and ph together.
-
-</pre><a href="#section-11.4-4" class="pilcrow">¶</a>
-</div>
-<p id="section-11.4-5">SerializePrehashToken(r, ph) -&gt; bytes<a href="#section-11.4-5" class="pilcrow">¶</a></p>
-<p id="section-11.4-6">Explicit Inputs:<a href="#section-11.4-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-11.4-7">
-<pre>
-r   32-bytes of externally generated random data
-
-ph  The result of computing PH(r || M)
-</pre><a href="#section-11.4-7" class="pilcrow">¶</a>
-</div>
-<p id="section-11.4-8">Implicit inputs:<a href="#section-11.4-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-11.4-9">
-<pre>
-None
-</pre><a href="#section-11.4-9" class="pilcrow">¶</a>
-</div>
-<p id="section-11.4-10">Output:<a href="#section-11.4-10" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-11.4-11">
-<pre>
-bytes    The encoded pre-hash Token T
-</pre><a href="#section-11.4-11" class="pilcrow">¶</a>
-</div>
-<p id="section-11.4-12">Serialization Process:<a href="#section-11.4-12" class="pilcrow">¶</a></p>
-<span id="name-serializeprehashtokenr-ph-b"></span><div id="alg-composite-serialize-ph">
-<figure id="figure-14">
-          <div class="alignLeft art-text artwork" id="section-11.4-13.1">
-<pre>
-1.  Combine r with ph
-
-    output r || ph ~~~
 </pre>
 </div>
 <figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
-<a href="#name-serializeprehashtokenr-ph-b" class="selfRef">SerializePreHashToken(r, ph) -&gt; bytes</a>
+<a href="#name-suggested-implementation-of" class="selfRef">Suggested implementation of external pre-hashing</a>
           </figcaption></figure>
 </div>
-<p id="section-11.4-14">Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
-The following describes how to instantiate a DeserializePreHashToken(bytes) function.<a href="#section-11.4-14" class="pilcrow">¶</a></p>
-<span id="name-deserializeprehashtokenbyte"></span><div id="alg-composite-deserialize-ph">
+<div id="serialization-and-deserialization-of-the-prehashtoken">
+<section id="section-11.4.1">
+          <h4 id="name-serialization-and-deseriali">
+<a href="#section-11.4.1" class="section-number selfRef">11.4.1. </a><a href="#name-serialization-and-deseriali" class="section-name selfRef">Serialization and Deserialization of the PreHashToken</a>
+          </h4>
+<p id="section-11.4.1-1">Serialization simply concatenates the two PreHashToken values r and ph together.<a href="#section-11.4.1-1" class="pilcrow">¶</a></p>
+<span id="name-serializeprehashtokenr-ph-b"></span><div id="alg-composite-serialize-ph">
 <figure id="figure-15">
-          <div class="alignLeft art-text artwork" id="section-11.4-15.1">
+            <div class="alignLeft art-text artwork" id="section-11.4.1-2.1">
+<pre>
+ SerializePrehashToken(r, ph) -&gt; bytes
+
+ Explicit Inputs:
+
+    r   32-bytes of externally generated random data
+
+    ph  The result of computing PH(r || M)
+
+Implicit inputs:
+
+    None
+
+Output:
+
+    bytes    The encoded pre-hash Token T
+
+Serialization Process:
+
+    1.  Combine r with ph
+
+        output r || ph
+</pre>
+</div>
+<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
+<a href="#name-serializeprehashtokenr-ph-b" class="selfRef">SerializePreHashToken(r, ph) -&gt; bytes</a>
+            </figcaption></figure>
+</div>
+<p id="section-11.4.1-3">Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
+The following describes how to instantiate a DeserializePreHashToken(bytes) function.<a href="#section-11.4.1-3" class="pilcrow">¶</a></p>
+<span id="name-deserializeprehashtokenbyte"></span><div id="alg-composite-deserialize-ph">
+<figure id="figure-16">
+            <div class="alignLeft art-text artwork" id="section-11.4.1-4.1">
 <pre>
 DeserializePreHashToken(bytes) -&gt; (r, ph)
 
@@ -3625,9 +3632,11 @@ Deserialization Process:
   3. Output (r, ph)
 </pre>
 </div>
-<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
+<figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
 <a href="#name-deserializeprehashtokenbyte" class="selfRef">DeserializePreHashToken(bytes) -&gt; (r, ph)</a>
-          </figcaption></figure>
+            </figcaption></figure>
+</div>
+</section>
 </div>
 </section>
 </div>

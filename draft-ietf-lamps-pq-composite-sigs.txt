@@ -118,6 +118,7 @@ Table of Contents
      11.2.  Backwards Compatibility
      11.3.  Profiling down the number of options
      11.4.  External Pre-hashing
+       11.4.1.  Serialization and Deserialization of the PreHashToken
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -1312,7 +1313,7 @@ Table of Contents
    |                             |             |87  |                       |            |
    +-----------------------------+-------------+----+-----------------------+------------+
 
-            Table 2: Hash ML-DSA Composite Signature Algorithms
+               Table 2: ML-DSA Composite Signature Algorithms
 
    The pre-hash functions were chosen to roughly match the security
    level of the stronger component.  In the case of Ed25519 and Ed448
@@ -1377,7 +1378,7 @@ Table of Contents
    |id-MLDSA87-ECDSA-P521-SHA512           |060B6086480186FA6B50080174|
    +---------------------------------------+--------------------------+
 
-        Table 3: Pure ML-DSA Composite Signature Domain Separators
+          Table 3: ML-DSA Composite Signature Domain Separators
 
    EDNOTE: these domain separators are based on the prototyping OIDs
    assigned on the Entrust arc.  We will need to ask for IANA early
@@ -1404,9 +1405,8 @@ Table of Contents
 
    SHA2 is prioritized over SHA3 in order to facilitate implementations
    that do not have easy access to SHA3 outside of the ML-DSA module.
-   However SHA3 is used with Ed25519 and Ed448 since this is already the
-   recommended hash functions chosen for Ed25519ph and ED448ph in
-   [RFC8032].
+   However SHAKE256 is used with Ed448 since this is already the
+   recommended hash functions chosen for ED448ph in [RFC8032].
 
    In some cases, multiple hash functions are used within the same
    composite algorithm.  Consider for example id-MLDSA65-ECDSA-
@@ -1782,9 +1782,10 @@ Table of Contents
      sa-MLDSA65-Ed25519-SHA512 |
      sa-MLDSA87-ECDSA-P384-SHA512 |
      sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |
-     sa-MLDSA87-Ed448-SHA512 |
+     sa-MLDSA87-Ed448-SHAKE256 |
      sa-MLDSA87-RSA3072-PSS-SHA512 |
-     sa-MLDSA87-RSA4096-PSS-SHA512,
+     sa-MLDSA87-RSA4096-PSS-SHA512 |
+     sa-MLDSA87-ECDSA-P521-SHA512,
      ... }
 
    END
@@ -1796,7 +1797,7 @@ Table of Contents
    IANA is requested to allocate a value from the "SMI Security for PKIX
    Module Identifier" registry [RFC7299] for the included ASN.1 module,
    and allocate values from "SMI Security for PKIX Algorithms" to
-   identify the fourteen Algorithms defined within.
+   identify the eighteen algorithms defined within.
 
 9.1.  Object Identifier Allocations
 
@@ -1817,7 +1818,7 @@ Table of Contents
 
 9.1.2.  Object Identifier Registrations
 
-   The following are to be regiseterd in "SMI Security for PKIX
+   The following are to be registered in "SMI Security for PKIX
    Algorithms":
 
    *  id-MLDSA44-RSA2048-PSS-SHA256
@@ -2106,25 +2107,24 @@ Table of Contents
    When using single-algorithm cryptography, the best practice is to
    always generate fresh key material for each purpose, for example when
    renewing a certificate, or obtaining both a TLS and S/MIME
-   certificate for the same device.However, in practice key reuse in
+   certificate for the same device.  However, in practice key reuse in
    such scenarios is not always catastrophic to security and therefore
-   often tolerated.  However this reasoning does not hold in the PQ /
-   Traditional hybrid setting.
+   often tolerated.  However this reasoning does not hold in the PQ/T
+   hybrid setting.
 
-   Within the broader context of PQ / Traditional hybrids, we need to
-   consider new attack surfaces that arise due to the hybrid
-   constructions that did not exist in single-algorithm contexts.  One
-   of these is key reuse where the component keys within a hybrid are
-   also used by themselves within a single-algorithm context.  For
-   example, it might be tempting for an operator to take an already-
-   deployed RSA key pair and combine it with an ML-DSA key pair to form
-   a hybrid key pair for use in a hybrid algorithm.  Within a hybrid
-   signature context this leads to a class of attacks referred to as
-   "stripping attacks" discussed in Section 10.2 and may also open up
-   risks from further cross-protocol attacks.  Despite the weak non-
-   separability property offered by the composite signature combiner,
-   key reuse MUST be avoided to prevent the introduction of EUF-CMA
-   vulnerabilities.
+   Within the broader context of PQ/T hybrids, we need to consider new
+   attack surfaces that arise due to the hybrid constructions that did
+   not exist in single-algorithm contexts.  One of these is key reuse
+   where the component keys within a hybrid are also used by themselves
+   within a single-algorithm context.  For example, it might be tempting
+   for an operator to take an already-deployed RSA key pair and combine
+   it with an ML-DSA key pair to form a hybrid key pair for use in a
+   hybrid algorithm.  Within a hybrid signature context this leads to a
+   class of attacks referred to as "stripping attacks" discussed in
+   Section 10.2 and may also open up risks from further cross-protocol
+   attacks.  Despite the weak non-separability property offered by the
+   composite signature combiner, key reuse MUST be avoided to prevent
+   the introduction of EUF-CMA vulnerabilities.
 
    In addition, there is a further implication to key reuse regarding
    certificate revocation.  Upon receiving a new certificate enrolment
@@ -2182,7 +2182,7 @@ Table of Contents
    output (r, mldsaSig, tradSig)
 
    This follows closely the construction given in section 13.2.1 of
-   [BonehShoup] which is also referend to as a "keyed pre-hash" and is
+   [BonehShoup] which is also referred to as a "keyed pre-hash" and is
    given as:
 
    S'(sk, m) :=
@@ -2225,7 +2225,7 @@ Table of Contents
 
    To this goal, it is sufficient that the randomizer be un-predictable
    from outside the signing oracle -- i.e. the caller of Composite-ML-
-   DSA.Sign (sk, M, ctx, PH) cannot predict the randomizer value that
+   DSA<OID>.Sign(sk, M, ctx) cannot predict the randomizer value that
    will be used.  In some contexts it MAY be acceptable to use a
    randomizer which is not truly random without compromising the stated
    security properties; for example if performing batch signatures where
@@ -2255,7 +2255,7 @@ Table of Contents
    of the hash function used as PH, which is no worse than the security
    properties that Composite ML-DSA would have had without a randomizer,
    which is the same collision and second pre-image resistance
-   properties that RSA, ECDSA, and HashML-DSA have.
+   properties that RSA, ECDSA, and ML-DSA have.
 
    Introduction of the randomizer might introduce other beneficial
    security properties, but these are outside the scope of design
@@ -2476,36 +2476,37 @@ Process:
    2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
        generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
        with r and ph from step 1 of this function.
- ~~~
-{: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
+     Figure 14: Suggested implementation of external pre-hashing
 
-### Serialization and Deserialization of the PreHashToken
-Serialization simply concatenates the two PreHashToken values r and ph together.
+11.4.1.  Serialization and Deserialization of the PreHashToken
 
-   SerializePrehashToken(r, ph) -> bytes
+   Serialization simply concatenates the two PreHashToken values r and
+   ph together.
 
-   Explicit Inputs:
+    SerializePrehashToken(r, ph) -> bytes
 
-   r   32-bytes of externally generated random data
+    Explicit Inputs:
 
-   ph  The result of computing PH(r || M)
+       r   32-bytes of externally generated random data
+
+       ph  The result of computing PH(r || M)
 
    Implicit inputs:
 
-   None
+       None
 
    Output:
 
-   bytes    The encoded pre-hash Token T
+       bytes    The encoded pre-hash Token T
 
    Serialization Process:
 
-   1.  Combine r with ph
+       1.  Combine r with ph
 
-       output r || ph ~~~
+           output r || ph
 
-              Figure 14: SerializePreHashToken(r, ph) -> bytes
+              Figure 15: SerializePreHashToken(r, ph) -> bytes
 
    Deserialization reverses this process, separating r from ph, raising
    an error in the event that the input is malformed.  The following
@@ -2542,7 +2543,7 @@ Deserialization Process:
 
   3. Output (r, ph)
 
-         Figure 15: DeserializePreHashToken(bytes) -> (r, ph)
+         Figure 16: DeserializePreHashToken(bytes) -> (r, ph)
 
 12.  References
 
