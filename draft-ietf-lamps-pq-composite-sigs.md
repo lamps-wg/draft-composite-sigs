@@ -362,7 +362,7 @@ Additional discussion of the prefix can be found in {{sec-cons-prefix}}.
 
 Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, an additional DER encoded value that represents the OID of the hash function `PH`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}. And finally the OID of the hash function `PH` protects against substituting for a weaker hash function, although in practice each composite algorithm specifies only one allowed hash function.
 
-Note that there are two different context strings`ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
+Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
 
 
 # Composite ML-DSA Functions {#sec-sigs}
@@ -418,7 +418,7 @@ Key Generation Process:
      return (pk, sk)
 
 ~~~
-{: #alg-composite-keygen title="Composite KeyGen() -> (pk, sk)"}
+{: #alg-composite-keygen title="Composite-ML-DSA.KeyGen() -> (pk, sk)"}
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
 
