@@ -1323,7 +1323,7 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
 >
 >`H(r, m) := SHA256(r || m)` may still be secure as a TCR.
 
-Note that, with this construction, H is TCR if it is second preimage resistant.
+Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.
 
 To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA.Sign (sk, M, ctx, PH)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
 
