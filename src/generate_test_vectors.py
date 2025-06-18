@@ -903,6 +903,8 @@ def writeTestVectors():
                                   width=68,
                                   replace_whitespace=False,
                                   drop_whitespace=False)))
+      
+  output_artifacts_certs_r5(testVectorOutput)
 
 
 def writeDumpasn1Cfg():
