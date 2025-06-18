@@ -371,8 +371,20 @@ class MLDSA(SIG):
   def public_key_bytes(self):
     return self.pk
 
-  def private_key_bytes(self):    
-    return self.sk
+  def private_key_bytes(self):
+    """
+      We use the "seed" option, so the raw 32 bytes needs to be wrapped inside a DER OCTET STRING
+
+      CHOICE {
+        seed [0] OCTET STRING (SIZE (32)),
+        expandedKey OCTET STRING (SIZE (X)),
+        both SEQUENCE {
+          seed OCTET STRING (SIZE (32)),
+          expandedKey OCTET STRING (SIZE (X))
+        }
+      }
+    """
+    return encode(univ.OctetString(self.sk))
   
 
 class MLDSA44(MLDSA):
@@ -1039,7 +1051,6 @@ def main():
   doSig(MLDSA65_Ed25519_SHA512() )
   doSig(MLDSA87_ECDSA_P384_SHA512() )
   doSig(MLDSA87_ECDSA_brainpoolP384r1_SHA512() )
-  doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_Ed448_SHAKE256() )
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
