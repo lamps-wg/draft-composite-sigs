@@ -797,8 +797,8 @@ Table of Contents
    *  *ECDSA*: public key MUST be encoded as an ECPoint as specified in
       section 2.2 of [RFC5480], with both compressed and uncompressed
       keys supported.  For maximum interoperability, it is RECOMMENDED
-      to use uncompressed points.  A signature must be encoded as
-      specified in [RFC3279].
+      to use uncompressed points.  A signature MUST be DER encoded as an
+      Ecdsa-Sig-Value as specified in section 2.2.3 of [RFC3279].
 
    *  *EdDSA*: MUST be encoded as per section 3 of [RFC8032].
 
