@@ -48,7 +48,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 100 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 0 }
 
 pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256}
@@ -61,7 +61,7 @@ sa-MLDSA44-RSA2048-PSS-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 101 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 1 }
 
 pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256}
@@ -75,7 +75,7 @@ sa-MLDSA44-RSA2048-PKCS15-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 102 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 2 }
 
 pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512}
@@ -89,7 +89,7 @@ sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 103 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 3 }
 
 pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
@@ -103,7 +103,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 104 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 4 }
 
 pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512}
@@ -117,7 +117,7 @@ sa-MLDSA65-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 105 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 5 }
 
 pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512}
@@ -130,7 +130,7 @@ sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 106 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 6 }
 
 pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512}
@@ -144,7 +144,7 @@ sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 107 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 7 }
 
 pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512}
@@ -158,7 +158,7 @@ sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 108 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 8 }
 
 pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512}
@@ -172,7 +172,7 @@ sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 109 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 9 }
 
 pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512}
@@ -186,7 +186,7 @@ sa-MLDSA65-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 110 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 10 }
 
 pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512}
@@ -200,7 +200,7 @@ sa-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 111 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 11 }
 
 pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512}
@@ -214,7 +214,7 @@ sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 112 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 12 }
 
 pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512}
@@ -228,7 +228,7 @@ sa-MLDSA87-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 113 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 13 }
 
 pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512}
@@ -242,7 +242,7 @@ sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-Ed448-SHAKE256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 114 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 14 }
 
 pk-MLDSA87-Ed448-SHAKE256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256}
@@ -256,7 +256,7 @@ sa-MLDSA87-Ed448-SHAKE256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 117 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 15 }
 
 pk-MLDSA87-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-RSA3072-PSS-SHA512}
@@ -270,7 +270,7 @@ sa-MLDSA87-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 115 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 16 }
 
 pk-MLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512}
@@ -284,7 +284,7 @@ sa-MLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 116 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 17 }
 
 pk-MLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512}
