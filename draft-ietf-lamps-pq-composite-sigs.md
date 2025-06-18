@@ -345,7 +345,9 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 
 When constructing the to-be-signed message representative `M'`, several domain separator values are pre-pended to the message pre-hash prior to signing.
 
+~~~
 M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+~~~
 
 First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
 "CompositeAlgorithmSignatures2025" which in hex is:
