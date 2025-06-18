@@ -825,7 +825,11 @@ def formatResults(sig, s ):
   algId = rfc5208.AlgorithmIdentifier()
   algId['algorithm'] = OID_TABLE[sig.id]
   pki['privateKeyAlgorithm'] = algId
-  pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
+  # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
+  if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
+    pki['privateKey'] = univ.OctetString(univ.OctetString(sig.private_key_bytes()))
+  else:
+    pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
   jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
 
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
