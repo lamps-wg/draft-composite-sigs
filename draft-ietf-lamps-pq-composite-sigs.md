@@ -205,24 +205,16 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 --- middle
 
-
-# Changes in -05
+# Changes in -06
 
 Interop-affecting changes:
-
-* MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of M' was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131
-* The construction has been enhanced by adding a pre-hash randomizer `PH( r || M )` to help mitigate the generation of message pairs `M1, M2` such that `PH(M1) = PH(M2)` before committing to the signature, as well as to prevent mixed-key forgeries. This construction is taken directly from [BonehShoup] section 13.2.1.
-* Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.
-* ML-DSA secret keys are now only seeds.
-* Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.
-* Added id-MLDSA87-RSA3072-PSS-SHA512 as a more performant alternative to id-MLDSA87-RSA4096-PSS-SHA512.
-* Added new prototype OIDs to avoid interoperability issues with previous versions
-* Added complete test vectors.
-* Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.
+* Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
+* Added new prototype OIDs to avoid interoperability issues with previous versions.
+* clarified use of SHAKE256 with 64 byte output.
 
 Editorial changes:
 
-* Since the serialization is now non-DER, drastically reduced the ASN.1-based text.
+* Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
 
 Still to do in a future version:
 
@@ -351,7 +343,11 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 
 ## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
 
-When constructing the to-be-signed message representative `M'`, several domain separator values are  pre-pended to the message pre-hash prior to signing.
+When constructing the to-be-signed message representative `M'`, several domain separator values are pre-pended to the message pre-hash prior to signing.
+
+~~~
+M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+~~~
 
 First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
 "CompositeAlgorithmSignatures2025" which in hex is:
@@ -360,7 +356,7 @@ First a fixed prefix string is pre-pended which is the byte encoding of the ASCI
 
 Additional discussion of the prefix can be found in {{sec-cons-prefix}}.
 
-Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, an additional DER encoded value that represents the OID of the hash function `PH`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}. And finally the OID of the hash function `PH` protects against substituting for a weaker hash function, although in practice each composite algorithm specifies only one allowed hash function.
+Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}.
 
 Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
 
@@ -488,11 +484,11 @@ Signature Generation Process:
 
   2. Compute the Message representative M'.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-     Randomize the pre-hash.
+     Randomize the message representative
 
         r = Random(32)
         M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                            || PH( r || M )
+                                            || PH( M )
 
   3. Separate the private key into component keys
      and re-generate the ML-DSA key from seed.
@@ -596,7 +592,7 @@ Signature Verification Process:
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || r
-                                        || PH( r || M )
+                                        || PH( M )
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -1014,32 +1010,32 @@ This table summarizes the OID and the component algorithms for each Composite ML
 
 EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1
+&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.9.1
 
 
 | Composite Signature Algorithm | OID | ML-DSA | Trad | Pre-Hash |
 | ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.100   | ML-DSA-44 | RSASSA-PSS with SHA256                 | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.101   | ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
-| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.102   | ML-DSA-44 | Ed25519                                | SHA512 |
-| id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.103   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.104   | ML-DSA-65 | RSASSA-PSS with SHA256                 | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.105   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.106   | ML-DSA-65 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.107   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.108   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
-| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.109   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.110   | ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                                | SHA512 |
-| id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                                  | SHAKE256/512 |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
+| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.0   | ML-DSA-44 | RSASSA-PSS with SHA256                 | SHA256 |
+| id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.1   | ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
+| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.2   | ML-DSA-44 | Ed25519                                | SHA512 |
+| id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.3   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
+| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.4   | ML-DSA-65 | RSASSA-PSS with SHA256                 | SHA512 |
+| id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.5   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.6   | ML-DSA-65 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.7   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
+| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.8   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
+| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.9   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.10   | ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
+| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.11   | ML-DSA-65 | Ed25519                                | SHA512 |
+| id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.12   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
+| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.13   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 
-The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
+Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1286,50 +1282,13 @@ Some application might disregard the requirements of this specification to not r
 
 The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
 
-## Implications of pre-hash randomizer {#sec-cons-randomizer}
+## Implications of signature randomizer {#sec-cons-randomizer}
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
 
-To combat potential collision weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:
+Composite ML-DSA introduces a 32-byte randomizer into the signature representative M'.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
-    PH( r || M )
-
-as part of the overall construction of the to-be-signed message:
-
-    r = Random(32)
-    M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                        || PH( r || M )
-    ...
-    output (r, mldsaSig, tradSig)
-
-This follows closely the construction given in section 13.2.1 of [BonehShoup] which is also referred to as a "keyed pre-hash" and is given as:
-
-~~~
-S'(sk, m) :=
-  r <-R- K_h
-  h <- H(r, m)
-  s <- S(sk, (r,h))
-  output (s, r)
-~~~
-{: #tab-bonehshoup-tcr title="Listing 13.2 from Boneh-Shoup showing how to extend a signature scheme with a Target Collision Resistant hash"}
-
-Randomizing the pre-hash strongly protects against pre-computed collision attacks where an attacker pre-computes a message pair `M1, M2` such that `PH(M1) = PH(M2)` and submits one to the signing oracle, thus obtaining a valid signature for both. However, collision-finding pre-computation cannot be performed against `PH(r || M1) = PH(r || M2)` when `r` is unknown to the attacker in advance.  We also consider signature forgeries via finding a second pre-image after the signature has been created honestly.  In this case, the attack is only possible if the attacker can perform what [BonehShoup] calls a target collision attack where the attacker takes the honestly-produced signature `s = (r, mldsaSig, tradSig)` over the message `M` and finds a second message `M2` such that `PH(r || M) = PH(r || M2)` for the same randomizer `r`.
-
-[BonehShoup] defines Target Collision Resistance (TCR) as a security notion that applies to keyed hash functions and notes in section 13.2.1:
-
-> The benefit of the TCR construction is that security only relies on H being TCR, which is a
-much weaker property than collision resistance and hence more likely to hold for H. For example,
-the function SHA256 may eventually be broken as a collision-resistant hash, but the function
->
->`H(r, m) := SHA256(r || m)` may still be secure as a TCR.
-
-Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.
-
-To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of `Composite-ML-DSA<OID>.Sign(sk, M, ctx)` cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.
-
-Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
-
-A failure of randomness, for example `r = 0`, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as `PH`, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and ML-DSA have.
+A failure of randomness, for example `r = 0`, or a fixed value of 'r' effectively reduces r to a prefix that doesn't add value, but it is no worse than the security properties that Composite ML-DSA would have had without the randomizer.
 
 Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.
 
@@ -1357,7 +1316,7 @@ Implementers seeking FIPS certification of a composite signature algorithm where
 
 The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(seed)` which might not be available in a cryptographic module running in FIPS-mode, but {{sec-keygen}} is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.
 
-The pre-hash randomizer `r` requires the composite implementation to have access to a cryptographic random number generator. However, as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
+The signature randomizer `r` requires the composite implementation to have access to a cryptographic random number generator. However, as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
 
 The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.
 
@@ -1394,12 +1353,12 @@ In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus imp
 
 ## External Pre-hashing {#impl-cons-external-ph}
 
-Composite ML-DSA uses a randomized pre-hash `PH( r || m )` to construct the to-be-signed message representative `M'`. Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
+Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
 
 Below is a suggested implementation for splitting the pre-hashing and signing between two parties.
 
 ~~~
-Composite-ML-DSA<OID>.PrehashToken(M) ->  T
+Composite-ML-DSA<OID>.Prehash(M) ->  ph
 
 Explicit inputs:
 
@@ -1411,37 +1370,30 @@ Implicit inputs mapped from <OID>:
 
 Output:
 
-   T     The pre-hash token which equals r || PH (r || M)
+   ph     The pre-hash which equals PH ( M )
 
 Process:
 
-1. Compute the random 32-byte value r:
 
-   r = Random(32)
-
-2. Compute the Prehash of the message using the Hash function
+1. Compute the Prehash of the message using the Hash function
     defined by PH
 
-   ph = PH (r || M)
+   ph = PH ( M )
 
-3. Generate the pre-hash token T:
-
-   T = SerializePrehashToken(r,ph)
-
-4. Output T
+2. Output ph
 ~~~
-{: #external-pre-hash-token title="Generation of the external pre-hash token"}
+{: #external-pre-hash title="Generation of the external pre-hash"}
 
 
 ~~~
-Composite-ML-DSA<OID>.Sign_ph(sk, T, ctx) -> s
+Composite-ML-DSA<OID>.Sign_ph(sk, ph, ctx) -> s
 
 Explicit inputs:
 
   sk    Composite private key consisting of signing private keys for
         each component.
 
-  T     The pre-hash token used to sign the message
+  ph     The pre-hash digest over the message
 
  ctx    The Message context string used in the composite signature
         combiner, which defaults to the empty string.
@@ -1467,81 +1419,11 @@ Implicit inputs mapped from <OID>:
 
 Process:
 
-   1.  separate r and ph from T:
-
-       (r, ph) = DeserializePrehashToken(T)
-
-   2.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
-       generated r and PH(r || M) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
-       with r and ph from step 1 of this function.
+   1.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
+       generated PH( M ) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
+       with ph which is input into this function.
 ~~~
 {: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
-
-
-### Serialization and Deserialization of the PreHashToken
-Serialization simply concatenates the two PreHashToken values r and ph together.
-
-~~~
- SerializePrehashToken(r, ph) -> bytes
-
- Explicit Inputs:
-
-    r   32-bytes of externally generated random data
-
-    ph  The result of computing PH(r || M)
-
-Implicit inputs:
-
-    None
-
-Output:
-
-    bytes    The encoded pre-hash Token T
-
-Serialization Process:
-
-    1.  Combine r with ph
-
-        output r || ph
-~~~
-{: #alg-composite-serialize-ph title="SerializePreHashToken(r, ph) -> bytes"}
-
-
-Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
-The following describes how to instantiate a DeserializePreHashToken(bytes) function.
-
-~~~
-DeserializePreHashToken(bytes) -> (r, ph)
-
-Explicit inputs:
-
-  bytes   An encoded prehash token
-
-Implicit inputs:
-
-  None
-
-Output:
-
-  r       The 32 byte signature randomizer.
-
-  ph      The pre-hashed value representating the has of the randomizer
-          concatenated with the Message which is 'PH(r || M)'.
-
-Deserialization Process:
-
-  1. Parse the randomizer r which is the first 32 bytes.
-
-     r = bytes[:32]
-
-  2. Parse the Prehash. The length of the Prehash is based on the size of the
-     pre-hash algorithm for the specificed composite algorithm.
-
-     ph = bytes[32:]
-
-  3. Output (r, ph)
-~~~
-{: #alg-composite-deserialize-ph title="DeserializePreHashToken(bytes) -> (r, ph)"}
 
 
 <!-- End of Implementation Considerations section -->
