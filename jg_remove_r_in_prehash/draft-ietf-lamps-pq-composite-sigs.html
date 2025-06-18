@@ -1170,7 +1170,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         </h2>
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
-            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-05" class="internal xref">Changes in -05</a></p>
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-06" class="internal xref">Changes in -06</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
@@ -1290,7 +1290,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="auto internal xref">10.4</a>.  <a href="#name-use-of-prefix-for-attack-mi" class="internal xref">Use of Prefix for attack mitigation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
-                <p id="section-toc.1-1.10.2.5.1"><a href="#section-10.5" class="auto internal xref">10.5</a>.  <a href="#name-implications-of-pre-hash-ra" class="internal xref">Implications of pre-hash randomizer</a></p>
+                <p id="section-toc.1-1.10.2.5.1"><a href="#section-10.5" class="auto internal xref">10.5</a>.  <a href="#name-implications-of-signature-r" class="internal xref">Implications of signature randomizer</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.6">
                 <p id="section-toc.1-1.10.2.6.1"><a href="#section-10.6" class="auto internal xref">10.6</a>.  <a href="#name-policy-for-deprecated-and-a" class="internal xref">Policy for Deprecated and Acceptable Algorithms</a></p>
@@ -1311,11 +1311,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4">
                 <p id="section-toc.1-1.11.2.4.1"><a href="#section-11.4" class="auto internal xref">11.4</a>.  <a href="#name-external-pre-hashing" class="internal xref">External Pre-hashing</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4.2.1">
-                    <p id="section-toc.1-1.11.2.4.2.1.1"><a href="#section-11.4.1" class="auto internal xref">11.4.1</a>.  <a href="#name-serialization-and-deseriali" class="internal xref">Serialization and Deserialization of the PreHashToken</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -1358,51 +1353,26 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </nav>
 </section>
 </div>
-<div id="changes-in-05">
+<div id="changes-in-06">
 <section id="section-1">
-      <h2 id="name-changes-in-05">
-<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-05" class="section-name selfRef">Changes in -05</a>
+      <h2 id="name-changes-in-06">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-06" class="section-name selfRef">Changes in -06</a>
       </h2>
-<p id="section-1-1">Interop-affecting changes:<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Interop-affecting changes:
+* Removed the pre-hash randomizer <code>PH(r || M)</code> and replaced it with <code>PH(M)</code>.   The Message representative is now
+  * M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+* Added new prototype OIDs to avoid interoperability issues with previous versions
+* clarified use of SHAKE256 with 64 byte output.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Editorial changes:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-2.1">
-          <p id="section-1-2.1.1">MAJOR CHANGE: Authors decided to remove all "pure" composites and leave only the pre-hashed variants (which were renamed to simply be "Composite" instead of "HashComposite"). The core construction of M' was not modified, simply re-named. This results in a ~50% reduction in the length of the draft since we removed ~50% of the content. This is the result of long design discussions, some of which is captured in https://github.com/lamps-wg/draft-composite-sigs/issues/131<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.2">
-          <p id="section-1-2.2.1">The construction has been enhanced by adding a pre-hash randomizer <code>PH( r || M )</code> to help mitigate the generation of message pairs <code>M1, M2</code> such that <code>PH(M1) = PH(M2)</code> before committing to the signature, as well as to prevent mixed-key forgeries. This construction is taken directly from <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> section 13.2.1.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.3">
-          <p id="section-1-2.3.1">Adjusted the choice of pre-hash function for Ed448 to SHAKE256/64 to match the hash functions used in ED448ph in RFC8032.<a href="#section-1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.4">
-          <p id="section-1-2.4.1">ML-DSA secret keys are now only seeds.<a href="#section-1-2.4.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.5">
-          <p id="section-1-2.5.1">Since all ML-DSA keys and signatures are now fixed-length, dropped the length-tagged encoding.<a href="#section-1-2.5.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.6">
-          <p id="section-1-2.6.1">Added id-MLDSA87-RSA3072-PSS-SHA512 as a more performant alternative to id-MLDSA87-RSA4096-PSS-SHA512.<a href="#section-1-2.6.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.7">
-          <p id="section-1-2.7.1">Added new prototype OIDs to avoid interoperability issues with previous versions<a href="#section-1-2.7.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.8">
-          <p id="section-1-2.8.1">Added complete test vectors.<a href="#section-1-2.8.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-2.9">
-          <p id="section-1-2.9.1">Removed the "Use in CMS" section so that we can get this document across the finish line, and defer CMS-related debates to a separate document.<a href="#section-1-2.9.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1-3.1">
+          <p id="section-1-3.1.1">Removed the extra test vector for <code>MLDSA87-RSA4096-PSS-SHA512</code><a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-3">Editorial changes:<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Still to do in a future version:<a href="#section-1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">Since the serialization is now non-DER, drastically reduced the ASN.1-based text.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-1-5">Still to do in a future version:<a href="#section-1-5" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-6.1">
-          <p id="section-1-6.1.1">Nothing. Authors believe this version to be complete.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1-5.1">
+          <p id="section-1-5.1.1">Nothing. Authors believe this version to be complete.<a href="#section-1-5.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1698,11 +1668,11 @@ Signature Generation Process:
 
   2. Compute the Message representative M'.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-     Randomize the pre-hash.
+     Randomize the message representative
 
         r = Random(32)
         M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                            || PH( r || M )
+                                            || PH( M )
 
   3. Separate the private key into component keys
      and re-generate the ML-DSA key from seed.
@@ -1812,7 +1782,7 @@ Signature Verification Process:
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
       M' = Prefix || Domain || len(ctx) || ctx || r
-                                        || PH( r || M )
+                                        || PH( M )
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -2436,7 +2406,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
             <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.114</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">Ed448</td>
-            <td class="text-left" rowspan="1" colspan="1">SHAKE256/512</td>
+            <td class="text-left" rowspan="1" colspan="1">SHAKE256*</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA3072-PSS-SHA512</td>
@@ -2462,7 +2432,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
         </tbody>
       </table>
 </div>
-<p id="section-7-5">The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-5">Note*: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-5" class="pilcrow">¶</a></p>
 <p id="section-7-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <p id="section-7-7">As the number of algorithms can be daunting to implementers, see <a href="#sec-impl-profile" class="auto internal xref">Section 11.3</a> for a discussion of choosing a subset to support.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <div id="sec-domsep-values">
@@ -3340,57 +3310,13 @@ END
 </div>
 <div id="sec-cons-randomizer">
 <section id="section-10.5">
-        <h3 id="name-implications-of-pre-hash-ra">
-<a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-implications-of-pre-hash-ra" class="section-name selfRef">Implications of pre-hash randomizer</a>
+        <h3 id="name-implications-of-signature-r">
+<a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-implications-of-signature-r" class="section-name selfRef">Implications of signature randomizer</a>
         </h3>
 <p id="section-10.5-1">The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message <code>M</code> and to allow for optimizations in cases such as signing the same message digest with multiple different keys.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
-<p id="section-10.5-2">To combat potential collision weaknesses introduced by the pre-hash, Composite ML-DSA introduces a 32-byte randomizer into the pre-hash:<a href="#section-10.5-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-10.5-3">
-<pre>
-PH( r || M )
-</pre><a href="#section-10.5-3" class="pilcrow">¶</a>
-</div>
-<p id="section-10.5-4">as part of the overall construction of the to-be-signed message:<a href="#section-10.5-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-10.5-5">
-<pre>
-r = Random(32)
-M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                    || PH( r || M )
-...
-output (r, mldsaSig, tradSig)
-</pre><a href="#section-10.5-5" class="pilcrow">¶</a>
-</div>
-<p id="section-10.5-6">This follows closely the construction given in section 13.2.1 of <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> which is also referred to as a "keyed pre-hash" and is given as:<a href="#section-10.5-6" class="pilcrow">¶</a></p>
-<span id="name-listing-132-from-boneh-shou"></span><div id="tab-bonehshoup-tcr">
-<figure id="figure-12">
-          <div class="alignLeft art-text artwork" id="section-10.5-7.1">
-<pre>
-S'(sk, m) :=
-  r &lt;-R- K_h
-  h &lt;- H(r, m)
-  s &lt;- S(sk, (r,h))
-  output (s, r)
-</pre>
-</div>
-<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
-<a href="#name-listing-132-from-boneh-shou" class="selfRef">Listing 13.2 from Boneh-Shoup showing how to extend a signature scheme with a Target Collision Resistant hash</a>
-          </figcaption></figure>
-</div>
-<p id="section-10.5-8">Randomizing the pre-hash strongly protects against pre-computed collision attacks where an attacker pre-computes a message pair <code>M1, M2</code> such that <code>PH(M1) = PH(M2)</code> and submits one to the signing oracle, thus obtaining a valid signature for both. However, collision-finding pre-computation cannot be performed against <code>PH(r || M1) = PH(r || M2)</code> when <code>r</code> is unknown to the attacker in advance.  We also consider signature forgeries via finding a second pre-image after the signature has been created honestly.  In this case, the attack is only possible if the attacker can perform what <span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> calls a target collision attack where the attacker takes the honestly-produced signature <code>s = (r, mldsaSig, tradSig)</code> over the message <code>M</code> and finds a second message <code>M2</code> such that <code>PH(r || M) = PH(r || M2)</code> for the same randomizer <code>r</code>.<a href="#section-10.5-8" class="pilcrow">¶</a></p>
-<p id="section-10.5-9"><span>[<a href="#BonehShoup" class="cite xref">BonehShoup</a>]</span> defines Target Collision Resistance (TCR) as a security notion that applies to keyed hash functions and notes in section 13.2.1:<a href="#section-10.5-9" class="pilcrow">¶</a></p>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-10.5-10.1">
-            <p id="section-10.5-10.1.1">The benefit of the TCR construction is that security only relies on H being TCR, which is a
-much weaker property than collision resistance and hence more likely to hold for H. For example,
-the function SHA256 may eventually be broken as a collision-resistant hash, but the function<a href="#section-10.5-10.1.1" class="pilcrow">¶</a></p>
-<p id="section-10.5-10.1.2"><code>H(r, m) := SHA256(r || m)</code> may still be secure as a TCR.<a href="#section-10.5-10.1.2" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-10.5-11">Note that, with this construction, H is TCR if the hash function (SHA256 in this example) is second preimage resistant.<a href="#section-10.5-11" class="pilcrow">¶</a></p>
-<p id="section-10.5-12">To this goal, it is sufficient that the randomizer be un-predictable from outside the signing oracle --  i.e. the caller of <code>Composite-ML-DSA&lt;OID&gt;.Sign(sk, M, ctx)</code> cannot predict the randomizer value that will be used. In some contexts it MAY be acceptable to use a randomizer which is not truly random without compromising the stated security properties; for example if performing batch signatures where the same message is signed with multiple keys, it MAY be acceptable to pre-hash the message once and then sign that digest multiple times -- i.e. using the same randomizer across multiple signatures. Provided that the batch signature is performed as an atomic signing oracle and an attacker is never able to see the randomizer that will be used in a future signature then this ought to satisfy the stated security requirements, but detailed security analysis of such a modification of the Composite ML-DSA signing routine MUST be performed on a per-application basis.<a href="#section-10.5-12" class="pilcrow">¶</a></p>
-<p id="section-10.5-13">Another benefit to the randomizer is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys <code>(mldsaPK1, tradPK1)</code> and <code>(mldsaPK2, tradPK2)</code> which do not share any key material and have them produce signatures <code>(r1, mldsaSig1, tradSig1)</code> and <code>(r2, mldsaSig2, tradSig2)</code> respectively over the same message <code>M</code>. Consider whether it is possible to construct a forgery by swapping components and presenting <code>(r, mldsaSig1, tradSig2)</code> that verifies under a forged public key <code>(mldsaPK1, tradPK2)</code>. This forgery attack is blocked by the randomizer <code>r</code> so long as <code>r1 != r2</code>.<a href="#section-10.5-13" class="pilcrow">¶</a></p>
-<p id="section-10.5-14">A failure of randomness, for example <code>r = 0</code>, reverts the overall collision and second pre-image resistance of Composite ML-DSA to that of the hash function used as <code>PH</code>, which is no worse than the security properties that Composite ML-DSA would have had without a randomizer, which is the same collision and second pre-image resistance properties that RSA, ECDSA, and ML-DSA have.<a href="#section-10.5-14" class="pilcrow">¶</a></p>
-<p id="section-10.5-15">Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.<a href="#section-10.5-15" class="pilcrow">¶</a></p>
+<p id="section-10.5-2">Composite ML-DSA introduces a 32-byte randomizer into the signature representative M'.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys <code>(mldsaPK1, tradPK1)</code> and <code>(mldsaPK2, tradPK2)</code> which do not share any key material and have them produce signatures <code>(r1, mldsaSig1, tradSig1)</code> and <code>(r2, mldsaSig2, tradSig2)</code> respectively over the same message <code>M</code>. Consider whether it is possible to construct a forgery by swapping components and presenting <code>(r, mldsaSig1, tradSig2)</code> that verifies under a forged public key <code>(mldsaPK1, tradPK2)</code>. This forgery attack is blocked by the randomizer <code>r</code> so long as <code>r1 != r2</code>.<a href="#section-10.5-2" class="pilcrow">¶</a></p>
+<p id="section-10.5-3">A failure of randomness, for example <code>r = 0</code>, or a fixed value of 'r' effectively reduces r to a prefix that doesn't add value, but it is no worse than the security properties that Composite ML-DSA would have had without the randomizer.<a href="#section-10.5-3" class="pilcrow">¶</a></p>
+<p id="section-10.5-4">Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.<a href="#section-10.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="policy-for-deprecated-and-acceptable-algorithms">
@@ -3419,7 +3345,7 @@ the function SHA256 may eventually be broken as a collision-resistant hash, but 
 <p id="section-11.1-3">One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
 <p id="section-11.1-4">Implementers seeking FIPS certification of a composite signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#section-11.1-4" class="pilcrow">¶</a></p>
 <p id="section-11.1-5">The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the <code>KeyGen</code> defined in <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> invokes <code>ML-DSA.KeyGen(seed)</code> which might not be available in a cryptographic module running in FIPS-mode, but <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.<a href="#section-11.1-5" class="pilcrow">¶</a></p>
-<p id="section-11.1-6">The pre-hash randomizer <code>r</code> requires the composite implementation to have access to a cryptographic random number generator. However, as noted in <a href="#sec-cons-randomizer" class="auto internal xref">Section 10.5</a>, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
+<p id="section-11.1-6">The signature randomizer <code>r</code> requires the composite implementation to have access to a cryptographic random number generator. However, as noted in <a href="#sec-cons-randomizer" class="auto internal xref">Section 10.5</a>, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
 <p id="section-11.1-7">The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.<a href="#section-11.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3466,13 +3392,13 @@ id-MLDSA87-ECDSA-P384-SHA512
         <h3 id="name-external-pre-hashing">
 <a href="#section-11.4" class="section-number selfRef">11.4. </a><a href="#name-external-pre-hashing" class="section-name selfRef">External Pre-hashing</a>
         </h3>
-<p id="section-11.4-1">Composite ML-DSA uses a randomized pre-hash <code>PH( r || m )</code> to construct the to-be-signed message representative <code>M'</code>. Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
+<p id="section-11.4-1">Implementers MAY externalize the pre-hash computation outside the module that computes <code>Composite-ML-DSA.Sign()</code> in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the <code>Composite-ML-DSA.Sign()</code> algorithm is considered compliant to this specification so long as it produces the same output and error conditions.<a href="#section-11.4-1" class="pilcrow">¶</a></p>
 <p id="section-11.4-2">Below is a suggested implementation for splitting the pre-hashing and signing between two parties.<a href="#section-11.4-2" class="pilcrow">¶</a></p>
-<span id="name-generation-of-the-external-"></span><div id="external-pre-hash-token">
-<figure id="figure-13">
+<span id="name-generation-of-the-external-"></span><div id="external-pre-hash">
+<figure id="figure-12">
           <div class="alignLeft art-text artwork" id="section-11.4-3.1">
 <pre>
-Composite-ML-DSA&lt;OID&gt;.PrehashToken(M) -&gt;  T
+Composite-ML-DSA&lt;OID&gt;.Prehash(M) -&gt;  ph
 
 Explicit inputs:
 
@@ -3484,42 +3410,35 @@ Implicit inputs mapped from &lt;OID&gt;:
 
 Output:
 
-   T     The pre-hash token which equals r || PH (r || M)
+   ph     The pre-hash which equals PH ( M )
 
 Process:
 
-1. Compute the random 32-byte value r:
 
-   r = Random(32)
-
-2. Compute the Prehash of the message using the Hash function
+1. Compute the Prehash of the message using the Hash function
     defined by PH
 
-   ph = PH (r || M)
+   ph = PH ( M )
 
-3. Generate the pre-hash token T:
-
-   T = SerializePrehashToken(r,ph)
-
-4. Output T
+2. Output ph
 </pre>
 </div>
-<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
-<a href="#name-generation-of-the-external-" class="selfRef">Generation of the external pre-hash token</a>
+<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
+<a href="#name-generation-of-the-external-" class="selfRef">Generation of the external pre-hash</a>
           </figcaption></figure>
 </div>
 <span id="name-suggested-implementation-of"></span><div id="external-pre-hash-alg">
-<figure id="figure-14">
+<figure id="figure-13">
           <div class="alignLeft art-text artwork" id="section-11.4-4.1">
 <pre>
-Composite-ML-DSA&lt;OID&gt;.Sign_ph(sk, T, ctx) -&gt; s
+Composite-ML-DSA&lt;OID&gt;.Sign_ph(sk, ph, ctx) -&gt; s
 
 Explicit inputs:
 
   sk    Composite private key consisting of signing private keys for
         each component.
 
-  T     The pre-hash token used to sign the message
+  ph     The pre-hash digest over the message
 
  ctx    The Message context string used in the composite signature
         combiner, which defaults to the empty string.
@@ -3545,98 +3464,14 @@ Implicit inputs mapped from &lt;OID&gt;:
 
 Process:
 
-   1.  separate r and ph from T:
-
-       (r, ph) = DeserializePrehashToken(T)
-
-   2.  Identical to Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx) but replace the internally
-       generated r and PH(r || M) from step 2 of Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx)
-       with r and ph from step 1 of this function.
+   1.  Identical to Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx) but replace the internally
+       generated PH( M ) from step 2 of Composite-ML-DSA&lt;OID&gt;.Sign (sk, M, ctx)
+       with ph which is input into this function.
 </pre>
 </div>
-<figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
+<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
 <a href="#name-suggested-implementation-of" class="selfRef">Suggested implementation of external pre-hashing</a>
           </figcaption></figure>
-</div>
-<div id="serialization-and-deserialization-of-the-prehashtoken">
-<section id="section-11.4.1">
-          <h4 id="name-serialization-and-deseriali">
-<a href="#section-11.4.1" class="section-number selfRef">11.4.1. </a><a href="#name-serialization-and-deseriali" class="section-name selfRef">Serialization and Deserialization of the PreHashToken</a>
-          </h4>
-<p id="section-11.4.1-1">Serialization simply concatenates the two PreHashToken values r and ph together.<a href="#section-11.4.1-1" class="pilcrow">¶</a></p>
-<span id="name-serializeprehashtokenr-ph-b"></span><div id="alg-composite-serialize-ph">
-<figure id="figure-15">
-            <div class="alignLeft art-text artwork" id="section-11.4.1-2.1">
-<pre>
- SerializePrehashToken(r, ph) -&gt; bytes
-
- Explicit Inputs:
-
-    r   32-bytes of externally generated random data
-
-    ph  The result of computing PH(r || M)
-
-Implicit inputs:
-
-    None
-
-Output:
-
-    bytes    The encoded pre-hash Token T
-
-Serialization Process:
-
-    1.  Combine r with ph
-
-        output r || ph
-</pre>
-</div>
-<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
-<a href="#name-serializeprehashtokenr-ph-b" class="selfRef">SerializePreHashToken(r, ph) -&gt; bytes</a>
-            </figcaption></figure>
-</div>
-<p id="section-11.4.1-3">Deserialization reverses this process, separating r from ph, raising an error in the event that the input is malformed.
-The following describes how to instantiate a DeserializePreHashToken(bytes) function.<a href="#section-11.4.1-3" class="pilcrow">¶</a></p>
-<span id="name-deserializeprehashtokenbyte"></span><div id="alg-composite-deserialize-ph">
-<figure id="figure-16">
-            <div class="alignLeft art-text artwork" id="section-11.4.1-4.1">
-<pre>
-DeserializePreHashToken(bytes) -&gt; (r, ph)
-
-Explicit inputs:
-
-  bytes   An encoded prehash token
-
-Implicit inputs:
-
-  None
-
-Output:
-
-  r       The 32 byte signature randomizer.
-
-  ph      The pre-hashed value representating the has of the randomizer
-          concatenated with the Message which is 'PH(r || M)'.
-
-Deserialization Process:
-
-  1. Parse the randomizer r which is the first 32 bytes.
-
-     r = bytes[:32]
-
-  2. Parse the Prehash. The length of the Prehash is based on the size of the
-     pre-hash algorithm for the specificed composite algorithm.
-
-     ph = bytes[32:]
-
-  3. Output (r, ph)
-</pre>
-</div>
-<figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
-<a href="#name-deserializeprehashtokenbyte" class="selfRef">DeserializePreHashToken(bytes) -&gt; (r, ph)</a>
-            </figcaption></figure>
-</div>
-</section>
 </div>
 </section>
 </div>
