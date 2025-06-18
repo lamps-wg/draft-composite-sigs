@@ -810,7 +810,14 @@ def formatResults(sig, s ):
 
   cert = signSigCert(sig)
   jsonTest['x5c'] = base64.b64encode(cert.public_bytes(encoding=serialization.Encoding.DER)).decode('ascii')
-  jsonTest['sk'] = base64.b64encode(sig.private_key_bytes()).decode('ascii')
+
+  # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
+  if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
+    jsonTest['sk'] = base64.b64encode( 
+                  encode(univ.OctetString(sig.private_key_bytes()))
+                                                      ).decode('ascii')
+  else:
+    jsonTest['sk'] = base64.b64encode(sig.private_key_bytes()).decode('ascii')
 
     # Construct PKCS#8
   pki = rfc5208.PrivateKeyInfo()
@@ -818,7 +825,11 @@ def formatResults(sig, s ):
   algId = rfc5208.AlgorithmIdentifier()
   algId['algorithm'] = OID_TABLE[sig.id]
   pki['privateKeyAlgorithm'] = algId
-  pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
+  # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
+  if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
+    pki['privateKey'] = univ.OctetString(univ.OctetString(sig.private_key_bytes()))
+  else:
+    pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
   jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
 
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
@@ -1039,7 +1050,6 @@ def main():
   doSig(MLDSA65_Ed25519_SHA512() )
   doSig(MLDSA87_ECDSA_P384_SHA512() )
   doSig(MLDSA87_ECDSA_brainpoolP384r1_SHA512() )
-  doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_Ed448_SHAKE256() )
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
