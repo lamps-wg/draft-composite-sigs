@@ -134,14 +134,14 @@ Table of Contents
 1.  Changes in -06
 
    Interop-affecting changes: * Removed the pre-hash randomizer PH(r ||
-   M) and replaced it with PH(M).  The Message representative is now *
-   M' := Prefix || Domain || len(ctx) || ctx || r || PH( M ) * Added new
+   M) and replaced it with PH(M).  The Message representative is now M'
+   := Prefix || Domain || len(ctx) || ctx || r || PH( M ). * Added new
    prototype OIDs to avoid interoperability issues with previous
-   versions * clarified use of SHAKE256 with 64 byte output.
+   versions. * clarified use of SHAKE256 with 64 byte output.
 
    Editorial changes:
 
-   *  Removed the extra test vector for MLDSA87-RSA4096-PSS-SHA512
+   *  Removed the extra test vector for MLDSA87-RSA4096-PSS-SHA512.
 
    Still to do in a future version:
 
@@ -387,6 +387,8 @@ Table of Contents
    domain separator values are pre-pended to the message pre-hash prior
    to signing.
 
+   M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+
    First a fixed prefix string is pre-pended which is the byte encoding
    of the ASCII string "CompositeAlgorithmSignatures2025" which in hex
    is:
@@ -398,15 +400,11 @@ Table of Contents
    Next, the Domain separator defined in Section 7.1 which is the DER
    encoding of the OID of the specific composite algorithm is
    concatenated with the length of the context in bytes, the context,
-   the randomizer r, an additional DER encoded value that represents the
-   OID of the hash function PH, and finally the hash of the message to
-   be signed.  The Domain separator serves to bind the signature to the
-   specific composite algorithm used.  The context string allows for
-   applications to bind the signature to some application context.  The
-   randomizer is described in detail in Section 3.1.  And finally the
-   OID of the hash function PH protects against substituting for a
-   weaker hash function, although in practice each composite algorithm
-   specifies only one allowed hash function.
+   the randomizer r, and finally the hash of the message to be signed.
+   The Domain separator serves to bind the signature to the specific
+   composite algorithm used.  The context string allows for applications
+   to bind the signature to some application context.  The randomizer is
+   described in detail in Section 3.1.
 
    Note that there are two different context strings ctx at play: the
    first is the application context that is passed in to Composite-ML-
@@ -1201,88 +1199,88 @@ Table of Contents
 
    EDNOTE: these are prototyping OIDs to be replaced by IANA.
 
-   <CompSig> is equal to 2.16.840.1.114027.80.8.1
+   <CompSig> is equal to 2.16.840.1.114027.80.9.1
 
-   +=============================+=============+====+=======================+=========+
-   |Composite Signature Algorithm|OID          |ML- |Trad                   |Pre-Hash |
-   |                             |             |DSA |                       |         |
-   +=============================+=============+====+=======================+=========+
-   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.100|ML-D|RSASSA-PSS with SHA256 |SHA256   |
-   |                             |             |SA- |                       |         |
-   |                             |             |44  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-                          |<CompSig>.101|ML-D|sha256WithRSAEncryption|SHA256   |
-   |MLDSA44-RSA2048-PKCS15-SHA256|             |SA- |                       |         |
-   |                             |             |44  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.102|ML-D|Ed25519                |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |44  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.103|ML-D|ecdsa-with-SHA256 with |SHA256   |
-   |                             |             |SA- |secp256r1              |         |
-   |                             |             |44  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.104|ML-D|RSASSA-PSS with SHA256 |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-                          |<CompSig>.105|ML-D|sha256WithRSAEncryption|SHA512   |
-   |MLDSA65-RSA3072-PKCS15-SHA512|             |SA- |                       |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-RSA4096-PSS-SHA512|<CompSig>.106|ML-D|RSASSA-PSS with SHA384 |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-                          |<CompSig>.107|ML-D|sha384WithRSAEncryption|SHA512   |
-   |MLDSA65-RSA4096-PKCS15-SHA512|             |SA- |                       |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.108|ML-D|ecdsa-with-SHA256 with |SHA512   |
-   |                             |             |SA- |secp256r1              |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-ECDSA-P384-SHA512 |<CompSig>.109|ML-D|ecdsa-with-SHA384 with |SHA512   |
-   |                             |             |SA- |secp384r1              |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-ECDSA-            |<CompSig>.110|ML-D|ecdsa-with-SHA256 with |SHA512   |
-   |brainpoolP256r1-SHA512       |             |SA- |brainpoolP256r1        |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.111|ML-D|Ed25519                |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |65  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.112|ML-D|ecdsa-with-SHA384 with |SHA512   |
-   |                             |             |SA- |secp384r1              |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-ECDSA-            |<CompSig>.113|ML-D|ecdsa-with-SHA384 with |SHA512   |
-   |brainpoolP384r1-SHA512       |             |SA- |brainpoolP384r1        |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-Ed448-SHAKE256    |<CompSig>.114|ML-D|Ed448                  |SHAKE256*|
-   |                             |             |SA- |                       |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-RSA3072-PSS-SHA512|<CompSig>.117|ML-D|RSASSA-PSS with SHA384 |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-RSA4096-PSS-SHA512|<CompSig>.115|ML-D|RSASSA-PSS with SHA384 |SHA512   |
-   |                             |             |SA- |                       |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
-   |id-MLDSA87-ECDSA-P521-SHA512 |<CompSig>.116|ML-D|ecdsa-with-SHA512 with |SHA512   |
-   |                             |             |SA- |secp521r1              |         |
-   |                             |             |87  |                       |         |
-   +-----------------------------+-------------+----+-----------------------+---------+
+   +=============================+============+====+=======================+========+
+   |Composite Signature Algorithm|OID         |ML- |Trad                   |Pre-Hash|
+   |                             |            |DSA |                       |        |
+   +=============================+============+====+=======================+========+
+   |id-MLDSA44-RSA2048-PSS-SHA256|<CompSig>.0 |ML-D|RSASSA-PSS with SHA256 |SHA256  |
+   |                             |            |SA- |                       |        |
+   |                             |            |44  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-                          |<CompSig>.1 |ML-D|sha256WithRSAEncryption|SHA256  |
+   |MLDSA44-RSA2048-PKCS15-SHA256|            |SA- |                       |        |
+   |                             |            |44  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA44-Ed25519-SHA512    |<CompSig>.2 |ML-D|Ed25519                |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |44  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA44-ECDSA-P256-SHA256 |<CompSig>.3 |ML-D|ecdsa-with-SHA256 with |SHA256  |
+   |                             |            |SA- |secp256r1              |        |
+   |                             |            |44  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-RSA3072-PSS-SHA512|<CompSig>.4 |ML-D|RSASSA-PSS with SHA256 |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-                          |<CompSig>.5 |ML-D|sha256WithRSAEncryption|SHA512  |
+   |MLDSA65-RSA3072-PKCS15-SHA512|            |SA- |                       |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-RSA4096-PSS-SHA512|<CompSig>.6 |ML-D|RSASSA-PSS with SHA384 |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-                          |<CompSig>.7 |ML-D|sha384WithRSAEncryption|SHA512  |
+   |MLDSA65-RSA4096-PKCS15-SHA512|            |SA- |                       |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-ECDSA-P256-SHA512 |<CompSig>.8 |ML-D|ecdsa-with-SHA256 with |SHA512  |
+   |                             |            |SA- |secp256r1              |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-ECDSA-P384-SHA512 |<CompSig>.9 |ML-D|ecdsa-with-SHA384 with |SHA512  |
+   |                             |            |SA- |secp384r1              |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-ECDSA-            |<CompSig>.10|ML-D|ecdsa-with-SHA256 with |SHA512  |
+   |brainpoolP256r1-SHA512       |            |SA- |brainpoolP256r1        |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA65-Ed25519-SHA512    |<CompSig>.11|ML-D|Ed25519                |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |65  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-ECDSA-P384-SHA512 |<CompSig>.12|ML-D|ecdsa-with-SHA384 with |SHA512  |
+   |                             |            |SA- |secp384r1              |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-ECDSA-            |<CompSig>.13|ML-D|ecdsa-with-SHA384 with |SHA512  |
+   |brainpoolP384r1-SHA512       |            |SA- |brainpoolP384r1        |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-Ed448-SHAKE256    |<CompSig>.14|ML-D|Ed448                  |SHAKE256|
+   |                             |            |SA- |                       |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-RSA3072-PSS-SHA512|<CompSig>.15|ML-D|RSASSA-PSS with SHA384 |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-RSA4096-PSS-SHA512|<CompSig>.16|ML-D|RSASSA-PSS with SHA384 |SHA512  |
+   |                             |            |SA- |                       |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
+   |id-MLDSA87-ECDSA-P521-SHA512 |<CompSig>.17|ML-D|ecdsa-with-SHA512 with |SHA512  |
+   |                             |            |SA- |secp521r1              |        |
+   |                             |            |87  |                       |        |
+   +-----------------------------+------------+----+-----------------------+--------+
 
                Table 2: ML-DSA Composite Signature Algorithms
 
-   Note*: The pre-hash functions were chosen to roughly match the
+   Note: The pre-hash functions were chosen to roughly match the
    security level of the stronger component.  In the case of Ed25519 and
    Ed448 they match the hash function defined in [RFC8032]; SHA512 for
    Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes
@@ -1487,7 +1485,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 100 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 0 }
 
    pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256}
@@ -1500,7 +1498,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 101 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 1 }
 
    pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256}
@@ -1514,7 +1512,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 102 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 2 }
 
    pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512}
@@ -1528,7 +1526,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 103 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 3 }
 
    pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
@@ -1542,7 +1540,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 104 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 4 }
 
    pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512}
@@ -1556,7 +1554,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 105 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 5 }
 
    pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512}
@@ -1569,7 +1567,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 106 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 6 }
 
    pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512}
@@ -1583,7 +1581,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 107 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 7 }
 
    pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512}
@@ -1597,7 +1595,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 108 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 8 }
 
    pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512}
@@ -1611,7 +1609,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 109 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 9 }
 
    pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512}
@@ -1625,7 +1623,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 110 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 10 }
 
    pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512}
@@ -1639,7 +1637,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 111 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 11 }
 
    pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512}
@@ -1653,7 +1651,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 112 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 12 }
 
    pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512}
@@ -1667,7 +1665,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 113 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 13 }
 
    pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512}
@@ -1681,7 +1679,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-Ed448-SHAKE256 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 114 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 14 }
 
    pk-MLDSA87-Ed448-SHAKE256 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256}
@@ -1695,7 +1693,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 117 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 15 }
 
    pk-MLDSA87-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-RSA3072-PSS-SHA512}
@@ -1709,7 +1707,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 115 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 16 }
 
    pk-MLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512}
@@ -1723,7 +1721,7 @@ Table of Contents
    -- TODO: OID to be replaced by IANA
    id-MLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
       joint-iso-itu-t(2) country(16) us(840) organization(1)
-      entrust(114027) algorithm(80) composite(8) signature(1) 116 }
+      entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 17 }
 
    pk-MLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
      pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512}

@@ -1359,14 +1359,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-06" class="section-name selfRef">Changes in -06</a>
       </h2>
 <p id="section-1-1">Interop-affecting changes:
-* Removed the pre-hash randomizer <code>PH(r || M)</code> and replaced it with <code>PH(M)</code>.   The Message representative is now
-  * M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
-* Added new prototype OIDs to avoid interoperability issues with previous versions
+* Removed the pre-hash randomizer <code>PH(r || M)</code> and replaced it with <code>PH(M)</code>.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
+* Added new prototype OIDs to avoid interoperability issues with previous versions.
 * clarified use of SHAKE256 with 64 byte output.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Editorial changes:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-3.1">
-          <p id="section-1-3.1.1">Removed the extra test vector for <code>MLDSA87-RSA4096-PSS-SHA512</code><a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-3.1.1">Removed the extra test vector for <code>MLDSA87-RSA4096-PSS-SHA512</code>.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-4">Still to do in a future version:<a href="#section-1-4" class="pilcrow">¶</a></p>
@@ -1523,17 +1522,22 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
         <h3 id="name-prefix-domain-separators-an">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-prefix-domain-separators-an" class="section-name selfRef">Prefix, Domain Separators and CTX</a>
         </h3>
-<p id="section-3.2-1">When constructing the to-be-signed message representative <code>M'</code>, several domain separator values are  pre-pended to the message pre-hash prior to signing.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
-"CompositeAlgorithmSignatures2025" which in hex is:<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.2-3">
+<p id="section-3.2-1">When constructing the to-be-signed message representative <code>M'</code>, several domain separator values are pre-pended to the message pre-hash prior to signing.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-2">
+<pre>
+M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+</pre><a href="#section-3.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3.2-3">First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
+"CompositeAlgorithmSignatures2025" which in hex is:<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.2-4">
 <pre>
  436F6D706F73697465416C676F726974686D5369676E61747572657332303235
-</pre><a href="#section-3.2-3" class="pilcrow">¶</a>
+</pre><a href="#section-3.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-4">Additional discussion of the prefix can be found in <a href="#sec-cons-prefix" class="auto internal xref">Section 10.4</a>.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">Next, the Domain separator defined in <a href="#sec-domsep-values" class="auto internal xref">Section 7.1</a> which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer <code>r</code>, an additional DER encoded value that represents the OID of the hash function <code>PH</code>, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in <a href="#sec-prehash" class="auto internal xref">Section 3.1</a>. And finally the OID of the hash function <code>PH</code> protects against substituting for a weaker hash function, although in practice each composite algorithm specifies only one allowed hash function.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
-<p id="section-3.2-6">Note that there are two different context strings <code>ctx</code> at play: the first is the application context that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code>. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the <code>ctx</code> for the underlying ML-DSA primitive.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">Additional discussion of the prefix can be found in <a href="#sec-cons-prefix" class="auto internal xref">Section 10.4</a>.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-6">Next, the Domain separator defined in <a href="#sec-domsep-values" class="auto internal xref">Section 7.1</a> which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer <code>r</code>, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in <a href="#sec-prehash" class="auto internal xref">Section 3.1</a>.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-7">Note that there are two different context strings <code>ctx</code> at play: the first is the application context that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code>. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the <code>ctx</code> for the underlying ML-DSA primitive.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2286,7 +2290,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
       </h2>
 <p id="section-7-1">This table summarizes the OID and the component algorithms for each Composite ML-DSA algorithm.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">EDNOTE: these are prototyping OIDs to be replaced by IANA.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.8.1<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-3">&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.9.1<a href="#section-7-3" class="pilcrow">¶</a></p>
 <span id="name-ml-dsa-composite-signature-"></span><div id="tab-hash-sig-algs">
 <table class="center" id="table-2">
         <caption>
@@ -2305,126 +2309,126 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
         <tbody>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PSS-SHA256</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.100</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.0</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
             <td class="text-left" rowspan="1" colspan="1">RSASSA-PSS with SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">SHA256</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PKCS15-SHA256</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.101</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.1</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
             <td class="text-left" rowspan="1" colspan="1">sha256WithRSAEncryption</td>
             <td class="text-left" rowspan="1" colspan="1">SHA256</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-Ed25519-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.102</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.2</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
             <td class="text-left" rowspan="1" colspan="1">Ed25519</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-ECDSA-P256-SHA256</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.103</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.3</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-44</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256 with secp256r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA256</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PSS-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.104</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.4</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">RSASSA-PSS with SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.105</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.5</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">sha256WithRSAEncryption</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.106</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.6</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">RSASSA-PSS with SHA384</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.107</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.7</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">sha384WithRSAEncryption</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P256-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.108</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.8</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256 with secp256r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P384-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.109</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.9</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA384 with secp384r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-brainpoolP256r1-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.110</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.10</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256 with brainpoolP256r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-Ed25519-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.111</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.11</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-65</td>
             <td class="text-left" rowspan="1" colspan="1">Ed25519</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P384-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.112</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.12</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA384 with secp384r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-brainpoolP384r1-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.113</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.13</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA384 with brainpoolP384r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-Ed448-SHAKE256</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.114</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.14</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">Ed448</td>
-            <td class="text-left" rowspan="1" colspan="1">SHAKE256*</td>
+            <td class="text-left" rowspan="1" colspan="1">SHAKE256</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA3072-PSS-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.117</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.15</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">RSASSA-PSS with SHA384</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.115</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.16</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">RSASSA-PSS with SHA384</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P521-SHA512</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.116</td>
+            <td class="text-left" rowspan="1" colspan="1">&lt;CompSig&gt;.17</td>
             <td class="text-left" rowspan="1" colspan="1">ML-DSA-87</td>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA512 with secp521r1</td>
             <td class="text-left" rowspan="1" colspan="1">SHA512</td>
@@ -2432,7 +2436,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
         </tbody>
       </table>
 </div>
-<p id="section-7-5">Note*: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-5">Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-5" class="pilcrow">¶</a></p>
 <p id="section-7-6">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <p id="section-7-7">As the number of algorithms can be daunting to implementers, see <a href="#sec-impl-profile" class="auto internal xref">Section 11.3</a> for a discussion of choosing a subset to support.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <div id="sec-domsep-values">
@@ -2678,7 +2682,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-RSA2048-PSS-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 100 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 0 }
 
 pk-MLDSA44-RSA2048-PSS-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-RSA2048-PSS-SHA256}
@@ -2691,7 +2695,7 @@ sa-MLDSA44-RSA2048-PSS-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-RSA2048-PKCS15-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 101 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 1 }
 
 pk-MLDSA44-RSA2048-PKCS15-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-RSA2048-PKCS15-SHA256}
@@ -2705,7 +2709,7 @@ sa-MLDSA44-RSA2048-PKCS15-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 102 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 2 }
 
 pk-MLDSA44-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-Ed25519-SHA512}
@@ -2719,7 +2723,7 @@ sa-MLDSA44-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA44-ECDSA-P256-SHA256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 103 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 3 }
 
 pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
@@ -2733,7 +2737,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 104 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 4 }
 
 pk-MLDSA65-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA3072-PSS-SHA512}
@@ -2747,7 +2751,7 @@ sa-MLDSA65-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA3072-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 105 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 5 }
 
 pk-MLDSA65-RSA3072-PKCS15-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA3072-PKCS15-SHA512}
@@ -2760,7 +2764,7 @@ sa-MLDSA65-RSA3072-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 106 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 6 }
 
 pk-MLDSA65-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA4096-PSS-SHA512}
@@ -2774,7 +2778,7 @@ sa-MLDSA65-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-RSA4096-PKCS15-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 107 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 7 }
 
 pk-MLDSA65-RSA4096-PKCS15-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-RSA4096-PKCS15-SHA512}
@@ -2788,7 +2792,7 @@ sa-MLDSA65-RSA4096-PKCS15-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-P256-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 108 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 8 }
 
 pk-MLDSA65-ECDSA-P256-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-P256-SHA512}
@@ -2802,7 +2806,7 @@ sa-MLDSA65-ECDSA-P256-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 109 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 9 }
 
 pk-MLDSA65-ECDSA-P384-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-P384-SHA512}
@@ -2816,7 +2820,7 @@ sa-MLDSA65-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 110 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 10 }
 
 pk-MLDSA65-ECDSA-brainpoolP256r1-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-ECDSA-brainpoolP256r1-SHA512}
@@ -2830,7 +2834,7 @@ sa-MLDSA65-ECDSA-brainpoolP256r1-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA65-Ed25519-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 111 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 11 }
 
 pk-MLDSA65-Ed25519-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA65-Ed25519-SHA512}
@@ -2844,7 +2848,7 @@ sa-MLDSA65-Ed25519-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-P384-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 112 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 12 }
 
 pk-MLDSA87-ECDSA-P384-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-P384-SHA512}
@@ -2858,7 +2862,7 @@ sa-MLDSA87-ECDSA-P384-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 113 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 13 }
 
 pk-MLDSA87-ECDSA-brainpoolP384r1-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-brainpoolP384r1-SHA512}
@@ -2872,7 +2876,7 @@ sa-MLDSA87-ECDSA-brainpoolP384r1-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-Ed448-SHAKE256 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 114 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 14 }
 
 pk-MLDSA87-Ed448-SHAKE256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-Ed448-SHAKE256}
@@ -2886,7 +2890,7 @@ sa-MLDSA87-Ed448-SHAKE256 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-RSA3072-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 117 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 15 }
 
 pk-MLDSA87-RSA3072-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-RSA3072-PSS-SHA512}
@@ -2900,7 +2904,7 @@ sa-MLDSA87-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 115 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 16 }
 
 pk-MLDSA87-RSA4096-PSS-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-RSA4096-PSS-SHA512}
@@ -2914,7 +2918,7 @@ sa-MLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
 -- TODO: OID to be replaced by IANA
 id-MLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
    joint-iso-itu-t(2) country(16) us(840) organization(1)
-   entrust(114027) algorithm(80) composite(8) signature(1) 116 }
+   entrust(114027) algorithm(80) composite-mldsa(9) signature(1) 17 }
 
 pk-MLDSA87-ECDSA-P521-SHA512 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA87-ECDSA-P521-SHA512}
