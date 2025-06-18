@@ -208,13 +208,14 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 # Changes in -06
 
 Interop-affecting changes:
-* Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
-* Added new prototype OIDs to avoid interoperability issues with previous versions.
-* clarified use of SHAKE256 with 64 byte output.
+
+- Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
+- Added new prototype OIDs to avoid interoperability issues with previous versions.
+- clarified use of SHAKE256 with 64 byte output.
 
 Editorial changes:
 
-* Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
+- Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
 
 Still to do in a future version:
 
