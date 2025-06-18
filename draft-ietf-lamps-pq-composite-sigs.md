@@ -1033,7 +1033,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.111   | ML-DSA-65 | Ed25519                                | SHA512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.112   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.113   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                                  | SHAKE256/512 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.114   | ML-DSA-87 | Ed448                                  | SHAKE256 |
 | id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.117   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.115   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.116   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
