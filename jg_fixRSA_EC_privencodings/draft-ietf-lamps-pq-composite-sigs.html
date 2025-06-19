@@ -1361,7 +1361,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-1">Interop-affecting changes:
 * Removed the pre-hash randomizer <code>PH(r || M)</code> and replaced it with <code>PH(M)</code>.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
 * Added new prototype OIDs to avoid interoperability issues with previous versions.
-* clarified use of SHAKE256 with 64 byte output.<a href="#section-1-1" class="pilcrow">¶</a></p>
+* clarified use of SHAKE256 with 64 byte output.
+* Fixed the RSA and ECDSA component private key encodings of the Composite Private Key in the test vectors and updated the size table values.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Editorial changes:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-3.1">
