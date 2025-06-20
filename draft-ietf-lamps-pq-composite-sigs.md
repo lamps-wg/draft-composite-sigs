@@ -194,8 +194,6 @@ informative:
     date: Jan. 2023
 
 
-
-
 --- abstract
 
 This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
@@ -208,14 +206,15 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 # Changes in -06
 
 Interop-affecting changes:
-* Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M ).
-* Added new prototype OIDs to avoid interoperability issues with previous versions.
-* clarified use of SHAKE256 with 64 byte output.
-* Fixed the RSA and ECDSA component private key encodings of the Composite Private Key in the test vectors and updated the size table values.
+- Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now `M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )`.
+- Added new prototype OIDs to avoid interoperability issues with previous versions.
+- clarified use of SHAKE256 with 64 byte output.
+- Fixed the RSA and ECDSA component private key encodings of the Composite Private Key in the test vectors and updated the size table values.
+
 
 Editorial changes:
 
-* Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
+- Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
 
 Still to do in a future version:
 
@@ -1030,13 +1029,13 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.11   | ML-DSA-65 | Ed25519                                | SHA512 |
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.12   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.13   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256 |
+| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256/512* |
 | id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 
-Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
+*Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
