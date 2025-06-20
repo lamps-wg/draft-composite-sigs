@@ -140,7 +140,7 @@ class RSA2048PSS(SIG):
   def private_key_bytes(self):
     return self.sk.private_bytes(
                         encoding=serialization.Encoding.DER,
-                        format=serialization.PrivateFormat.PKCS8,
+                        format=serialization.PrivateFormat.TraditionalOpenSSL,
                         encryption_algorithm=serialization.NoEncryption()
                     )
 
@@ -258,7 +258,7 @@ class ECDSAP256(SIG):
   def private_key_bytes(self):    
     return self.sk.private_bytes(
                         encoding=serialization.Encoding.DER,
-                        format=serialization.PrivateFormat.PKCS8,
+                        format=serialization.PrivateFormat.TraditionalOpenSSL,
                         encryption_algorithm=serialization.NoEncryption()
                     )
 
