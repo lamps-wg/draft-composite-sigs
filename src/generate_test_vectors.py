@@ -232,7 +232,7 @@ class RSA4096PSS(RSA2048PSS):
 
 
 class RSA4096PKCS15(RSA2048PKCS15):
-  id = "sha256WithRSAEncryption-4096"
+  id = "sha384WithRSAEncryption-4096"
 
     # returns nothing
   def keyGen(self):
