@@ -664,9 +664,9 @@ class MLDSA87_RSA4096_PSS_SHA512(CompositeSig):
   PH = hashes.SHA512()
 
   
-class MLDSA65_ECDSA_P521_SHA512(CompositeSig):
+class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   id = "id-MLDSA87-ECDSA-P521-SHA512"
-  mldsa = MLDSA65()
+  mldsa = MLDSA87()
   tradsig = ECDSAP521()
   PH = hashes.SHA512()
 
@@ -1041,7 +1041,7 @@ def main():
   doSig(MLDSA87_Ed448_SHAKE256() )
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
-  doSig(MLDSA65_ECDSA_P521_SHA512() )
+  doSig(MLDSA87_ECDSA_P521_SHA512() )
 
   writeTestVectors()
   writeDumpasn1Cfg()
