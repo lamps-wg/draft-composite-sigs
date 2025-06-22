@@ -1,0 +1,22 @@
+| Algorithm                                     |  Public key  |  Private key |  Signature   |
+| --------------------------------------------- | ------------ | ------------ |  ----------- |
+| id-ML-DSA-44                                  |     1312     |      32      |     2420     |
+| id-ML-DSA-65                                  |     1952     |      32      |     3309     |
+| id-ML-DSA-87                                  |     2592     |      32      |     4627     |
+| id-MLDSA44-RSA2048-PSS-SHA256                 |     1582     |     1221     |     2708     |
+| id-MLDSA44-RSA2048-PKCS15-SHA256              |     1582     |     1224     |     2708     |
+| id-MLDSA44-Ed25519-SHA512                     |     1344     |      64      |     2516     |
+| id-MLDSA44-ECDSA-P256-SHA256                  |     1377     |     153      |     2524     |
+| id-MLDSA65-RSA3072-PSS-SHA512                 |     2350     |     1799     |     3725     |
+| id-MLDSA65-RSA4096-PSS-SHA512                 |     2478     |     2380     |     3853     |
+| id-MLDSA65-RSA4096-PKCS15-SHA512              |     2478     |     2379     |     3853     |
+| id-MLDSA65-ECDSA-P256-SHA512                  |     2017     |     153      |     3412     |
+| id-MLDSA65-ECDSA-P384-SHA512                  |     2049     |     199      |     3444     |
+| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512       |     2017     |     154      |     3411     |
+| id-MLDSA65-Ed25519-SHA512                     |     1984     |      64      |     3405     |
+| id-MLDSA87-ECDSA-P384-SHA512                  |     2689     |     199      |     4763     |
+| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512       |     2689     |     203      |     4762     |
+| id-MLDSA87-Ed448-SHAKE256                     |     2649     |      89      |     4773     |
+| id-MLDSA87-RSA3072-PSS-SHA512                 |     2990     |     1800     |     5043     |
+| id-MLDSA87-RSA4096-PSS-SHA512                 |     3118     |     2379     |     5171     |
+| id-MLDSA87-ECDSA-P521-SHA512                  |     2725     |     255      |     4797     |
