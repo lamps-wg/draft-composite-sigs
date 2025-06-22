@@ -93,7 +93,7 @@ class RSA2048PSS(SIG):
   id = "id-RSASSA-PSS-2048"
   pss_params = padding.PSS(
                               mgf=padding.MGF1(hashes.SHA256()),
-                              salt_length=padding.PSS.MAX_LENGTH
+                              salt_length=padding.PSS.DIGEST_LENGTH
                           )
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
 
