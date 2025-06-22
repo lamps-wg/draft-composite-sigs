@@ -183,6 +183,11 @@ class RSA2048PKCS15(RSA2048PSS):
 
 class RSA3072PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-3072"
+  pss_params = padding.PSS(
+      mgf=padding.MGF1(hashes.SHA512()),
+      salt_length=padding.PSS.DIGEST_LENGTH
+  )
+  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
 
   # returns nothing
   def keyGen(self):
@@ -209,6 +214,11 @@ class RSA3072PKCS15(RSA2048PKCS15):
 
 class RSA4096PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-4096"
+  pss_params = padding.PSS(
+      mgf=padding.MGF1(hashes.SHA512()),
+      salt_length=padding.PSS.DIGEST_LENGTH
+  )
+  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
 
   # returns nothing
   def keyGen(self):
