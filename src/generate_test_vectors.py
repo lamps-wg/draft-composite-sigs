@@ -41,7 +41,7 @@ OID_TABLE = {
     "id-MLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,2)),
     "id-MLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,3)),
     "id-MLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,4)),
-    "id-MLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,5)),
+    "id-MLDSA65-RSA3072-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,5)),
     "id-MLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,6)),
     "id-MLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,7)),
     "id-MLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,8)),
