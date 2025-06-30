@@ -41,7 +41,7 @@ OID_TABLE = {
     "id-MLDSA44-Ed25519-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,2)),
     "id-MLDSA44-ECDSA-P256-SHA256": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,3)),
     "id-MLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,4)),
-    "id-MLDSA65-RSA3072-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,5)),
+    "id-MLDSA65-RSA3072-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,5)),
     "id-MLDSA65-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,6)),
     "id-MLDSA65-RSA4096-PKCS15-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,7)),
     "id-MLDSA65-ECDSA-P256-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,8)),
@@ -91,9 +91,10 @@ class SIG:
 
 class RSA2048PSS(SIG):
   id = "id-RSASSA-PSS-2048"
+  hash_alg = hashes.SHA256()
   pss_params = padding.PSS(
-                              mgf=padding.MGF1(hashes.SHA256()),
-                              salt_length=padding.PSS.MAX_LENGTH
+                              mgf=padding.MGF1(hash_alg),
+                              salt_length=padding.PSS.DIGEST_LENGTH
                           )
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
 
@@ -113,7 +114,7 @@ class RSA2048PSS(SIG):
     s = self.sk.sign(
                         m,
                         self.pss_params,
-                        hashes.SHA256()
+                        self.hash_alg,
                     )
     return s
 
@@ -126,7 +127,7 @@ class RSA2048PSS(SIG):
                       s,
                       m,
                       self.pss_params,
-                      hashes.SHA256()
+                      self.hash_alg
                   )
 
 
@@ -147,6 +148,7 @@ class RSA2048PSS(SIG):
 
 class RSA2048PKCS15(RSA2048PSS):
   id = "sha256WithRSAEncryption-2048"
+  hash_alg = hashes.SHA256()
 
     # returns nothing
   def keyGen(self):
@@ -164,7 +166,7 @@ class RSA2048PKCS15(RSA2048PSS):
     s = self.sk.sign(
                         m,
                         padding.PKCS1v15(),
-                        hashes.SHA256()
+                        self.hash_alg
                     )
     return s
 
@@ -177,12 +179,18 @@ class RSA2048PKCS15(RSA2048PSS):
                       s,
                       m,
                       padding.PKCS1v15(),
-                      hashes.SHA256()
+                      self.hash_alg
                   )
 
 
 class RSA3072PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-3072"
+  hash_alg = hashes.SHA512()
+  pss_params = padding.PSS(
+      mgf=padding.MGF1(hash_alg),
+      salt_length=padding.PSS.DIGEST_LENGTH
+  )
+  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
 
   # returns nothing
   def keyGen(self):
@@ -209,6 +217,12 @@ class RSA3072PKCS15(RSA2048PKCS15):
 
 class RSA4096PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-4096"
+  hash_alg = hashes.SHA512()
+  pss_params = padding.PSS(
+      mgf=padding.MGF1(hashes.SHA512()),
+      salt_length=padding.PSS.DIGEST_LENGTH
+  )
+  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
 
   # returns nothing
   def keyGen(self):
@@ -222,7 +236,8 @@ class RSA4096PSS(RSA2048PSS):
 
 
 class RSA4096PKCS15(RSA2048PKCS15):
-  id = "sha256WithRSAEncryption-4096"
+  id = "sha384WithRSAEncryption-4096"
+  hash_alg = hashes.SHA384()
 
     # returns nothing
   def keyGen(self):
@@ -664,9 +679,9 @@ class MLDSA87_RSA4096_PSS_SHA512(CompositeSig):
   PH = hashes.SHA512()
 
   
-class MLDSA65_ECDSA_P521_SHA512(CompositeSig):
+class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   id = "id-MLDSA87-ECDSA-P521-SHA512"
-  mldsa = MLDSA65()
+  mldsa = MLDSA87()
   tradsig = ECDSAP521()
   PH = hashes.SHA512()
 
@@ -1041,7 +1056,7 @@ def main():
   doSig(MLDSA87_Ed448_SHAKE256() )
   doSig(MLDSA87_RSA3072_PSS_SHA512() )
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
-  doSig(MLDSA65_ECDSA_P521_SHA512() )
+  doSig(MLDSA87_ECDSA_P521_SHA512() )
 
   writeTestVectors()
   writeDumpasn1Cfg()
