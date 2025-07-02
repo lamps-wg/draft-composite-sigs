@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 January 2026                                          M. Pala
+Expires: 3 January 2026                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            30 June 2025
+                                                             2 July 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 January 2026.
+   This Internet-Draft will expire on 3 January 2026.
 
 Copyright Notice
 
@@ -763,8 +763,9 @@ Table of Contents
 
    *  *ECDSA*: public key MUST be encoded as an ECPoint as specified in
       section 2.2 of [RFC5480], with both compressed and uncompressed
-      keys supported.  For maximum interoperability, it is RECOMMENEDED
-      to use uncompressed points.
+      keys supported.  For maximum interoperability, it is RECOMMENDED
+      to use uncompressed points.  A signature MUST be DER encoded as an
+      Ecdsa-Sig-Value as specified in section 2.2.3 of [RFC3279].
 
    *  *EdDSA*: MUST be encoded as per section 3 of [RFC8032].
 
@@ -2392,6 +2393,12 @@ Process:
               Request Syntax Specification Version 1.7", RFC 2986,
               DOI 10.17487/RFC2986, November 2000,
               <https://www.rfc-editor.org/info/rfc2986>.
+
+   [RFC3279]  Bassham, L., Polk, W., and R. Housley, "Algorithms and
+              Identifiers for the Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 3279, DOI 10.17487/RFC3279, April
+              2002, <https://www.rfc-editor.org/info/rfc3279>.
 
    [RFC4210]  Adams, C., Farrell, S., Kause, T., and T. Mononen,
               "Internet X.509 Public Key Infrastructure Certificate
