@@ -27,7 +27,7 @@ IMPORTS
 pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY BIT STRING
+      -- KEY without ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, 
                                                             cRLSign}
@@ -37,7 +37,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         VALUE OCTET STRING
+         -- VALUE without ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
