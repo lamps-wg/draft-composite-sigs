@@ -946,7 +946,7 @@ The following ASN.1 Information Object Classes are are defined to allow for comp
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY BIT STRING
+      -- KEY without ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                              cRLSign}
@@ -956,7 +956,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         VALUE BIT STRING
+         -- VALUE without ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
