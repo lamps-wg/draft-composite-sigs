@@ -204,18 +204,13 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 --- middle
 
-# Changes in -06
+# Changes in -07
 
 Interop-affecting changes:
-- Removed the pre-hash randomizer `PH(r || M)` and replaced it with `PH(M)`.   The Message representative is now `M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )`.
-- Added new prototype OIDs to avoid interoperability issues with previous versions.
-- clarified use of SHAKE256 with 64 byte output.
-- Fixed the RSA and ECDSA component private key encodings of the Composite Private Key in the test vectors and updated the size table values.
-
+- Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature
 
 Editorial changes:
-
-- Removed the extra test vector for `MLDSA87-RSA4096-PSS-SHA512`.
+- Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.
 
 Still to do in a future version:
 
