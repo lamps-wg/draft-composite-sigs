@@ -827,7 +827,7 @@ def formatResults(sig, s ):
   pki['privateKeyAlgorithm'] = algId
   # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
   if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
-    pki['privateKey'] = univ.OctetString(univ.OctetString(sig.private_key_bytes()))
+    pki['privateKey'] = univ.OctetString(encode(univ.OctetString(sig.private_key_bytes()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))))
   else:
     pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
   jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
