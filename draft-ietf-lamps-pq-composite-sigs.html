@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 5 January 2026</td>
+<td class="center">Expires 7 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-04" class="published">4 July 2025</time>
+<time datetime="2025-07-06" class="published">6 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-05">5 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-01-07">7 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1170,7 +1170,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         </h2>
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
-            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-06" class="internal xref">Changes in -06</a></p>
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-changes-in-07" class="internal xref">Changes in -07</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
@@ -1353,26 +1353,19 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </nav>
 </section>
 </div>
-<div id="changes-in-06">
+<div id="changes-in-07">
 <section id="section-1">
-      <h2 id="name-changes-in-06">
-<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-06" class="section-name selfRef">Changes in -06</a>
+      <h2 id="name-changes-in-07">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-changes-in-07" class="section-name selfRef">Changes in -07</a>
       </h2>
 <p id="section-1-1">Interop-affecting changes:
-- Removed the pre-hash randomizer <code>PH(r || M)</code> and replaced it with <code>PH(M)</code>.   The Message representative is now <code>M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )</code>.
-- Added new prototype OIDs to avoid interoperability issues with previous versions.
-- clarified use of SHAKE256 with 64 byte output.
-- Fixed the RSA and ECDSA component private key encodings of the Composite Private Key in the test vectors and updated the size table values.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Editorial changes:<a href="#section-1-2" class="pilcrow">¶</a></p>
+- Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Editorial changes:
+- Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Still to do in a future version:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-3.1">
-          <p id="section-1-3.1.1">Removed the extra test vector for <code>MLDSA87-RSA4096-PSS-SHA512</code>.<a href="#section-1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-1-4">Still to do in a future version:<a href="#section-1-4" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-5.1">
-          <p id="section-1-5.1.1">Nothing. Authors believe this version to be complete.<a href="#section-1-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1-4.1">
+          <p id="section-1-4.1.1">Nothing. Authors believe this version to be complete.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -2221,7 +2214,7 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY BIT STRING
+      -- KEY without ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                              cRLSign}
@@ -2231,7 +2224,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         VALUE BIT STRING
+         -- VALUE without ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
@@ -2666,7 +2659,7 @@ IMPORTS
 pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      KEY BIT STRING
+      -- KEY without ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                             cRLSign}
@@ -2676,7 +2669,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         VALUE OCTET STRING
+         -- VALUE without ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
