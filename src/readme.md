@@ -41,7 +41,8 @@ The message signed is the bytes of the string "The quick brown fox jumps over th
           "pk": "<raw_key>",
           "x5c": "<x509_cert_of_pk>",
           "sk": "<sk>",
-          "s": "<ciphertext>"
+          "sk_pkcs8": <PrivateKeyInfo>
+          "s": "<signature>"
         },
         ...
     ]
