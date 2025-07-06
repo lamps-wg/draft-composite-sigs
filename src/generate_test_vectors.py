@@ -17,7 +17,7 @@ import json
 import textwrap
 from zipfile import ZipFile
 
-from pyasn1.type import univ
+from pyasn1.type import univ, tag
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode
 from pyasn1.codec.der.encoder import encode
@@ -811,15 +811,9 @@ def formatResults(sig, s ):
   cert = signSigCert(sig)
   jsonTest['x5c'] = base64.b64encode(cert.public_bytes(encoding=serialization.Encoding.DER)).decode('ascii')
 
-  # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
-  if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
-    jsonTest['sk'] = base64.b64encode( 
-                  encode(univ.OctetString(sig.private_key_bytes()))
-                                                      ).decode('ascii')
-  else:
-    jsonTest['sk'] = base64.b64encode(sig.private_key_bytes()).decode('ascii')
+  jsonTest['sk'] = base64.b64encode(sig.private_key_bytes()).decode('ascii')
 
-    # Construct PKCS#8
+  # Construct PKCS#8
   pki = rfc5208.PrivateKeyInfo()
   pki['version'] = 0
   algId = rfc5208.AlgorithmIdentifier()
