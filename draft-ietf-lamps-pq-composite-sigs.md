@@ -207,12 +207,14 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 # Changes in -07
 
 Interop-affecting changes:
- * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used.
+
+* Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used.
 
 Editorial changes:
- * Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.
- * Fixed a few problems with the test vectors (incorrect private keys).
- * Fixed a number of editorial issues.
+
+* Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.
+* Fixed a few problems with the test vectors (incorrect private keys).
+* Fixed a number of editorial issues.
 
 # Introduction {#sec-intro}
 
