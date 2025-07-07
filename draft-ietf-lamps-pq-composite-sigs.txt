@@ -1110,7 +1110,7 @@ Table of Contents
    for compact definitions of each composite algorithm, leading to a
    smaller overall ASN.1 module.
 
-   pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
+   pk-CompositeSignature {OBJECT IDENTIFIER:id}
        PUBLIC-KEY ::= {
          IDENTIFIER id
          -- KEY without ASN.1 wrapping --
