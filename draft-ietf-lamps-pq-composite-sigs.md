@@ -938,7 +938,7 @@ Composite ML-DSA uses a substantially non-ASN.1 based encoding, as specified in 
 The following ASN.1 Information Object Classes are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
 ~~~ ASN.1
-pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
+pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
       -- KEY without ASN.1 wrapping --
