@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 7 January 2026                                          M. Pala
+Expires: 8 January 2026                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                             6 July 2025
+                                                             7 July 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2026.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -240,7 +240,7 @@ Table of Contents
 
    *  (a, b) represents a pair of values a and b.  Typically this
       indicates that a function returns multiple values; the exact
-      conveyance mechanism -- tuple, struct, output parameters, etc --
+      conveyance mechanism -- tuple, struct, output parameters, etc. --
       is left to the implementer.
 
    *  (a, _): represents a pair of values where one -- the second one in
@@ -331,7 +331,7 @@ Table of Contents
       keygen seed is used as the interoperable private key format for
       ML-DSA.
 
-   *  DeserializePrivateKey(bytes) -> (mlkemSeed, tradSK): Parse a byte
+   *  DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK): Parse a byte
       string to recover the component private keys.
 
    *  SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes: Produce a
@@ -479,7 +479,7 @@ Table of Contents
    use, import or export component keys that are used in other contexts,
    combinations, or by themselves as keys for standalone algorithm use.
    For more details on the security considerations around key reuse, see
-   section Section 10.3.
+   Section 10.3.
 
    Note that in step 2 above, both component key generation processes
    are invoked, and no indication is given about which one failed.  This
@@ -1052,7 +1052,7 @@ Table of Contents
 
    The serialization routines presented in Section 5 produce raw binary
    values.  When these values are required to be carried within a DER-
-   endeded message format such as an X.509's subjectPublicKey and
+   encoded message format such as an X.509's subjectPublicKey and
    signatureValue BIT STRING [RFC5280] or a CMS SignerInfo.signature
    OCTET STRING [RFC5652], then the composite value MUST be wrapped into
    a DER BIT STRING or OCTET STRING in the obvious ways.
@@ -1106,9 +1106,9 @@ Table of Contents
    used within ASN.1-based X.509 and PKIX protocols, some conventions
    for ASN.1 wrapping are necessary.
 
-   The following ASN.1 Information Object Classes are are defined to
-   allow for compact definitions of each composite algorithm, leading to
-   a smaller overall ASN.1 module.
+   The following ASN.1 Information Object Classes are defined to allow
+   for compact definitions of each composite algorithm, leading to a
+   smaller overall ASN.1 module.
 
    pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
        PUBLIC-KEY ::= {
@@ -1187,7 +1187,7 @@ Table of Contents
 
    Component keys of a composite MUST NOT be used in any other type of
    key or as a standalone key.  For more details on the security
-   considerations around key reuse, see section Section 10.3.
+   considerations around key reuse, see Section 10.3.
 
 7.  Algorithm Identifiers
 
@@ -1400,7 +1400,7 @@ Table of Contents
                 +=============================+===========+
                 | MaskGenAlgorithm.algorithm  | id-mgf1   |
                 +-----------------------------+-----------+
-                | maskGenAlgorithm.parameters | id-sha256 |
+                | MaskGenAlgorithm.parameters | id-sha256 |
                 +-----------------------------+-----------+
                 | Message Digest Algorithm    | id-sha256 |
                 +-----------------------------+-----------+
@@ -1417,7 +1417,7 @@ Table of Contents
                 +=============================+===========+
                 | MaskGenAlgorithm.algorithm  | id-mgf1   |
                 +-----------------------------+-----------+
-                | maskGenAlgorithm.parameters | id-sha512 |
+                | MaskGenAlgorithm.parameters | id-sha512 |
                 +-----------------------------+-----------+
                 | Message Digest Algorithm    | id-sha512 |
                 +-----------------------------+-----------+
