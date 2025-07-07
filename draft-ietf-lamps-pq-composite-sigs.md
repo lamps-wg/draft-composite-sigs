@@ -271,7 +271,7 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 
  * `[:]` represents byte array slicing.
 
- * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc -- is left to the implementer.
+ * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc. -- is left to the implementer.
 
  * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
 
@@ -314,7 +314,7 @@ The following algorithms are defined for serializing and deserializing component
 
   * `SerializePrivateKey(mldsaSeed, tradSK) -> bytes`: Produce a byte string encoding of the component private keys. Note that the keygen seed is used as the interoperable private key format for ML-DSA.
 
-   * `DeserializePrivateKey(bytes) -> (mlkemSeed, tradSK)`: Parse a byte string to recover the component private keys.
+   * `DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)`: Parse a byte string to recover the component private keys.
 
    * `SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes`: Produce a byte string encoding of the component signature values. The randomizer `r` is explained in {{sec-prehash}}.
 
@@ -412,7 +412,7 @@ Key Generation Process:
 ~~~
 {: #alg-composite-keygen title="Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)"}
 
-In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
@@ -896,7 +896,7 @@ While composite ML-DSA keys and signature values MAY be used raw, the following 
 
 ## Encoding to DER {#sec-encoding-to-der}
 
-The serialization routines presented in {{sec-serialization}} produce raw binary values. When these values are required to be carried within a DER-endeded message format such as an X.509's `subjectPublicKey` and `signatureValue` BIT STRING [RFC5280] or a CMS `SignerInfo.signature OCTET STRING` [RFC5652], then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.
+The serialization routines presented in {{sec-serialization}} produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's `subjectPublicKey` and `signatureValue` BIT STRING [RFC5280] or a CMS `SignerInfo.signature OCTET STRING` [RFC5652], then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.
 
 When a BIT STRING is required, the octets of the composite data value SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.
 
@@ -935,7 +935,7 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
 
 Composite ML-DSA uses a substantially non-ASN.1 based encoding, as specified in {{sec-serialization}}. However, as composite algorithms will be used within ASN.1-based X.509 and PKIX protocols, some conventions for ASN.1 wrapping are necessary.
 
-The following ASN.1 Information Object Classes are are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
+The following ASN.1 Information Object Classes are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
 ~~~ ASN.1
 pk-CompositeSignature {OBJECT IDENTIFIER:id, PublicKeyType}
@@ -997,7 +997,7 @@ When a composite private key is conveyed inside a `OneAsymmetricKey` structure (
 
 Some applications might need to reconstruct the `SubjectPublicKeyInfo` or `OneAsymmetricKey` objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
-Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see section {{sec-cons-key-reuse}}.
+Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 
 # Algorithm Identifiers {#sec-alg-ids}
@@ -1081,7 +1081,7 @@ When RSA-PSS is used at the 2048-bit security level, RSASSA-PSS SHALL be instant
 | RSASSA-PSS Parameter         | Value                      |
 | --------------------------   | -------------------------- |
 | MaskGenAlgorithm.algorithm   | id-mgf1           |
-| maskGenAlgorithm.parameters  | id-sha256         |
+| MaskGenAlgorithm.parameters  | id-sha256         |
 | Message Digest Algorithm     | id-sha256         |
 | Salt Length in bits          | 256               |
 {: #rsa-pss-params2048 title="RSASSA-PSS 2048 Parameters"}
@@ -1092,7 +1092,7 @@ When RSA-PSS is used at the 3072-bit or 4096-bit security level, RSASSA-PSS SHAL
 | RSASSA-PSS Parameter        | Value               |
 | --------------------------  | ------------------- |
 | MaskGenAlgorithm.algorithm  | id-mgf1             |
-| maskGenAlgorithm.parameters | id-sha512           |
+| MaskGenAlgorithm.parameters | id-sha512           |
 | Message Digest Algorithm    | id-sha512           |
 | Salt Length in bits         | 512                 |
 {: #rsa-pss-params3072 title="RSASSA-PSS 3072 and 4096 Parameters"}
