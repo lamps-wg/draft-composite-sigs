@@ -629,8 +629,8 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 * **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
 * **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279].
-* **EdDSA**: MUST be encoded as per section 3 of [RFC8032].
+* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key must be encoded as ECPrivateKey specified in [RFC5915].
+* **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
 
 Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
