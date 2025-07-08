@@ -1017,7 +1017,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.3   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
 | id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.4   | ML-DSA-65 | RSASSA-PSS with SHA256                 | SHA512 |
 | id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.5   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.6   | ML-DSA-65 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.6   | ML-DSA-65 | RSASSA-PSS with SHA512                 | SHA512 |
 | id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.7   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
 | id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.8   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
 | id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.9   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
@@ -1026,8 +1026,8 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.12   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.13   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
 | id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256/512* |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA512                 | SHA512 |
+| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA512                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 

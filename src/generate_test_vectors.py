@@ -219,7 +219,7 @@ class RSA4096PSS(RSA2048PSS):
   id = "id-RSASSA-PSS-4096"
   hash_alg = hashes.SHA512()
   pss_params = padding.PSS(
-      mgf=padding.MGF1(hashes.SHA512()),
+      mgf=padding.MGF1(hash_alg),
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
