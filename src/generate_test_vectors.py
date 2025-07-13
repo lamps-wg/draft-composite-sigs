@@ -22,6 +22,7 @@ from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode
 from pyasn1.codec.der.encoder import encode
 
+VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
 OID_TABLE = {
     "sha256WithRSAEncryption-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
@@ -55,7 +56,6 @@ OID_TABLE = {
     "id-MLDSA87-RSA4096-PSS-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,16)),
     "id-MLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,17)),
 }
-
 
 
 class SIG:
@@ -419,6 +419,12 @@ class CompositeSig(SIG):
                                             # the second is a boolean controlling whether
                                             # this renders in the domsep table in the draft.
 
+  def loadPK(self, pkbytes):
+    mldsapub, tradpub = self.deserializeKey(pkbytes)
+    self.mldsa.pk = mldsapub
+    self.tradsig.pk = tradpub
+
+
   def keyGen(self):
     self.mldsa.keyGen()
     self.tradsig.keyGen()
@@ -514,15 +520,6 @@ class CompositeSig(SIG):
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
   
-  
-  def public_key_bytes(self):
-    return self.serializeKey()
-
-  def private_key_bytes(self):
-    mldsaSK = self.mldsa.private_key_bytes()
-    tradSK  = self.tradsig.private_key_bytes()
-
-    return mldsaSK + tradSK
   
   def serializeSignatureValue(self, r, s1, s2):
     assert isinstance(r, bytes)
@@ -686,6 +683,64 @@ class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   PH = hashes.SHA512()
 
 
+def getNewInstanceByName(oidName):
+    match oidName:
+      case MLDSA44_RSA2048_PSS_SHA256.id:
+        return MLDSA44_RSA2048_PSS_SHA256()
+      
+      case MLDSA44_RSA2048_PKCS15_SHA256.id:
+        return MLDSA44_RSA2048_PKCS15_SHA256()
+      
+      case MLDSA44_Ed25519_SHA512.id:
+        return MLDSA44_Ed25519_SHA512()
+      
+      case MLDSA44_ECDSA_P256_SHA256.id:
+        return MLDSA44_ECDSA_P256_SHA256()
+      
+      case MLDSA65_RSA3072_PSS_SHA512.id:
+        return MLDSA65_RSA3072_PSS_SHA512()
+      
+      case MLDSA65_RSA3072_PKCS15_SHA512.id:
+        return MLDSA65_RSA3072_PKCS15_SHA512()
+      
+      case MLDSA65_RSA4096_PSS_SHA512.id:
+        return MLDSA65_RSA4096_PSS_SHA512()
+      
+      case MLDSA65_RSA4096_PKCS15_SHA512.id:
+        return MLDSA65_RSA4096_PKCS15_SHA512()
+      
+      case MLDSA65_ECDSA_P256_SHA512.id:
+        return MLDSA65_ECDSA_P256_SHA512()
+      
+      case MLDSA65_ECDSA_P384_SHA512.id:
+        return MLDSA65_ECDSA_P384_SHA512()
+      
+      case MLDSA65_ECDSA_brainpoolP256r1_SHA512.id:
+        return MLDSA65_ECDSA_brainpoolP256r1_SHA512()
+      
+      case MLDSA65_Ed25519_SHA512.id:
+        return MLDSA65_Ed25519_SHA512()
+      
+      case MLDSA87_ECDSA_P384_SHA512.id:
+        return MLDSA87_ECDSA_P384_SHA512()
+
+      case MLDSA87_ECDSA_brainpoolP384r1_SHA512.id:
+        return MLDSA87_ECDSA_brainpoolP384r1_SHA512()
+
+      case MLDSA87_Ed448_SHA512.id:
+        return MLDSA87_Ed448_SHA512()
+      
+      case MLDSA87_Ed448_SHAKE256.id:
+        return MLDSA87_Ed448_SHAKE256()
+
+      case MLDSA87_RSA3072_PSS_SHA512.id:
+        return MLDSA87_RSA3072_PSS_SHA512()
+
+      case MLDSA87_RSA4096_PSS_SHA512.id:
+        return MLDSA87_RSA4096_PSS_SHA512()
+      
+      case MLDSA87_ECDSA_P521_SHA512.id:
+        return MLDSA87_ECDSA_P521_SHA512()
 
 
 ### Generate CA Cert and EE Cert ###
@@ -814,6 +869,33 @@ def signSigCert(sig):
   return x509.load_der_x509_certificate(encode(cert_pyasn1))
 
 
+def verifyCert(certder):
+  """
+  Loads and verifies an X.509 cert. Expects the cert in raw DER.
+  """
+  try:
+    x509obj = x509.load_der_x509_certificate(certder)
+  except:
+    try:
+      x509obj = x509.load_pem_x509_certificate(certder)
+    except:
+      raise ValueError("Input could not be parsed as a DER or PEM certificate.")
+    
+  OID = univ.ObjectIdentifier(x509obj.signature_algorithm_oid.dotted_string)
+  OIDname = [key for key, val in OID_TABLE.items() if val == OID]
+  if OIDname == []:
+   raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
+  OIDname = OIDname[0]
+
+  if x509obj.signature_algorithm_oid != x509obj.public_key_algorithm_oid:
+    raise ValueError("Certificate is not signed with the same algorithm as the public key.")
+
+  compAlg = getNewInstanceByName(OIDname)
+
+  compAlg.loadPK(x509obj.public_bytes(serialization.Encoding.DER))
+  print("DEBUG: "+str(compAlg))
+  return compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
+  
 
 
 def formatResults(sig, s ):
