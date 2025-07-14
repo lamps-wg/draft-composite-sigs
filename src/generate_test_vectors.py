@@ -351,11 +351,14 @@ class Ed25519(SIG):
 
 
   def private_key_bytes(self):
-    return self.sk.private_bytes(
-                        encoding=serialization.Encoding.Raw,
-                        format=serialization.PrivateFormat.Raw,
-                        encryption_algorithm=serialization.NoEncryption()
-                    )
+    raw = self.sk.private_bytes(
+                    encoding=serialization.Encoding.Raw,
+                    format=serialization.PrivateFormat.Raw,
+                    encryption_algorithm=serialization.NoEncryption()
+                )
+    CurvePrivateKey = univ.OctetString(raw)
+    return encode(CurvePrivateKey)
+
 
 class Ed448(Ed25519):
   id = "id-Ed448"
