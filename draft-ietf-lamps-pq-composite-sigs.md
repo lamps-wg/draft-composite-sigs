@@ -395,7 +395,7 @@ Key Generation Process:
   1. Generate component keys
 
      mldsaSeed = Random(32)
-     (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
+     (mldsaPK, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
