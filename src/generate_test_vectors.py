@@ -9,6 +9,7 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 
 import datetime
@@ -19,9 +20,10 @@ from zipfile import ZipFile
 
 from pyasn1.type import univ, tag
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
-from pyasn1.codec.der.decoder import decode
-from pyasn1.codec.der.encoder import encode
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
+VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
 OID_TABLE = {
     "sha256WithRSAEncryption-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
@@ -57,7 +59,6 @@ OID_TABLE = {
 }
 
 
-
 class SIG:
   pk = None
   sk = None
@@ -83,6 +84,19 @@ class SIG:
 
   def public_key_bytes(self):
     raise Exception("Not implemented")
+  
+  def constructSPKI(self, pkbytes):
+   """
+   Construct a SubjectPublicKeyInfo using the DER-encoded AlgorithmIdentifier encoded in self.algid, and the provided public key bytes.
+   """
+   spki = rfc5280.SubjectPublicKeyInfo()
+   spki['algorithm'], _ = der_decode(bytes.fromhex(self.algid), asn1Spec=rfc5280.AlgorithmIdentifier())
+   spki['subjectPublicKey'] = univ.BitString(hexValue=pkbytes.hex())
+   return der_encode(spki)
+  
+  def loadPK(self, pkbytes):
+    spki = self.constructSPKI(pkbytes)
+    self.pk = load_der_public_key(spki)
 
   def private_key_bytes(self):
     raise Exception("Not implemented")
@@ -97,6 +111,7 @@ class RSA2048PSS(SIG):
                               salt_length=padding.PSS.DIGEST_LENGTH
                           )
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20"
 
   # returns nothing
   def keyGen(self):
@@ -137,6 +152,10 @@ class RSA2048PSS(SIG):
                       format=serialization.PublicFormat.PKCS1
                     )
 
+  def loadPK(self, pkbytes):
+    super().loadPK(pkbytes)
+    assert isinstance(self.pk, rsa.RSAPublicKey)
+
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
@@ -149,6 +168,7 @@ class RSA2048PSS(SIG):
 class RSA2048PKCS15(RSA2048PSS):
   id = "sha256WithRSAEncryption-2048"
   hash_alg = hashes.SHA256()
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -191,6 +211,7 @@ class RSA3072PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
 
   # returns nothing
   def keyGen(self):
@@ -205,6 +226,7 @@ class RSA3072PSS(RSA2048PSS):
 
 class RSA3072PKCS15(RSA2048PKCS15):
   id = "sha256WithRSAEncryption-3072"
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -223,6 +245,7 @@ class RSA4096PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
 
   # returns nothing
   def keyGen(self):
@@ -238,6 +261,7 @@ class RSA4096PSS(RSA2048PSS):
 class RSA4096PKCS15(RSA2048PKCS15):
   id = "sha384WithRSAEncryption-4096"
   hash_alg = hashes.SHA384()
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -251,6 +275,7 @@ class RSA4096PKCS15(RSA2048PKCS15):
 
 class ECDSAP256(SIG):
   id = "ecdsa-with-SHA256"
+  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP256R1())
@@ -269,6 +294,11 @@ class ECDSAP256(SIG):
                       encoding=serialization.Encoding.X962,
                       format=serialization.PublicFormat.UncompressedPoint
                     )
+  
+  def loadPK(self, pkbytes):
+    super().loadPK(pkbytes)
+    assert isinstance(self.pk, ec.EllipticCurvePublicKey)
+
 
   def private_key_bytes(self):    
     return self.sk.private_bytes(
@@ -279,6 +309,7 @@ class ECDSAP256(SIG):
 
 class ECDSABP256(ECDSAP256):
   id = "ecdsa-with-SHA256"
+  algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP256R1())
@@ -288,6 +319,7 @@ class ECDSABP256(ECDSAP256):
 
 class ECDSAP384(ECDSAP256):
   id = "ecdsa-with-SHA384"
+  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP384R1())
@@ -303,6 +335,7 @@ class ECDSAP384(ECDSAP256):
 
 class ECDSABP384(ECDSAP384):
   id = "ecdsa-with-SHA384"
+  algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP384R1())
@@ -311,6 +344,7 @@ class ECDSABP384(ECDSAP384):
 
 class ECDSAP521(ECDSAP256):
   id = "ecdsa-with-SHA512"
+  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP521R1())
@@ -326,6 +360,7 @@ class ECDSAP521(ECDSAP256):
 
 class Ed25519(SIG):
   id = "id-Ed25519"
+  algid = "30 05 06 03 2B 65 70"
 
   def keyGen(self):
     self.sk = ed25519.Ed25519PrivateKey.generate()
@@ -349,7 +384,6 @@ class Ed25519(SIG):
                       format=serialization.PublicFormat.Raw
                     )
 
-
   def private_key_bytes(self):
     return self.sk.private_bytes(
                         encoding=serialization.Encoding.Raw,
@@ -359,6 +393,7 @@ class Ed25519(SIG):
 
 class Ed448(Ed25519):
   id = "id-Ed448"
+  algid = "30 05 06 03 2B 65 71"
 
   def keyGen(self):
     self.sk = ed448.Ed448PrivateKey.generate()
@@ -385,6 +420,9 @@ class MLDSA(SIG):
   
   def public_key_bytes(self):
     return self.pk
+  
+  def loadPK(self, pkbytes):
+    self.pk = pkbytes
 
   def private_key_bytes(self):    
     return self.sk
@@ -393,14 +431,17 @@ class MLDSA(SIG):
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
   ML_DSA_class = ML_DSA_44
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11"
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
   ML_DSA_class = ML_DSA_65
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12"
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
   ML_DSA_class = ML_DSA_87
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13s"
 
 
 
@@ -419,11 +460,18 @@ class CompositeSig(SIG):
                                             # the second is a boolean controlling whether
                                             # this renders in the domsep table in the draft.
 
+  def loadPK(self, pkbytes):
+    mldsapub, tradpub = self.deserializeKey(pkbytes)
+    self.mldsa.loadPK(mldsapub)
+    self.tradsig.loadPK(tradpub)
+    self.pk = self.serializeKey()
+
+
   def keyGen(self):
     self.mldsa.keyGen()
     self.tradsig.keyGen()
 
-    self.pk = self.public_key_bytes()
+    self.pk = self.serializeKey()
 
 
   def computeMprime(self, m, ctx, r, return_intermediates=False ):
@@ -514,15 +562,6 @@ class CompositeSig(SIG):
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
   
-  
-  def public_key_bytes(self):
-    return self.serializeKey()
-
-  def private_key_bytes(self):
-    mldsaSK = self.mldsa.private_key_bytes()
-    tradSK  = self.tradsig.private_key_bytes()
-
-    return mldsaSK + tradSK
   
   def serializeSignatureValue(self, r, s1, s2):
     assert isinstance(r, bytes)
@@ -686,6 +725,72 @@ class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   PH = hashes.SHA512()
 
 
+def getNewInstanceByName(oidName):
+    match oidName:
+      # include pure ML-DSA for baseline correctness checks
+      case MLDSA44.id:
+        return MLDSA44()
+      case MLDSA65.id:
+        return MLDSA65()
+      case MLDSA87.id:
+        return MLDSA87()
+      
+      case MLDSA44_RSA2048_PSS_SHA256.id:
+        return MLDSA44_RSA2048_PSS_SHA256()
+      
+      case MLDSA44_RSA2048_PKCS15_SHA256.id:
+        return MLDSA44_RSA2048_PKCS15_SHA256()
+      
+      case MLDSA44_Ed25519_SHA512.id:
+        return MLDSA44_Ed25519_SHA512()
+      
+      case MLDSA44_ECDSA_P256_SHA256.id:
+        return MLDSA44_ECDSA_P256_SHA256()
+      
+      case MLDSA65_RSA3072_PSS_SHA512.id:
+        return MLDSA65_RSA3072_PSS_SHA512()
+      
+      case MLDSA65_RSA3072_PKCS15_SHA512.id:
+        return MLDSA65_RSA3072_PKCS15_SHA512()
+      
+      case MLDSA65_RSA4096_PSS_SHA512.id:
+        return MLDSA65_RSA4096_PSS_SHA512()
+      
+      case MLDSA65_RSA4096_PKCS15_SHA512.id:
+        return MLDSA65_RSA4096_PKCS15_SHA512()
+      
+      case MLDSA65_ECDSA_P256_SHA512.id:
+        return MLDSA65_ECDSA_P256_SHA512()
+      
+      case MLDSA65_ECDSA_P384_SHA512.id:
+        return MLDSA65_ECDSA_P384_SHA512()
+      
+      case MLDSA65_ECDSA_brainpoolP256r1_SHA512.id:
+        return MLDSA65_ECDSA_brainpoolP256r1_SHA512()
+      
+      case MLDSA65_Ed25519_SHA512.id:
+        return MLDSA65_Ed25519_SHA512()
+      
+      case MLDSA87_ECDSA_P384_SHA512.id:
+        return MLDSA87_ECDSA_P384_SHA512()
+
+      case MLDSA87_ECDSA_brainpoolP384r1_SHA512.id:
+        return MLDSA87_ECDSA_brainpoolP384r1_SHA512()
+
+      case MLDSA87_Ed448_SHA512.id:
+        return MLDSA87_Ed448_SHA512()
+      
+      case MLDSA87_Ed448_SHAKE256.id:
+        return MLDSA87_Ed448_SHAKE256()
+
+      case MLDSA87_RSA3072_PSS_SHA512.id:
+        return MLDSA87_RSA3072_PSS_SHA512()
+
+      case MLDSA87_RSA4096_PSS_SHA512.id:
+        return MLDSA87_RSA4096_PSS_SHA512()
+      
+      case MLDSA87_ECDSA_P521_SHA512.id:
+        return MLDSA87_ECDSA_P521_SHA512()
 
 
 ### Generate CA Cert and EE Cert ###
@@ -702,17 +807,17 @@ caName = x509.Name(
 # input: a cert that already carries a signature that needs to be replaced
 def caSign(cert, caSK):
   certDer = cert.public_bytes(encoding=serialization.Encoding.DER)
-  cert_pyasn1, _ = decode(certDer, rfc5280.Certificate())
+  cert_pyasn1, _ = der_decode(certDer, rfc5280.Certificate())
 
   # Manually set the algID to ML-DSA-65 and re-sign it
   sigAlgID = rfc5280.AlgorithmIdentifier()
   sigAlgID['algorithm'] = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18))
   cert_pyasn1['tbsCertificate']['signature'] = sigAlgID
-  tbs_bytes = encode(cert_pyasn1['tbsCertificate'])
+  tbs_bytes = der_encode(cert_pyasn1['tbsCertificate'])
   cert_pyasn1['signatureAlgorithm'] = sigAlgID
   cert_pyasn1['signature'] = univ.BitString(hexValue=ML_DSA_65.sign(caSK, tbs_bytes).hex())
 
-  return x509.load_der_x509_certificate(encode(cert_pyasn1))
+  return x509.load_der_x509_certificate(der_encode(cert_pyasn1))
 
 
 # RFC 9500 section 2.1
@@ -787,7 +892,7 @@ def signSigCert(sig):
 
   # Extract the Certificate
   cert_der = cert.public_bytes(encoding=serialization.Encoding.DER)
-  cert_pyasn1, _ = decode(cert_der, rfc5280.Certificate())
+  cert_pyasn1, _ = der_decode(cert_der, rfc5280.Certificate())
 
   spki = rfc5280.SubjectPublicKeyInfo()
   algid = rfc5280.AlgorithmIdentifier()
@@ -807,13 +912,54 @@ def signSigCert(sig):
   if sig.params_asn != None:
     sigAlgID['parameters'] = sig.params_asn
   cert_pyasn1['tbsCertificate']['signature'] = sigAlgID
-  tbs_bytes = encode(cert_pyasn1['tbsCertificate'])
+  tbs_bytes = der_encode(cert_pyasn1['tbsCertificate'])
   cert_pyasn1['signatureAlgorithm'] = sigAlgID
   cert_pyasn1['signature'] = univ.BitString(hexValue=sig.sign(tbs_bytes).hex())
 
-  return x509.load_der_x509_certificate(encode(cert_pyasn1))
+  return x509.load_der_x509_certificate(der_encode(cert_pyasn1))
 
 
+def verifyCert(certder):
+  """
+  Loads and verifies an X.509 cert. Expects the cert in raw DER.
+  """
+  try:
+    x509obj = x509.load_der_x509_certificate(certder)
+  except:
+    try:
+      x509obj = x509.load_pem_x509_certificate(certder)
+    except:
+      raise ValueError("Input could not be parsed as a DER or PEM certificate.")
+    
+  OID = univ.ObjectIdentifier(x509obj.signature_algorithm_oid.dotted_string)
+  OIDname = [key for key, val in OID_TABLE.items() if val == OID]
+  if OIDname == []:
+   raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
+  OIDname = OIDname[0]
+
+  if x509obj.signature_algorithm_oid != x509obj.public_key_algorithm_oid:
+    raise ValueError("Certificate is not signed with the same algorithm as the public key.")
+
+  compAlg = getNewInstanceByName(OIDname)
+
+  if compAlg == None:
+    raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
+
+
+  # python.cryptography.x509 won't give me a raw public key if it doesn't have a class for it.
+  # So let's parse this with pyasn1_alt_modules and pull the pk out that way
+  asn1Certificate, rest = der_decode( x509obj.public_bytes(serialization.Encoding.DER), asn1Spec=rfc5280.Certificate())
+  pubkey = asn1Certificate["tbsCertificate"]["subjectPublicKeyInfo"]["subjectPublicKey"].asOctets()
+
+  compAlg.loadPK(pubkey)
+
+  try:
+    compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
+  except InvalidSignature:
+    return False
+  
+  return True
+  
 
 
 def formatResults(sig, s ):
@@ -835,10 +981,10 @@ def formatResults(sig, s ):
   pki['privateKeyAlgorithm'] = algId
   # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
   if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
-    pki['privateKey'] = univ.OctetString(encode(univ.OctetString(sig.private_key_bytes()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))))
+    pki['privateKey'] = univ.OctetString(der_encode(univ.OctetString(sig.private_key_bytes()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))))
   else:
     pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
-  jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
+  jsonTest['sk_pkcs8'] = base64.b64encode(der_encode(pki)).decode('ascii')
 
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
 
@@ -888,7 +1034,7 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
-    domain = encode(OID_TABLE[alg])
+    domain = der_encode(OID_TABLE[alg])
     DOMAIN_TABLE[alg] = (domain, False)
 
 # run this statically
