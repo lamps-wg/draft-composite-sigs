@@ -9,6 +9,7 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 
 import datetime
@@ -19,8 +20,8 @@ from zipfile import ZipFile
 
 from pyasn1.type import univ, tag
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
-from pyasn1.codec.der.decoder import der_decode
-from pyasn1.codec.der.encoder import der_encode
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 
 VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
@@ -83,6 +84,19 @@ class SIG:
 
   def public_key_bytes(self):
     raise Exception("Not implemented")
+  
+  def constructSPKI(self, pkbytes):
+    # TODO
+    algid = self.algid
+   # TODO go grab the b64 der for each one from the draft and stick them in
+
+   # TODO construct a pyasn1_alt_modules SubjectPublicKeyInfo
+   # TODO skpi['algId'] = algid
+   # TODO skpi['subjectPublicKey'] = univ.BitString(pkbytes)
+   # TODO return der_encode(spki)
+  
+  def loadPK(self, pkbytes):
+    self.pk = load_der_public_key(pkbytes)
 
   def private_key_bytes(self):
     raise Exception("Not implemented")
@@ -97,6 +111,7 @@ class RSA2048PSS(SIG):
                               salt_length=padding.PSS.DIGEST_LENGTH
                           )
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20 =="
 
   # returns nothing
   def keyGen(self):
@@ -137,6 +152,10 @@ class RSA2048PSS(SIG):
                       format=serialization.PublicFormat.PKCS1
                     )
 
+  def loadPK(self, pkbytes):
+    super().loadPK(pkbytes)
+    assert isinstance(self.pk, rsa.RSAPublicKey)
+
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
@@ -149,6 +168,7 @@ class RSA2048PSS(SIG):
 class RSA2048PKCS15(RSA2048PSS):
   id = "sha256WithRSAEncryption-2048"
   hash_alg = hashes.SHA256()
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
 
     # returns nothing
   def keyGen(self):
@@ -191,6 +211,7 @@ class RSA3072PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40 =="
 
   # returns nothing
   def keyGen(self):
@@ -205,6 +226,7 @@ class RSA3072PSS(RSA2048PSS):
 
 class RSA3072PKCS15(RSA2048PKCS15):
   id = "sha256WithRSAEncryption-3072"
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
 
     # returns nothing
   def keyGen(self):
@@ -223,6 +245,7 @@ class RSA4096PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40 =="
 
   # returns nothing
   def keyGen(self):
@@ -238,6 +261,7 @@ class RSA4096PSS(RSA2048PSS):
 class RSA4096PKCS15(RSA2048PKCS15):
   id = "sha384WithRSAEncryption-4096"
   hash_alg = hashes.SHA384()
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
 
     # returns nothing
   def keyGen(self):
@@ -251,6 +275,7 @@ class RSA4096PKCS15(RSA2048PKCS15):
 
 class ECDSAP256(SIG):
   id = "ecdsa-with-SHA256"
+  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07 =="
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP256R1())
@@ -269,6 +294,11 @@ class ECDSAP256(SIG):
                       encoding=serialization.Encoding.X962,
                       format=serialization.PublicFormat.UncompressedPoint
                     )
+  
+  def loadPK(self, pkbytes):
+    super().loadPK(pkbytes)
+    assert isinstance(self.pk, ec.EllipticCurvePublicKey())
+
 
   def private_key_bytes(self):    
     return self.sk.private_bytes(
@@ -288,6 +318,7 @@ class ECDSABP256(ECDSAP256):
 
 class ECDSAP384(ECDSAP256):
   id = "ecdsa-with-SHA384"
+  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22 =="
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP384R1())
@@ -350,7 +381,6 @@ class Ed25519(SIG):
                     )
 
   def loadPK(self, pkbytes):
-    print("DEBUG: len(pkbytes): "+str(len(pkbytes)))
     self.pk = ed25519.Ed25519PublicKey.from_public_bytes(pkbytes)
 
   def private_key_bytes(self):
@@ -399,14 +429,17 @@ class MLDSA(SIG):
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
   ML_DSA_class = ML_DSA_44
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11 =="
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
   ML_DSA_class = ML_DSA_65
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12 =="
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
   ML_DSA_class = ML_DSA_87
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13 =="
 
 
 
@@ -427,7 +460,6 @@ class CompositeSig(SIG):
 
   def loadPK(self, pkbytes):
     mldsapub, tradpub = self.deserializeKey(pkbytes)
-    print("DEBUG: len(mldsapub), len(tradpub)" + str(len(mldsapub)), str(len(tradpub)))
     self.mldsa.loadPK(mldsapub)
     self.tradsig.loadPK(tradpub)
     self.pk = self.serializeKey()
@@ -901,12 +933,19 @@ def verifyCert(certder):
   compAlg = getNewInstanceByName(OIDname)
 
 
+  # python.cryptography.x509 won't give me a raw public key if it doesn't have a class for it.
+  # So let's parse this with pyasn1_alt_modules and pull the pk out that way
   asn1Certificate, rest = der_decode( x509obj.public_bytes(serialization.Encoding.DER), asn1Spec=rfc5280.Certificate())
-  print("DEBUG: cert: \n"+ str(asn1Certificate))
+  pubkey = asn1Certificate["tbsCertificate"]["subjectPublicKeyInfo"]["subjectPublicKey"].asOctets()
 
-  compAlg.loadPK(x509obj.public_key())
-  print("DEBUG: "+str(compAlg))
-  return compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
+  compAlg.loadPK(pubkey)
+
+  try:
+    compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
+  except InvalidSignature:
+    return False
+  
+  return True
   
 
 

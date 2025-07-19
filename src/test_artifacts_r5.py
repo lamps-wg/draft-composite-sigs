@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
-import re
+import sys, os, re
+import zipfile, tempfile
 
 from pyasn1.type import univ
 
@@ -16,22 +16,45 @@ if infile is None:
 
 print("Testing "+infile+" against "+generate_test_vectors.VERSION_IMPLEMENTED)
 
-OID = re.search(r'.*-(([0-9]+\.?)*)_.*', infile).groups()[0]
 
-# if not univ.ObjectIdentifier(OID) in generate_test_vectors.OID_TABLE.values():
-OIDname = [key for key, val in generate_test_vectors.OID_TABLE.items() if val == univ.ObjectIdentifier(OID)]
+zipf = zipfile.ZipFile(infile)
 
-if OIDname == []:
-   exit("OID does not represent a composite (at least not of this version of the draft): "+OID)
-OIDname = OIDname[0]
+tmpdir = tempfile.mkdtemp()
+zipf.extractall(tmpdir)
 
 
-with open(infile, "rb") as f:
-  try:
-    res = generate_test_vectors.verifyCert(f.read())
-    print("Result: "+str(res))
-  except LookupError:
-     print("Certificate is not signed with a composite (at least not of this version of the draft)")
-  except ValueError as e:
-     print("Error: Input could not be parsed as a DER or PEM certificate: "+infile, file=sys.stderr)
-     print(e, file=sys.stderr)
+# Extract the artifacts zip
+for file in os.listdir(tmpdir):
+    filename = os.fsdecode(file)
+    if filename.endswith("_ta.der"): 
+      # check if the OID in the file name is a supported composite
+      OID = re.search(r'.*-(([0-9]+\.?)*)_.*', filename).groups()[0]
+
+      # if not univ.ObjectIdentifier(OID) in generate_test_vectors.OID_TABLE.values():
+      OIDname = [key for key, val in generate_test_vectors.OID_TABLE.items() if val == univ.ObjectIdentifier(OID)]
+
+      if OIDname == []:
+        print("DEBUG: OID does not represent a composite (at least not of this version of the draft): "+OID)
+        continue
+      OIDname = OIDname[0]
+      
+
+      fullFileName = os.path.join(tmpdir, filename) 
+      print("\nProcessing "+OIDname+" from "+fullFileName)
+      with open(fullFileName, "rb") as f:
+        try:
+          certbytes = f.read()
+          res = generate_test_vectors.verifyCert(certbytes)
+          print("\tCert passed verification: "+str(res))
+          # TODO -- output test_results.csv
+        except LookupError:
+          print("Certificate is not signed with a composite (at least not of this version of the draft)")
+          # TODO -- output test_results.csv
+           
+    else:
+        continue
+
+
+
+
+
