@@ -853,13 +853,15 @@ def output_artifacts_certs_r5(jsonTestVectors):
       try:
           # <friendlyname>-<oid>_ta.der
           certFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_ta.der"
-          keyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.raw"
+          rawKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.raw"
+          derKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.der"
       except KeyError:
           # if this one is not in the OID_TABLE, then just skip it
           continue
       
       artifacts_zip.writestr(certFilename, data=base64.b64decode(tc['x5c']))
-      artifacts_zip.writestr(keyFilename, data=base64.b64decode(tc['sk']))
+      artifacts_zip.writestr(rawKeyFilename, data=base64.b64decode(tc['sk']))
+      artifacts_zip.writestr(derKeyFilename, data=base64.b64decode(tc['sk_pkcs8']))
 
 
 
