@@ -23,6 +23,8 @@ tmpdir = tempfile.mkdtemp()
 zipf.extractall(tmpdir)
 
 
+# TODO -- do a recursive search to handle extra layers of folders
+
 # Extract the artifacts zip
 for file in os.listdir(tmpdir):
     filename = os.fsdecode(file)
@@ -47,8 +49,9 @@ for file in os.listdir(tmpdir):
           res = generate_test_vectors.verifyCert(certbytes)
           print("\tCert passed verification: "+str(res))
           # TODO -- output test_results.csv
-        except LookupError:
+        except LookupError as e:
           print("Certificate is not signed with a composite (at least not of this version of the draft)")
+          print(e)
           # TODO -- output test_results.csv
            
     else:

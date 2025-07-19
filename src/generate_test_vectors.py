@@ -86,17 +86,17 @@ class SIG:
     raise Exception("Not implemented")
   
   def constructSPKI(self, pkbytes):
-    # TODO
-    algid = self.algid
-   # TODO go grab the b64 der for each one from the draft and stick them in
-
-   # TODO construct a pyasn1_alt_modules SubjectPublicKeyInfo
-   # TODO skpi['algId'] = algid
-   # TODO skpi['subjectPublicKey'] = univ.BitString(pkbytes)
-   # TODO return der_encode(spki)
+   """
+   Construct a SubjectPublicKeyInfo using the DER-encoded AlgorithmIdentifier encoded in self.algid, and the provided public key bytes.
+   """
+   spki = rfc5280.SubjectPublicKeyInfo()
+   spki['algorithm'], _ = der_decode(bytes.fromhex(self.algid), asn1Spec=rfc5280.AlgorithmIdentifier())
+   spki['subjectPublicKey'] = univ.BitString(hexValue=pkbytes.hex())
+   return der_encode(spki)
   
   def loadPK(self, pkbytes):
-    self.pk = load_der_public_key(pkbytes)
+    spki = self.constructSPKI(pkbytes)
+    self.pk = load_der_public_key(spki)
 
   def private_key_bytes(self):
     raise Exception("Not implemented")
@@ -111,7 +111,7 @@ class RSA2048PSS(SIG):
                               salt_length=padding.PSS.DIGEST_LENGTH
                           )
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20 =="
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20"
 
   # returns nothing
   def keyGen(self):
@@ -168,7 +168,7 @@ class RSA2048PSS(SIG):
 class RSA2048PKCS15(RSA2048PSS):
   id = "sha256WithRSAEncryption-2048"
   hash_alg = hashes.SHA256()
-  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -211,7 +211,7 @@ class RSA3072PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40 =="
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
 
   # returns nothing
   def keyGen(self):
@@ -226,7 +226,7 @@ class RSA3072PSS(RSA2048PSS):
 
 class RSA3072PKCS15(RSA2048PKCS15):
   id = "sha256WithRSAEncryption-3072"
-  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -245,7 +245,7 @@ class RSA4096PSS(RSA2048PSS):
       salt_length=padding.PSS.DIGEST_LENGTH
   )
   params_asn = rfc4055.rSASSA_PSS_SHA512_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40 =="
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
 
   # returns nothing
   def keyGen(self):
@@ -261,7 +261,7 @@ class RSA4096PSS(RSA2048PSS):
 class RSA4096PKCS15(RSA2048PKCS15):
   id = "sha384WithRSAEncryption-4096"
   hash_alg = hashes.SHA384()
-  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00 =="
+  algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
     # returns nothing
   def keyGen(self):
@@ -275,7 +275,7 @@ class RSA4096PKCS15(RSA2048PKCS15):
 
 class ECDSAP256(SIG):
   id = "ecdsa-with-SHA256"
-  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07 =="
+  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP256R1())
@@ -297,7 +297,7 @@ class ECDSAP256(SIG):
   
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
-    assert isinstance(self.pk, ec.EllipticCurvePublicKey())
+    assert isinstance(self.pk, ec.EllipticCurvePublicKey)
 
 
   def private_key_bytes(self):    
@@ -309,6 +309,7 @@ class ECDSAP256(SIG):
 
 class ECDSABP256(ECDSAP256):
   id = "ecdsa-with-SHA256"
+  algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP256R1())
@@ -318,7 +319,7 @@ class ECDSABP256(ECDSAP256):
 
 class ECDSAP384(ECDSAP256):
   id = "ecdsa-with-SHA384"
-  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22 =="
+  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP384R1())
@@ -334,6 +335,7 @@ class ECDSAP384(ECDSAP256):
 
 class ECDSABP384(ECDSAP384):
   id = "ecdsa-with-SHA384"
+  algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.BrainpoolP384R1())
@@ -342,6 +344,7 @@ class ECDSABP384(ECDSAP384):
 
 class ECDSAP521(ECDSAP256):
   id = "ecdsa-with-SHA512"
+  algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
 
   def keyGen(self):
     self.sk = ec.generate_private_key(ec.SECP521R1())
@@ -357,6 +360,7 @@ class ECDSAP521(ECDSAP256):
 
 class Ed25519(SIG):
   id = "id-Ed25519"
+  algid = "30 05 06 03 2B 65 70"
 
   def keyGen(self):
     self.sk = ed25519.Ed25519PrivateKey.generate()
@@ -380,9 +384,6 @@ class Ed25519(SIG):
                       format=serialization.PublicFormat.Raw
                     )
 
-  def loadPK(self, pkbytes):
-    self.pk = ed25519.Ed25519PublicKey.from_public_bytes(pkbytes)
-
   def private_key_bytes(self):
     return self.sk.private_bytes(
                         encoding=serialization.Encoding.Raw,
@@ -392,6 +393,7 @@ class Ed25519(SIG):
 
 class Ed448(Ed25519):
   id = "id-Ed448"
+  algid = "30 05 06 03 2B 65 71"
 
   def keyGen(self):
     self.sk = ed448.Ed448PrivateKey.generate()
@@ -429,17 +431,17 @@ class MLDSA(SIG):
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
   ML_DSA_class = ML_DSA_44
-  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11 =="
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11"
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
   ML_DSA_class = ML_DSA_65
-  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12 =="
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12"
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
   ML_DSA_class = ML_DSA_87
-  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13 =="
+  algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13s"
 
 
 
@@ -725,6 +727,14 @@ class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
 
 def getNewInstanceByName(oidName):
     match oidName:
+      # include pure ML-DSA for baseline correctness checks
+      case MLDSA44.id:
+        return MLDSA44()
+      case MLDSA65.id:
+        return MLDSA65()
+      case MLDSA87.id:
+        return MLDSA87()
+      
       case MLDSA44_RSA2048_PSS_SHA256.id:
         return MLDSA44_RSA2048_PSS_SHA256()
       
@@ -931,6 +941,9 @@ def verifyCert(certder):
     raise ValueError("Certificate is not signed with the same algorithm as the public key.")
 
   compAlg = getNewInstanceByName(OIDname)
+
+  if compAlg == None:
+    raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
 
 
   # python.cryptography.x509 won't give me a raw public key if it doesn't have a class for it.
