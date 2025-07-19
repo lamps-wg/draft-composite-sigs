@@ -32,5 +32,6 @@ with open(infile, "rb") as f:
     print("Result: "+str(res))
   except LookupError:
      print("Certificate is not signed with a composite (at least not of this version of the draft)")
-  except ValueError:
-     print("Error: Input could not be parsed as a DER or PEM certificate: "+infile)
+  except ValueError as e:
+     print("Error: Input could not be parsed as a DER or PEM certificate: "+infile, file=sys.stderr)
+     print(e, file=sys.stderr)

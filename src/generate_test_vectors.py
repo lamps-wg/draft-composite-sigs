@@ -19,8 +19,8 @@ from zipfile import ZipFile
 
 from pyasn1.type import univ, tag
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
-from pyasn1.codec.der.decoder import decode
-from pyasn1.codec.der.encoder import encode
+from pyasn1.codec.der.decoder import der_decode
+from pyasn1.codec.der.encoder import der_encode
 
 VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
@@ -349,6 +349,9 @@ class Ed25519(SIG):
                       format=serialization.PublicFormat.Raw
                     )
 
+  def loadPK(self, pkbytes):
+    print("DEBUG: len(pkbytes): "+str(len(pkbytes)))
+    self.pk = ed25519.Ed25519PublicKey.from_public_bytes(pkbytes)
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
@@ -385,6 +388,9 @@ class MLDSA(SIG):
   
   def public_key_bytes(self):
     return self.pk
+  
+  def loadPK(self, pkbytes):
+    self.pk = pkbytes
 
   def private_key_bytes(self):    
     return self.sk
@@ -421,15 +427,17 @@ class CompositeSig(SIG):
 
   def loadPK(self, pkbytes):
     mldsapub, tradpub = self.deserializeKey(pkbytes)
-    self.mldsa.pk = mldsapub
-    self.tradsig.pk = tradpub
+    print("DEBUG: len(mldsapub), len(tradpub)" + str(len(mldsapub)), str(len(tradpub)))
+    self.mldsa.loadPK(mldsapub)
+    self.tradsig.loadPK(tradpub)
+    self.pk = self.serializeKey()
 
 
   def keyGen(self):
     self.mldsa.keyGen()
     self.tradsig.keyGen()
 
-    self.pk = self.public_key_bytes()
+    self.pk = self.serializeKey()
 
 
   def computeMprime(self, m, ctx, r, return_intermediates=False ):
@@ -757,17 +765,17 @@ caName = x509.Name(
 # input: a cert that already carries a signature that needs to be replaced
 def caSign(cert, caSK):
   certDer = cert.public_bytes(encoding=serialization.Encoding.DER)
-  cert_pyasn1, _ = decode(certDer, rfc5280.Certificate())
+  cert_pyasn1, _ = der_decode(certDer, rfc5280.Certificate())
 
   # Manually set the algID to ML-DSA-65 and re-sign it
   sigAlgID = rfc5280.AlgorithmIdentifier()
   sigAlgID['algorithm'] = univ.ObjectIdentifier((2,16,840,1,101,3,4,3,18))
   cert_pyasn1['tbsCertificate']['signature'] = sigAlgID
-  tbs_bytes = encode(cert_pyasn1['tbsCertificate'])
+  tbs_bytes = der_encode(cert_pyasn1['tbsCertificate'])
   cert_pyasn1['signatureAlgorithm'] = sigAlgID
   cert_pyasn1['signature'] = univ.BitString(hexValue=ML_DSA_65.sign(caSK, tbs_bytes).hex())
 
-  return x509.load_der_x509_certificate(encode(cert_pyasn1))
+  return x509.load_der_x509_certificate(der_encode(cert_pyasn1))
 
 
 # RFC 9500 section 2.1
@@ -842,7 +850,7 @@ def signSigCert(sig):
 
   # Extract the Certificate
   cert_der = cert.public_bytes(encoding=serialization.Encoding.DER)
-  cert_pyasn1, _ = decode(cert_der, rfc5280.Certificate())
+  cert_pyasn1, _ = der_decode(cert_der, rfc5280.Certificate())
 
   spki = rfc5280.SubjectPublicKeyInfo()
   algid = rfc5280.AlgorithmIdentifier()
@@ -862,11 +870,11 @@ def signSigCert(sig):
   if sig.params_asn != None:
     sigAlgID['parameters'] = sig.params_asn
   cert_pyasn1['tbsCertificate']['signature'] = sigAlgID
-  tbs_bytes = encode(cert_pyasn1['tbsCertificate'])
+  tbs_bytes = der_encode(cert_pyasn1['tbsCertificate'])
   cert_pyasn1['signatureAlgorithm'] = sigAlgID
   cert_pyasn1['signature'] = univ.BitString(hexValue=sig.sign(tbs_bytes).hex())
 
-  return x509.load_der_x509_certificate(encode(cert_pyasn1))
+  return x509.load_der_x509_certificate(der_encode(cert_pyasn1))
 
 
 def verifyCert(certder):
@@ -892,7 +900,11 @@ def verifyCert(certder):
 
   compAlg = getNewInstanceByName(OIDname)
 
-  compAlg.loadPK(x509obj.public_bytes(serialization.Encoding.DER))
+
+  asn1Certificate, rest = der_decode( x509obj.public_bytes(serialization.Encoding.DER), asn1Spec=rfc5280.Certificate())
+  print("DEBUG: cert: \n"+ str(asn1Certificate))
+
+  compAlg.loadPK(x509obj.public_key())
   print("DEBUG: "+str(compAlg))
   return compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
   
@@ -917,10 +929,10 @@ def formatResults(sig, s ):
   pki['privateKeyAlgorithm'] = algId
   # for standalone ML-DSA, we need to wrap the private key in an OCTET STRING, but not when it's a composite
   if sig.id in ("id-ML-DSA-44", "id-ML-DSA-65", "id-ML-DSA-87"):
-    pki['privateKey'] = univ.OctetString(encode(univ.OctetString(sig.private_key_bytes()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))))
+    pki['privateKey'] = univ.OctetString(der_encode(univ.OctetString(sig.private_key_bytes()).subtype(implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))))
   else:
     pki['privateKey'] = univ.OctetString(sig.private_key_bytes())
-  jsonTest['sk_pkcs8'] = base64.b64encode(encode(pki)).decode('ascii')
+  jsonTest['sk_pkcs8'] = base64.b64encode(der_encode(pki)).decode('ascii')
 
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
 
@@ -968,7 +980,7 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
-    domain = encode(OID_TABLE[alg])
+    domain = der_encode(OID_TABLE[alg])
     DOMAIN_TABLE[alg] = (domain, False)
 
 # run this statically
