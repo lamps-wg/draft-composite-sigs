@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 
 import sys, os, re
+from glob import glob
 import zipfile, tempfile
 
 from pyasn1.type import univ
 
 import generate_test_vectors
 
-if len(sys.argv) < 2:
-    exit("Input file is required.")
+if len(sys.argv) < 3:
+    exit("Please call this as `test_artifacts_r5.py [provider] [artifacts_certs_r5.zip]`")
 
-infile = sys.argv[1]
+prov = sys.argv[1]
+
+infile = sys.argv[2]
 if infile is None:
   exit("Input file is required.")
 
 print("Testing "+infile+" against "+generate_test_vectors.VERSION_IMPLEMENTED)
+
+
+os.makedirs("compatMatrices/artifacts_certs_r5", exist_ok=True)
+
+compatMatrixFile = open("compatMatrices/artifacts_certs_r5/"+prov+"_composite-ref-impl.csv", 'w')
+compatMatrixFile.write("key_algorithm_oid,type,test_result\n")
 
 
 zipf = zipfile.ZipFile(infile)
@@ -23,41 +32,39 @@ tmpdir = tempfile.mkdtemp()
 zipf.extractall(tmpdir)
 
 
-# TODO -- do a recursive search to handle extra layers of folders
-
 # Extract the artifacts zip
-for file in os.listdir(tmpdir):
-    filename = os.fsdecode(file)
-    if filename.endswith("_ta.der"): 
-      # check if the OID in the file name is a supported composite
-      OID = re.search(r'.*-(([0-9]+\.?)*)_.*', filename).groups()[0]
+# do a recursive search to be robust to extra layers of folders in the zip
+for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
 
-      # if not univ.ObjectIdentifier(OID) in generate_test_vectors.OID_TABLE.values():
-      OIDname = [key for key, val in generate_test_vectors.OID_TABLE.items() if val == univ.ObjectIdentifier(OID)]
+  # check if the OID in the file name is a supported composite
+  OID = re.search(r'.*-(([0-9]+\.?)*)_.*', filename).groups()[0]
 
-      if OIDname == []:
-        print("DEBUG: OID does not represent a composite (at least not of this version of the draft): "+OID)
-        continue
-      OIDname = OIDname[0]
-      
+  # if not univ.ObjectIdentifier(OID) in generate_test_vectors.OID_TABLE.values():
+  OIDname = [key for key, val in generate_test_vectors.OID_TABLE.items() if val == univ.ObjectIdentifier(OID)]
 
-      fullFileName = os.path.join(tmpdir, filename) 
-      print("\nProcessing "+OIDname+" from "+fullFileName)
-      with open(fullFileName, "rb") as f:
-        try:
-          certbytes = f.read()
-          res = generate_test_vectors.verifyCert(certbytes)
-          print("\tCert passed verification: "+str(res))
-          # TODO -- output test_results.csv
-        except LookupError as e:
-          print("Certificate is not signed with a composite (at least not of this version of the draft)")
-          print(e)
-          # TODO -- output test_results.csv
-           
-    else:
-        continue
+  if OIDname == []:
+    print("DEBUG: OID does not represent a composite (at least not of this version of the draft): "+OID)
+    continue
+  OIDname = OIDname[0]
+  
 
-
-
-
-
+  fullFileName = os.path.join(tmpdir, filename) 
+  print("\nProcessing "+OIDname+" from "+fullFileName)
+  with open(fullFileName, "rb") as f:
+    try:
+      certbytes = f.read()
+      res = generate_test_vectors.verifyCert(certbytes)
+      print("\tCert passed verification: "+str(res))
+      if res:
+        compatMatrixFile.write(OID+",cert,Y\n")
+      else:
+        compatMatrixFile.write(OID+",cert,N\n")
+      # TODO -- output test results csv
+      # TODO output format:
+        # compatMatrices
+        #     - artifacts_certs_r5
+        #       - prov2_composite-ref-impl.csv
+    except LookupError as e:
+      print("Certificate is not signed with a composite (at least not of this version of the draft)")
+      print(e)
+          
