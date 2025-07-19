@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 14 January 2026                                         M. Pala
+Expires: 20 January 2026                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            13 July 2025
+                                                            19 July 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 January 2026.
+   This Internet-Draft will expire on 20 January 2026.
 
 Copyright Notice
 
@@ -136,10 +136,7 @@ Table of Contents
    Interop-affecting changes:
 
    *  Fixed the ASN.1 module for the pk-CompositeSignature and sa-
-      CompositeSignature to indicate no ASN.1 wrapping is used.  This
-      simply clarifies the intended encoding but could be an interop-
-      affecting change for implementations that built encoders /
-      decoders from the ASN.1 and ended up with a non-intended encoding.
+      CompositeSignature to indicate no ASN.1 wrapping is used.
 
    Editorial changes:
 
