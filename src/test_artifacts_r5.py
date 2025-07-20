@@ -20,9 +20,9 @@ if infile is None:
 print("Testing "+infile+" against "+generate_test_vectors.VERSION_IMPLEMENTED)
 
 
-os.makedirs("compatMatrices/artifacts_certs_r5", exist_ok=True)
+os.makedirs("output/compatMatrices/artifacts_certs_r5", exist_ok=True)
 
-compatMatrixFile = open("compatMatrices/artifacts_certs_r5/"+prov+"_composite-ref-impl.csv", 'w')
+compatMatrixFile = open("output/compatMatrices/artifacts_certs_r5/"+prov+"_composite-ref-impl.csv", 'w')
 compatMatrixFile.write("key_algorithm_oid,type,test_result\n")
 
 
