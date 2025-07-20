@@ -59,11 +59,6 @@ for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
         compatMatrixFile.write(OID+",cert,Y\n")
       else:
         compatMatrixFile.write(OID+",cert,N\n")
-      # TODO -- output test results csv
-      # TODO output format:
-        # compatMatrices
-        #     - artifacts_certs_r5
-        #       - prov2_composite-ref-impl.csv
     except LookupError as e:
       print("Certificate is not signed with a composite (at least not of this version of the draft)")
       print(e)
