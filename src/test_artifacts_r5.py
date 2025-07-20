@@ -37,7 +37,11 @@ zipf.extractall(tmpdir)
 for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
 
   # check if the OID in the file name is a supported composite
-  OID = re.search(r'.*-(([0-9]+\.?)*)_.*', filename).groups()[0]
+  try:
+    OID = re.search(r'.*-(([0-9]+\.?)*)_.*', filename).groups()[0]
+  except:
+    print("Could not parse this file name, skipping. "+filename)
+    continue
 
   # if not univ.ObjectIdentifier(OID) in generate_test_vectors.OID_TABLE.values():
   OIDname = [key for key, val in generate_test_vectors.OID_TABLE.items() if val == univ.ObjectIdentifier(OID)]
