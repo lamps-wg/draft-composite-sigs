@@ -17,7 +17,7 @@ infile = sys.argv[2]
 if infile is None:
   exit("Input file is required.")
 
-print("Testing "+infile+" against "+generate_test_vectors.VERSION_IMPLEMENTED)
+print("\n\nTesting "+prov+" / "+infile+" against "+generate_test_vectors.VERSION_IMPLEMENTED)
 
 
 os.makedirs("output/certs/compatMatrices/artifacts_certs_r5", exist_ok=True)
