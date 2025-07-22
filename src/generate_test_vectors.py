@@ -63,24 +63,19 @@ class SIG:
   pk = None
   sk = None
   id = None
-  pss_params = None
   params_asn = None
 
   # returns nothing
   def keyGen(self):
-    pass
+    raise Exception("Not implemented")
     
   # returns (s)
   def sign(self, m):
-    if self.sk == None:
-      raise Exception("Cannot Sign for a SIG with no SK.")
-    pass
+    raise Exception("Not implemented")
 
   # raises cryptography.exceptions.InvalidSignature
   def verify(self, s, m):
-    if self.pk == None:
-      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
-    pass
+    raise Exception("Not implemented")
 
   def public_key_bytes(self):
     raise Exception("Not implemented")
@@ -103,34 +98,26 @@ class SIG:
     
 
 
-class RSA2048PSS(SIG):
-  id = "id-RSASSA-PSS-2048"
-  hash_alg = hashes.SHA256()
-  pss_params = padding.PSS(
-                              mgf=padding.MGF1(hash_alg),
-                              salt_length=padding.PSS.DIGEST_LENGTH
-                          )
-  params_asn = rfc4055.rSASSA_PSS_SHA256_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20"
-
+class RSA(SIG):
   # returns nothing
   def keyGen(self):
     self.sk = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048
-      )
+        key_size=self.key_size)
     self.pk = self.sk.public_key()
-    
+
+  def get_padding(self):
+    raise Exception("Not implemented")
+
   # returns (s)
   def sign(self, m):
     if self.sk == None:
       raise Exception("Cannot Sign for a SIG with no SK.")
     
     s = self.sk.sign(
-                        m,
-                        self.pss_params,
-                        self.hash_alg,
-                    )
+        m,
+        self.get_padding(),
+        self.hash_alg)
     return s
 
   # raises cryptography.exceptions.InvalidSignature
@@ -139,18 +126,14 @@ class RSA2048PSS(SIG):
       raise InvalidSignature("Cannot Verify for a SIG with no PK.")
     
     self.pk.verify(
-                      s,
-                      m,
-                      self.pss_params,
-                      self.hash_alg
-                  )
-
+        s, m,
+        self.get_padding(),
+        self.hash_alg)
 
   def public_key_bytes(self):
     return self.pk.public_bytes(
-                      encoding=serialization.Encoding.DER,
-                      format=serialization.PublicFormat.PKCS1
-                    )
+        encoding=serialization.Encoding.DER,
+        format=serialization.PublicFormat.PKCS1)
 
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
@@ -159,213 +142,132 @@ class RSA2048PSS(SIG):
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
-                        encoding=serialization.Encoding.DER,
-                        format=serialization.PrivateFormat.TraditionalOpenSSL,
-                        encryption_algorithm=serialization.NoEncryption()
-                    )
+        encoding=serialization.Encoding.DER,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption())
 
 
-class RSA2048PKCS15(RSA2048PSS):
+class RSAPSS(RSA):
+  def get_padding(self):
+    return padding.PSS(
+        mgf=padding.MGF1(self.hash_alg),
+        salt_length=padding.PSS.DIGEST_LENGTH)
+
+
+class RSAPKCS15(RSA):
+  def get_padding(self):
+    return padding.PKCS1v15()
+
+
+class RSA2048PSS(RSAPSS):
+  id = "id-RSASSA-PSS-2048"
+  key_size = 2048
+  hash_alg = hashes.SHA256()
+  params_asn = rfc4055.rSASSA_PSS_SHA256_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20"
+
+
+class RSA2048PKCS15(RSAPKCS15):
   id = "sha256WithRSAEncryption-2048"
+  key_size = 2048
   hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
-    # returns nothing
-  def keyGen(self):
-    self.sk = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048
-      )
-    self.pk = self.sk.public_key()
 
-  # returns (s)
-  def sign(self, m):
-    if self.sk == None:
-      raise Exception("Cannot Sign for a SIG with no SK.")
-    
-    s = self.sk.sign(
-                        m,
-                        padding.PKCS1v15(),
-                        self.hash_alg
-                    )
-    return s
-
-  # raises cryptography.exceptions.InvalidSignature
-  def verify(self, s, m):
-    if self.pk == None:
-      raise InvalidSignature("Cannot Verify for a SIG with no PK.")
-    
-    self.pk.verify(
-                      s,
-                      m,
-                      padding.PKCS1v15(),
-                      self.hash_alg
-                  )
-
-
-class RSA3072PSS(RSA2048PSS):
+class RSA3072PSS(RSAPSS):
   id = "id-RSASSA-PSS-3072"
-  hash_alg = hashes.SHA512()
-  pss_params = padding.PSS(
-      mgf=padding.MGF1(hash_alg),
-      salt_length=padding.PSS.DIGEST_LENGTH
-  )
-  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
-
-  # returns nothing
-  def keyGen(self):
-    self.sk = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=3072
-      )
-    self.pk = self.sk.public_key()
-    
-  # the rest of the functions are inherited from RSA2048PSS
+  key_size = 3072
+  hash_alg = hashes.SHA256()
+  params_asn = rfc4055.rSASSA_PSS_SHA256_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20"
 
 
-class RSA3072PKCS15(RSA2048PKCS15):
+class RSA3072PKCS15(RSAPKCS15):
   id = "sha256WithRSAEncryption-3072"
+  key_size = 3072
+  hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
-    # returns nothing
-  def keyGen(self):
-    self.sk = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=3072
-      )
-    self.pk = self.sk.public_key()
 
-
-class RSA4096PSS(RSA2048PSS):
+class RSA4096PSS(RSAPSS):
   id = "id-RSASSA-PSS-4096"
-  hash_alg = hashes.SHA512()
-  pss_params = padding.PSS(
-      mgf=padding.MGF1(hashes.SHA512()),
-      salt_length=padding.PSS.DIGEST_LENGTH
-  )
-  params_asn = rfc4055.rSASSA_PSS_SHA512_Params
-  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40"
-
-  # returns nothing
-  def keyGen(self):
-    self.sk = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=4096
-      )
-    self.pk = self.sk.public_key()
-    
-  # the rest of the functions are inherited from RSA2048PSS
+  key_size = 4096
+  hash_alg = hashes.SHA384()
+  params_asn = rfc4055.rSASSA_PSS_SHA384_Params
+  algid = "30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30 0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A2 03 02 01 30"
 
 
-class RSA4096PKCS15(RSA2048PKCS15):
+class RSA4096PKCS15(RSAPKCS15):
   id = "sha384WithRSAEncryption-4096"
+  key_size = 4096
   hash_alg = hashes.SHA384()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
-    # returns nothing
+
+class ECDSA(SIG):
   def keyGen(self):
-    self.sk = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=4096
-      )
+    self.sk = ec.generate_private_key(self.curve)
     self.pk = self.sk.public_key()
 
-
-
-class ECDSAP256(SIG):
-  id = "ecdsa-with-SHA256"
-  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
-
-  def keyGen(self):
-    self.sk = ec.generate_private_key(ec.SECP256R1())
-    self.pk = self.sk.public_key()
-    
   def sign(self, m):    
-    s = self.sk.sign(m, ec.ECDSA(hashes.SHA256()))
+    s = self.sk.sign(m, ec.ECDSA(self.hash))
     return s
 
   def verify(self, s, m):
-    return self.pk.verify(s, m, ec.ECDSA(hashes.SHA256()))
-  
+    return self.pk.verify(s, m, ec.ECDSA(self.hash))
 
   def public_key_bytes(self):
     return self.pk.public_bytes(
-                      encoding=serialization.Encoding.X962,
-                      format=serialization.PublicFormat.UncompressedPoint
-                    )
-  
-  def loadPK(self, pkbytes):
-    super().loadPK(pkbytes)
-    assert isinstance(self.pk, ec.EllipticCurvePublicKey)
-
+        encoding=serialization.Encoding.X962,
+        format=serialization.PublicFormat.UncompressedPoint)
 
   def private_key_bytes(self):    
     return self.sk.private_bytes(
-                        encoding=serialization.Encoding.DER,
-                        format=serialization.PrivateFormat.TraditionalOpenSSL,
-                        encryption_algorithm=serialization.NoEncryption()
-                    )
+        encoding=serialization.Encoding.DER,
+        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        encryption_algorithm=serialization.NoEncryption())
 
-class ECDSABP256(ECDSAP256):
+
+class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
+  curve = ec.SECP256R1()
+  hash = hashes.SHA256()
+  algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
+
+
+class ECDSABP256(ECDSA):
+  id = "ecdsa-with-SHA256"
+  curve = ec.BrainpoolP256R1()
+  hash = hashes.SHA256()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
 
-  def keyGen(self):
-    self.sk = ec.generate_private_key(ec.BrainpoolP256R1())
-    self.pk = self.sk.public_key()
 
-
-
-class ECDSAP384(ECDSAP256):
+class ECDSAP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  curve = ec.SECP384R1()
+  hash = hashes.SHA384()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
-
-  def keyGen(self):
-    self.sk = ec.generate_private_key(ec.SECP384R1())
-    self.pk = self.sk.public_key()
-    
-  def sign(self, m):    
-    s = self.sk.sign(m, ec.ECDSA(hashes.SHA384()))
-    return s
-
-  def verify(self, s, m):
-    return self.pk.verify(s, m, ec.ECDSA(hashes.SHA384()))
   
 
-class ECDSABP384(ECDSAP384):
+class ECDSABP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  curve = ec.BrainpoolP384R1()
+  hash = hashes.SHA384()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
 
-  def keyGen(self):
-    self.sk = ec.generate_private_key(ec.BrainpoolP384R1())
-    self.pk = self.sk.public_key()
 
-
-class ECDSAP521(ECDSAP256):
+class ECDSAP521(ECDSA):
   id = "ecdsa-with-SHA512"
+  curve = ec.SECP521R1()
+  hash = hashes.SHA512()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
 
+
+class EdDSA(SIG):
   def keyGen(self):
-    self.sk = ec.generate_private_key(ec.SECP521R1())
+    self.sk = self.edsda_private_key_class.generate()
     self.pk = self.sk.public_key()
-    
-  def sign(self, m):    
-    s = self.sk.sign(m, ec.ECDSA(hashes.SHA512()))
-    return s
 
-  def verify(self, s, m):
-    return self.pk.verify(s, m, ec.ECDSA(hashes.SHA512()))
-
-
-class Ed25519(SIG):
-  id = "id-Ed25519"
-  algid = "30 05 06 03 2B 65 70"
-
-  def keyGen(self):
-    self.sk = ed25519.Ed25519PrivateKey.generate()
-    self.pk = self.sk.public_key()
-    
   def sign(self, m):
     assert isinstance(m, bytes)
     return self.sk.sign(m)
@@ -377,28 +279,28 @@ class Ed25519(SIG):
     # raises InvalidSignature
     self.pk.verify(s, m)
   
-
   def public_key_bytes(self):
     return self.pk.public_bytes(
-                      encoding=serialization.Encoding.Raw,
-                      format=serialization.PublicFormat.Raw
-                    )
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PublicFormat.Raw)
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
-                        encoding=serialization.Encoding.Raw,
-                        format=serialization.PrivateFormat.Raw,
-                        encryption_algorithm=serialization.NoEncryption()
-                    )
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PrivateFormat.Raw,
+        encryption_algorithm=serialization.NoEncryption())
 
-class Ed448(Ed25519):
+
+class Ed25519(EdDSA):
+  id = "id-Ed25519"
+  algid = "30 05 06 03 2B 65 70"
+  edsda_private_key_class = ed25519.Ed25519PrivateKey
+
+
+class Ed448(EdDSA):
   id = "id-Ed448"
   algid = "30 05 06 03 2B 65 71"
-
-  def keyGen(self):
-    self.sk = ed448.Ed448PrivateKey.generate()
-    self.pk = self.sk.public_key()
-
+  edsda_private_key_class = ed448.Ed448PrivateKey
 
 
 class MLDSA(SIG):
@@ -562,14 +464,20 @@ class CompositeSig(SIG):
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
   
-  
+  def public_key_bytes(self):
+    return self.serializeKey()
+
+  def private_key_bytes(self):
+    mldsaSK = self.mldsa.private_key_bytes()
+    tradSK  = self.tradsig.private_key_bytes()
+    return mldsaSK + tradSK
+
   def serializeSignatureValue(self, r, s1, s2):
     assert isinstance(r, bytes)
     assert len(r) == 32
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
     return r + s1 + s2
-  
 
   def deserializeSignatureValue(self, s):
     """
