@@ -208,6 +208,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 Interop-affecting changes:
 
+* Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
 
 Editorial changes:
@@ -393,7 +394,7 @@ Key Generation Process:
   1. Generate component keys
 
      mldsaSeed = Random(32)
-     (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
+     (mldsaPK, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure

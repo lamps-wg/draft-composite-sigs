@@ -66,4 +66,4 @@ for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
     except LookupError as e:
       print("Certificate is not signed with a composite (at least not of this version of the draft)")
       print(e)
-          
+
