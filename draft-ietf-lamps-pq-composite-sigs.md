@@ -204,17 +204,15 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 --- middle
 
-# Changes in -07
+# Changes in -08
 
 Interop-affecting changes:
 
-* Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
+* Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
 
 Editorial changes:
 
-* Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.
-* Fixed a few problems with the test vectors (incorrect private keys).
-* Fixed a number of editorial issues.
+* .
 
 # Introduction {#sec-intro}
 
@@ -1492,9 +1490,7 @@ This section provides references to the full specification of the algorithms use
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
 
-EDNOTE: Authors, why is this section here?  Why does the draft care how a SubjectPublicKeyInfo is reconstructed?
-
-The following sections list explicitly the DER encoded `AlgorithmIdentifier` that MUST be used when reconstructing `SubjectPublicKeyInfo` and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key `BIT STRING` should be taken directly from the respective component of the Composite ML-DSA public key.
+Many cryptographic libraries are X.509-focused and do not expose interfaces to instantiate a public key from raw bytes, but only from a SubjectPublicKeyInfo structure as you would find in an X.509 certificate, therefore implementing composite in those libraries requires reconstructing the SPKI for each component algorithm. In order to aid implementers and reduce interoperability issues, this section lists out the full public key and signature AlgorithmIdentifiers for each component algorithm.
 
 For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.
 
@@ -1543,7 +1539,7 @@ DER:
 ~~~
 
 
-**RSASSA-PSS 2048**
+**RSASSA-PSS 2048 & 3072**
 
 AlgorithmIdentifier of Public Key
 
@@ -1587,9 +1583,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 ~~~
 
-**RSASSA-PSS 3072 & 4096**
-
-EDNOTE: if the PR changes are accepted, RSASSA-PSS 3072 should be moved above because it uses SHA256.
+**RSASSA-PSS 4096**
 
 EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
 
@@ -1633,7 +1627,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 ~~~
 
-**RSASSA-PKCS1-v1_5 2048**
+**RSASSA-PKCS1-v1_5 2048 & 3072**
 
  AlgorithmIdentifier of Public Key
 
@@ -1661,9 +1655,7 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**RSASSA-PKCS1-v1_5 3072 & 4096**
-
-EDNOTE: if the PR changes are accepted, RSASSA-PSS 3072 should be moved above because it uses SHA256.
+**RSASSA-PKCS1-v1_5 4096**
 
 EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
 
