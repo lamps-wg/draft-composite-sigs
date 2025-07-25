@@ -204,17 +204,16 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 --- middle
 
-# Changes in -07
+# Changes in -08
 
 Interop-affecting changes:
 
 * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
+* Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
 
 Editorial changes:
 
-* Added back MLDSA65-RSA3072-PKCS15-SHA512 which was missing from table 3, table 6 and the test vectors.
-* Fixed a few problems with the test vectors (incorrect private keys).
-* Fixed a number of editorial issues.
+* .
 
 # Introduction {#sec-intro}
 
@@ -1026,7 +1025,7 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.12   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
 | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.13   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
 | id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256/512* |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
+| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA256                 | SHA512 |
 | id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
@@ -1075,7 +1074,7 @@ Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified.
 As with the other composite signature algorithms, when a composite algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier, the parameters MUST be absent.
 
 
-When RSA-PSS is used at the 2048-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
+When RSA-PSS is used at the 2048-bit or 3072-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
 
 
 | RSASSA-PSS Parameter         | Value                      |
@@ -1084,18 +1083,18 @@ When RSA-PSS is used at the 2048-bit security level, RSASSA-PSS SHALL be instant
 | MaskGenAlgorithm.parameters  | id-sha256         |
 | Message Digest Algorithm     | id-sha256         |
 | Salt Length in bits          | 256               |
-{: #rsa-pss-params2048 title="RSASSA-PSS 2048 Parameters"}
+{: #rsa-pss-params2048 title="RSASSA-PSS 2048 and 3072 Parameters"}
 
 
-When RSA-PSS is used at the 3072-bit or 4096-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
+When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
 
 | RSASSA-PSS Parameter        | Value               |
 | --------------------------  | ------------------- |
 | MaskGenAlgorithm.algorithm  | id-mgf1             |
-| MaskGenAlgorithm.parameters | id-sha512           |
-| Message Digest Algorithm    | id-sha512           |
-| Salt Length in bits         | 512                 |
-{: #rsa-pss-params3072 title="RSASSA-PSS 3072 and 4096 Parameters"}
+| MaskGenAlgorithm.parameters | id-sha384           |
+| Message Digest Algorithm    | id-sha384           |
+| Salt Length in bits         | 384                 |
+{: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
@@ -1492,7 +1491,7 @@ This section provides references to the full specification of the algorithms use
 
 # Component AlgorithmIdentifiers for Public Keys and Signatures
 
-The following sections list explicitly the DER encoded `AlgorithmIdentifier` that MUST be used when reconstructing `SubjectPublicKeyInfo` and Signature Algorithm objects for each component algorithm type, which may be required for example if cryptographic library requires the public key in this form in order to process each component algorithm. The public key `BIT STRING` should be taken directly from the respective component of the Composite ML-DSA public key.
+Many cryptographic libraries are X.509-focused and do not expose interfaces to instantiate a public key from raw bytes, but only from a SubjectPublicKeyInfo structure as you would find in an X.509 certificate, therefore implementing composite in those libraries requires reconstructing the SPKI for each component algorithm. In order to aid implementers and reduce interoperability issues, this section lists out the full public key and signature AlgorithmIdentifiers for each component algorithm.
 
 For newer Algorithms like Ed25519 or ML-DSA the AlgorithmIdentifiers are the same for Public Key and Signature. Older Algorithms have different AlgorithmIdentifiers for keys and signatures and are specified separately here for each component.
 
@@ -1541,7 +1540,7 @@ DER:
 ~~~
 
 
-**RSASSA-PSS 2048**
+**RSASSA-PSS 2048 & 3072**
 
 AlgorithmIdentifier of Public Key
 
@@ -1585,7 +1584,9 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
 ~~~
 
-**RSASSA-PSS 3072 & 4096**
+**RSASSA-PSS 4096**
+
+EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
 
 AlgorithmIdentifier of Public Key
 
@@ -1627,7 +1628,7 @@ DER:
   08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
 ~~~
 
-**RSASSA-PKCS1-v1_5 2048**
+**RSASSA-PKCS1-v1_5 2048 & 3072**
 
  AlgorithmIdentifier of Public Key
 
@@ -1655,7 +1656,9 @@ DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
 ~~~
 
-**RSASSA-PKCS1-v1_5 3072 & 4096**
+**RSASSA-PKCS1-v1_5 4096**
+
+EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
 
 AlgorithmIdentifier of Public Key
 
