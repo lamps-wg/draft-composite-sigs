@@ -461,8 +461,7 @@ Implicit inputs mapped from <OID>:
   Domain  Domain separator value for binding the signature to the
           Composite ML-DSA OID. Additionally, the composite Domain
           is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separator Values"
-          section below.
+          Domain values are defined in {{sec-domsep-values}}.
 
   PH      The hash function to use for pre-hashing.
 
@@ -476,7 +475,7 @@ Signature Generation Process:
   1. If len(ctx) > 255:
       return error
 
-  2. Compute the Message representative M'.
+  2. Compute the Message representative `M'`.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
      Randomize the message representative
 
@@ -491,7 +490,7 @@ Signature Generation Process:
        (_, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
 
   4. Generate the two component signatures independently by calculating
-     the signature over M' according to their algorithm specifications.
+     the signature over `M'` according to their algorithm specifications.
 
        mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
        tradSig = Trad.Sign( tradSK, M' )
@@ -555,8 +554,7 @@ Implicit inputs mapped from <OID>:
   Domain  Domain separator value for binding the signature to the
           Composite ML-DSA OID. Additionally, the composite Domain
           is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separators"
-          section below.
+          Domain values are defined in {{sec-domsep-values}}.
 
   PH      The Message Digest Algorithm for pre-hashing. See
           section on pre-hashing the message below.
@@ -1240,7 +1238,7 @@ Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode wh
 
 ## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
 
-The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
+The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M'` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
 
 Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m'` was never signed by the oracle. SUF is similar but requires only that `(m', s') != (m, s)` for any honestly-generated `(m, s)`, i.e. that the attacker cannot construct a new signature to an already-signed message.
 
@@ -1248,9 +1246,9 @@ The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secur
 
 Composite ML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(m, s1')` pair where `s1'` was not produced by the honest signer, and the attacker can then combine it with an honestly-signed `(m, s2)` signature produced by the second algorithm over the same message `m` to create `(m, (s1', s2))` which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.
 
-In addition to the classic EUF-CMA game, we also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
+In addition to the classic EUF-CMA game, we also consider a "cross-protocol" version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
 
-In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative `M'`. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either `ML-DSA.Verify()` or `Trad.Verify()`. In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
+In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative `M'`. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either `ML-DSA.Verify()` or `Trad.Verify()`. In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M'` and then trivially assemble a composite. In the second case, the message `M'` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
 
 ### Implications of multiple encodings {#sec-cons-multiple-encodings}
 
@@ -1280,7 +1278,7 @@ The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious impleme
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
 
-Composite ML-DSA introduces a 32-byte randomizer into the signature representative M'.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
+Composite ML-DSA introduces a 32-byte randomizer into the signature representative `M'`.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
 A failure of randomness, for example `r = 0`, or a fixed value of 'r' effectively reduces r to a prefix that doesn't add value, but it is no worse than the security properties that Composite ML-DSA would have had without the randomizer.
 
@@ -1409,7 +1407,7 @@ Implicit inputs mapped from <OID>:
   Domain    Domain separator value for binding the signature to the
             Composite OID. Additionally, the composite Domain is passed into
             the underlying ML-DSA primitive as the ctx.
-            Domain values are defined in the "Domain Separators" section below.
+            Domain values are defined in {{sec-domsep-values}}.
 
 Process:
 
