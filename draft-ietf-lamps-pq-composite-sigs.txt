@@ -135,6 +135,12 @@ Table of Contents
 
    Interop-affecting changes:
 
+   *  Fixed the ASN.1 module for the pk-CompositeSignature and sa-
+      CompositeSignature to indicate no ASN.1 wrapping is used.  This
+      simply clarifies the intended encoding but could be an interop-
+      affecting change for implementations that built encoders /
+      decoders from the ASN.1 and ended up with a non-intended encoding.
+
    *  Aligned the hash function used for the RSA component to the RSA
       key size (Thanks Dan!)
 
@@ -457,7 +463,7 @@ Table of Contents
      1. Generate component keys
 
         mldsaSeed = Random(32)
-        (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
+        (mldsaPK, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
         (tradPK, tradSK) = Trad.KeyGen()
 
      2. Check for component key gen failure
@@ -484,6 +490,11 @@ Table of Contents
    are invoked, and no indication is given about which one failed.  This
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
+
+   Note that this keygen routine outputs a serialized composite key,
+   which contains only the ML-DSA seed.  Implementations should make
+   free use of ML-DSA.KeyGen(mldsaSeed) to expand the ML-DSA seed into
+   an expanded key as needed to use the key for signing operations.
 
    Variations in the keygen process above and signature processes below
    to accommodate particular private key storage mechanisms or alternate
