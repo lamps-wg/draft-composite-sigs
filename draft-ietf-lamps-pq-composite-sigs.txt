@@ -492,9 +492,10 @@ Table of Contents
    attackers from learning which component algorithm failed.
 
    Note that this keygen routine outputs a serialized composite key,
-   which contains only the ML-DSA seed.  Implementations should make
-   free use of ML-DSA.KeyGen(mldsaSeed) to expand the ML-DSA seed into
-   an expanded key as needed to use the key for signing operations.
+   which contains only the ML-DSA seed.  Implementations should feel
+   free to modify this routine to output the expanded mldsaSK or to make
+   free use of ML-DSA.KeyGen(mldsaSeed) as needed to expand the ML-DSA
+   seed into an expanded prior to performing a signing operation.
 
    Variations in the keygen process above and signature processes below
    to accommodate particular private key storage mechanisms or alternate
