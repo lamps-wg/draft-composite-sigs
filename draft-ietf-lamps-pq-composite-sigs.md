@@ -208,6 +208,7 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 Interop-affecting changes:
 
+* Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
 
 Editorial changes:
@@ -393,7 +394,7 @@ Key Generation Process:
   1. Generate component keys
 
      mldsaSeed = Random(32)
-     (mldsaPK, _) = ML-DSA.KeyGen(mldsaSeed)
+     (mldsaPK, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
@@ -413,6 +414,8 @@ Key Generation Process:
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
+
+Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should make free use of `ML-DSA.KeyGen(mldsaSeed)` to expand the ML-DSA seed into an expanded key as needed to use the key for signing operations.
 
 Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
 For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a `ML-DSA.KeyGen(seed)` that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in {{sec-serialize-privkey}} only support ML-DSA keys as seeds.

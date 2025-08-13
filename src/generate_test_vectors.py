@@ -478,7 +478,7 @@ class CompositeSig(SIG):
       return keyBytes[:1952], keyBytes[1952:]
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
-  
+
   def public_key_bytes(self):
     return self.serializeKey()
 
@@ -658,6 +658,7 @@ def getNewInstanceByName(oidName):
       case MLDSA87.id:
         return MLDSA87()
       
+      # Composites
       case MLDSA44_RSA2048_PSS_SHA256.id:
         return MLDSA44_RSA2048_PSS_SHA256()
       
