@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 26 January 2026                                         M. Pala
+Expires: 14 February 2026                                        M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            25 July 2025
+                                                          13 August 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 January 2026.
+   This Internet-Draft will expire on 14 February 2026.
 
 Copyright Notice
 
@@ -490,6 +490,11 @@ Table of Contents
    are invoked, and no indication is given about which one failed.  This
    SHOULD be done in a timing-invariant way to prevent side-channel
    attackers from learning which component algorithm failed.
+
+   Note that this keygen routine outputs a serialized composite key,
+   which contains only the ML-DSA seed.  Implementations should make
+   free use of ML-DSA.KeyGen(mldsaSeed) to expand the ML-DSA seed into
+   an expanded key as needed to use the key for signing operations.
 
    Variations in the keygen process above and signature processes below
    to accommodate particular private key storage mechanisms or alternate
