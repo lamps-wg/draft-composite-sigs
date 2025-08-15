@@ -290,10 +290,13 @@ class EdDSA(SIG):
         format=serialization.PublicFormat.Raw)
 
   def private_key_bytes(self):
-    return self.sk.private_bytes(
+    raw = self.sk.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
-        encryption_algorithm=serialization.NoEncryption())
+        encryption_algorithm=serialization.NoEncryption()
+        )
+    CurvePrivateKey = univ.OctetString(raw)
+    return der_encode(CurvePrivateKey)
 
 
 class Ed25519(EdDSA):
