@@ -58,6 +58,11 @@ OID_TABLE = {
     "id-MLDSA87-ECDSA-P521-SHA512": univ.ObjectIdentifier((2,16,840,1,114027,80,9,1,17)),
 }
 
+PURE_SEED_ALGS = [
+    "id-ML-DSA-44",
+    "id-ML-DSA-65",
+    "id-ML-DSA-87",
+]
 
 class SIG:
   pk = None
@@ -285,10 +290,13 @@ class EdDSA(SIG):
         format=serialization.PublicFormat.Raw)
 
   def private_key_bytes(self):
-    return self.sk.private_bytes(
+    raw = self.sk.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
-        encryption_algorithm=serialization.NoEncryption())
+        encryption_algorithm=serialization.NoEncryption()
+        )
+    CurvePrivateKey = univ.OctetString(raw)
+    return der_encode(CurvePrivateKey)
 
 
 class Ed25519(EdDSA):
@@ -448,7 +456,17 @@ class CompositeSig(SIG):
     mldsaPK = self.mldsa.public_key_bytes()
     tradPK  = self.tradsig.public_key_bytes()
     return mldsaPK + tradPK
-  
+
+
+  def public_key_bytes(self):
+    return self.serializeKey()
+
+
+  def private_key_bytes(self):
+    mldsaPK = self.mldsa.private_key_bytes()
+    tradPK  = self.tradsig.private_key_bytes()
+    return mldsaPK + tradPK
+
 
   def deserializeKey(self, keyBytes):
     """
@@ -463,7 +481,7 @@ class CompositeSig(SIG):
       return keyBytes[:1952], keyBytes[1952:]
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
-  
+
   def public_key_bytes(self):
     return self.serializeKey()
 
@@ -643,6 +661,7 @@ def getNewInstanceByName(oidName):
       case MLDSA87.id:
         return MLDSA87()
       
+      # Composites
       case MLDSA44_RSA2048_PSS_SHA256.id:
         return MLDSA44_RSA2048_PSS_SHA256()
       
@@ -906,9 +925,14 @@ def output_artifacts_certs_r5(jsonTestVectors):
   for tc in jsonTestVectors['tests']:
       try:
           # <friendlyname>-<oid>_ta.der
+          if tc['tcId'] in PURE_SEED_ALGS:
+            priv_key_type = "seed"
+          else:
+            priv_key_type = "priv"
+
           certFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_ta.der"
-          rawKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.raw"
-          derKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_priv.der"
+          rawKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_" + priv_key_type + ".raw"
+          derKeyFilename = tc['tcId'] + "-" + str(OID_TABLE[tc['tcId']]) + "_" + priv_key_type + ".der"
       except KeyError:
           # if this one is not in the OID_TABLE, then just skip it
           continue
