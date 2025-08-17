@@ -1,6 +1,6 @@
 - id-MLDSA44-RSA2048-PSS-SHA256
   - OID: 2.16.840.1.114027.80.9.1.0
-  - Domain Separator: 060B6086480186FA6B50090100
+  - Label: COMPSIG-MLDSA44-RSA2048-PSS-SHA256
   - Pre-Hash function (PH): SHA256
   - ML-DSA variant: ML-DSA-44
   - Traditional Algorithm: RSA
@@ -10,7 +10,7 @@
 
 - id-MLDSA44-RSA2048-PKCS15-SHA256
   - OID: 2.16.840.1.114027.80.9.1.1
-  - Domain Separator: 060B6086480186FA6B50090101
+  - Label: COMPSIG-MLDSA44-RSA2048-PKCS15-SHA256
   - Pre-Hash function (PH): SHA256
   - ML-DSA variant: ML-DSA-44
   - Traditional Algorithm: RSA
@@ -19,7 +19,7 @@
 
 - id-MLDSA44-Ed25519-SHA512
   - OID: 2.16.840.1.114027.80.9.1.2
-  - Domain Separator: 060B6086480186FA6B50090102
+  - Label: COMPSIG-MLDSA44-Ed25519-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-44
   - Traditional Algorithm: Ed25519
@@ -27,7 +27,7 @@
 
 - id-MLDSA44-ECDSA-P256-SHA256
   - OID: 2.16.840.1.114027.80.9.1.3
-  - Domain Separator: 060B6086480186FA6B50090103
+  - Label: COMPSIG-MLDSA44-ECDSA-P256-SHA256
   - Pre-Hash function (PH): SHA256
   - ML-DSA variant: ML-DSA-44
   - Traditional Algorithm: ECDSA
@@ -36,7 +36,7 @@
 
 - id-MLDSA65-RSA3072-PSS-SHA512
   - OID: 2.16.840.1.114027.80.9.1.4
-  - Domain Separator: 060B6086480186FA6B50090104
+  - Label: COMPSIG-MLDSA65-RSA3072-PSS-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: RSA
@@ -46,7 +46,7 @@
 
 - id-MLDSA65-RSA3072-PKCS15-SHA512
   - OID: 2.16.840.1.114027.80.9.1.5
-  - Domain Separator: 060B6086480186FA6B50090105
+  - Label: COMPSIG-MLDSA65-RSA3072-PKCS15-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: RSA
@@ -55,7 +55,7 @@
 
 - id-MLDSA65-RSA4096-PSS-SHA512
   - OID: 2.16.840.1.114027.80.9.1.6
-  - Domain Separator: 060B6086480186FA6B50090106
+  - Label: COMPSIG-MLDSA65-RSA4096-PSS-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: RSA
@@ -65,7 +65,7 @@
 
 - id-MLDSA65-RSA4096-PKCS15-SHA512
   - OID: 2.16.840.1.114027.80.9.1.7
-  - Domain Separator: 060B6086480186FA6B50090107
+  - Label: COMPSIG-MLDSA65-RSA4096-PKCS15-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: RSA
@@ -74,7 +74,7 @@
 
 - id-MLDSA65-ECDSA-P256-SHA512
   - OID: 2.16.840.1.114027.80.9.1.8
-  - Domain Separator: 060B6086480186FA6B50090108
+  - Label: COMPSIG-MLDSA65-P256-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -83,7 +83,7 @@
 
 - id-MLDSA65-ECDSA-P384-SHA512
   - OID: 2.16.840.1.114027.80.9.1.9
-  - Domain Separator: 060B6086480186FA6B50090109
+  - Label: COMPSIG-MLDSA65-P384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -92,7 +92,7 @@
 
 - id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - OID: 2.16.840.1.114027.80.9.1.10
-  - Domain Separator: 060B6086480186FA6B5009010A
+  - Label: COMPSIG-MLDSA65-BP256-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -101,7 +101,7 @@
 
 - id-MLDSA65-Ed25519-SHA512
   - OID: 2.16.840.1.114027.80.9.1.11
-  - Domain Separator: 060B6086480186FA6B5009010B
+  - Label: COMPSIG-MLDSA65-Ed25519-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: Ed25519
@@ -109,7 +109,7 @@
 
 - id-MLDSA87-ECDSA-P384-SHA512
   - OID: 2.16.840.1.114027.80.9.1.12
-  - Domain Separator: 060B6086480186FA6B5009010C
+  - Label: COMPSIG-MLDSA87-P384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
@@ -118,7 +118,7 @@
 
 - id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - OID: 2.16.840.1.114027.80.9.1.13
-  - Domain Separator: 060B6086480186FA6B5009010D
+  - Label: COMPSIG-MLDSA87-BP384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
@@ -127,7 +127,7 @@
 
 - id-MLDSA87-Ed448-SHAKE256
   - OID: 2.16.840.1.114027.80.9.1.14
-  - Domain Separator: 060B6086480186FA6B5009010E
+  - Label: COMPSIG-MLDSA87-Ed448-SHAKE256
   - Pre-Hash function (PH): SHAKE256/64**
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: Ed448
@@ -135,7 +135,7 @@
 
 - id-MLDSA87-RSA3072-PSS-SHA512
   - OID: 2.16.840.1.114027.80.9.1.15
-  - Domain Separator: 060B6086480186FA6B5009010F
+  - Label: COMPSIG-MLDSA87-RSA3072-PSS-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: RSA
@@ -145,7 +145,7 @@
 
 - id-MLDSA87-RSA4096-PSS-SHA512
   - OID: 2.16.840.1.114027.80.9.1.16
-  - Domain Separator: 060B6086480186FA6B50090110
+  - Label: COMPSIG-MLDSA87-RSA4096-PSS-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: RSA
@@ -155,7 +155,7 @@
 
 - id-MLDSA87-ECDSA-P521-SHA512
   - OID: 2.16.840.1.114027.80.9.1.17
-  - Domain Separator: 060B6086480186FA6B50090111
+  - Label: COMPSIG-MLDSA87-P521-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
