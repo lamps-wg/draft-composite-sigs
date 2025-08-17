@@ -3693,7 +3693,8 @@ Process:
       </ul>
 <p id="appendix-A-3">By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
 <p id="appendix-A-4">Implementations MUST NOT perform strict length checking based on the values in this table except for ML-DSA + EdDSA; since these algorithms produce fixed-size outputs, the values in the table below for these variants MAY be treated as constants.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
-<p id="appendix-A-5">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Note that this table measures the size of the raw byte values, and does not measure any ASN.1 wrapping such as OCTET STRINGS or PKCS#8 PrivateKeyInfo structures. This table is useful primarily for comparison purposes between the different options.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
+<p id="appendix-A-6">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-6" class="pilcrow">¶</a></p>
 <span id="name-approximate-size-values-of-"></span><div id="tab-size-values">
 <table class="center" id="table-6">
         <caption>
