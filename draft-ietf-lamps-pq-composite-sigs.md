@@ -210,10 +210,11 @@ Interop-affecting changes:
 
 * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
+* Changed the domain separator strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
 
 Editorial changes:
 
-* .
+* Changed the "domain separator" to "signature Label" to match draft-irtf-cfrg-concrete-hybrid-kems-00.
 
 # Introduction {#sec-intro}
 
@@ -336,12 +337,12 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 
 
 
-## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
+## Prefix, Label and CTX {#sec-label-and-ctx}
 
-When constructing the to-be-signed message representative `M'`, several domain separator values are pre-pended to the message pre-hash prior to signing.
+When constructing the to-be-signed message representative `M'`, several signature label values are pre-pended to the message pre-hash prior to signing.
 
 ~~~
-M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+M' :=  Prefix || Label || len(ctx) || ctx || r || PH( M )
 ~~~
 
 First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
@@ -351,9 +352,9 @@ First a fixed prefix string is pre-pended which is the byte encoding of the ASCI
 
 Additional discussion of the prefix can be found in {{sec-cons-prefix}}.
 
-Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}.
+Next, the signature Label defined in {{sec-label-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, and finally the hash of the message to be signed. The signature label serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}.
 
-Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
+Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive.
 
 
 # Composite ML-DSA Functions {#sec-sigs}
@@ -429,7 +430,7 @@ Internally it uses pure ML-DSA as the component algorithm since there is no adva
 
 See {{sec-prehash}} for a discussion of the pre-hashed design and randomizer `r`.
 
-See {{sec-domsep-and-ctx}} for a discussion on the domain separator and context values.
+See {{sec-label-and-ctx}} for a discussion on the signature label and context values.
 
 See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
@@ -461,10 +462,10 @@ Implicit inputs mapped from <OID>:
           "CompositeAlgorithmSignatures2025" which in hex is
       436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
+  Label   Signature label value for binding the signature to the
+          Composite ML-DSA OID. Additionally, the composite label
           is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separator Values"
+          Signature Label values are defined in the "Signature Label Values"
           section below.
 
   PH      The hash function to use for pre-hashing.
@@ -484,7 +485,7 @@ Signature Generation Process:
      Randomize the message representative
 
         r = Random(32)
-        M' :=  Prefix || Domain || len(ctx) || ctx || r
+        M' :=  Prefix || Label || len(ctx) || ctx || r
                                             || PH( M )
 
   3. Separate the private key into component keys
@@ -496,7 +497,7 @@ Signature Generation Process:
   4. Generate the two component signatures independently by calculating
      the signature over M' according to their algorithm specifications.
 
-       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
+       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Label )
        tradSig = Trad.Sign( tradSK, M' )
 
   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
@@ -555,10 +556,10 @@ Implicit inputs mapped from <OID>:
           "CompositeAlgorithmSignatures2025" which in hex is
       436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
+  Lobel   Signature Label value for binding the signature to the
+          Composite ML-DSA OID. Additionally, the composite label
           is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separators"
+          Label values are defined in the "Signature Label Values"
           section below.
 
   PH      The Message Digest Algorithm for pre-hashing. See
@@ -588,14 +589,14 @@ Signature Verification Process:
   3. Compute a Hash of the Message.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
-      M' = Prefix || Domain || len(ctx) || ctx || r
+      M' = Prefix || Label || len(ctx) || ctx || r
                                         || PH( M )
 
   4. Check each component signature individually, according to its
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
-      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Domain ) then
+      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Label ) then
           output "Invalid signature"
 
       if not Trad.Verify( tradPK, M', tradSig ) then
@@ -1039,21 +1040,14 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
 
 
-## Domain Separator Values {#sec-domsep-values}
+## Signature Label Values {#sec-label-values}
 
-Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
+Each Composite ML-DSA algorithm has a unique label value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
 
-The domain separator is simply the DER encoding of the OID. The following table shows the HEX-encoded domain separator value for each Composite ML-DSA algorithm.
+The following table shows the HEX-encoded label value for each Composite ML-DSA algorithm.
 
-<!-- Note to authors, this is not auto-generated on build;
-     you have to manually re-run the python script and
-     commit the results to git.
-     This is mainly to save resources and build time on the github commits. -->
-
-{::include src/domSepTable.md}
-{: #tab-sig-alg-oids title="ML-DSA Composite Signature Domain Separators"}
-
-EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early assignment of these OIDs so that we can re-compute the domain separators over the final OIDs.
+{::include src/labelsTable.md}
+{: #tab-sig-labels title="ML-DSA Composite Signature Labels"}
 
 
 
@@ -1243,7 +1237,7 @@ Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode wh
 
 ## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
 
-The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M’` will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
+The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M’` will include the composite signature label as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.
 
 Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m'` was never signed by the oracle. SUF is similar but requires only that `(m', s') != (m, s)` for any honestly-generated `(m, s)`, i.e. that the attacker cannot construct a new signature to an already-signed message.
 
@@ -1253,7 +1247,7 @@ Composite ML-DSA only achieves SUF security if both components are SUF secure, w
 
 In addition to the classic EUF-CMA game, we also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
 
-In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative `M'`. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either `ML-DSA.Verify()` or `Trad.Verify()`. In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
+In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative `M'`. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either `ML-DSA.Verify()` or `Trad.Verify()`. In the first case, an attacker with access to signing oracles for the two component algorithms can sign `M’` and then trivially assemble a composite. In the second case, the message `M’` (containing the composite signature) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in {{sec-cons-key-reuse}} since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.
 
 ### Implications of multiple encodings {#sec-cons-multiple-encodings}
 
@@ -1277,7 +1271,7 @@ Some application might disregard the requirements of this specification to not r
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
 
-The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
+The Prefix value specified in {{sec-label-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
 
 ## Implications of signature randomizer {#sec-cons-randomizer}
 
@@ -1409,10 +1403,10 @@ Implicit inputs mapped from <OID>:
             "CompositeAlgorithmSignatures2025" which in hex is
             436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 
-  Domain    Domain separator value for binding the signature to the
-            Composite OID. Additionally, the composite Domain is passed into
+  Label     Signature label value for binding the signature to the
+            Composite OID. Additionally, the composite signature label is passed into
             the underlying ML-DSA primitive as the ctx.
-            Domain values are defined in the "Domain Separators" section below.
+            Label values are defined in the "Signature Label Values" section below.
 
 Process:
 
@@ -1880,8 +1874,8 @@ The input message for this example is the hex string "00 01 02 03 04 05 06 07 08
 
 Each input component is shown. Note that values are shown hex-encoded for display purposes only, they are actually raw binary values.
 
-* `Prefix` is the fixed constant defined in {{sec-domsep-and-ctx}}.
-* `Domain` is the specific domain separator for this composite algorithm, as defined in {{sec-domsep-values}}.
+* `Prefix` is the fixed constant defined in {{sec-label-and-ctx}}.
+* `Label` is the specific signature label for this composite algorithm, as defined in {{sec-label-values}}.
 * `len(ctx)` is the length of the Message context String which is 00 when no context is used.
 * `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
 * `r` is a random 32-byte value chosen by the signer.

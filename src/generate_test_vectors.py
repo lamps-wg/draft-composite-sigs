@@ -360,15 +360,12 @@ class MLDSA87(MLDSA):
 class CompositeSig(SIG):
   mldsa = None
   tradsig = None
-  domain = ""
+  label = ""
   prefix = bytes.fromhex("436F6D706F73697465416C676F726974686D5369676E61747572657332303235")
   PH = None
 
   def __init__(self):
     super().__init__()
-    self.domain = DOMAIN_TABLE[self.id][0]  # the first component is the domain,
-                                            # the second is a boolean controlling whether
-                                            # this renders in the domsep table in the draft.
 
   def loadPK(self, pkbytes):
     mldsapub, tradpub = self.deserializeKey(pkbytes)
@@ -389,7 +386,7 @@ class CompositeSig(SIG):
     Computes the message representative M'.
 
     return_intermediates=False is the default mode, and returns a single value: Mprime
-    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, r, ph_m, Mprime)
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, label, len_ctx, ctx, r, ph_m, Mprime)
     """
 
     h = hashes.Hash(self.PH) 
@@ -397,17 +394,17 @@ class CompositeSig(SIG):
     ph_m = h.finalize()
 
 
-    # M' :=  Prefix || Domain || len(ctx) || ctx || r || PH(M)
+    # M' :=  Prefix || Label || len(ctx) || ctx || r || PH(M)
     len_ctx = len(ctx).to_bytes(1, 'big')
     Mprime = self.prefix                 + \
-         self.domain                 + \
+         self.label.encode()                 + \
          len_ctx + \
          ctx                         + \
          r                           + \
          ph_m
          
     if return_intermediates:
-      return (self.prefix, self.domain, len_ctx, ctx, r, ph_m, Mprime)
+      return (self.prefix, self.label, len_ctx, ctx, r, ph_m, Mprime)
     else:
       return Mprime  
 
@@ -422,7 +419,7 @@ class CompositeSig(SIG):
     r = secrets.token_bytes(32)
     Mprime = self.computeMprime(m, ctx, r)
 
-    mldsaSig = self.mldsa.sign( Mprime, ctx=self.domain )
+    mldsaSig = self.mldsa.sign( Mprime, ctx=self.label.encode() )
     tradSig = self.tradsig.sign( Mprime )
     
     return self.serializeSignatureValue(r, mldsaSig, tradSig)
@@ -445,7 +442,7 @@ class CompositeSig(SIG):
     Mprime = self.computeMprime(m, ctx, r)
     
     # both of the components raise InvalidSignature exception on error
-    self.mldsa.verify(mldsaSig, Mprime, ctx=self.domain)
+    self.mldsa.verify(mldsaSig, Mprime, ctx=self.label.encode())
     self.tradsig.verify(tradSig, Mprime)
 
 
@@ -523,6 +520,7 @@ class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
   mldsa = MLDSA44()
   tradsig = RSA2048PSS()
   PH = hashes.SHA256()
+  label = "COMPSIG-MLDSA44-RSA2048-PSS-SHA256"
 
 
 class MLDSA44_RSA2048_PKCS15_SHA256(CompositeSig):
@@ -530,6 +528,7 @@ class MLDSA44_RSA2048_PKCS15_SHA256(CompositeSig):
   mldsa = MLDSA44()
   tradsig = RSA2048PKCS15()
   PH = hashes.SHA256()
+  label = "COMPSIG-MLDSA44-RSA2048-PKCS15-SHA256"
 
 
 class MLDSA44_Ed25519_SHA512(CompositeSig):
@@ -537,6 +536,7 @@ class MLDSA44_Ed25519_SHA512(CompositeSig):
   mldsa = MLDSA44()
   tradsig = Ed25519()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA44-Ed25519-SHA512"
 
 
 class MLDSA44_ECDSA_P256_SHA256(CompositeSig):
@@ -544,6 +544,7 @@ class MLDSA44_ECDSA_P256_SHA256(CompositeSig):
   mldsa = MLDSA44()
   tradsig = ECDSAP256()
   PH = hashes.SHA256()
+  label = "COMPSIG-MLDSA44-ECDSA-P256-SHA256"
 
 
 class MLDSA65_RSA3072_PSS_SHA512(CompositeSig):
@@ -551,6 +552,7 @@ class MLDSA65_RSA3072_PSS_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA3072PSS()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-RSA3072-PSS-SHA512"
 
 
 class MLDSA65_RSA3072_PKCS15_SHA512(CompositeSig):
@@ -558,6 +560,7 @@ class MLDSA65_RSA3072_PKCS15_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA3072PKCS15()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-RSA3072-PKCS15-SHA512"
 
 
 class MLDSA65_RSA4096_PSS_SHA512(CompositeSig):
@@ -565,6 +568,7 @@ class MLDSA65_RSA4096_PSS_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-RSA4096-PSS-SHA512"
 
 
 class MLDSA65_RSA4096_PKCS15_SHA512(CompositeSig):
@@ -572,6 +576,7 @@ class MLDSA65_RSA4096_PKCS15_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = RSA4096PKCS15()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-RSA4096-PKCS15-SHA512"
 
 
 class MLDSA65_ECDSA_P256_SHA512(CompositeSig):
@@ -579,6 +584,7 @@ class MLDSA65_ECDSA_P256_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-P256-SHA512"
 
 
 class MLDSA65_ECDSA_P384_SHA512(CompositeSig):
@@ -586,6 +592,7 @@ class MLDSA65_ECDSA_P384_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-P384-SHA512"
 
 
 class MLDSA65_ECDSA_brainpoolP256r1_SHA512(CompositeSig):
@@ -593,6 +600,7 @@ class MLDSA65_ECDSA_brainpoolP256r1_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-BP256-SHA512"
 
 
 class MLDSA65_Ed25519_SHA512(CompositeSig):
@@ -600,6 +608,7 @@ class MLDSA65_Ed25519_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = Ed25519()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA65-Ed25519-SHA512"
 
 
 class MLDSA87_ECDSA_P384_SHA512(CompositeSig):
@@ -607,6 +616,7 @@ class MLDSA87_ECDSA_P384_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-P384-SHA512"
 
 
 class MLDSA87_ECDSA_brainpoolP384r1_SHA512(CompositeSig):
@@ -614,6 +624,7 @@ class MLDSA87_ECDSA_brainpoolP384r1_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-BP384-SHA512"
 
 
 class MLDSA87_Ed448_SHA512(CompositeSig):
@@ -621,6 +632,7 @@ class MLDSA87_Ed448_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = Ed448()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-Ed448-SHA512"
 
 
 class MLDSA87_Ed448_SHAKE256(CompositeSig):
@@ -628,6 +640,7 @@ class MLDSA87_Ed448_SHAKE256(CompositeSig):
   mldsa = MLDSA87()
   tradsig = Ed448()
   PH = hashes.SHAKE256(64)
+  label = "COMPSIG-MLDSA87-Ed448-SHAKE256"
 
 
 class MLDSA87_RSA3072_PSS_SHA512(CompositeSig):
@@ -635,6 +648,7 @@ class MLDSA87_RSA3072_PSS_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = RSA3072PSS()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-RSA3072-PSS-SHA512"
 
 
 class MLDSA87_RSA4096_PSS_SHA512(CompositeSig):
@@ -642,6 +656,7 @@ class MLDSA87_RSA4096_PSS_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = RSA4096PSS()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-RSA4096-PSS-SHA512"
 
   
 class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
@@ -649,6 +664,7 @@ class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSAP521()
   PH = hashes.SHA512()
+  label = "COMPSIG-MLDSA87-P521-SHA512"
 
 
 def getNewInstanceByName(oidName):
@@ -954,25 +970,10 @@ testVectorOutput['tests'] = []
 
 SIZE_TABLE = {}
 
-DOMAIN_TABLE = {}
+LABELS_TABLE = {}
 
-def genDomainTable():
-  """
-  This is a bit weird; we have to generate it first because
-  this table is used by the composite.sign() to construct Mprime,
-  but also not every supported option should be rendered into
-  the domain separators table in the draft, hence carrying a boolean.
-  By default, everything is False to be included in the table unless
-  turned on by doSig(.., includeInDomainTable=True)."""
 
-  for alg in OID_TABLE:
-    domain = der_encode(OID_TABLE[alg])
-    DOMAIN_TABLE[alg] = (domain, False)
-
-# run this statically
-genDomainTable()
-
-def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSizeTable=True):
+def doSig(sig, includeInTestVectors=True, includeInLabelsTable=True, includeInSizeTable=True):
   sig.keyGen()
   s = sig.sign(_m)
   sig.verify(s, _m)
@@ -982,8 +983,8 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
   if includeInTestVectors:
     testVectorOutput['tests'].append(jsonResult)
 
-  if includeInDomainTable:
-    DOMAIN_TABLE[sig.id] = (DOMAIN_TABLE[sig.id][0], True)
+  if includeInLabelsTable:
+    LABELS_TABLE[sig.id] = sig.label
 
   if includeInSizeTable:
     sizeRow = {}
@@ -1045,18 +1046,23 @@ def writeSizeTable():
                  str(row['s']).center(14, ' ') +'|\n' )
       
       
-def writeDomainTable():
+def writeLabelsTable():
   """
-  Writes the table of domain separators to go into the draft.
+  Writes the table of signature labels to go into the draft.
   """
 
-  with open('domSepTable.md', 'w') as f:
-    f.write('| Composite Signature Algorithm                | Domain Separator (in Hex encoding)|\n')
-    f.write('| -------------------------------------------  | --------------------------------- |\n')
+  with open('labelsTable.md', 'w') as f:
+    f.write("Values are provided as ASCII strings, but MUST be converted into binary in the obvious way.\n")
+    f.write("For example:\n\n")
+    f.write("* \"`"+LABELS_TABLE["id-MLDSA44-ECDSA-P256-SHA256"] + "`\" in hexadecimal is \"`" + LABELS_TABLE["id-MLDSA44-ECDSA-P256-SHA256"].encode().hex()+"`\"\n")
+    f.write("\n\n")
+  
+    f.write('| Composite Signature Algorithm                  | Label (string)                        |\n')
+    f.write('| ---------------------------------------------  | ------------------------------------- |\n')
 
-    for alg in DOMAIN_TABLE:
-      if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
-        f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
+    for alg in LABELS_TABLE:
+      if LABELS_TABLE[alg][1]:  # boolean controlling rendering in this table.
+        f.write('| ' + alg.ljust(46, ' ') + " | " + LABELS_TABLE[alg].ljust(37, ' ') + " |\n")
         
 
 def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
@@ -1071,7 +1077,7 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   sig.keyGen()
 
   r = secrets.token_bytes(32)
-  (prefix, domain, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
+  (prefix, label, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
 
 
 
@@ -1087,7 +1093,7 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   f.write("\n")
   f.write("# Components of M':\n\n")
   f.write( '\n'.join(textwrap.wrap("Prefix: " + prefix.hex(), width=wrap_width)) +"\n\n" )
-  f.write( '\n'.join(textwrap.wrap("Domain: " + domain.hex(), width=wrap_width)) +"\n\n" )
+  f.write( '\n'.join(textwrap.wrap("Label: " + label, width=wrap_width)) +"\n\n" )
   f.write( '\n'.join(textwrap.wrap("len(ctx): " + len_ctx.hex(), width=wrap_width)) +"\n\n" )
   if (ctx == b''):
       f.write("ctx: <empty>\n")
@@ -1097,7 +1103,7 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   f.write( '\n'.join(textwrap.wrap("PH(M): " + ph_m.hex(), width=wrap_width)) +"\n\n" )
   f.write("\n")
   f.write("# Outputs:\n")
-  f.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(M)\n\n")
+  f.write("# M' = Prefix || Label || len(ctx) || ctx || r || PH(M)\n\n")
   f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
@@ -1106,21 +1112,21 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
 def main():
   
   # Single algs - remove these, just for testing
-  # doSig(RSA2048PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(RSA3072PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(RSA3072PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(RSA4096PSS(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(RSA4096PKCS1(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(ECDSAP256(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(ECDSABP256(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(ECDSAP384(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(ECDSABP384(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(Ed25519(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  # doSig(Ed448(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  doSig(MLDSA44(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  doSig(MLDSA65(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
-  doSig(MLDSA87(), includeInTestVectors=True, includeInDomainTable=False, includeInSizeTable=True )
+  # doSig(RSA2048PSS(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(RSA2048PKCS1(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(RSA3072PSS(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(RSA3072PKCS1(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(RSA4096PSS(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(RSA4096PKCS1(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(ECDSAP256(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(ECDSABP256(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(ECDSAP384(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(ECDSABP384(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(Ed25519(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  # doSig(Ed448(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  doSig(MLDSA44(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  doSig(MLDSA65(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
+  doSig(MLDSA87(), includeInTestVectors=True, includeInLabelsTable=False, includeInSizeTable=True )
   
   
 
@@ -1147,7 +1153,7 @@ def main():
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
-  writeDomainTable()
+  writeLabelsTable()
 
 
   # Write the message representative examples
