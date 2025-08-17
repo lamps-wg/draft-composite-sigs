@@ -1032,7 +1032,9 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 
-*Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
+For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Where it is advantageous to hard-code an exponent, for example in order to obtain predictable key sizes, implementations MAY hard-code 65537; thus implementations using other values for the exponent should not expect it to be intereperable with all other implementations.
+
+The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
