@@ -78,6 +78,7 @@ normative:
   RFC5639:
   RFC5652:
   RFC5758:
+  RFC5915:
   RFC5958:
   RFC6090:
   RFC6234:
@@ -364,7 +365,7 @@ This section describes the composite ML-DSA functions needed to instantiate the 
 
 In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
 
-To generate a new key pair for composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.
+To generate a new key pair for composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-threaded, multi-process, or multi-module applications might choose to execute the key generation functions in parallel for better key generation performance or architectural modularity.
 
 The following describes how to instantiate a `KeyGen()` function for a given composite algorithm represented by `<OID>`.
 
@@ -629,7 +630,7 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 * **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
 * **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key must be encoded as ECPrivateKey specified in [RFC5915].
+* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915].
 * **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
 
 Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
@@ -1032,7 +1033,9 @@ EDNOTE: these are prototyping OIDs to be replaced by IANA.
 | id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
 {: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
 
-*Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
+For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Where it is advantageous to hard-code an exponent, for example in order to obtain predictable key sizes, implementations MAY hard-code 65537; thus implementations using other values for the exponent should not expect it to be intereperable with all other implementations.
+
+The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
@@ -1488,6 +1491,7 @@ This section provides references to the full specification of the algorithms use
 | HashID | OID | Specification |
 | ----------- | ----------- | ----------- |
 | id-sha256 | 2.16.840.1.101.3.4.2.1 | [RFC6234] |
+| id-sha384 | 2.16.840.1.101.3.4.2.2 | [RFC6234] |
 | id-sha512 | 2.16.840.1.101.3.4.2.3 | [RFC6234] |
 | id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS.202] |
 | id-mgf1   | 1.2.840.113549.1.1.8 | [RFC8017] |
@@ -1618,7 +1622,7 @@ ASN.1:
       AlgorithmIdentifier ::= {
         algorithm id-mgf1,       -- (1.2.840.113549.1.1.8)
         parameters AlgorithmIdentifier ::= {
-          algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
+          algorithm id-sha384,   -- (2.16.840.1.101.3.4.2.2)
           parameters NULL
           }
         },
@@ -1629,7 +1633,7 @@ ASN.1:
 DER:
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
   48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
-  08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
+  08 30 0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A2 03 02 01 40
 ~~~
 
 **RSASSA-PKCS1-v1_5 2048 & 3072**
@@ -1682,7 +1686,7 @@ AlgorithmIdentifier of Signature
 ~~~
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm sha512WithRSAEncryption,   -- (1.2.840.113549.1.1.13)
+    algorithm sha384WithRSAEncryption,   -- (1.2.840.113549.1.1.12)
     parameters NULL
     }
 
