@@ -81,6 +81,7 @@ normative:
   RFC5958:
   RFC6090:
   RFC6234:
+  RFC8017:
   RFC8032:
   #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
@@ -134,8 +135,6 @@ informative:
   RFC5914:
   RFC7292:
   RFC7296:
-  RFC7299:
-  RFC8017:
   RFC8411:
   RFC8446:
   RFC8551:
@@ -326,7 +325,7 @@ Full definitions of serialization and deserialization algorithms can be found in
 
 In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA with the addition of a pre-hash randomizer inspired by [BonehShoup]. See {{sec-cons-randomizer}} for detailed discussion of the security properties of the randomized pre-hash. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
 
-The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple different keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
 
 This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
 
@@ -338,20 +337,30 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 
 ## Prefix, Domain Separators and CTX {#sec-domsep-and-ctx}
 
-When constructing the to-be-signed message representative `M'`, several domain separator values are pre-pended to the message pre-hash prior to signing.
+The to-be-signed message representative `M'` is created by concatenating several values, including the pre-hash.
 
 ~~~
 M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
 ~~~
 
-First a fixed prefix string is pre-pended which is the byte encoding of the ASCII string
-"CompositeAlgorithmSignatures2025" which in hex is:
+Prefix:
+: A fixed octet string which is the byte encoding of the ASCII string "CompositeAlgorithmSignatures2025" which in hex is: 436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+See {{sec-cons-prefix}} for more information on the prefix.
 
-     436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+Domain:
+: A domain separator which is the DER encoding of the OID of the specific composite algorithm. The domain separator binds the signature to the specific composite algorithm.  Domain separator values for each algorithm are listed in {{alg-parms}}.
 
-Additional discussion of the prefix can be found in {{sec-cons-prefix}}.
+len(ctx):
+: A single unsigned byte encoding the length of the context.
 
-Next, the Domain separator defined in {{sec-domsep-values}} which is the DER encoding of the OID of the specific composite algorithm is concatenated with the length of the context in bytes, the context, the randomizer `r`, and finally the hash of the message to be signed. The Domain separator serves to bind the signature to the specific composite algorithm used. The context string allows for applications to bind the signature to some application context. The randomizer is described in detail in {{sec-prehash}}.
+ctx:
+: The context bytes, which allows for applications to bind the signature to an application context.
+
+r:
+: The randomizer, which is described in {{sec-prehash}}.
+
+PH( M ):
+: The hash of the message to be signed.
 
 Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so the DER-encoded OID of the composite algorithm, called Domain, is used as the `ctx` for the underlying ML-DSA primitive.
 
@@ -378,7 +387,7 @@ Explicit inputs:
 Implicit inputs mapped from <OID>:
 
   ML-DSA     The underlying ML-DSA algorithm and
-             parameter set, for example, could be "ML-DSA-65".
+             parameter set, for example "ML-DSA-65".
 
   Trad       The underlying traditional algorithm and
              parameter set, for example "RSASSA-PSS"
@@ -427,51 +436,41 @@ The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.S
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
-See {{sec-prehash}} for a discussion of the pre-hashed design and randomizer `r`.
-
-See {{sec-domsep-and-ctx}} for a discussion on the domain separator and context values.
-
-See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
-
-The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`.
+The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH` and randomizer `r`. See {{sec-domsep-and-ctx}} for a discussion on the domain separator `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 ~~~
 Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
 
 Explicit inputs:
 
-  sk    Composite private key consisting of signing private keys for
-        each component.
+  sk      Composite private key consisting of signing private keys for
+          each component.
 
-  M     The message to be signed, an octet string.
+  M       The message to be signed, an octet string.
 
   ctx     The application context string used in the composite
           signature combiner, which defaults to the empty string.
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA  The underlying ML-DSA algorithm and
-          parameter set, for example, could be "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
+          example "ML-DSA-65".
 
   Trad    The underlying traditional algorithm and
           parameter set, for example "RSASSA-PSS with id-sha256"
           or "Ed25519".
 
-  Prefix  The prefix String which is the byte encoding of the String
-          "CompositeAlgorithmSignatures2025" which in hex is
-      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+  Prefix  The prefix octet string.
 
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
-          is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separator Values"
-          section below.
+  Domain  The domain separator. This value is also used as the ctx
+          parameter of the ML-DSA.Sign function.
 
-  PH      The hash function to use for pre-hashing.
+  PH      The function used to pre-hash M.
 
 
 Output:
-  s      The composite signature value.
+
+  s       The composite signature value.
 
 
 Signature Generation Process:
@@ -481,7 +480,7 @@ Signature Generation Process:
 
   2. Compute the Message representative M'.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-     Randomize the message representative
+     Randomize the message representative.
 
         r = Random(32)
         M' :=  Prefix || Domain || len(ctx) || ctx || r
@@ -493,8 +492,9 @@ Signature Generation Process:
        (mldsaSeed, tradSK) = DeserializePrivateKey(sk)
        (_, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
 
-  4. Generate the two component signatures independently by calculating
-     the signature over M' according to their algorithm specifications.
+  4. Generate the two component signatures independently by
+     calculating the signature over M' according to their algorithm
+     specifications.
 
        mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
        tradSig = Trad.Sign( tradSK, M' )
@@ -524,7 +524,8 @@ Internally it uses pure ML-DSA as the component algorithm since there is no adva
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
-The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`.
+The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH` and randomizer `r`. See {{sec-domsep-and-ctx}} for a discussion on the domain separator `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+
 
 ~~~
 Composite-ML-DSA<OID>.Verify(pk, M, s, ctx) -> true or false
@@ -544,25 +545,19 @@ Explicit inputs:
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA  The underlying ML-DSA algorithm and
-          parameter set, for example, could be "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
+          example "ML-DSA-65".
 
   Trad    The underlying traditional algorithm and
           parameter set, for example "RSASSA-PSS with id-sha256"
           or "Ed25519".
 
-  Prefix  The prefix String which is the byte encoding of the String
-          "CompositeAlgorithmSignatures2025" which in hex is
-      436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+  Prefix  The prefix octet string.
 
-  Domain  Domain separator value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite Domain
-          is passed into the underlying ML-DSA primitive as the ctx.
-          Domain values are defined in the "Domain Separators"
-          section below.
+  Domain  The domain separator. This value is also used as the ctx
+          parameter of the ML-DSA.Sign function.
 
-  PH      The Message Digest Algorithm for pre-hashing. See
-          section on pre-hashing the message below.
+  PH      The function used to pre-hash M.
 
 Output:
 
@@ -658,7 +653,6 @@ Output:
 
   bytes   The encoded composite public key.
 
-
 Serialization Process:
 
   1. Combine and output the encoded public key
@@ -677,12 +671,12 @@ Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
 
 Explicit inputs:
 
-  bytes   An encoded composite public key.
+  bytes    An encoded composite public key.
 
 Implicit inputs mapped from <OID>:
 
   ML-DSA   The underlying ML-DSA algorithm and
-           parameter set to use, for example, could be "ML-DSA-65".
+           parameter set to use, for example "ML-DSA-65".
 
 Output:
 
@@ -740,7 +734,7 @@ Implicit inputs:
 
 Output:
 
-  bytes   The encoded composite private key.
+  bytes      The encoded composite private key.
 
 
 Serialization Process:
@@ -761,7 +755,7 @@ Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)
 
 Explicit inputs:
 
-  bytes   An encoded composite private key.
+  bytes      An encoded composite private key.
 
 Implicit inputs:
 
@@ -817,7 +811,7 @@ Implicit inputs:
 
 Output:
 
-  bytes   The encoded composite signature value.
+  bytes     The encoded composite signature value.
 
 Serialization Process:
 
@@ -843,8 +837,8 @@ Explicit inputs:
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA  The underlying ML-DSA algorithm and
-          parameter set to use, for example, could be "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
+          example "ML-DSA-65".
 
 Output:
 
@@ -994,67 +988,38 @@ Use cases that require an interoperable encoding for composite private keys will
 ~~~
 {: artwork-name="RFC5958-OneAsymmetricKey-asn.1-structure" title="OneAsymmetricKey as defined in [RFC5958]"}
 
-When a composite private key is conveyed inside a `OneAsymmetricKey` structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the `privateKeyAlgorithm` field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-ids}} and its parameters field MUST be absent.  The `privateKey` field SHALL contain the OCTET STRING representation of the serialized composite private key as per {{sec-serialize-privkey}}. The `publicKey` field remains OPTIONAL. If the `publicKey` field is present, it MUST be a composite public key as per {{sec-serialize-pubkey}}.
+When a composite private key is conveyed inside a `OneAsymmetricKey` structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the `privateKeyAlgorithm` field SHALL be set to the corresponding composite algorithm identifier defined according to {{alg-parms}} and its parameters field MUST be absent.  The `privateKey` field SHALL contain the OCTET STRING representation of the serialized composite private key as per {{sec-serialize-privkey}}. The `publicKey` field remains OPTIONAL. If the `publicKey` field is present, it MUST be a composite public key as per {{sec-serialize-pubkey}}.
 
-Some applications might need to reconstruct the `SubjectPublicKeyInfo` or `OneAsymmetricKey` objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. {{sec-alg-ids}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
+Some applications might need to reconstruct the `SubjectPublicKeyInfo` or `OneAsymmetricKey` objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. {{alg-parms}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
 Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 
-# Algorithm Identifiers {#sec-alg-ids}
+# Algorithm Identifiers and Parameters {#alg-parms}
 
-This table summarizes the OID and the component algorithms for each Composite ML-DSA algorithm.
-
-EDNOTE: these are prototyping OIDs to be replaced by IANA.
-
-&lt;CompSig&gt; is equal to 2.16.840.1.114027.80.9.1
-
-
-| Composite Signature Algorithm | OID | ML-DSA | Trad | Pre-Hash |
-| ----------- | ----------- | ----------- |  ----------- | ----------- |
-| id-MLDSA44-RSA2048-PSS-SHA256           | &lt;CompSig&gt;.0   | ML-DSA-44 | RSASSA-PSS with SHA256                 | SHA256 |
-| id-MLDSA44-RSA2048-PKCS15-SHA256        | &lt;CompSig&gt;.1   | ML-DSA-44 | sha256WithRSAEncryption                | SHA256 |
-| id-MLDSA44-Ed25519-SHA512               | &lt;CompSig&gt;.2   | ML-DSA-44 | Ed25519                                | SHA512 |
-| id-MLDSA44-ECDSA-P256-SHA256            | &lt;CompSig&gt;.3   | ML-DSA-44 | ecdsa-with-SHA256 with secp256r1       | SHA256 |
-| id-MLDSA65-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.4   | ML-DSA-65 | RSASSA-PSS with SHA256                 | SHA512 |
-| id-MLDSA65-RSA3072-PKCS15-SHA512        | &lt;CompSig&gt;.5   | ML-DSA-65 | sha256WithRSAEncryption                | SHA512 |
-| id-MLDSA65-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.6   | ML-DSA-65 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA65-RSA4096-PKCS15-SHA512        | &lt;CompSig&gt;.7   | ML-DSA-65 | sha384WithRSAEncryption                | SHA512 |
-| id-MLDSA65-ECDSA-P256-SHA512            | &lt;CompSig&gt;.8   | ML-DSA-65 | ecdsa-with-SHA256 with secp256r1       | SHA512 |
-| id-MLDSA65-ECDSA-P384-SHA512            | &lt;CompSig&gt;.9   | ML-DSA-65 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
-| id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 | &lt;CompSig&gt;.10   | ML-DSA-65 | ecdsa-with-SHA256 with brainpoolP256r1 | SHA512 |
-| id-MLDSA65-Ed25519-SHA512               | &lt;CompSig&gt;.11   | ML-DSA-65 | Ed25519                                | SHA512 |
-| id-MLDSA87-ECDSA-P384-SHA512            | &lt;CompSig&gt;.12   | ML-DSA-87 | ecdsa-with-SHA384 with secp384r1       | SHA512 |
-| id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 | &lt;CompSig&gt;.13   | ML-DSA-87 | ecdsa-with-SHA384 with brainpoolP384r1 | SHA512 |
-| id-MLDSA87-Ed448-SHAKE256               | &lt;CompSig&gt;.14   | ML-DSA-87 | Ed448                                  | SHAKE256/512* |
-| id-MLDSA87-RSA3072-PSS-SHA512           | &lt;CompSig&gt;.15   | ML-DSA-87 | RSASSA-PSS with SHA256                 | SHA512 |
-| id-MLDSA87-RSA4096-PSS-SHA512           | &lt;CompSig&gt;.16   | ML-DSA-87 | RSASSA-PSS with SHA384                 | SHA512 |
-| id-MLDSA87-ECDSA-P521-SHA512            | &lt;CompSig&gt;.17   | ML-DSA-87 | ecdsa-with-SHA512 with secp521r1       | SHA512 |
-{: #tab-hash-sig-algs title="ML-DSA Composite Signature Algorithms"}
-
-*Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
+This section lists the algorithm identifiers and parameters for all Composite ML-DSA algorithms.
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
 
 As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
 
-
-## Domain Separator Values {#sec-domsep-values}
-
-Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
-
-The domain separator is simply the DER encoding of the OID. The following table shows the HEX-encoded domain separator value for each Composite ML-DSA algorithm.
+EDNOTE: the OIDs listed below are prototyping OIDs defined in Entrust's 2.16.840.1.114027.80.9.1 arc but will be replaced by IANA.
 
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
      commit the results to git.
      This is mainly to save resources and build time on the github commits. -->
 
-{::include src/domSepTable.md}
-{: #tab-sig-alg-oids title="ML-DSA Composite Signature Domain Separators"}
+{::include src/algParams.md}
 
-EDNOTE: these domain separators are based on the prototyping OIDs assigned on the Entrust arc. We will need to ask for IANA early assignment of these OIDs so that we can re-compute the domain separators over the final OIDs.
+**Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
+
+## Domain Separator Values {#sec-domsep-values}
+
+Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
+
+The domain separator is simply the DER encoding of the OID. The domain separator for each composite ML-DSA algorithm is listed in HEX-encoded format in {{alg-parms}}.
 
 
 ## Rationale for choices {#sec-rationale}
@@ -1069,33 +1034,32 @@ In some cases, multiple hash functions are used within the same composite algori
 While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
 
 
-## RSASSA-PSS Parameters
+## RSASSA-PSS Parameters {#rsassa-pss-params}
 
 Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified.
 
-As with the other composite signature algorithms, when a composite algorithm OID involving RSA-PSS is used in an AlgorithmIdentifier, the parameters MUST be absent.
-
+The RSASSA-PSS-params ASN.1 type defined in [RFC8017] is not used in Composite ML-DSA encodings, however its fields are referred to below to provide a mapping between the use of RSASSA-PSS in Composite ML-DSA and [RFC8017]
 
 When RSA-PSS is used at the 2048-bit or 3072-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
 
-
-| RSASSA-PSS Parameter         | Value                      |
+| RSASSA-PSS-params field      | Value                      |
 | --------------------------   | -------------------------- |
-| MaskGenAlgorithm.algorithm   | id-mgf1           |
-| MaskGenAlgorithm.parameters  | id-sha256         |
-| Message Digest Algorithm     | id-sha256         |
-| Salt Length in bits          | 256               |
-{: #rsa-pss-params2048 title="RSASSA-PSS 2048 and 3072 Parameters"}
-
+| hashAlgorithm                | id-sha256         |
+| maskGenAlgorithm.algorithm   | id-mgf1           |
+| maskGenAlgorithm.parameters  | id-sha256         |
+| saltLength                   | 32                |
+| trailerField                 | 1                 |
+{: #rsa-pss-params2048-3072 title="RSASSA-PSS 2048 and 3072 Parameters"}
 
 When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
 
-| RSASSA-PSS Parameter        | Value               |
-| --------------------------  | ------------------- |
-| MaskGenAlgorithm.algorithm  | id-mgf1             |
-| MaskGenAlgorithm.parameters | id-sha384           |
-| Message Digest Algorithm    | id-sha384           |
-| Salt Length in bits         | 384                 |
+| RSASSA-PSS-params field      | Value                      |
+| --------------------------   | ------------------- |
+| hashAlgorithm                | id-sha384           |
+| maskGenAlgorithm.algorithm   | id-mgf1             |
+| maskGenAlgorithm.parameters  | id-sha384           |
+| saltLength                   | 48                  |
+| trailerField                 | 1                   |
 {: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 
@@ -1119,10 +1083,12 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 
 # IANA Considerations {#sec-iana}
-IANA is requested to allocate a value from the "SMI Security for PKIX Module Identifier" registry [RFC7299] for the included ASN.1 module, and allocate values from "SMI Security for PKIX Algorithms" to identify the eighteen algorithms defined within.
+IANA is requested to assign an object identifier (OID) for the module identifier (TBDMOD) with a Description of "id-mod-composite-mldsa-2025". The OID for the module should be allocated in the "SMI Security for PKIX Module Identifier" registry (1.3.6.1.5.5.7.0).
+
+IANA is also requested to allocate values from the "SMI Security for PKIX Algorithms" registry (1.3.6.1.5.5.7.6) to identify the eighteen algorithms defined within.
 
 ##  Object Identifier Allocations
-EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{tab-hash-sig-algs}}.
+EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{alg-parms}}.
 
 ###  Module Registration
 
@@ -1281,7 +1247,7 @@ The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious impleme
 
 ## Implications of signature randomizer {#sec-cons-randomizer}
 
-The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple different keys.
+The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple keys.
 
 Composite ML-DSA introduces a 32-byte randomizer into the signature representative M'.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
 
@@ -1320,7 +1286,7 @@ The authors wish to note that composite algorithms provide a design pattern to p
 
 ## Backwards Compatibility {#sec-backwards-compat}
 
-The term "backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This draft explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
+The term "backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
 
 If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
@@ -1387,32 +1353,28 @@ Composite-ML-DSA<OID>.Sign_ph(sk, ph, ctx) -> s
 
 Explicit inputs:
 
-  sk    Composite private key consisting of signing private keys for
-        each component.
+  sk      Composite private key consisting of signing private keys for
+          each component.
 
-  ph     The pre-hash digest over the message
+  ph      The pre-hash digest over the message
 
- ctx    The Message context string used in the composite signature
-        combiner, which defaults to the empty string.
+ ctx      The Message context string used in the composite signature
+          combiner, which defaults to the empty string.
 
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA    The underlying ML-DSA algorithm and
-            parameter set, for example, could be "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
+          example "ML-DSA-65".
 
-  Trad      The underlying traditional algorithm and
-            parameter set, for example "RSASSA-PSS with id-sha256"
-            or "Ed25519".
+  Trad    The underlying traditional algorithm and
+          parameter set, for example "RSASSA-PSS with id-sha256"
+          or "Ed25519".
 
-  Prefix    The prefix String which is the byte encoding of the String
-            "CompositeAlgorithmSignatures2025" which in hex is
-            436F6D706F73697465416C676F726974686D5369676E61747572657332303235
+  Prefix  The prefix octet string.
 
-  Domain    Domain separator value for binding the signature to the
-            Composite OID. Additionally, the composite Domain is passed into
-            the underlying ML-DSA primitive as the ctx.
-            Domain values are defined in the "Domain Separators" section below.
+  Domain  The domain separator. This value is also used as the ctx
+          parameter of the ML-DSA.Sign function.
 
 Process:
 
@@ -1883,7 +1845,7 @@ The input message for this example is the hex string "00 01 02 03 04 05 06 07 08
 Each input component is shown. Note that values are shown hex-encoded for display purposes only, they are actually raw binary values.
 
 * `Prefix` is the fixed constant defined in {{sec-domsep-and-ctx}}.
-* `Domain` is the specific domain separator for this composite algorithm, as defined in {{sec-domsep-values}}.
+* `Domain` is the specific domain separator for this composite algorithm. The domain separator values for each algorithm are listed in {{alg-parms}}.
 * `len(ctx)` is the length of the Message context String which is 00 when no context is used.
 * `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
 * `r` is a random 32-byte value chosen by the signer.
@@ -1943,7 +1905,7 @@ TODO: lock this to a specific commit.
 
 # Intellectual Property Considerations
 
-The following IPR Disclosure relates to this draft:
+The following IPR Disclosure relates to this document:
 
 https://datatracker.ietf.org/ipr/3588/
 
@@ -1985,7 +1947,7 @@ Douglas Stebila (University of Waterloo).
 
 We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
 
-We wish to acknowledge particular effort from Carl Wallace and Dan van Geest (Crypto Next), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this draft.
+We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
 
 Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.
 
