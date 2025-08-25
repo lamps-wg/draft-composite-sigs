@@ -1015,25 +1015,6 @@ EDNOTE: the OIDs listed below are prototyping OIDs defined in Entrust's 2.16.840
 **Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
 
-## Domain Separator Values {#sec-domsep-values}
-
-Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
-
-The domain separator is simply the DER encoding of the OID. The domain separator for each composite ML-DSA algorithm is listed in HEX-encoded format in {{alg-parms}}.
-
-
-## Rationale for choices {#sec-rationale}
-
-In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.
-
-The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical attackers and "qubits of security" against quantum attackers.
-
-SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
-
-In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
-While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
-
-
 ## RSASSA-PSS Parameters {#rsassa-pss-params}
 
 Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified.
@@ -1061,6 +1042,26 @@ When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instant
 | saltLength                   | 48                  |
 | trailerField                 | 1                   |
 {: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
+
+
+## Domain Separator Values {#sec-domsep-values}
+
+Each Composite ML-DSA algorithm has a unique domain separator value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
+
+The domain separator is simply the DER encoding of the OID. The domain separator for each composite ML-DSA algorithm is listed in HEX-encoded format in {{alg-parms}}.
+
+
+## Rationale for choices {#sec-rationale}
+
+In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.
+
+The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical attackers and "qubits of security" against quantum attackers.
+
+SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
+
+In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
+While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
+
 
 
 Full specifications for the referenced algorithms can be found in {{appdx_components}}.
