@@ -26,11 +26,9 @@ from pyasn1.codec.der.encoder import encode as der_encode
 VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
 OID_TABLE = {
-    "sha256WithRSAEncryption-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
-    "sha256WithRSAEncryption-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
-    "id-RSASSA-PSS-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
-    "id-RSASSA-PSS-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
-    "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
+    "sha256WithRSAEncryption": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
+    "sha384WithRSAEncryption": univ.ObjectIdentifier((1,2,840,113549,1,1,12)),
+    "id-RSASSA-PSS": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
     "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
     "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
     "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
@@ -67,7 +65,6 @@ PURE_SEED_ALGS = [
 class SIG:
   pk = None
   sk = None
-  id = None
   params_asn = None
 
   # returns nothing
@@ -104,6 +101,8 @@ class SIG:
 
 
 class RSA(SIG):
+  component_name = "RSA"
+
   # returns nothing
   def keyGen(self):
     self.sk = rsa.generate_private_key(
@@ -153,6 +152,7 @@ class RSA(SIG):
 
 
 class RSAPSS(RSA):
+  id = "id-RSASSA-PSS"
   def get_padding(self):
     return padding.PSS(
         mgf=padding.MGF1(self.hash_alg),
@@ -165,7 +165,6 @@ class RSAPKCS15(RSA):
 
 
 class RSA2048PSS(RSAPSS):
-  id = "id-RSASSA-PSS-2048"
   key_size = 2048
   hash_alg = hashes.SHA256()
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
@@ -173,14 +172,13 @@ class RSA2048PSS(RSAPSS):
 
 
 class RSA2048PKCS15(RSAPKCS15):
-  id = "sha256WithRSAEncryption-2048"
+  id = "sha256WithRSAEncryption"
   key_size = 2048
   hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
 class RSA3072PSS(RSAPSS):
-  id = "id-RSASSA-PSS-3072"
   key_size = 3072
   hash_alg = hashes.SHA256()
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
@@ -188,14 +186,13 @@ class RSA3072PSS(RSAPSS):
 
 
 class RSA3072PKCS15(RSAPKCS15):
-  id = "sha256WithRSAEncryption-3072"
+  id = "sha256WithRSAEncryption"
   key_size = 3072
   hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
 class RSA4096PSS(RSAPSS):
-  id = "id-RSASSA-PSS-4096"
   key_size = 4096
   hash_alg = hashes.SHA384()
   params_asn = rfc4055.rSASSA_PSS_SHA384_Params
@@ -203,13 +200,15 @@ class RSA4096PSS(RSAPSS):
 
 
 class RSA4096PKCS15(RSAPKCS15):
-  id = "sha384WithRSAEncryption-4096"
+  id = "sha384WithRSAEncryption"
   key_size = 4096
   hash_alg = hashes.SHA384()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
 class ECDSA(SIG):
+  component_name = "ECDSA"
+
   def keyGen(self):
     self.sk = ec.generate_private_key(self.curve)
     self.pk = self.sk.public_key()
@@ -235,6 +234,7 @@ class ECDSA(SIG):
 
 class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
+  component_curve = "secp256r1"
   curve = ec.SECP256R1()
   hash = hashes.SHA256()
   algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
@@ -242,6 +242,7 @@ class ECDSAP256(ECDSA):
 
 class ECDSABP256(ECDSA):
   id = "ecdsa-with-SHA256"
+  component_curve = "brainpoolP256r1"
   curve = ec.BrainpoolP256R1()
   hash = hashes.SHA256()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
@@ -249,6 +250,7 @@ class ECDSABP256(ECDSA):
 
 class ECDSAP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  component_curve = "secp384r1"
   curve = ec.SECP384R1()
   hash = hashes.SHA384()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
@@ -256,6 +258,7 @@ class ECDSAP384(ECDSA):
 
 class ECDSABP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  component_curve = "brainpoolP384r1"
   curve = ec.BrainpoolP384R1()
   hash = hashes.SHA384()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
@@ -263,6 +266,7 @@ class ECDSABP384(ECDSA):
 
 class ECDSAP521(ECDSA):
   id = "ecdsa-with-SHA512"
+  component_curve = "secp521r1"
   curve = ec.SECP521R1()
   hash = hashes.SHA512()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
@@ -301,12 +305,14 @@ class EdDSA(SIG):
 
 class Ed25519(EdDSA):
   id = "id-Ed25519"
+  component_name = "Ed25519"
   algid = "30 05 06 03 2B 65 70"
   edsda_private_key_class = ed25519.Ed25519PrivateKey
 
 
 class Ed448(EdDSA):
   id = "id-Ed448"
+  component_name = "Ed448"
   algid = "30 05 06 03 2B 65 71"
   edsda_private_key_class = ed448.Ed448PrivateKey
 
@@ -340,19 +346,21 @@ class MLDSA(SIG):
 
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
+  component_name = "ML-DSA-44"
   ML_DSA_class = ML_DSA_44
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11"
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
+  component_name = "ML-DSA-65"
   ML_DSA_class = ML_DSA_65
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12"
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
+  component_name = "ML-DSA-87"
   ML_DSA_class = ML_DSA_87
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13s"
-
 
 
 ### Composites ###
@@ -366,9 +374,7 @@ class CompositeSig(SIG):
 
   def __init__(self):
     super().__init__()
-    self.domain = DOMAIN_TABLE[self.id][0]  # the first component is the domain,
-                                            # the second is a boolean controlling whether
-                                            # this renders in the domsep table in the draft.
+    self.domain = DOMAIN_TABLE[self.id]['domain']
 
   def loadPK(self, pkbytes):
     mldsapub, tradpub = self.deserializeKey(pkbytes)
@@ -966,8 +972,10 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
+    DOMAIN_TABLE[alg] = {}
     domain = der_encode(OID_TABLE[alg])
-    DOMAIN_TABLE[alg] = (domain, False)
+    DOMAIN_TABLE[alg]['domain'] = domain
+    DOMAIN_TABLE[alg]['render'] = False
 
 # run this statically
 genDomainTable()
@@ -983,7 +991,17 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
     testVectorOutput['tests'].append(jsonResult)
 
   if includeInDomainTable:
-    DOMAIN_TABLE[sig.id] = (DOMAIN_TABLE[sig.id][0], True)
+    DOMAIN_TABLE[sig.id]['render'] = True
+    DOMAIN_TABLE[sig.id]['ph'] = type(sig.PH).__name__
+    if isinstance(sig.PH, hashes.ExtendableOutputFunction):
+      DOMAIN_TABLE[sig.id]['ph'] += "/" + str(sig.PH.digest_size) + "**"
+    DOMAIN_TABLE[sig.id]['mldsa'] = sig.mldsa.component_name
+    DOMAIN_TABLE[sig.id]['trad'] = sig.tradsig.component_name
+    if hasattr(sig.tradsig, 'component_curve'):
+      DOMAIN_TABLE[sig.id]['trad_curve'] = sig.tradsig.component_curve
+    if hasattr(sig.tradsig, 'key_size'):
+      DOMAIN_TABLE[sig.id]['trad_rsa_key_size'] = str(sig.tradsig.key_size)
+    DOMAIN_TABLE[sig.id]['trad_sig_alg'] = sig.tradsig.id
 
   if includeInSizeTable:
     sizeRow = {}
@@ -1045,19 +1063,32 @@ def writeSizeTable():
                  str(row['s']).center(14, ' ') +'|\n' )
       
       
-def writeDomainTable():
+def writeAlgParams():
   """
-  Writes the table of domain separators to go into the draft.
+  Writes the sets of all algorithm to go into the draft.
   """
 
-  with open('domSepTable.md', 'w') as f:
-    f.write('| Composite Signature Algorithm                | Domain Separator (in Hex encoding)|\n')
-    f.write('| -------------------------------------------  | --------------------------------- |\n')
-
+  with open('algParams.md', 'w') as f:
     for alg in DOMAIN_TABLE:
-      if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
-        f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
-        
+      if DOMAIN_TABLE[alg]['render']:  # boolean controlling rendering in this table.
+        f.write("- " + alg + "\n")
+        f.write("  - OID: " + str(OID_TABLE[alg]) + "\n")
+        f.write("  - Domain Separator: " + base64.b16encode(DOMAIN_TABLE[alg]['domain']).decode('ASCII') + "\n")
+        f.write("  - Pre-Hash function (PH): " + DOMAIN_TABLE[alg]['ph'] + "\n")
+        f.write("  - ML-DSA variant: " + DOMAIN_TABLE[alg]['mldsa'] + "\n")
+        f.write("  - Traditional Algorithm: " + DOMAIN_TABLE[alg]['trad'] + "\n")
+        f.write("    - Traditional Signature Algorithm: " + DOMAIN_TABLE[alg]['trad_sig_alg'] + "\n")
+        if 'trad_curve' in DOMAIN_TABLE[alg]:
+          f.write("    - ECDA curve: " + DOMAIN_TABLE[alg]['trad_curve'] + "\n")
+        if 'trad_rsa_key_size' in DOMAIN_TABLE[alg]:
+          f.write("    - RSA size: " + DOMAIN_TABLE[alg]['trad_rsa_key_size'] + "\n")
+        if DOMAIN_TABLE[alg]['trad_sig_alg'] == "id-RSASSA-PSS":
+          if int(DOMAIN_TABLE[alg]['trad_rsa_key_size']) <= 3072:
+            f.write("    - RSASSA-PSS parameters: See {{rsa-pss-params2048-3072}}\n")
+          else:
+            f.write("    - RSASSA-PSS parameters: See {{rsa-pss-params4096}}\n")
+        f.write("\n")
+
 
 def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   """
@@ -1147,7 +1178,7 @@ def main():
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
-  writeDomainTable()
+  writeAlgParams()
 
 
   # Write the message representative examples
