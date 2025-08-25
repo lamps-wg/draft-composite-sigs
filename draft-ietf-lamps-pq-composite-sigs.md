@@ -314,22 +314,20 @@ The following algorithms are defined for serializing and deserializing component
 
    * `DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)`: Parse a byte string to recover the component private keys.
 
-   * `SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes`: Produce a byte string encoding of the component signature values. The randomizer `r` is explained in {{sec-prehash}}.
+   * `SerializeSignatureValue(mldsaSig, tradSig) -> bytes`: Produce a byte string encoding of the component signature values.
 
-   * `DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)`: Parse a byte string to recover the randomizer and the component signature values.
+   * `DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)`: Parse a byte string to recover the component signature values.
 
 Full definitions of serialization and deserialization algorithms can be found in {{sec-serialization}}.
 
 
-## Pre-hashing and Randomizer {#sec-prehash}
+## Pre-hashing {#sec-prehash}
 
-In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA with the addition of a pre-hash randomizer inspired by [BonehShoup]. See {{sec-cons-randomizer}} for detailed discussion of the security properties of the randomized pre-hash. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
+In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
 
 The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
 
 This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
-
-See {{sec-cons-randomizer}} for a discussion of security implications of the randomized pre-hash.
 
 See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
@@ -340,7 +338,7 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 The to-be-signed message representative `M'` is created by concatenating several values, including the pre-hash.
 
 ~~~
-M' :=  Prefix || Domain || len(ctx) || ctx || r || PH( M )
+M' :=  Prefix || Domain || len(ctx) || ctx || PH( M )
 ~~~
 
 Prefix:
@@ -355,9 +353,6 @@ len(ctx):
 
 ctx:
 : The context bytes, which allows for applications to bind the signature to an application context.
-
-r:
-: The randomizer, which is described in {{sec-prehash}}.
 
 PH( M ):
 : The hash of the message to be signed.
@@ -436,7 +431,7 @@ The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.S
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
-The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH` and randomizer `r`. See {{sec-domsep-and-ctx}} for a discussion on the domain separator `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-domsep-and-ctx}} for a discussion on the domain separator `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 ~~~
 Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
@@ -480,11 +475,8 @@ Signature Generation Process:
 
   2. Compute the Message representative M'.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
-     Randomize the message representative.
 
-        r = Random(32)
-        M' :=  Prefix || Domain || len(ctx) || ctx || r
-                                            || PH( M )
+        M' :=  Prefix || Domain || len(ctx) || ctx || PH( M )
 
   3. Separate the private key into component keys
      and re-generate the ML-DSA key from seed.
@@ -507,7 +499,7 @@ Signature Generation Process:
 
   6. Output the encoded composite signature value.
 
-      s = SerializeSignatureValue(r, mldsaSig, tradSig)
+      s = SerializeSignatureValue(mldsaSig, tradSig)
       return s
 ~~~
 {: #alg-composite-sign title="Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s"}
@@ -573,7 +565,7 @@ Signature Verification Process:
   2. Separate the keys and signatures
 
      (mldsaPK, tradPK)       = DeserializePublicKey(pk)
-     (r, mldsaSig, tradSig)  = DeserializeSignatureValue(s)
+     (mldsaSig, tradSig)  = DeserializeSignatureValue(s)
 
    If Error during deserialization, or if any of the component
    keys or signature values are not of the correct type or
@@ -583,8 +575,7 @@ Signature Verification Process:
   3. Compute a Hash of the Message.
      As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
-      M' = Prefix || Domain || len(ctx) || ctx || r
-                                        || PH( M )
+      M' = Prefix || Domain || len(ctx) || ctx || PH( M )
 
   4. Check each component signature individually, according to its
      algorithm specification.
@@ -797,12 +788,9 @@ Deserialization Process:
 The serialization routine for the composite signature value simply concatenates the fixed-length ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig)
-                                      -> bytes
+Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig) -> bytes
 
 Explicit inputs:
-
-  r         The 32 byte signature randomizer.
 
   mldsaSig  The ML-DSA signature value, which is bytes.
 
@@ -821,10 +809,10 @@ Serialization Process:
 
   1. Combine and output the encoded composite signature
 
-     output r || mldsaSig || tradSig
+     output mldsaSig || tradSig
 
 ~~~
-{: #alg-composite-serialize-sig title="Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes"}
+{: #alg-composite-serialize-sig title="Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -833,7 +821,7 @@ The following describes how to instantiate a `DeserializeSignatureValue(bytes)` 
 
 ~~~
 Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
-                                  -> (r, mldsaSig, tradSig)
+                                            -> (mldsaSig, tradSig)
 
 Explicit inputs:
 
@@ -846,8 +834,6 @@ Implicit inputs mapped from <OID>:
 
 Output:
 
-  r         The 32 byte signature randomizer.
-
   mldsaSig  The ML-DSA signature value, which is bytes.
 
   tradSig   The traditional signature value in the appropriate
@@ -855,26 +841,21 @@ Output:
 
 Deserialization Process:
 
-  1. Parse the randomizer r.
-
-     r = bytes[:32]
-     sigs = bytes[32:]  # truncate off the randomizer
-
-  2. Parse each constituent encoded signature.
+  1. Parse each constituent encoded signature.
      The length of the mldsaSig is known based on the size of
      the ML-DSA component signature length specified by the
      Object ID.
 
      switch ML-DSA do
         case ML-DSA-44:
-          mldsaSig = sigs[:2420]
-          tradSig  = sigs[2420:]
+          mldsaSig = bytes[:2420]
+          tradSig  = bytes[2420:]
         case ML-DSA-65:
-          mldsaSig = sigs[:3309]
-          tradSig  = sigs[3309:]
+          mldsaSig = bytes[:3309]
+          tradSig  = bytes[3309:]
         case ML-DSA-87:
-          mldsaSig = sigs[:4627]
-          tradSig  = sigs[4627:]
+          mldsaSig = bytes[:4627]
+          tradSig  = bytes[4627:]
 
      Note that while ML-DSA has fixed-length signatures,
      RSA and ECDSA may not, depending on encoding, so rigorous
@@ -882,9 +863,9 @@ Deserialization Process:
 
   3. Output the component signature values
 
-     output (r, mldsaSig, tradSig)
+     output (mldsaSig, tradSig)
 ~~~
-{: #alg-composite-deserialize-sig title="Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (r, mldsaSig, tradSig)"}
+{: #alg-composite-deserialize-sig title="Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)"}
 
 
 # Use within X.509 and PKIX
@@ -1251,17 +1232,6 @@ Some application might disregard the requirements of this specification to not r
 
 The Prefix value specified in {{sec-domsep-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
 
-## Implications of signature randomizer {#sec-cons-randomizer}
-
-The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M` and to allow for optimizations in cases such as signing the same message digest with multiple keys.
-
-Composite ML-DSA introduces a 32-byte randomizer into the signature representative M'.   This is to prevent a class of attacks unique to composites, which we define as a "mixed-key forgery attack": Take two composite keys `(mldsaPK1, tradPK1)` and `(mldsaPK2, tradPK2)` which do not share any key material and have them produce signatures `(r1, mldsaSig1, tradSig1)` and `(r2, mldsaSig2, tradSig2)` respectively over the same message `M`. Consider whether it is possible to construct a forgery by swapping components and presenting `(r, mldsaSig1, tradSig2)` that verifies under a forged public key `(mldsaPK1, tradPK2)`. This forgery attack is blocked by the randomizer `r` so long as `r1 != r2`.
-
-A failure of randomness, for example `r = 0`, or a fixed value of 'r' effectively reduces r to a prefix that doesn't add value, but it is no worse than the security properties that Composite ML-DSA would have had without the randomizer.
-
-Introduction of the randomizer might introduce other beneficial security properties, but these are outside the scope of design consideration.
-
-
 ## Policy for Deprecated and Acceptable Algorithms
 
 Traditionally, a public key or certificate contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), the path to deprecating it through policy and removing it from operational environments is, at least is principle, straightforward.
@@ -1284,8 +1254,6 @@ One of the primary design goals of this specification is for the overall composi
 Implementers seeking FIPS certification of a composite signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
 The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(seed)` which might not be available in a cryptographic module running in FIPS-mode, but {{sec-keygen}} is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.
-
-The signature randomizer `r` requires the composite implementation to have access to a cryptographic random number generator. However, as noted in {{sec-cons-randomizer}}, this provides additional security properties on top of those provided by ML-DSA, RSA, ECDSA, and EdDSA, and failure of randomness does not compromise the Composite ML-DSA algorithm or the underlying primitives. Therefore it should be possible to exclude this RNG invocation from the FIPS boundary if an implementation is not able to guarantee use of a FIPS-approved RNG.
 
 The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.
 
@@ -1861,8 +1829,7 @@ Each input component is shown. Note that values are shown hex-encoded for displa
 * `Domain` is the specific domain separator for this composite algorithm. The domain separator values for each algorithm are listed in {{alg-parms}}.
 * `len(ctx)` is the length of the Message context String which is 00 when no context is used.
 * `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
-* `r` is a random 32-byte value chosen by the signer.
-* `PH(r||M)` is the output of hashing the randomizer together with the message `M`.
+* `PH(M)` is the output of hashing the message `M`.
 
 Finally, the fully assembled `M'` is given, which is simply the concatenation of the above values.
 
