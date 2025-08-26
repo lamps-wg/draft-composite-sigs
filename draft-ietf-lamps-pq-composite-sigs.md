@@ -443,8 +443,8 @@ Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
 
 Explicit inputs:
 
-  sk      Composite private key consisting of signing private keys for
-          each component.
+  sk      Composite private key consisting of signing private keys
+          for each component.
 
   M       The message to be signed, an octet string.
 
@@ -499,8 +499,8 @@ Signature Generation Process:
        mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Domain )
        tradSig = Trad.Sign( tradSK, M' )
 
-  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then this
-     process MUST return an error.
+  5. If either ML-DSA.Sign() or Trad.Sign() return an error, then
+     this process MUST return an error.
 
       if NOT mldsaSig or NOT tradSig:
         output "Signature generation error"
@@ -667,7 +667,8 @@ Deserialization reverses this process. Each component key is deserialized accord
 The following describes how to instantiate a `DeserializePublicKey(bytes)` function for a given composite algorithm represented by `<OID>`.
 
 ~~~
-Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)
+Composite-ML-DSA<OID>.DeserializePublicKey(bytes)
+                                    -> (mldsaPK, tradPK)
 
 Explicit inputs:
 
@@ -688,8 +689,9 @@ Output:
 Deserialization Process:
 
   1. Parse each constituent encoded public key.
-       The length of the mldsaKey is known based on the size of
-       the ML-DSA component key length specified by the Object ID.
+     The length of the mldsaKey is known based on the
+     size of the ML-DSA component key length specified
+     by the Object ID.
 
      switch ML-DSA do
         case ML-DSA-44:
@@ -702,9 +704,10 @@ Deserialization Process:
           mldsaPK = bytes[:2592]
           tradPK  = bytes[2592:]
 
-     Note that while ML-DSA has fixed-length keys, RSA and ECDSA
-     may not, depending on encoding, so rigorous length-checking
-     of the overall composite key is not always possible.
+     Note that while ML-DSA has fixed-length keys, RSA and
+     ECDSA may not, depending on encoding, so rigorous
+     length-checking of the overall composite key is not
+     always possible.
 
   2. Output the component public keys
 
@@ -794,7 +797,8 @@ Deserialization Process:
 The serialization routine for the composite signature value simply concatenates the fixed-length ML-DSA signature value with the signature value from the traditional algorithm, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig) -> bytes
+Composite-ML-DSA.SerializeSignatureValue(r, mldsaSig, tradSig)
+                                      -> bytes
 
 Explicit inputs:
 
@@ -829,7 +833,7 @@ The following describes how to instantiate a `DeserializeSignatureValue(bytes)` 
 
 ~~~
 Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
-                                            -> (r, mldsaSig, tradSig)
+                                  -> (r, mldsaSig, tradSig)
 
 Explicit inputs:
 
@@ -837,8 +841,8 @@ Explicit inputs:
 
 Implicit inputs mapped from <OID>:
 
-  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
-          example "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set,
+          for example "ML-DSA-65".
 
 Output:
 
@@ -858,7 +862,8 @@ Deserialization Process:
 
   2. Parse each constituent encoded signature.
      The length of the mldsaSig is known based on the size of
-     the ML-DSA component signature length specified by the Object ID.
+     the ML-DSA component signature length specified by the
+     Object ID.
 
      switch ML-DSA do
         case ML-DSA-44:
@@ -871,9 +876,9 @@ Deserialization Process:
           mldsaSig = sigs[:4627]
           tradSig  = sigs[4627:]
 
-     Note that while ML-DSA has fixed-length signatures, RSA and ECDSA
-     may not, depending on encoding, so rigorous length-checking is
-     not always possible here.
+     Note that while ML-DSA has fixed-length signatures,
+     RSA and ECDSA may not, depending on encoding, so rigorous
+     length-checking is not always possible here.
 
   3. Output the component signature values
 
@@ -1354,13 +1359,13 @@ Composite-ML-DSA<OID>.Sign_ph(sk, ph, ctx) -> s
 
 Explicit inputs:
 
-  sk      Composite private key consisting of signing private keys for
-          each component.
+  sk      Composite private key consisting of signing private keys
+          for each component.
 
   ph      The pre-hash digest over the message
 
- ctx      The Message context string used in the composite signature
-          combiner, which defaults to the empty string.
+  ctx     The Message context string used in the composite
+          signature combiner, which defaults to the empty string.
 
 
 Implicit inputs mapped from <OID>:
@@ -1379,9 +1384,10 @@ Implicit inputs mapped from <OID>:
 
 Process:
 
-   1.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but replace the internally
-       generated PH( M ) from step 2 of Composite-ML-DSA<OID>.Sign (sk, M, ctx)
-       with ph which is input into this function.
+   1.  Identical to Composite-ML-DSA<OID>.Sign (sk, M, ctx) but
+       replace the internally generated PH( M ) from step 2 of
+       Composite-ML-DSA<OID>.Sign (sk, M, ctx) with ph which is
+       input into this function.
 ~~~
 {: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
@@ -1546,9 +1552,11 @@ ASN.1:
     }
 
 DER:
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
-  48 01 65 03 04 02 01 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
-  08 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03 02 01 20
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0
+  0F 30 0D 06 09 60 86 48 01 65 03 04 02 01 05 00
+  A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30
+  0D 06 09 60 86 48 01 65 03 04 02 01 05 00 A2 03
+  02 01 20
 ~~~
 
 **RSASSA-PSS 4096**
@@ -1590,9 +1598,11 @@ ASN.1:
     }
 
 DER:
-  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0 0F 30 0D 06 09 60 86
-  48 01 65 03 04 02 03 05 00 A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01
-  08 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03 02 01 40
+  30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0
+  0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00
+  A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30
+  0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03
+  02 01 40
 ~~~
 
 **RSASSA-PKCS1-v1_5 2048 & 3072**
@@ -1762,7 +1772,8 @@ ASN.1:
     }
 
 DER:
-  30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07
+  30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03
+  03 02 08 01 01 07
 ~~~
 
 AlgorithmIdentifier of Signature
@@ -1793,7 +1804,8 @@ ASN.1:
     }
 
 DER:
-  30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B
+  30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03
+  03 02 08 01 01 0B
 ~~~
 
 AlgorithmIdentifier of Signature

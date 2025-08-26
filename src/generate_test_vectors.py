@@ -1107,7 +1107,7 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
 
 
   # Dump the values to file
-  wrap_width = 70
+  wrap_width = 67
   f.write("# Inputs:")
   f.write("\n\n")     
   f.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )

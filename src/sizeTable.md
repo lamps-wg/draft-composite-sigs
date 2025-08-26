@@ -4,13 +4,13 @@
 | id-ML-DSA-65                                  |     1952     |      32      |     3309     |
 | id-ML-DSA-87                                  |     2592     |      32      |     4627     |
 | id-MLDSA44-RSA2048-PSS-SHA256                 |     1582     |     1223     |     2708     |
-| id-MLDSA44-RSA2048-PKCS15-SHA256              |     1582     |     1225     |     2708     |
+| id-MLDSA44-RSA2048-PKCS15-SHA256              |     1582     |     1223     |     2708     |
 | id-MLDSA44-Ed25519-SHA512                     |     1344     |      66      |     2516     |
-| id-MLDSA44-ECDSA-P256-SHA256                  |     1377     |     153      |     2522     |
-| id-MLDSA65-RSA3072-PSS-SHA512                 |     2350     |     1800     |     3725     |
+| id-MLDSA44-ECDSA-P256-SHA256                  |     1377     |     153      |     2523     |
+| id-MLDSA65-RSA3072-PSS-SHA512                 |     2350     |     1799     |     3725     |
 | id-MLDSA65-RSA3072-PKCS15-SHA512              |     2350     |     1800     |     3725     |
 | id-MLDSA65-RSA4096-PSS-SHA512                 |     2478     |     2382     |     3853     |
-| id-MLDSA65-RSA4096-PKCS15-SHA512              |     2478     |     2381     |     3853     |
+| id-MLDSA65-RSA4096-PKCS15-SHA512              |     2478     |     2379     |     3853     |
 | id-MLDSA65-ECDSA-P256-SHA512                  |     2017     |     153      |     3412     |
 | id-MLDSA65-ECDSA-P384-SHA512                  |     2049     |     199      |     3444     |
 | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512       |     2017     |     154      |     3411     |
@@ -20,4 +20,4 @@
 | id-MLDSA87-Ed448-SHAKE256                     |     2649     |      91      |     4773     |
 | id-MLDSA87-RSA3072-PSS-SHA512                 |     2990     |     1799     |     5043     |
 | id-MLDSA87-RSA4096-PSS-SHA512                 |     3118     |     2380     |     5171     |
-| id-MLDSA87-ECDSA-P521-SHA512                  |     2725     |     255      |     4797     |
+| id-MLDSA87-ECDSA-P521-SHA512                  |     2725     |     255      |     4798     |
