@@ -1855,23 +1855,24 @@ The functions defined in this section are considered internal implementation det
       </table>
 </div>
 <p id="section-5-4">For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in <a href="#sec-encoding-to-der" class="auto internal xref">Section 6.1</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, or an RSA private key could be encoded in Chinese Remainder Theorem form <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-5">While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an RSA private key could be encoded in Chinese Remainder Theorem form <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:<a href="#section-5-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-6.1">
           <p id="section-5-6.1.1"><strong>ML-DSA</strong>: MUST be encoded as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>, using a 32-byte seed as the private key.<a href="#section-5-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-6.2">
-          <p id="section-5-6.2.1"><strong>RSA</strong>: MUST be encoded with the <code>(n,e)</code> public key representation as specified in A.1.1 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> and the private key representation as specified in A.1.2 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-5-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-5-6.2.1"><strong>RSA</strong>: the public key MUST be encoded as RSAPublicKey with the <code>(n,e)</code> public key representation as specified in A.1.1 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> and the private key representation as RSAPrivateKey specified in A.1.2 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> with version 0 and 'otherPrimeInfos' absent.<a href="#section-5-6.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-6.3">
-          <p id="section-5-6.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an <code>Ecdsa-Sig-Value</code> as specified in section 2.2.3 of <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>. The private key must be encoded as ECPrivateKey specified in [RFC5915].<a href="#section-5-6.3.1" class="pilcrow">¶</a></p>
+          <p id="section-5-6.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an uncompressed <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>. A signature MUST be encoded as an <code>Ecdsa-Sig-Value</code> as specified in section 2.2.3 of <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>. The private key MUST be encoded as ECPrivateKey specified in <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span> without 'NamedCurve' parameter and without 'publicKey' field.<a href="#section-5-6.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-6.4">
           <p id="section-5-6.4.1"><strong>EdDSA</strong>: public key and signature MUST be encoded as per section 3 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> and the private key as CurvePrivateKey specified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>.<a href="#section-5-6.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-5-7">Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for further discussion of encoded size of each composite algorithm.<a href="#section-5-7" class="pilcrow">¶</a></p>
-<p id="section-5-8">The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-7">All ASN.1 objects SHALL be encoded using DER on serialization.<a href="#section-5-7" class="pilcrow">¶</a></p>
+<p id="section-5-8">Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for further discussion of encoded size of each composite algorithm.<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-9">The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.<a href="#section-5-9" class="pilcrow">¶</a></p>
 <div id="sec-serialize-pubkey">
 <section id="section-5.1">
         <h3 id="name-serializepublickey-and-dese">
@@ -3812,6 +3813,10 @@ Process:
         <dd>
 <span class="refAuthor">Dang, Q.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Moriarty, K.</span>, <span class="refAuthor">Brown, D.</span>, and <span class="refAuthor">T. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure: Additional Algorithms and Identifiers for DSA and ECDSA"</span>, <span class="seriesInfo">RFC 5758</span>, <span class="seriesInfo">DOI 10.17487/RFC5758</span>, <time datetime="2010-01" class="refDate">January 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5758">https://www.rfc-editor.org/info/rfc5758</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC5915">[RFC5915]</dt>
+        <dd>
+<span class="refAuthor">Turner, S.</span> and <span class="refAuthor">D. Brown</span>, <span class="refTitle">"Elliptic Curve Private Key Structure"</span>, <span class="seriesInfo">RFC 5915</span>, <span class="seriesInfo">DOI 10.17487/RFC5915</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5915">https://www.rfc-editor.org/info/rfc5915</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5958">[RFC5958]</dt>
         <dd>
 <span class="refAuthor">Turner, S.</span>, <span class="refTitle">"Asymmetric Key Packages"</span>, <span class="seriesInfo">RFC 5958</span>, <span class="seriesInfo">DOI 10.17487/RFC5958</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5958">https://www.rfc-editor.org/info/rfc5958</a>&gt;</span>. </dd>
@@ -3991,13 +3996,13 @@ Process:
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PSS-SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">1582</td>
-            <td class="text-left" rowspan="1" colspan="1">1224</td>
+            <td class="text-left" rowspan="1" colspan="1">1222</td>
             <td class="text-left" rowspan="1" colspan="1">2676</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-RSA2048-PKCS15-SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">1582</td>
-            <td class="text-left" rowspan="1" colspan="1">1223</td>
+            <td class="text-left" rowspan="1" colspan="1">1222</td>
             <td class="text-left" rowspan="1" colspan="1">2676</td>
           </tr>
           <tr>
@@ -4009,50 +4014,50 @@ Process:
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA44-ECDSA-P256-SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">1377</td>
-            <td class="text-left" rowspan="1" colspan="1">153</td>
+            <td class="text-left" rowspan="1" colspan="1">71</td>
             <td class="text-left" rowspan="1" colspan="1">2492</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PSS-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2350</td>
-            <td class="text-left" rowspan="1" colspan="1">1801</td>
+            <td class="text-left" rowspan="1" colspan="1">1799</td>
             <td class="text-left" rowspan="1" colspan="1">3693</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA3072-PKCS15-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2350</td>
-            <td class="text-left" rowspan="1" colspan="1">1801</td>
+            <td class="text-left" rowspan="1" colspan="1">1800</td>
             <td class="text-left" rowspan="1" colspan="1">3693</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PSS-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2478</td>
-            <td class="text-left" rowspan="1" colspan="1">2382</td>
+            <td class="text-left" rowspan="1" colspan="1">2381</td>
             <td class="text-left" rowspan="1" colspan="1">3821</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-RSA4096-PKCS15-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2478</td>
-            <td class="text-left" rowspan="1" colspan="1">2381</td>
+            <td class="text-left" rowspan="1" colspan="1">2379</td>
             <td class="text-left" rowspan="1" colspan="1">3821</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P256-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2017</td>
-            <td class="text-left" rowspan="1" colspan="1">153</td>
-            <td class="text-left" rowspan="1" colspan="1">3381</td>
+            <td class="text-left" rowspan="1" colspan="1">71</td>
+            <td class="text-left" rowspan="1" colspan="1">3379</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-P384-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2049</td>
-            <td class="text-left" rowspan="1" colspan="1">199</td>
+            <td class="text-left" rowspan="1" colspan="1">87</td>
             <td class="text-left" rowspan="1" colspan="1">3412</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-ECDSA-brainpoolP256r1-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2017</td>
-            <td class="text-left" rowspan="1" colspan="1">154</td>
-            <td class="text-left" rowspan="1" colspan="1">3380</td>
+            <td class="text-left" rowspan="1" colspan="1">71</td>
+            <td class="text-left" rowspan="1" colspan="1">3381</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA65-Ed25519-SHA512</td>
@@ -4063,14 +4068,14 @@ Process:
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P384-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2689</td>
-            <td class="text-left" rowspan="1" colspan="1">199</td>
+            <td class="text-left" rowspan="1" colspan="1">87</td>
             <td class="text-left" rowspan="1" colspan="1">4730</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-brainpoolP384r1-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2689</td>
-            <td class="text-left" rowspan="1" colspan="1">203</td>
-            <td class="text-left" rowspan="1" colspan="1">4730</td>
+            <td class="text-left" rowspan="1" colspan="1">87</td>
+            <td class="text-left" rowspan="1" colspan="1">4729</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-Ed448-SHAKE256</td>
@@ -4087,14 +4092,14 @@ Process:
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-RSA4096-PSS-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">3118</td>
-            <td class="text-left" rowspan="1" colspan="1">2379</td>
+            <td class="text-left" rowspan="1" colspan="1">2380</td>
             <td class="text-left" rowspan="1" colspan="1">5139</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">id-MLDSA87-ECDSA-P521-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">2725</td>
-            <td class="text-left" rowspan="1" colspan="1">255</td>
-            <td class="text-left" rowspan="1" colspan="1">4764</td>
+            <td class="text-left" rowspan="1" colspan="1">105</td>
+            <td class="text-left" rowspan="1" colspan="1">4765</td>
           </tr>
         </tbody>
       </table>
@@ -4160,21 +4165,21 @@ Process:
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA256</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.2</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
+              <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>, <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span>, <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA384</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.3</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
+              <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>, <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span>, <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">ecdsa-with-SHA512</td>
             <td class="text-left" rowspan="1" colspan="1">1.2.840.10045.4.3.4</td>
             <td class="text-left" rowspan="1" colspan="1">
-              <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
+              <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>, <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span>, <span>[<a href="#RFC5758" class="cite xref">RFC5758</a>]</span>, <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span>, <span>[<a href="#SEC1" class="cite xref">SEC1</a>]</span>, <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>
 </td>
           </tr>
           <tr>
