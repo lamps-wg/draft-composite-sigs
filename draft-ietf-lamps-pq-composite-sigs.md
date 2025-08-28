@@ -78,6 +78,7 @@ normative:
   RFC5639:
   RFC5652:
   RFC5758:
+  RFC5915:
   RFC5958:
   RFC6090:
   RFC6234:
@@ -611,12 +612,14 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
-While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an elliptic curve public key might be validly encoded as either compressed or uncompressed [SEC1], or an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
+While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an RSA private key could be encoded in Chinese Remainder Theorem form [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
 * **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
-* **RSA**: MUST be encoded with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as specified in A.1.2 of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an `ECPoint` as specified in section 2.2 of [RFC5480], with both compressed and uncompressed keys supported. For maximum interoperability, it is RECOMMENDED to use uncompressed points. A signature MUST be DER encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key must be encoded as ECPrivateKey specified in [RFC5915].
+* **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.
+* **ECDSA**: public key MUST be encoded as an uncompressed `ECPoint` as specified in section 2.2 of [RFC5480]. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] without 'NamedCurve' parameter and without 'publicKey' field.
 * **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
+
+All ASN.1 objects SHALL be encoded using DER on serialization.
 
 Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
 
@@ -1405,9 +1408,9 @@ This section provides references to the full specification of the algorithms use
 | id-ML-DSA-87 | 2.16.840.1.101.3.4.3.19 | [FIPS.204] |
 | id-Ed25519   | 1.3.101.112 | [RFC8032], [RFC8410] |
 | id-Ed448     | 1.3.101.113 | [RFC8032], [RFC8410] |
-| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
-| ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
-| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA256 | 1.2.840.10045.4.3.2 | [RFC3279], [RFC5915], [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA384 | 1.2.840.10045.4.3.3 | [RFC3279], [RFC5915], [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
+| ecdsa-with-SHA512 | 1.2.840.10045.4.3.4 | [RFC3279], [RFC5915], [RFC5758], [RFC5480], [SEC1], [X9.62–2005] |
 | sha256WithRSAEncryption | 1.2.840.113549.1.1.11 | [RFC8017] |
 | sha384WithRSAEncryption | 1.2.840.113549.1.1.12 | [RFC8017] |
 | id-RSASSA-PSS | 1.2.840.113549.1.1.10 | [RFC8017] |

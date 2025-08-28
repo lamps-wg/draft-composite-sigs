@@ -18,7 +18,7 @@ import json
 import textwrap
 from zipfile import ZipFile
 
-from pyasn1.type import univ, tag
+from pyasn1.type import univ, tag, namedtype
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -206,6 +206,15 @@ class RSA4096PKCS15(RSAPKCS15):
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
+class Version(univ.Integer):
+    pass
+    
+class ECDSAPrivateKey(univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        namedtype.NamedType('version', Version()),
+        namedtype.NamedType('privateKey', univ.OctetString())
+    )
+
 class ECDSA(SIG):
   component_name = "ECDSA"
 
@@ -225,11 +234,11 @@ class ECDSA(SIG):
         encoding=serialization.Encoding.X962,
         format=serialization.PublicFormat.UncompressedPoint)
 
-  def private_key_bytes(self):    
-    return self.sk.private_bytes(
-        encoding=serialization.Encoding.DER,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption())
+  def private_key_bytes(self):
+    prk = ECDSAPrivateKey()
+    prk['version'] = 1
+    prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
+    return der_encode(prk)
 
 
 class ECDSAP256(ECDSA):
