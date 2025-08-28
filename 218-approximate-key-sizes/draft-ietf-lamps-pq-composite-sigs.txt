@@ -121,7 +121,7 @@ Table of Contents
    12. References
      12.1.  Normative References
      12.2.  Informative References
-   Appendix A.  Approximate Key and Signature Sizes
+   Appendix A.  Maximum Key and Signature Sizes
    Appendix B.  Component Algorithm Reference
    Appendix C.  Component AlgorithmIdentifiers for Public Keys and
            Signatures
@@ -2763,10 +2763,9 @@ Table of Contents
               Public Key Encryption", RFC 9180, DOI 10.17487/RFC9180,
               February 2022, <https://www.rfc-editor.org/info/rfc9180>.
 
-Appendix A.  Approximate Key and Signature Sizes
+Appendix A.  Maximum Key and Signature Sizes
 
-   The sizes listed below are approximate: these values are measured
-   from the test vectors, however, several factors could cause
+   The sizes listed below are maximas.  Several factors could cause
    fluctuations in the size of the traditional component.  For example,
    this could be due to:
 
@@ -2789,11 +2788,6 @@ Appendix A.  Approximate Key and Signature Sizes
    values in this table except for ML-DSA + EdDSA; since these
    algorithms produce fixed-size outputs, the values in the table below
    for these variants MAY be treated as constants.
-
-   Note that this table measures the size of the raw byte values, and
-   does not measure any ASN.1 wrapping such as OCTET STRINGS or PKCS#8
-   PrivateKeyInfo structures.  This table is useful primarily for
-   comparison purposes between the different options.
 
    Non-hybrid ML-DSA is included for reference.
 

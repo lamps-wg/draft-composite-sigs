@@ -1326,7 +1326,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-approximate-key-and-signatu" class="internal xref">Approximate Key and Signature Sizes</a></p>
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-maximum-key-and-signature-s" class="internal xref">Maximum Key and Signature Sizes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
             <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-component-algorithm-referen" class="internal xref">Component Algorithm Reference</a></p>
@@ -3971,10 +3971,10 @@ Process:
 </div>
 <div id="sec-sizetable">
 <section id="appendix-A">
-      <h2 id="name-approximate-key-and-signatu">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-approximate-key-and-signatu" class="section-name selfRef">Approximate Key and Signature Sizes</a>
+      <h2 id="name-maximum-key-and-signature-s">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-maximum-key-and-signature-s" class="section-name selfRef">Maximum Key and Signature Sizes</a>
       </h2>
-<p id="appendix-A-1">The sizes listed below are approximate: these values are measured from the test vectors, however, several factors could cause fluctuations in the size of the traditional component. For example, this could be due to:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">The sizes listed below are maximas. Several factors could cause fluctuations in the size of the traditional component. For example, this could be due to:<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A-2.1">
           <p id="appendix-A-2.1.1">Compressed vs uncompressed EC point.<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
@@ -3988,8 +3988,7 @@ Process:
       </ul>
 <p id="appendix-A-3">By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
 <p id="appendix-A-4">Implementations MUST NOT perform strict length checking based on the values in this table except for ML-DSA + EdDSA; since these algorithms produce fixed-size outputs, the values in the table below for these variants MAY be treated as constants.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
-<p id="appendix-A-5">Note that this table measures the size of the raw byte values, and does not measure any ASN.1 wrapping such as OCTET STRINGS or PKCS#8 PrivateKeyInfo structures. This table is useful primarily for comparison purposes between the different options.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
-<p id="appendix-A-6">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-6" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">Non-hybrid ML-DSA is included for reference.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 <span id="name-approximate-size-values-of-"></span><div id="tab-size-values">
 <table class="center" id="table-4">
         <caption>
