@@ -390,12 +390,12 @@ class CompositeSig(SIG):
     self.pk = self.serializeKey()
 
 
-  def computeMprime(self, m, ctx, r, return_intermediates=False ):
+  def computeMprime(self, m, ctx, return_intermediates=False ):
     """
     Computes the message representative M'.
 
     return_intermediates=False is the default mode, and returns a single value: Mprime
-    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, r, ph_m, Mprime)
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, ph_m, Mprime)
     """
 
     h = hashes.Hash(self.PH) 
@@ -403,17 +403,16 @@ class CompositeSig(SIG):
     ph_m = h.finalize()
 
 
-    # M' :=  Prefix || Domain || len(ctx) || ctx || r || PH(M)
+    # M' :=  Prefix || Domain || len(ctx) || ctx || PH(M)
     len_ctx = len(ctx).to_bytes(1, 'big')
     Mprime = self.prefix                 + \
          self.domain                 + \
          len_ctx + \
          ctx                         + \
-         r                           + \
          ph_m
          
     if return_intermediates:
-      return (self.prefix, self.domain, len_ctx, ctx, r, ph_m, Mprime)
+      return (self.prefix, self.domain, len_ctx, ctx, ph_m, Mprime)
     else:
       return Mprime  
 
@@ -424,14 +423,13 @@ class CompositeSig(SIG):
     """    
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
-
-    r = secrets.token_bytes(32)
-    Mprime = self.computeMprime(m, ctx, r)
+    
+    Mprime = self.computeMprime(m, ctx)
 
     mldsaSig = self.mldsa.sign( Mprime, ctx=self.domain )
     tradSig = self.tradsig.sign( Mprime )
     
-    return self.serializeSignatureValue(r, mldsaSig, tradSig)
+    return self.serializeSignatureValue(mldsaSig, tradSig)
   
 
   # raises cryptography.exceptions.InvalidSignature
@@ -443,12 +441,9 @@ class CompositeSig(SIG):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    (r, mldsaSig, tradSig) = self.deserializeSignatureValue(s)
+    (mldsaSig, tradSig) = self.deserializeSignatureValue(s)
 
-    if len(r) != 32:
-      raise InvalidSignature("r is the wrong length")
-
-    Mprime = self.computeMprime(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
     self.mldsa.verify(mldsaSig, Mprime, ctx=self.domain)
@@ -496,21 +491,16 @@ class CompositeSig(SIG):
     tradSK  = self.tradsig.private_key_bytes()
     return mldsaSK + tradSK
 
-  def serializeSignatureValue(self, r, s1, s2):
-    assert isinstance(r, bytes)
-    assert len(r) == 32
+  def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
-    return r + s1 + s2
+    return s1 + s2
 
   def deserializeSignatureValue(self, s):
     """
-    Returns (r, mldsaSig, tradSig)
+    Returns (mldsaSig, tradSig)
     """
     assert isinstance(s, bytes)
-
-    r = s[:32]
-    s = s[32:]  # truncate off the randomizer
 
     if isinstance(self.mldsa, MLDSA44):
       mldsaSig = s[:2420]
@@ -522,7 +512,7 @@ class CompositeSig(SIG):
       mldsaSig = s[:4627]
       tradSig  = s[4627:]
   
-    return (r, mldsaSig, tradSig)
+    return (mldsaSig, tradSig)
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS-SHA256"
@@ -1101,8 +1091,7 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   # Compute the values
   sig.keyGen()
 
-  r = secrets.token_bytes(32)
-  (prefix, domain, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
+  (prefix, domain, len_ctx, ctx, ph_m, Mprime) = sig.computeMprime(m, ctx, return_intermediates=True)
 
 
 
@@ -1124,11 +1113,10 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
       f.write("ctx: <empty>\n")
   else:
       f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n\n" )
-  f.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
   f.write( '\n'.join(textwrap.wrap("PH(M): " + ph_m.hex(), width=wrap_width)) +"\n\n" )
   f.write("\n")
   f.write("# Outputs:\n")
-  f.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(M)\n\n")
+  f.write("# M' = Prefix || Domain || len(ctx) || ctx || PH(M)\n\n")
   f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
