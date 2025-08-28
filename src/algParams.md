@@ -32,7 +32,7 @@
   - ML-DSA variant: ML-DSA-44
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA256
-    - ECDA curve: secp256r1
+    - ECDSA curve: secp256r1
 
 - id-MLDSA65-RSA3072-PSS-SHA512
   - OID: 2.16.840.1.114027.80.9.1.4
@@ -79,7 +79,7 @@
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA256
-    - ECDA curve: secp256r1
+    - ECDSA curve: secp256r1
 
 - id-MLDSA65-ECDSA-P384-SHA512
   - OID: 2.16.840.1.114027.80.9.1.9
@@ -88,7 +88,7 @@
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA384
-    - ECDA curve: secp384r1
+    - ECDSA curve: secp384r1
 
 - id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - OID: 2.16.840.1.114027.80.9.1.10
@@ -97,7 +97,7 @@
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA256
-    - ECDA curve: brainpoolP256r1
+    - ECDSA curve: brainpoolP256r1
 
 - id-MLDSA65-Ed25519-SHA512
   - OID: 2.16.840.1.114027.80.9.1.11
@@ -114,7 +114,7 @@
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA384
-    - ECDA curve: secp384r1
+    - ECDSA curve: secp384r1
 
 - id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - OID: 2.16.840.1.114027.80.9.1.13
@@ -123,7 +123,7 @@
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA384
-    - ECDA curve: brainpoolP384r1
+    - ECDSA curve: brainpoolP384r1
 
 - id-MLDSA87-Ed448-SHAKE256
   - OID: 2.16.840.1.114027.80.9.1.14
@@ -160,5 +160,5 @@
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
     - Traditional Signature Algorithm: ecdsa-with-SHA512
-    - ECDA curve: secp521r1
+    - ECDSA curve: secp521r1
 
