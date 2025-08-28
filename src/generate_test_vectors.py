@@ -139,6 +139,18 @@ class RSA(SIG):
         encoding=serialization.Encoding.DER,
         format=serialization.PublicFormat.PKCS1)
 
+  def public_key_max_len(self):
+    """
+    RSAPublicKey ::= SEQUENCE {
+        modulus           INTEGER,  -- n
+        publicExponent    INTEGER   -- e
+    }
+    """
+    return calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(self.pk.key_size),  # n
+        calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length())  # e = 65537 = 0b1_00000000_00000001
+    ])
+    
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
     assert isinstance(self.pk, rsa.RSAPublicKey)
@@ -150,7 +162,37 @@ class RSA(SIG):
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption())
 
+  def private_key_max_len(self):
+    """
+    RSAPrivateKey::= SEQUENCE {
+        version Version,
+        modulus           INTEGER,  --n
+        publicExponent INTEGER,  --e
+        privateExponent INTEGER,  --d
+        prime1 INTEGER,  --p
+        prime2 INTEGER,  --q
+        exponent1 INTEGER,  --d mod(p - 1)
+        exponent2 INTEGER,  --d mod(q - 1)
+        coefficient INTEGER,  --(inverse of q) mod p
+        otherPrimeInfos OtherPrimeInfos OPTIONAL
+    }
+    """
+    return calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1 for Composite ML-DSA
+        calculate_der_universal_integer_max_length(self.sk.key_size),  # n
+        calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length()),  # e = 65537 = 0b1_00000000_00000001
+        calculate_der_universal_integer_max_length(self.sk.key_size),  # d
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # p
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # q
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # d mod (p-1)
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # d mod (q-1)
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2)   # (inverse of q) mod p
+        # OtherPrimeInfos are not allowed in Composite ML-DSA
+    ])
 
+  def signature_max_len(self):
+    return size_in_bits_to_size_in_bytes(self.sk.key_size)
+    
 class RSAPSS(RSA):
   id = "id-RSASSA-PSS"
   def get_padding(self):
@@ -233,13 +275,42 @@ class ECDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.X962,
         format=serialization.PublicFormat.UncompressedPoint)
+        
+  def public_key_max_len(self):  
+    return 1 + 2 * size_in_bits_to_size_in_bytes(self.curve.key_size)
 
   def private_key_bytes(self):
     prk = ECDSAPrivateKey()
     prk['version'] = 1
     prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
     return der_encode(prk)
+        
+  def private_key_max_len(self):
+    """
+    ECPrivateKey ::= SEQUENCE {
+      version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
+      privateKey     OCTET STRING,
+      parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
+      publicKey  [1] BIT STRING OPTIONAL
+    }
+    """
+    return calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
+        calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size))  # privateKey
+        # ECParameters are not allowed in Composite ML-DSA
+        # publicKey is not allowed in Composite ML-DSA
+    ])
 
+  def signature_max_len(self):
+    """
+    Ecdsa-Sig-Value  ::=  SEQUENCE  {
+     r     INTEGER,
+     s     INTEGER  }
+    """
+    return calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(self.curve.key_size),  # r
+        calculate_der_universal_integer_max_length(self.curve.key_size)   # s
+    ])
 
 class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
@@ -301,6 +372,9 @@ class EdDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PublicFormat.Raw)
+        
+  def public_key_max_len(self):
+    return len(self.public_key_bytes())
 
   def private_key_bytes(self):
     raw = self.sk.private_bytes(
@@ -310,6 +384,16 @@ class EdDSA(SIG):
         )
     CurvePrivateKey = univ.OctetString(raw)
     return der_encode(CurvePrivateKey)
+        
+  def private_key_max_len(self):
+    return len(self.private_key_bytes())
+    
+  def signature_max_len(self):
+    if isinstance(self, Ed25519):
+        key_size = 256
+    if isinstance(self, Ed448):
+        key_size = 456
+    return 2 * size_in_bits_to_size_in_bytes(key_size)
 
 
 class Ed25519(EdDSA):
@@ -345,12 +429,26 @@ class MLDSA(SIG):
   
   def public_key_bytes(self):
     return self.pk
+    
+  def public_key_max_len(self):
+    return len(self.public_key_bytes())
   
   def loadPK(self, pkbytes):
     self.pk = pkbytes
 
   def private_key_bytes(self):    
     return self.sk
+    
+  def private_key_max_len(self):
+    return len(self.private_key_bytes())
+    
+  def signature_max_len(self):    
+    if isinstance(self, MLDSA44):
+      return 2420
+    elif isinstance(self, MLDSA65):
+      return 3309
+    elif isinstance(self, MLDSA87):
+      return 4627
   
 
 class MLDSA44(MLDSA):
@@ -468,16 +566,6 @@ class CompositeSig(SIG):
     return mldsaPK + tradPK
 
 
-  def public_key_bytes(self):
-    return self.serializeKey()
-
-
-  def private_key_bytes(self):
-    mldsaPK = self.mldsa.private_key_bytes()
-    tradPK  = self.tradsig.private_key_bytes()
-    return mldsaPK + tradPK
-
-
   def deserializeKey(self, keyBytes):
     """
     pk -> (pk1, pk2)
@@ -492,13 +580,28 @@ class CompositeSig(SIG):
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
 
+
   def public_key_bytes(self):
     return self.serializeKey()
+
+
+  def public_key_max_len(self):
+    maxMLDSA = self.mldsa.public_key_max_len()
+    maxTrad = self.tradsig.public_key_max_len()
+    return maxMLDSA + maxTrad
+
 
   def private_key_bytes(self):
     mldsaSK = self.mldsa.private_key_bytes()
     tradSK  = self.tradsig.private_key_bytes()
     return mldsaSK + tradSK
+
+  
+  def private_key_max_len(self):
+    maxMLDSA = self.mldsa.private_key_max_len()
+    maxTrad = self.tradsig.private_key_max_len()
+    return maxMLDSA + maxTrad
+    
 
   def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
@@ -522,6 +625,11 @@ class CompositeSig(SIG):
       tradSig  = s[4627:]
   
     return (mldsaSig, tradSig)
+   
+   
+  def signature_max_len(self):
+    return 32 + self.mldsa.signature_max_len() + self.tradsig.signature_max_len()
+
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS-SHA256"
@@ -1004,9 +1112,9 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
 
   if includeInSizeTable:
     sizeRow = {}
-    sizeRow['pk'] = len(sig.public_key_bytes())
-    sizeRow['sk'] = len(sig.private_key_bytes())
-    sizeRow['s'] = len(s)
+    sizeRow['pk'] = sig.public_key_max_len()
+    sizeRow['sk'] = sig.private_key_max_len()
+    sizeRow['s'] = sig.signature_max_len()
     SIZE_TABLE[sig.id] = sizeRow
     
     
@@ -1078,7 +1186,7 @@ def writeAlgParams():
         f.write("  - Traditional Algorithm: " + DOMAIN_TABLE[alg]['trad'] + "\n")
         f.write("    - Traditional Signature Algorithm: " + DOMAIN_TABLE[alg]['trad_sig_alg'] + "\n")
         if 'trad_curve' in DOMAIN_TABLE[alg]:
-          f.write("    - ECDA curve: " + DOMAIN_TABLE[alg]['trad_curve'] + "\n")
+          f.write("    - ECDSA curve: " + DOMAIN_TABLE[alg]['trad_curve'] + "\n")
         if 'trad_rsa_key_size' in DOMAIN_TABLE[alg]:
           f.write("    - RSA size: " + DOMAIN_TABLE[alg]['trad_rsa_key_size'] + "\n")
         if DOMAIN_TABLE[alg]['trad_sig_alg'] == "id-RSASSA-PSS":
@@ -1129,6 +1237,53 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
+def calculate_length_length(der_byte_count):
+    assert der_byte_count >= 0
+
+    if der_byte_count < (1 << 7):  # Short form
+        return 1  # 1 byte for length
+    elif der_byte_count < (1 << 8):
+        return 2  # 1 byte for length + 1 byte for the length value
+    elif der_byte_count < (1 << 16):
+        return 3  # 1 byte for length + 2 bytes for the length value
+    elif der_byte_count < (1 << 24):
+        return 4  # 1 byte for length + 3 bytes for the length value
+    else:
+        return 5  # 1 byte for length + 4 bytes for the length value
+
+
+def size_in_bits_to_size_in_bytes(size_in_bits):
+    return (size_in_bits + 7) // 8
+
+
+def calculate_der_universal_integer_max_length(max_size_in_bits):
+    # DER uses signed integers, so account for possible leading sign bit.
+    signed_max_size_in_bits = max_size_in_bits + 1
+
+    max_der_size_in_bytes = size_in_bits_to_size_in_bytes(signed_max_size_in_bits)
+
+    UNIVERSAL_INTEGER_IDENTIFIER_LENGTH = 1
+
+    return UNIVERSAL_INTEGER_IDENTIFIER_LENGTH + calculate_length_length(max_der_size_in_bytes) + max_der_size_in_bytes
+
+
+def calculate_der_universal_octet_string_max_length(length):
+    UNIVERSAL_OCTET_STRING_IDENTIFIER_LENGTH = 1
+
+    return UNIVERSAL_OCTET_STRING_IDENTIFIER_LENGTH + calculate_length_length(length) + length
+
+
+def calculate_der_universal_sequence_max_length(der_size_of_sequence_elements):
+    UNIVERSAL_SEQUENCE_IDENTIFIER_LENGTH = 1
+
+    length = 0
+
+    for element_size in der_size_of_sequence_elements:
+        length += element_size
+
+    length += UNIVERSAL_SEQUENCE_IDENTIFIER_LENGTH + calculate_length_length(length)
+
+    return length
 
 
 def main():
