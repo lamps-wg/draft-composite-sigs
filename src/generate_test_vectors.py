@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 
-
+import sys
 import datetime
 import base64
 import json
@@ -840,7 +840,7 @@ caName = x509.Name(
     [
         x509.NameAttribute(NameOID.ORGANIZATION_NAME, 'IETF'),
         x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, 'LAMPS'),
-        x509.NameAttribute(NameOID.COMMON_NAME, 'Composite ML-KEM CA')
+        x509.NameAttribute(NameOID.COMMON_NAME, 'Composite ML-DSA CA')
     ]
   )
 
@@ -1120,6 +1120,50 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
     SIZE_TABLE[sig.id] = sizeRow
     
     
+def checkTestVectorsSize():
+  """
+  Checks that the test vectors produced match the sizes advertized in the size table.
+  Aborts if it finds a mismatch.
+  """
+  error = False
+  for test in testVectorOutput['tests']:
+    alg = test['tcId']
+    size = SIZE_TABLE[alg]
+    (pkMaxSize, pkFix) = size['pk']
+    (skMaxSize, skFix) = size['sk']
+    (sMaxSize, sFix)   = size['s']
+    pkSize = len(base64.b64decode(test['pk']))
+    skSize = len(base64.b64decode(test['sk']))
+    sSize  = len(base64.b64decode(test['s']))
+    
+    
+    if pkFix and pkSize != pkMaxSize:
+        print("Error: "+alg+" pk size does not match expected: "+str(pkSize)+" != "+str(pkMaxSize)+conditionalAsterisk(not pkFix)+"\n") 
+        error = True
+    if not pkFix and pkSize > pkMaxSize:
+        print("Error: "+alg+" pk size does not match expected: "+str(pkSize)+" > "+str(pkMaxSize)+conditionalAsterisk(not pkFix)+"\n") 
+        error = True
+    
+    if skFix and skSize != skMaxSize:
+        print("Error: "+alg+" sk size does not match expected: "+str(skSize)+" != "+str(skMaxSize)+conditionalAsterisk(not skFix)+"\n") 
+        error = True
+    if not skFix and skSize > skMaxSize:
+        print("Error: "+alg+" sk size does not match expected: "+str(skSize)+" > "+str(skMaxSize)+conditionalAsterisk(not skFix)+"\n") 
+        error = True
+        
+    if sFix and sSize != sMaxSize:
+        print("Error: "+alg+" s size does not match expected: "+str(sSize)+" != "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
+        error = True
+    if not pkFix and pkSize > pkMaxSize:
+        print("Error: "+alg+" s size does not match expected: "+str(sSize)+" > "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
+        error = True
+    
+  if error: sys.exit()
+    
+
+
+
+    
 def writeTestVectors():
   with open('testvectors.json', 'w') as f:
     f.write(json.dumps(testVectorOutput, indent=2))
@@ -1338,6 +1382,7 @@ def main():
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_ECDSA_P521_SHA512() )
 
+  checkTestVectorsSize()
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
