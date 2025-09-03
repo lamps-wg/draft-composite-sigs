@@ -1380,7 +1380,7 @@ The sizes listed below are maximas. Several factors could cause fluctuations in 
 
 By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.
 
-Implementations MUST NOT perform strict length checking based on the values in this table except for ML-DSA + EdDSA; since these algorithms produce fixed-size outputs, the values in the table below for these variants MAY be treated as constants.
+Size values marked with an asterisk in the table are not fixed but maximum possible values for the composite key or ciphertext. Implementations MUST NOT perform strict length checking based on such values.
 
 Non-hybrid ML-DSA is included for reference.
 
@@ -1390,7 +1390,7 @@ Non-hybrid ML-DSA is included for reference.
      This is mainly to save resources and build time on the github commits. -->
 
 {::include src/sizeTable.md}
-{: #tab-size-values title="Approximate size values of composite ML-DSA"}
+{: #tab-size-values title="Maximume size values of composite ML-DSA"}
 
 
 

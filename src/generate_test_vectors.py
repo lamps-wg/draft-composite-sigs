@@ -146,10 +146,10 @@ class RSA(SIG):
         publicExponent    INTEGER   -- e
     }
     """
-    return calculate_der_universal_sequence_max_length([
+    return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(self.pk.key_size),  # n
         calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length())  # e = 65537 = 0b1_00000000_00000001
-    ])
+    ]), False)
     
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
@@ -177,7 +177,7 @@ class RSA(SIG):
         otherPrimeInfos OtherPrimeInfos OPTIONAL
     }
     """
-    return calculate_der_universal_sequence_max_length([
+    return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1 for Composite ML-DSA
         calculate_der_universal_integer_max_length(self.sk.key_size),  # n
         calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length()),  # e = 65537 = 0b1_00000000_00000001
@@ -188,10 +188,10 @@ class RSA(SIG):
         calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # d mod (q-1)
         calculate_der_universal_integer_max_length(self.sk.key_size // 2)   # (inverse of q) mod p
         # OtherPrimeInfos are not allowed in Composite ML-DSA
-    ])
+    ]), False)
 
   def signature_max_len(self):
-    return size_in_bits_to_size_in_bytes(self.sk.key_size)
+    return (size_in_bits_to_size_in_bytes(self.sk.key_size), False)
     
 class RSAPSS(RSA):
   id = "id-RSASSA-PSS"
@@ -277,7 +277,7 @@ class ECDSA(SIG):
         format=serialization.PublicFormat.UncompressedPoint)
         
   def public_key_max_len(self):  
-    return 1 + 2 * size_in_bits_to_size_in_bytes(self.curve.key_size)
+    return (1 + 2 * size_in_bits_to_size_in_bytes(self.curve.key_size), True)
 
   def private_key_bytes(self):
     prk = ECDSAPrivateKey()
@@ -294,12 +294,12 @@ class ECDSA(SIG):
       publicKey  [1] BIT STRING OPTIONAL
     }
     """
-    return calculate_der_universal_sequence_max_length([
+    return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
         calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size))  # privateKey
         # ECParameters are not allowed in Composite ML-DSA
         # publicKey is not allowed in Composite ML-DSA
-    ])
+    ]), False)
 
   def signature_max_len(self):
     """
@@ -307,10 +307,10 @@ class ECDSA(SIG):
      r     INTEGER,
      s     INTEGER  }
     """
-    return calculate_der_universal_sequence_max_length([
+    return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(self.curve.key_size),  # r
         calculate_der_universal_integer_max_length(self.curve.key_size)   # s
-    ])
+    ]), False)
 
 class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
@@ -374,7 +374,7 @@ class EdDSA(SIG):
         format=serialization.PublicFormat.Raw)
         
   def public_key_max_len(self):
-    return len(self.public_key_bytes())
+    return (len(self.public_key_bytes()), True)
 
   def private_key_bytes(self):
     raw = self.sk.private_bytes(
@@ -386,14 +386,14 @@ class EdDSA(SIG):
     return der_encode(CurvePrivateKey)
         
   def private_key_max_len(self):
-    return len(self.private_key_bytes())
+    return (len(self.private_key_bytes()), True)
     
   def signature_max_len(self):
     if isinstance(self, Ed25519):
         key_size = 256
     if isinstance(self, Ed448):
         key_size = 456
-    return 2 * size_in_bits_to_size_in_bytes(key_size)
+    return (2 * size_in_bits_to_size_in_bytes(key_size), True)
 
 
 class Ed25519(EdDSA):
@@ -431,7 +431,7 @@ class MLDSA(SIG):
     return self.pk
     
   def public_key_max_len(self):
-    return len(self.public_key_bytes())
+    return (len(self.public_key_bytes()), True)
   
   def loadPK(self, pkbytes):
     self.pk = pkbytes
@@ -440,16 +440,16 @@ class MLDSA(SIG):
     return self.sk
     
   def private_key_max_len(self):
-    return len(self.private_key_bytes())
+    return (len(self.private_key_bytes()), True)
     
   def signature_max_len(self):    
     if isinstance(self, MLDSA44):
-      return 2420
+      size = 2420
     elif isinstance(self, MLDSA65):
-      return 3309
+      size = 3309
     elif isinstance(self, MLDSA87):
-      return 4627
-  
+      size = 4627
+    return (size, True)
 
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
@@ -586,9 +586,9 @@ class CompositeSig(SIG):
 
 
   def public_key_max_len(self):
-    maxMLDSA = self.mldsa.public_key_max_len()
-    maxTrad = self.tradsig.public_key_max_len()
-    return maxMLDSA + maxTrad
+    (maxMLDSA, _) = self.mldsa.public_key_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.public_key_max_len()
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
 
 
   def private_key_bytes(self):
@@ -598,9 +598,9 @@ class CompositeSig(SIG):
 
   
   def private_key_max_len(self):
-    maxMLDSA = self.mldsa.private_key_max_len()
-    maxTrad = self.tradsig.private_key_max_len()
-    return maxMLDSA + maxTrad
+    (maxMLDSA, _) = self.mldsa.private_key_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.private_key_max_len()
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
     
 
   def serializeSignatureValue(self, s1, s2):
@@ -628,7 +628,9 @@ class CompositeSig(SIG):
    
    
   def signature_max_len(self):
-    return 32 + self.mldsa.signature_max_len() + self.tradsig.signature_max_len()
+    (maxMLDSA, _) = self.mldsa.signature_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.signature_max_len()
+    return (32 + maxMLDSA + maxTrad, fixedSizeTrad)
 
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
@@ -1149,6 +1151,12 @@ def writeDumpasn1Cfg():
       f.write("\n")
 
 
+def conditionalAsterisk(switch):
+    if switch:
+      return '*'
+    else:
+      return ' '
+      
 def writeSizeTable():
   # In this style:
   # | Algorithm | Public key  | Private key | Signature |
@@ -1164,10 +1172,13 @@ def writeSizeTable():
 
     for alg in SIZE_TABLE:
       row = SIZE_TABLE[alg]
+      (pk, pkFix) = row['pk']
+      (sk, skFix) = row['sk']
+      (s, sFix) = row['s']
       f.write('| '+ alg.ljust(46, ' ') +'|'+
-                 str(row['pk']).center(14, ' ') +'|'+
-                 str(row['sk']).center(14, ' ') +'|'+
-                 str(row['s']).center(14, ' ') +'|\n' )
+                 (str(pk)+conditionalAsterisk(not pkFix)).center(14, ' ') +'|'+
+                 (str(sk)+conditionalAsterisk(not skFix)).center(14, ' ') +'|'+
+                 (str(s)+conditionalAsterisk(not sFix)).center(14, ' ') +'|\n' )
       
       
 def writeAlgParams():
