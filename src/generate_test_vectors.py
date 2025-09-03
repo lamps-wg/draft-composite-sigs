@@ -1154,11 +1154,12 @@ def checkTestVectorsSize():
     if sFix and sSize != sMaxSize:
         print("Error: "+alg+" s size does not match expected: "+str(sSize)+" != "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
         error = True
-    if not pkFix and pkSize > pkMaxSize:
+    if not sFix and sSize > sMaxSize:
         print("Error: "+alg+" s size does not match expected: "+str(sSize)+" > "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
         error = True
     
   if error: sys.exit()
+  else: print("DEBUG: all sizes matched expected!")
     
 
 
