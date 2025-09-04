@@ -630,7 +630,7 @@ class CompositeSig(SIG):
   def signature_max_len(self):
     (maxMLDSA, _) = self.mldsa.signature_max_len()
     (maxTrad, fixedSizeTrad) = self.tradsig.signature_max_len()
-    return (32 + maxMLDSA + maxTrad, fixedSizeTrad)
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
 
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
