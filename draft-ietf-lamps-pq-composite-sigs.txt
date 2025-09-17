@@ -119,7 +119,7 @@ Table of Contents
    12. References
      12.1.  Normative References
      12.2.  Informative References
-   Appendix A.  Approximate Key and Signature Sizes
+   Appendix A.  Maximum Key and Signature Sizes
    Appendix B.  Component Algorithm Reference
    Appendix C.  Component AlgorithmIdentifiers for Public Keys and
            Signatures
@@ -1251,7 +1251,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA256
 
-         o  ECDA curve: secp256r1
+         o  ECDSA curve: secp256r1
 
    *  id-MLDSA65-RSA3072-PSS-SHA512
 
@@ -1335,7 +1335,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA256
 
-         o  ECDA curve: secp256r1
+         o  ECDSA curve: secp256r1
 
    *  id-MLDSA65-ECDSA-P384-SHA512
 
@@ -1351,7 +1351,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA384
 
-         o  ECDA curve: secp384r1
+         o  ECDSA curve: secp384r1
 
    *  id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
 
@@ -1367,7 +1367,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA256
 
-         o  ECDA curve: brainpoolP256r1
+         o  ECDSA curve: brainpoolP256r1
 
    *  id-MLDSA65-Ed25519-SHA512
 
@@ -1397,7 +1397,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA384
 
-         o  ECDA curve: secp384r1
+         o  ECDSA curve: secp384r1
 
    *  id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
 
@@ -1413,7 +1413,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA384
 
-         o  ECDA curve: brainpoolP384r1
+         o  ECDSA curve: brainpoolP384r1
 
    *  id-MLDSA87-Ed448-SHAKE256
 
@@ -1479,7 +1479,7 @@ Table of Contents
 
          o  Traditional Signature Algorithm: ecdsa-with-SHA512
 
-         o  ECDA curve: secp521r1
+         o  ECDSA curve: secp521r1
 
    **Note: The pre-hash functions were chosen to roughly match the
    security level of the stronger component.  In the case of Ed25519 and
@@ -2688,10 +2688,9 @@ Table of Contents
               DOI 10.17487/RFC9794, June 2025,
               <https://www.rfc-editor.org/info/rfc9794>.
 
-Appendix A.  Approximate Key and Signature Sizes
+Appendix A.  Maximum Key and Signature Sizes
 
-   The sizes listed below are approximate: these values are measured
-   from the test vectors, however, several factors could cause
+   The sizes listed below are maximas.  Several factors could cause
    fluctuations in the size of the traditional component.  For example,
    this could be due to:
 
@@ -2710,15 +2709,10 @@ Appendix A.  Approximate Key and Signature Sizes
    variants to fluctuate by a few bytes even between subsequent runs of
    the same composite implementation.
 
-   Implementations MUST NOT perform strict length checking based on the
-   values in this table except for ML-DSA + EdDSA; since these
-   algorithms produce fixed-size outputs, the values in the table below
-   for these variants MAY be treated as constants.
-
-   Note that this table measures the size of the raw byte values, and
-   does not measure any ASN.1 wrapping such as OCTET STRINGS or PKCS#8
-   PrivateKeyInfo structures.  This table is useful primarily for
-   comparison purposes between the different options.
+   Size values marked with an asterisk (*) in the table are not fixed
+   but maximum possible values for the composite key or ciphertext.
+   Implementations MUST NOT perform strict length checking based on such
+   values.
 
    Non-hybrid ML-DSA is included for reference.
 
@@ -2732,44 +2726,44 @@ Appendix A.  Approximate Key and Signature Sizes
    +-----------------------------------------+------+-------+---------+
    | id-ML-DSA-87                            |2592  |32     |4627     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-RSA2048-PSS-SHA256           |1582  |1222   |2676     |
+   | id-MLDSA44-RSA2048-PSS-SHA256           |1582* |1226*  |2676*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-RSA2048-PKCS15-SHA256        |1582  |1222   |2676     |
+   | id-MLDSA44-RSA2048-PKCS15-SHA256        |1582* |1226*  |2676*    |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA44-Ed25519-SHA512               |1344  |66     |2484     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-ECDSA-P256-SHA256            |1377  |71     |2492     |
+   | id-MLDSA44-ECDSA-P256-SHA256            |1377  |71*    |2492*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA3072-PSS-SHA512           |2350  |1799   |3693     |
+   | id-MLDSA65-RSA3072-PSS-SHA512           |2350* |1802*  |3693*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA3072-PKCS15-SHA512        |2350  |1800   |3693     |
+   | id-MLDSA65-RSA3072-PKCS15-SHA512        |2350* |1802*  |3693*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA4096-PSS-SHA512           |2478  |2381   |3821     |
+   | id-MLDSA65-RSA4096-PSS-SHA512           |2478* |2383*  |3821*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA4096-PKCS15-SHA512        |2478  |2379   |3821     |
+   | id-MLDSA65-RSA4096-PKCS15-SHA512        |2478* |2383*  |3821*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-P256-SHA512            |2017  |71     |3379     |
+   | id-MLDSA65-ECDSA-P256-SHA512            |2017  |71*    |3381*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-P384-SHA512            |2049  |87     |3412     |
+   | id-MLDSA65-ECDSA-P384-SHA512            |2049  |87*    |3413*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |2017  |71     |3381     |
+   | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |2017  |71*    |3381*    |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA65-Ed25519-SHA512               |1984  |66     |3373     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-P384-SHA512            |2689  |87     |4730     |
+   | id-MLDSA87-ECDSA-P384-SHA512            |2689  |87*    |4731*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |2689  |87     |4729     |
+   | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |2689  |87*    |4731*    |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA87-Ed448-SHAKE256               |2649  |91     |4741     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-RSA3072-PSS-SHA512           |2990  |1800   |5011     |
+   | id-MLDSA87-RSA3072-PSS-SHA512           |2990* |1802*  |5011*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-RSA4096-PSS-SHA512           |3118  |2380   |5139     |
+   | id-MLDSA87-RSA4096-PSS-SHA512           |3118* |2383*  |5139*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-P521-SHA512            |2725  |105    |4765     |
+   | id-MLDSA87-ECDSA-P521-SHA512            |2725  |105*   |4766*    |
    +-----------------------------------------+------+-------+---------+
 
-           Table 4: Approximate size values of composite ML-DSA
+            Table 4: Maximume size values of composite ML-DSA
 
 Appendix B.  Component Algorithm Reference
 
