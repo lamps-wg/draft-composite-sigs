@@ -17,21 +17,21 @@
 
 
     " name="description">
-<meta content="xml2rfc 3.30.0" name="generator">
+<meta content="xml2rfc 3.30.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-lamps-pq-composite-sigs-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.0
+  xml2rfc 3.30.1
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1052,11 +1052,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">August 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 1 March 2026</td>
+<td class="center">Expires 21 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-28" class="published">28 August 2025</time>
+<time datetime="2025-09-17" class="published">17 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-01">1 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-21">21 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1277,11 +1277,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
                 <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="auto internal xref">10.2</a>.  <a href="#name-non-separability-euf-cma-an" class="internal xref">Non-separability, EUF-CMA and SUF</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2.2.1">
-                    <p id="section-toc.1-1.10.2.2.2.1.1"><a href="#section-10.2.1" class="auto internal xref">10.2.1</a>.  <a href="#name-implications-of-multiple-en" class="internal xref">Implications of multiple encodings</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
                 <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="auto internal xref">10.3</a>.  <a href="#name-key-reuse" class="internal xref">Key Reuse</a></p>
@@ -1380,7 +1375,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-2-1">The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify both algorithmic weaknesses as well as implementation flaws across all the new implementations.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <p id="section-2-2">Unlike previous migrations between cryptographic algorithms, the decision of when to migrate and which algorithms to adopt is far from straightforward.
 For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against CVEs and other implementation flaws in the new implementations.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an attacker would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>, <span>[<a href="#ANSSI2024" class="cite xref">ANSSI2024</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Section 11.2</a>.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <p id="section-2-6">Composite ML-DSA is applicable in any PKIX-related application that would otherwise use ML-DSA.<a href="#section-2-6" class="pilcrow">¶</a></p>
@@ -1396,7 +1391,7 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.
 These words may also appear in this document in
 lower case as plain English words, absent their normative meanings.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.1-2">This specification is consistent with the terminology defined in <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>. In addition, the following terminology is used throughout this specification:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">This specification is consistent with the terminology defined in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>. In addition, the following terminology is used throughout this specification:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.1-3"><strong>ALGORITHM</strong>:
           The usage of the term "algorithm" within this
           specification generally refers to any function which
@@ -1404,7 +1399,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
           use within an ASN.1 AlgorithmIdentifier. This
           loosely, but not precisely, aligns with the
           definitions of "cryptographic algorithm" and
-          "cryptographic scheme" given in <span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span>.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+          "cryptographic scheme" given in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <p id="section-2.1-4"><strong>COMPONENT / PRIMITIVE</strong>:
   The words "component" or "primitive" are used interchangeably
   to refer to a cryptographic algorithm that is used internally
@@ -1434,7 +1429,7 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
             <p id="section-2.1-9.4.1"><code>(a, _)</code>: represents a pair of values where one -- the second one in this case -- is ignored.<a href="#section-2.1-9.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.1-9.5">
-            <p id="section-2.1-9.5.1"><code>Func&lt;TYPE&gt;()</code>: represents a function that is parametrized by <code>&lt;TYPE&gt;</code> meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.<a href="#section-2.1-9.5.1" class="pilcrow">¶</a></p>
+            <p id="section-2.1-9.5.1"><code>Func&lt;TYPE&gt;()</code>: represents a function that is parameterized by <code>&lt;TYPE&gt;</code> meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.<a href="#section-2.1-9.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1444,7 +1439,7 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
         <h3 id="name-composite-design-philosophy">
 <a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-composite-design-philosophy" class="section-name selfRef">Composite Design Philosophy</a>
         </h3>
-<p id="section-2.2-1"><span>[<a href="#I-D.ietf-pquip-pqt-hybrid-terminology" class="cite xref">I-D.ietf-pquip-pqt-hybrid-terminology</a>]</span> defines composites as:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-1"><span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-2.2-2.1">
             <p id="section-2.2-2.1.1"><em>Composite Cryptographic Element</em>:  A cryptographic element that
@@ -1463,7 +1458,7 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
       <h2 id="name-overview-of-the-composite-m">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview-of-the-composite-m" class="section-name selfRef">Overview of the Composite ML-DSA Signature Scheme</a>
       </h2>
-<p id="section-3-1">Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, or Ed25519 / Ed448 defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs randomized pre-hashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in <a href="#sec-cons" class="auto internal xref">Section 10</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> and <span>[<a href="#I-D.ietf-lamps-dilithium-certificates" class="cite xref">I-D.ietf-lamps-dilithium-certificates</a>]</span> with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>, the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>, or Ed25519 / Ed448 defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span>. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several domain separator values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in <a href="#sec-cons" class="auto internal xref">Section 10</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">Composite signature schemes are defined as cryptographic primitives that consist of three algorithms:<a href="#section-3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-3.1">
@@ -1621,7 +1616,7 @@ Key Generation Process:
 </div>
 <p id="section-4.1-5">In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a>.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.1-6">Note that in step 2 above, both component key generation processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.1-7">Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to output the expanded <code>mldsaSK</code> or to make free use of <code>ML-DSA.KeyGen(mldsaSeed)</code> as needed to expand the ML-DSA seed into an expanded prior to performing a signing operation.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+<p id="section-4.1-7">Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to additionally output the expanded <code>mldsaSK</code> or to make free use of <code>ML-DSA.KeyGen(mldsaSeed)</code> as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
 <p id="section-4.1-8">Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
 For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a <code>ML-DSA.KeyGen(seed)</code> that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in <a href="#sec-serialize-privkey" class="auto internal xref">Section 5.2</a> only support ML-DSA keys as seeds.<a href="#section-4.1-8" class="pilcrow">¶</a></p>
 </section>
@@ -1631,7 +1626,7 @@ For example, component private keys stored in separate software or hardware modu
         <h3 id="name-sign">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-sign" class="section-name selfRef">Sign</a>
         </h3>
-<p id="section-4.2-1">The <code>Sign()</code> algorithm of Composite ML-DSA mirrors the construction of <code>ML-DSA.Sign(sk, M, ctx)</code> defined in Algorithm 3 Section 5.2 of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.
+<p id="section-4.2-1">The <code>Sign()</code> algorithm of Composite ML-DSA mirrors the construction of <code>ML-DSA.Sign(sk, M, ctx)</code> defined in Algorithm 3 of Section 5.2 of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">The following describes how to instantiate a <code>Sign()</code> function for a given Composite ML-DSA algorithm represented by <code>&lt;OID&gt;</code>. See <a href="#sec-prehash" class="auto internal xref">Section 3.1</a> for a discussion of the pre-hash function <code>PH</code>. See <a href="#sec-domsep-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the domain separator <code>Domain</code> and application context <code>ctx</code>. See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
@@ -1657,7 +1652,7 @@ Implicit inputs mapped from &lt;OID&gt;:
           example "ML-DSA-65".
 
   Trad    The underlying traditional algorithm and
-          parameter set, for example "RSASSA-PSS with id-sha256"
+          parameter set, for example "sha256WithRSAEncryption"
           or "Ed25519".
 
   Prefix  The prefix octet string.
@@ -1725,7 +1720,7 @@ Signature Generation Process:
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">The following describes how to instantiate a <code>Verify()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>. See <a href="#sec-prehash" class="auto internal xref">Section 3.1</a> for a discussion of the pre-hash function <code>PH</code> and randomizer <code>r</code>. See <a href="#sec-domsep-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the domain separator <code>Domain</code> and application context <code>ctx</code>. See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">The following describes how to instantiate a <code>Verify()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>. See <a href="#sec-prehash" class="auto internal xref">Section 3.1</a> for a discussion of the pre-hash function <code>PH</code>. See <a href="#sec-domsep-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the domain separator <code>Domain</code> and application context <code>ctx</code>. See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <span id="name-composite-ml-dsaoidverifypk"></span><div id="alg-composite-verify">
 <figure id="figure-3">
           <div class="alignLeft art-text artwork" id="section-4.3-4.1">
@@ -1751,7 +1746,7 @@ Implicit inputs mapped from &lt;OID&gt;:
           example "ML-DSA-65".
 
   Trad    The underlying traditional algorithm and
-          parameter set, for example "RSASSA-PSS with id-sha256"
+          parameter set, for example "sha256WithRSAEncryption"
           or "Ed25519".
 
   Prefix  The prefix octet string.
@@ -1816,7 +1811,7 @@ Signature Verification Process:
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-serialization" class="section-name selfRef">Serialization</a>
       </h2>
 <p id="section-5-1">This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
-The functions defined in this section are considered internal implementation detail and are referenced from within the public API definitions in <a href="#sec-sigs" class="auto internal xref">Section 4</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+The functions defined in this section are considered internal implementation details and are referenced from within the public API definitions in <a href="#sec-sigs" class="auto internal xref">Section 4</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <span id="name-ml-dsa-key-and-signature-si"></span><div id="tab-mldsa-sizes">
 <table class="center" id="table-1">
@@ -1855,7 +1850,7 @@ The functions defined in this section are considered internal implementation det
       </table>
 </div>
 <p id="section-5-4">For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in <a href="#sec-encoding-to-der" class="auto internal xref">Section 6.1</a>.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, the traditional component might allow multiple valid encodings; for example an RSA private key could be encoded in Chinese Remainder Theorem form <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-5">While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, a stand-alone RSA private key can be encoded in Chinese Remainder Theorem form. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:<a href="#section-5-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-6.1">
           <p id="section-5-6.1.1"><strong>ML-DSA</strong>: MUST be encoded as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>, using a 32-byte seed as the private key.<a href="#section-5-6.1.1" class="pilcrow">¶</a></p>
@@ -2010,7 +2005,7 @@ Serialization Process:
           </figcaption></figure>
 </div>
 <p id="section-5.2-3">Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
-<p id="section-5.2-4">The following describes how to instantiate a <code>DeserializePrivateKey(bytes)</code> function. Since ML-DSA private keys are 32 bytes for all parameter sets, this function does not need to be parametrized.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">The following describes how to instantiate a <code>DeserializePrivateKey(bytes)</code> function. Since ML-DSA private keys are 32 bytes for all parameter sets, this function does not need to be parameterized.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
 <span id="name-composite-ml-dsadeserialize"></span><div id="alg-composite-deserialize-sk">
 <figure id="figure-7">
           <div class="alignLeft art-text artwork" id="section-5.2-5.1">
@@ -2023,7 +2018,7 @@ Explicit inputs:
 
 Implicit inputs:
 
-  That an ML-DSA private key is 32 bytes for all parameter sets.
+  None
 
 Output:
 
@@ -2035,8 +2030,6 @@ Output:
 Deserialization Process:
 
   1. Parse each constituent encoded key.
-     The length of an ML-DSA private key is always a 32 byte seed
-     for all parameter sets.
 
      mldsaSeed = bytes[:32]
      tradSK  = bytes[32:]
@@ -2167,7 +2160,7 @@ Deserialization Process:
         <h3 id="name-encoding-to-der">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-encoding-to-der" class="section-name selfRef">Encoding to DER</a>
         </h3>
-<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a CMS <code>SignerInfo.signature OCTET STRING</code> <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, a CMS <code>SignerInfo.signature OCTET STRING</code> <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> or a <code>OneAsymmetricKey.privateKey OCTET STRING</code> <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">When a BIT STRING is required, the octets of the composite data value SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.1-3">When an OCTET STRING is required, the DER encoding of the composite data value SHALL be used directly.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
@@ -2214,17 +2207,18 @@ the post-quantum algorithms do not and therefore the overall composite algorithm
 pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      -- KEY without ASN.1 wrapping --
+      -- KEY no ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                              cRLSign}
+      -- PRIVATE-KEY no ASN.1 wrapping --
     }
 
 sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         -- VALUE without ASN.1 wrapping --
+         -- VALUE no ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
@@ -2238,7 +2232,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 <div class="alignLeft art-text artwork" id="section-6.3-5">
 <pre>
 pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
-  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256}
+  pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256 }
 
 sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
@@ -2944,17 +2938,18 @@ IMPORTS
 pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
-      -- KEY without ASN.1 wrapping --
+      -- KEY no ASN.1 wrapping --
       PARAMS ARE absent
       CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                             cRLSign}
+      -- PRIVATE-KEY no ASN.1 wrapping --
     }
 
 sa-CompositeSignature{OBJECT IDENTIFIER:id,
    PUBLIC-KEY:publicKeyType }
       SIGNATURE-ALGORITHM ::=  {
          IDENTIFIER id
-         -- VALUE without ASN.1 wrapping --
+         -- VALUE no ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
       }
@@ -3559,21 +3554,12 @@ END
         <h3 id="name-non-separability-euf-cma-an">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-non-separability-euf-cma-an" class="section-name selfRef">Non-separability, EUF-CMA and SUF</a>
         </h3>
-<p id="section-10.2-1">The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>, since the forged message <code>M’</code> will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-1">The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>, since the forged message <code>M'</code> will include the composite domain separator as evidence. The prohibition on key reuse between composite and single-algorithm contexts discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 <p id="section-10.2-2">Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms <code>( Sign(), Verify() )</code> where the attacker has access to a signing oracle using the <code>Sign()</code> and must produce a message-signature pair <code>(m', s')</code> that is accepted by the verifier using <code>Verify()</code> and where <code>m'</code> was never signed by the oracle. SUF is similar but requires only that <code>(m', s') != (m, s)</code> for any honestly-generated <code>(m, s)</code>, i.e. that the attacker cannot construct a new signature to an already-signed message.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 <p id="section-10.2-3">The pair <code>( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )</code> is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its <code>Verify()</code> which in turn will cause <code>CompositeML-DSA.Verify()</code> to fail.<a href="#section-10.2-3" class="pilcrow">¶</a></p>
 <p id="section-10.2-4">Composite ML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(m, s1')</code> pair where <code>s1'</code> was not produced by the honest signer, and the attacker can then combine it with an honestly-signed <code>(m, s2)</code> signature produced by the second algorithm over the same message <code>m</code> to create <code>(m, (s1', s2))</code> which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.<a href="#section-10.2-4" class="pilcrow">¶</a></p>
-<p id="section-10.2-5">In addition to the classic EUF-CMA game, we also consider a “cross-protocol” version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
-<p id="section-10.2-6">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M’</code> and then trivially assemble a composite. In the second case, the message <code>M’</code> (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
-<div id="sec-cons-multiple-encodings">
-<section id="section-10.2.1">
-          <h4 id="name-implications-of-multiple-en">
-<a href="#section-10.2.1" class="section-number selfRef">10.2.1. </a><a href="#name-implications-of-multiple-en" class="section-name selfRef">Implications of multiple encodings</a>
-          </h4>
-<p id="section-10.2.1-1">As noted in <a href="#sec-serialization" class="auto internal xref">Section 5</a>, this specification leaves some flexibility the choice of encoding of the traditional component. As such it is possible for the same composite public key to carry multiple valid representations <code>(mldsaPK, tradPK1)</code> and <code>(mldsaPK, tradPK2)</code> where <code>tradPK1</code> and <code>tradPK2</code> are alternate encodings of the same key, for example compressed vs uncompressed EC points. In theory alternate encodings of the traditional signature value are also possible, although the authors are not aware of any.<a href="#section-10.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-10.2.1-2">In theory this introduces complications for EUF-CMA and SUF-CMA security proofs. Implementers who are concerned with this SHOULD choose implementations of the traditional component that only accept a single encoding and performs appropriate length-checking, and reject composites which contain any other encodings. This would reduce interoperability with other Composite ML-DSA implementations, but it is permitted by this specification.<a href="#section-10.2.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="section-10.2-5">In addition to the classic EUF-CMA game, we also consider a "cross-protocol" version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
+<p id="section-10.2-6">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M'</code> and then trivially assemble a composite. In the second case, the message <code>M'</code> (containing the composite domain separator) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cons-key-reuse">
@@ -3621,7 +3607,7 @@ END
 <p id="section-11.1-2">This guidance is not authoritative and has not been endorsed by NIST.<a href="#section-11.1-2" class="pilcrow">¶</a></p>
 <p id="section-11.1-3">One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.<a href="#section-11.1-3" class="pilcrow">¶</a></p>
 <p id="section-11.1-4">Implementers seeking FIPS certification of a composite signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.<a href="#section-11.1-4" class="pilcrow">¶</a></p>
-<p id="section-11.1-5">The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the <code>KeyGen</code> defined in <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> invokes <code>ML-DSA.KeyGen(seed)</code> which might not be available in a cryptographic module running in FIPS-mode, but <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.<a href="#section-11.1-5" class="pilcrow">¶</a></p>
+<p id="section-11.1-5">The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the <code>KeyGen</code> defined in <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> invokes <code>ML-DSA.KeyGen(seed)</code> which might not be available in a cryptographic module running in FIPS-mode, but <a href="#sec-keygen" class="auto internal xref">Section 4.1</a> is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen.  However, using an interface which doesn't support a seed will prevent the implementation from encoding the private key according to <a href="#sec-serialize-privkey" class="auto internal xref">Section 5.2</a>. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.<a href="#section-11.1-5" class="pilcrow">¶</a></p>
 <p id="section-11.1-6">The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.<a href="#section-11.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3726,7 +3712,7 @@ Implicit inputs mapped from &lt;OID&gt;:
           example "ML-DSA-65".
 
   Trad    The underlying traditional algorithm and
-          parameter set, for example "RSASSA-PSS with id-sha256"
+          parameter set, for example "sha256WithRSAEncryption"
           or "Ed25519".
 
   Prefix  The prefix octet string.
@@ -3902,10 +3888,6 @@ Process:
         <dd>
 <span class="refAuthor">Bindel, N.</span>, <span class="refAuthor">Hale, B.</span>, <span class="refAuthor">Connolly, D.</span>, and <span class="refAuthor">F. D</span>, <span class="refTitle">"Hybrid signature spectrums"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-hybrid-signature-spectrums-06</span>, <time datetime="2025-01-09" class="refDate">9 January 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-06">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="I-D.ietf-pquip-pqt-hybrid-terminology">[I-D.ietf-pquip-pqt-hybrid-terminology]</dt>
-        <dd>
-<span class="refAuthor">D, F.</span>, <span class="refAuthor">P, M.</span>, and <span class="refAuthor">B. Hale</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-pqt-hybrid-terminology-06</span>, <time datetime="2025-01-10" class="refDate">10 January 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-06">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-pqt-hybrid-terminology-06</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC5914">[RFC5914]</dt>
         <dd>
 <span class="refAuthor">Housley, R.</span>, <span class="refAuthor">Ashmore, S.</span>, and <span class="refAuthor">C. Wallace</span>, <span class="refTitle">"Trust Anchor Format"</span>, <span class="seriesInfo">RFC 5914</span>, <span class="seriesInfo">DOI 10.17487/RFC5914</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5914">https://www.rfc-editor.org/info/rfc5914</a>&gt;</span>. </dd>
@@ -3931,8 +3913,12 @@ Process:
 <span class="refAuthor">Schaad, J.</span>, <span class="refAuthor">Ramsdell, B.</span>, and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 4.0 Message Specification"</span>, <span class="seriesInfo">RFC 8551</span>, <span class="seriesInfo">DOI 10.17487/RFC8551</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8551">https://www.rfc-editor.org/info/rfc8551</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9180">[RFC9180]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lipp, B.</span>, and <span class="refAuthor">C. Wood</span>, <span class="refTitle">"Hybrid Public Key Encryption"</span>, <span class="seriesInfo">RFC 9180</span>, <span class="seriesInfo">DOI 10.17487/RFC9180</span>, <time datetime="2022-02" class="refDate">February 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9180">https://www.rfc-editor.org/info/rfc9180</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9794">[RFC9794]</dt>
+      <dd>
+<span class="refAuthor">Driscoll, F.</span>, <span class="refAuthor">Parsons, M.</span>, and <span class="refAuthor">B. Hale</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="seriesInfo">RFC 9794</span>, <span class="seriesInfo">DOI 10.17487/RFC9794</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9794">https://www.rfc-editor.org/info/rfc9794</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
