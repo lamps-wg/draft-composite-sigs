@@ -904,9 +904,9 @@ cRLSign.
 For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:
 
 ~~~
-digitalSignature; 
+digitalSignature;
 nonRepudiation; and
-cRLSign
+cRLSign.
 ~~~
 
 Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
