@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 21 March 2026                                           M. Pala
+Expires: 22 March 2026                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       17 September 2025
+                                                       18 September 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 March 2026.
+   This Internet-Draft will expire on 22 March 2026.
 
 Copyright Notice
 
@@ -1073,8 +1073,9 @@ Table of Contents
    For End Entity certificates, any combination of the following values
    MAY be present and any other values MUST NOT be present:
 
-   digitalSignature; and
-   nonRepudiation;
+   digitalSignature;
+   nonRepudiation; and
+   cRLSign.
 
    Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because
    even if the traditional component key supports both signing and
