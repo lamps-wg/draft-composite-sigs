@@ -4389,9 +4389,8 @@ DER:
 </pre><a href="#appendix-C-17" class="pilcrow">¶</a>
 </div>
 <p id="appendix-C-18"><strong>RSASSA-PSS 4096</strong><a href="#appendix-C-18" class="pilcrow">¶</a></p>
-<p id="appendix-C-19">EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.<a href="#appendix-C-19" class="pilcrow">¶</a></p>
-<p id="appendix-C-20">AlgorithmIdentifier of Public Key<a href="#appendix-C-20" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-21">
+<p id="appendix-C-19">AlgorithmIdentifier of Public Key<a href="#appendix-C-19" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-20">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4400,10 +4399,10 @@ ASN.1:
 
 DER:
   30 0B 06 09 2A 86 48 86 F7 0D 01 01 0A
-</pre><a href="#appendix-C-21" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-20" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-22">AlgorithmIdentifier of Signature<a href="#appendix-C-22" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-23">
+<p id="appendix-C-21">AlgorithmIdentifier of Signature<a href="#appendix-C-21" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-22">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4430,11 +4429,11 @@ DER:
   A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30
   0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A2 03
   02 01 40
-</pre><a href="#appendix-C-23" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-22" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-24"><strong>RSASSA-PKCS1-v1_5 2048 &amp; 3072</strong><a href="#appendix-C-24" class="pilcrow">¶</a></p>
-<p id="appendix-C-25">AlgorithmIdentifier of Public Key<a href="#appendix-C-25" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-26">
+<p id="appendix-C-23"><strong>RSASSA-PKCS1-v1_5 2048 &amp; 3072</strong><a href="#appendix-C-23" class="pilcrow">¶</a></p>
+<p id="appendix-C-24">AlgorithmIdentifier of Public Key<a href="#appendix-C-24" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-25">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4444,10 +4443,10 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-</pre><a href="#appendix-C-26" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-25" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-27">AlgorithmIdentifier of Signature<a href="#appendix-C-27" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-28">
+<p id="appendix-C-26">AlgorithmIdentifier of Signature<a href="#appendix-C-26" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-27">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4457,12 +4456,11 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-</pre><a href="#appendix-C-28" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-27" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-29"><strong>RSASSA-PKCS1-v1_5 4096</strong><a href="#appendix-C-29" class="pilcrow">¶</a></p>
-<p id="appendix-C-30">EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.<a href="#appendix-C-30" class="pilcrow">¶</a></p>
-<p id="appendix-C-31">AlgorithmIdentifier of Public Key<a href="#appendix-C-31" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-32">
+<p id="appendix-C-28"><strong>RSASSA-PKCS1-v1_5 4096</strong><a href="#appendix-C-28" class="pilcrow">¶</a></p>
+<p id="appendix-C-29">AlgorithmIdentifier of Public Key<a href="#appendix-C-29" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-30">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4472,10 +4470,10 @@ ASN.1:
 
 DER:
   30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00
-</pre><a href="#appendix-C-32" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-30" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-33">AlgorithmIdentifier of Signature<a href="#appendix-C-33" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-34">
+<p id="appendix-C-31">AlgorithmIdentifier of Signature<a href="#appendix-C-31" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-32">
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
@@ -4484,12 +4482,12 @@ ASN.1:
     }
 
 DER:
-  30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
-</pre><a href="#appendix-C-34" class="pilcrow">¶</a>
+  30 0D 06 09 2A 86 48 86 F7 0D 01 01 0C 05 00
+</pre><a href="#appendix-C-32" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-35"><strong>ECDSA NIST P256</strong><a href="#appendix-C-35" class="pilcrow">¶</a></p>
-<p id="appendix-C-36">AlgorithmIdentifier of Public Key<a href="#appendix-C-36" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-37">
+<p id="appendix-C-33"><strong>ECDSA NIST P256</strong><a href="#appendix-C-33" class="pilcrow">¶</a></p>
+<p id="appendix-C-34">AlgorithmIdentifier of Public Key<a href="#appendix-C-34" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-35">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4503,10 +4501,10 @@ ASN.1:
 
 DER:
   30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07
-</pre><a href="#appendix-C-37" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-35" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-38">AlgorithmIdentifier of Signature<a href="#appendix-C-38" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-39">
+<p id="appendix-C-36">AlgorithmIdentifier of Signature<a href="#appendix-C-36" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-37">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4515,11 +4513,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
-</pre><a href="#appendix-C-39" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-37" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-40"><strong>ECDSA NIST P384</strong><a href="#appendix-C-40" class="pilcrow">¶</a></p>
-<p id="appendix-C-41">AlgorithmIdentifier of Public Key<a href="#appendix-C-41" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-42">
+<p id="appendix-C-38"><strong>ECDSA NIST P384</strong><a href="#appendix-C-38" class="pilcrow">¶</a></p>
+<p id="appendix-C-39">AlgorithmIdentifier of Public Key<a href="#appendix-C-39" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-40">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4533,10 +4531,10 @@ ASN.1:
 
 DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22
-</pre><a href="#appendix-C-42" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-40" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-43">AlgorithmIdentifier of Signature<a href="#appendix-C-43" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-44">
+<p id="appendix-C-41">AlgorithmIdentifier of Signature<a href="#appendix-C-41" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-42">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4545,11 +4543,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
-</pre><a href="#appendix-C-44" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-42" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-45"><strong>ECDSA NIST P521</strong><a href="#appendix-C-45" class="pilcrow">¶</a></p>
-<p id="appendix-C-46">AlgorithmIdentifier of Public Key<a href="#appendix-C-46" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-47">
+<p id="appendix-C-43"><strong>ECDSA NIST P521</strong><a href="#appendix-C-43" class="pilcrow">¶</a></p>
+<p id="appendix-C-44">AlgorithmIdentifier of Public Key<a href="#appendix-C-44" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-45">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4563,10 +4561,10 @@ ASN.1:
 
 DER:
   30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23
-</pre><a href="#appendix-C-47" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-45" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-48">AlgorithmIdentifier of Signature<a href="#appendix-C-48" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-49">
+<p id="appendix-C-46">AlgorithmIdentifier of Signature<a href="#appendix-C-46" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-47">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4575,11 +4573,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 04
-</pre><a href="#appendix-C-49" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-47" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-50"><strong>ECDSA Brainpool-P256</strong><a href="#appendix-C-50" class="pilcrow">¶</a></p>
-<p id="appendix-C-51">AlgorithmIdentifier of Public Key<a href="#appendix-C-51" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-52">
+<p id="appendix-C-48"><strong>ECDSA Brainpool-P256</strong><a href="#appendix-C-48" class="pilcrow">¶</a></p>
+<p id="appendix-C-49">AlgorithmIdentifier of Public Key<a href="#appendix-C-49" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-50">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4594,10 +4592,10 @@ ASN.1:
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03
   03 02 08 01 01 07
-</pre><a href="#appendix-C-52" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-50" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-53">AlgorithmIdentifier of Signature<a href="#appendix-C-53" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-54">
+<p id="appendix-C-51">AlgorithmIdentifier of Signature<a href="#appendix-C-51" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-52">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4606,11 +4604,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 02
-</pre><a href="#appendix-C-54" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-52" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-55"><strong>ECDSA Brainpool-P384</strong><a href="#appendix-C-55" class="pilcrow">¶</a></p>
-<p id="appendix-C-56">AlgorithmIdentifier of Public Key<a href="#appendix-C-56" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-57">
+<p id="appendix-C-53"><strong>ECDSA Brainpool-P384</strong><a href="#appendix-C-53" class="pilcrow">¶</a></p>
+<p id="appendix-C-54">AlgorithmIdentifier of Public Key<a href="#appendix-C-54" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-55">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4625,10 +4623,10 @@ ASN.1:
 DER:
   30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03
   03 02 08 01 01 0B
-</pre><a href="#appendix-C-57" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-55" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-58">AlgorithmIdentifier of Signature<a href="#appendix-C-58" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-59">
+<p id="appendix-C-56">AlgorithmIdentifier of Signature<a href="#appendix-C-56" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-57">
 <pre>
 ASN.1:
   signature AlgorithmIdentifier ::= {
@@ -4637,11 +4635,11 @@ ASN.1:
 
 DER:
   30 0A 06 08 2A 86 48 CE 3D 04 03 03
-</pre><a href="#appendix-C-59" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-57" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-60"><strong>Ed25519</strong><a href="#appendix-C-60" class="pilcrow">¶</a></p>
-<p id="appendix-C-61">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-61" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-62">
+<p id="appendix-C-58"><strong>Ed25519</strong><a href="#appendix-C-58" class="pilcrow">¶</a></p>
+<p id="appendix-C-59">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-59" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-60">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4650,11 +4648,11 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 70
-</pre><a href="#appendix-C-62" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-60" class="pilcrow">¶</a>
 </div>
-<p id="appendix-C-63"><strong>Ed448</strong><a href="#appendix-C-63" class="pilcrow">¶</a></p>
-<p id="appendix-C-64">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-64" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="appendix-C-65">
+<p id="appendix-C-61"><strong>Ed448</strong><a href="#appendix-C-61" class="pilcrow">¶</a></p>
+<p id="appendix-C-62">AlgorithmIdentifier of Public Key and Signature<a href="#appendix-C-62" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-C-63">
 <pre>
 ASN.1:
   algorithm AlgorithmIdentifier ::= {
@@ -4663,7 +4661,7 @@ ASN.1:
 
 DER:
   30 05 06 03 2B 65 71
-</pre><a href="#appendix-C-65" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-63" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
