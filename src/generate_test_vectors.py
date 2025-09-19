@@ -501,7 +501,7 @@ class CompositeSig(SIG):
     Computes the message representative M'.
 
     return_intermediates=False is the default mode, and returns a single value: Mprime
-    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, ph_m, Mprime)
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, label, len_ctx, ctx, ph_m, Mprime)
     """
 
     h = hashes.Hash(self.PH) 
