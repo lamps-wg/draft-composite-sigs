@@ -623,8 +623,8 @@ For all serialization routines below, when these values are required to be carri
 
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, a stand-alone RSA private key can be encoded in Chinese Remainder Theorem form. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
-* **ML-DSA**: MUST be encoded as specified in [FIPS.204], using a 32-byte seed as the private key.
-* **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.
+* **ML-DSA**: MUST be encoded as specified in section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in section 7.2 of [FIPS.204].
+* **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in section 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
 * **ECDSA**: public key MUST be encoded as an uncompressed `ECPoint` as specified in section 2.2 of [RFC5480]. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] without 'NamedCurve' parameter and without 'publicKey' field.
 * **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
 
