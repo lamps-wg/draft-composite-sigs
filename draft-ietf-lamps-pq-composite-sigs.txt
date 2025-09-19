@@ -2712,8 +2712,10 @@ Appendix A.  Maximum Key and Signature Sizes
 
    *  Compressed vs uncompressed EC point.
 
-   *  The RSA public key (n, e) using e = 65537 is RECOMMENDED, but e
-      can vary in size between 3 and n - 1 [RFC8017].
+   *  The RSA public key (n, e) allows e to vary is size between 3 and n
+      - 1 [RFC8017].  Note that the size table below assumes the
+      recommended value of e = 65537, so for RSA combinations it is in
+      fact not a true maximum.
 
    *  When the underlying RSA or EC value is itself DER-encoded, integer
       values could occasionally be shorter than expected due to leading
