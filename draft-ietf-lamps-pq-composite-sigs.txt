@@ -1056,19 +1056,18 @@ Signature Generation Process:
    The serialization routines presented in Section 5 produce raw binary
    values.  When these values are required to be carried within a DER-
    encoded message format such as an X.509's subjectPublicKey and
-   signatureValue BIT STRING [RFC5280], a CMS SignerInfo.signature OCTET
-   STRING [RFC5652] or a OneAsymmetricKey.privateKey OCTET STRING
-   [RFC5958], then the composite value MUST be wrapped into a DER BIT
-   STRING or OCTET STRING in the obvious ways.
+   signatureValue BIT STRING [RFC5280] or a OneAsymmetricKey.privateKey
+   OCTET STRING [RFC5958], then the BIT STRING or OCTET STRING contains
+   this raw byte string encoding of the public key.
 
-   When a BIT STRING is required, the octets of the composite data value
-   SHALL be used as the bits of the bit string, with the most
-   significant bit of the first octet becoming the first bit, and so on,
-   ending with the least significant bit of the last octet becoming the
-   last bit of the bit string.
+   When a Composite ML-DSA public key appears outside of a
+   SubjectPublicKeyInfo type in an environment that uses ASN.1 encoding,
+   it could be encoded as an OCTET STRING by using the Composite-ML-DSA-
+   PublicKey type defined below.
 
-   When an OCTET STRING is required, the DER encoding of the composite
-   data value SHALL be used directly.
+   Composite-ML-DSA-PublicKey ::= OCTET STRING
+
+   Size constraints MAY be enforced, as appropriate as per Appendix A.
 
 6.2.  Key Usage Bits
 

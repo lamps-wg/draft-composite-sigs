@@ -2163,9 +2163,17 @@ Deserialization Process:
         <h3 id="name-encoding-to-der">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-encoding-to-der" class="section-name selfRef">Encoding to DER</a>
         </h3>
-<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, a CMS <code>SignerInfo.signature OCTET STRING</code> <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> or a <code>OneAsymmetricKey.privateKey OCTET STRING</code> <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then the composite value MUST be wrapped into a DER BIT STRING or OCTET STRING in the obvious ways.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1-2">When a BIT STRING is required, the octets of the composite data value SHALL be used as the bits of the bit string, with the most significant bit of the first octet becoming the first bit, and so on, ending with the least significant bit of the last octet becoming the last bit of the bit string.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">When an OCTET STRING is required, the DER encoding of the composite data value SHALL be used directly.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a <code>OneAsymmetricKey.privateKey OCTET STRING</code> <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then the BIT STRING or OCTET STRING contains this raw byte string encoding of the public key.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">When a Composite ML-DSA
+public key appears outside of a <code>SubjectPublicKeyInfo</code> type in an
+environment that uses ASN.1 encoding, it could be encoded as an OCTET
+STRING by using the Composite-ML-DSA-PublicKey type defined below.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.1-3">
+<pre>
+Composite-ML-DSA-PublicKey ::= OCTET STRING
+</pre><a href="#section-6.1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-6.1-4">Size constraints MAY be enforced, as appropriate as per <a href="#sec-sizetable" class="auto internal xref">Appendix A</a>.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="key-usage-bits">
