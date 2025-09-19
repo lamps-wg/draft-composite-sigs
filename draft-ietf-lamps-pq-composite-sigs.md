@@ -417,7 +417,6 @@ Key Generation Process:
      return (pk, sk)
 
 ~~~
-{: #alg-composite-keygen title="Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)"}
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
@@ -507,7 +506,6 @@ Signature Generation Process:
       s = SerializeSignatureValue(mldsaSig, tradSig)
       return s
 ~~~
-{: #alg-composite-sign title="Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s"}
 
 Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
@@ -598,7 +596,6 @@ Signature Verification Process:
       if all succeeded, then
          output "Valid signature"
 ~~~
-{: #alg-composite-verify title="Composite-ML-DSA<OID>.Verify(pk, M, signature, ctx)"}
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
 
@@ -615,7 +612,6 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 | ML-DSA-44 |     1312    |      32     |    2420   |
 | ML-DSA-65 |     1952    |      32     |    3309   |
 | ML-DSA-87 |     2592    |      32     |    4627   |
-{: #tab-mldsa-sizes title="ML-DSA Key and Signature Sizes in bytes"}
 
 For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
@@ -660,7 +656,6 @@ Serialization Process:
 
      output mldsaPK || tradPK
 ~~~
-{: #alg-composite-serialize-pk title="Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) -> bytes"}
 
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -714,7 +709,6 @@ Deserialization Process:
 
      output (mldsaPK, tradPK)
 ~~~
-{: #alg-composite-deserialize-pk title="Composite-ML-DSA<OID>.DeserializePublicKey(bytes) -> (mldsaPK, tradPK)"}
 
 
 
@@ -747,7 +741,6 @@ Serialization Process:
 
      output mldsaSeed || tradSK
 ~~~
-{: #alg-composite-serialize-sk title="Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes"}
 
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -787,7 +780,6 @@ Deserialization Process:
 
      output (mldsaSeed, tradSK)
 ~~~
-{: #alg-composite-deserialize-sk title="Composite-ML-DSA.DeserializePrivateKey(bytes) -> (mldsaSeed, tradSK)"}
 
 
 
@@ -820,7 +812,6 @@ Serialization Process:
      output mldsaSig || tradSig
 
 ~~~
-{: #alg-composite-serialize-sig title="Composite-ML-DSA.SerializeSignatureValue(mldsaSig, tradSig) -> bytes"}
 
 
 Deserialization reverses this process, raising an error in the event that the input is malformed.  Each component signature is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -873,7 +864,6 @@ Deserialization Process:
 
      output (mldsaSig, tradSig)
 ~~~
-{: #alg-composite-deserialize-sig title="Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes) -> (mldsaSig, tradSig)"}
 
 
 # Use within X.509 and PKIX
@@ -1323,7 +1313,6 @@ Process:
 
 2. Output ph
 ~~~
-{: #external-pre-hash title="Generation of the external pre-hash"}
 
 
 ~~~
@@ -1363,7 +1352,6 @@ Process:
        Composite-ML-DSA<OID>.Sign (sk, M, ctx) with ph which is
        input into this function.
 ~~~
-{: #external-pre-hash-alg title="Suggested implementation of external pre-hashing"}
 
 
 <!-- End of Implementation Considerations section -->
