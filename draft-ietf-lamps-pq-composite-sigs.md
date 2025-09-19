@@ -1374,7 +1374,7 @@ Process:
 The sizes listed below are maximas. Several factors could cause fluctuations in the size of the traditional component. For example, this could be due to:
 
 * Compressed vs uncompressed EC point.
-* The RSA public key `(n, e)` using `e = 65537` is RECOMMENDED, but `e` can vary in size between 3 and `n - 1` [RFC8017].
+* The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017]. Note that the size table below assumes the recommended value of `e = 65537`, so for RSA combinations it is in fact not a true maximum.
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occasionally be shorter than expected due to leading zeros being dropped from the encoding.
 
 By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.
