@@ -2748,7 +2748,7 @@ Appendix A.  Maximum Key and Signature Sizes
    | id-MLDSA87-ECDSA-P521-SHA512            |2725  |105*   |4766*    |
    +-----------------------------------------+------+-------+---------+
 
-            Table 4: Maximume size values of composite ML-DSA
+             Table 4: Maximum size values of composite ML-DSA
 
 Appendix B.  Component Algorithm Reference
 
@@ -9196,7 +9196,7 @@ Appendix G.  Contributors and Acknowledgements
    electronic mail and VOIP traffic over the past six years in pursuit
    of this document:
 
-   Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
+   Serge Mister (Entrust), Felipe Vent (Entrust), Richard Kettlewell
    (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduade
    School), Tim Hollebeek (Digicert), Panos Kampanakis (Amazon), Chris
    A.  Wood (Apple), Christopher D.  Wood (Apple), Sophie Schmieg
