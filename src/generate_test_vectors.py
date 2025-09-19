@@ -11,14 +11,14 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 
-
+import sys
 import datetime
 import base64
 import json
 import textwrap
 from zipfile import ZipFile
 
-from pyasn1.type import univ, tag
+from pyasn1.type import univ, tag, namedtype
 from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -26,11 +26,9 @@ from pyasn1.codec.der.encoder import encode as der_encode
 VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
 
 OID_TABLE = {
-    "sha256WithRSAEncryption-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
-    "sha256WithRSAEncryption-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
-    "id-RSASSA-PSS-2048": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
-    "id-RSASSA-PSS-3072": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
-    "id-RSASSA-PSS-4096": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
+    "sha256WithRSAEncryption": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
+    "sha384WithRSAEncryption": univ.ObjectIdentifier((1,2,840,113549,1,1,12)),
+    "id-RSASSA-PSS": univ.ObjectIdentifier((1,2,840,113549,1,1,10)),
     "ecdsa-with-SHA256": univ.ObjectIdentifier((1,2,840,10045,4,3,2)),
     "ecdsa-with-SHA384": univ.ObjectIdentifier((1,2,840,10045,4,3,3)),
     "id-Ed25519": univ.ObjectIdentifier((1,3,101,112)),
@@ -67,7 +65,6 @@ PURE_SEED_ALGS = [
 class SIG:
   pk = None
   sk = None
-  id = None
   params_asn = None
 
   # returns nothing
@@ -104,6 +101,8 @@ class SIG:
 
 
 class RSA(SIG):
+  component_name = "RSA"
+
   # returns nothing
   def keyGen(self):
     self.sk = rsa.generate_private_key(
@@ -140,6 +139,18 @@ class RSA(SIG):
         encoding=serialization.Encoding.DER,
         format=serialization.PublicFormat.PKCS1)
 
+  def public_key_max_len(self):
+    """
+    RSAPublicKey ::= SEQUENCE {
+        modulus           INTEGER,  -- n
+        publicExponent    INTEGER   -- e
+    }
+    """
+    return (calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(self.pk.key_size),  # n
+        calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length())  # e = 65537 = 0b1_00000000_00000001
+    ]), False)
+    
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
     assert isinstance(self.pk, rsa.RSAPublicKey)
@@ -151,8 +162,39 @@ class RSA(SIG):
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption())
 
+  def private_key_max_len(self):
+    """
+    RSAPrivateKey::= SEQUENCE {
+        version Version,
+        modulus           INTEGER,  --n
+        publicExponent INTEGER,  --e
+        privateExponent INTEGER,  --d
+        prime1 INTEGER,  --p
+        prime2 INTEGER,  --q
+        exponent1 INTEGER,  --d mod(p - 1)
+        exponent2 INTEGER,  --d mod(q - 1)
+        coefficient INTEGER,  --(inverse of q) mod p
+        otherPrimeInfos OtherPrimeInfos OPTIONAL
+    }
+    """
+    return (calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1 for Composite ML-DSA
+        calculate_der_universal_integer_max_length(self.sk.key_size),  # n
+        calculate_der_universal_integer_max_length(self.pk.public_numbers().e.bit_length()),  # e = 65537 = 0b1_00000000_00000001
+        calculate_der_universal_integer_max_length(self.sk.key_size),  # d
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # p
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # q
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # d mod (p-1)
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2),  # d mod (q-1)
+        calculate_der_universal_integer_max_length(self.sk.key_size // 2)   # (inverse of q) mod p
+        # OtherPrimeInfos are not allowed in Composite ML-DSA
+    ]), False)
 
+  def signature_max_len(self):
+    return (size_in_bits_to_size_in_bytes(self.sk.key_size), False)
+    
 class RSAPSS(RSA):
+  id = "id-RSASSA-PSS"
   def get_padding(self):
     return padding.PSS(
         mgf=padding.MGF1(self.hash_alg),
@@ -165,7 +207,6 @@ class RSAPKCS15(RSA):
 
 
 class RSA2048PSS(RSAPSS):
-  id = "id-RSASSA-PSS-2048"
   key_size = 2048
   hash_alg = hashes.SHA256()
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
@@ -173,14 +214,13 @@ class RSA2048PSS(RSAPSS):
 
 
 class RSA2048PKCS15(RSAPKCS15):
-  id = "sha256WithRSAEncryption-2048"
+  id = "sha256WithRSAEncryption"
   key_size = 2048
   hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
 class RSA3072PSS(RSAPSS):
-  id = "id-RSASSA-PSS-3072"
   key_size = 3072
   hash_alg = hashes.SHA256()
   params_asn = rfc4055.rSASSA_PSS_SHA256_Params
@@ -188,14 +228,13 @@ class RSA3072PSS(RSAPSS):
 
 
 class RSA3072PKCS15(RSAPKCS15):
-  id = "sha256WithRSAEncryption-3072"
+  id = "sha256WithRSAEncryption"
   key_size = 3072
   hash_alg = hashes.SHA256()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
 class RSA4096PSS(RSAPSS):
-  id = "id-RSASSA-PSS-4096"
   key_size = 4096
   hash_alg = hashes.SHA384()
   params_asn = rfc4055.rSASSA_PSS_SHA384_Params
@@ -203,13 +242,24 @@ class RSA4096PSS(RSAPSS):
 
 
 class RSA4096PKCS15(RSAPKCS15):
-  id = "sha384WithRSAEncryption-4096"
+  id = "sha384WithRSAEncryption"
   key_size = 4096
   hash_alg = hashes.SHA384()
   algid = "30 0D 06 09 2A 86 48 86 F7 0D 01 01 01 05 00"
 
 
+class Version(univ.Integer):
+    pass
+    
+class ECDSAPrivateKey(univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        namedtype.NamedType('version', Version()),
+        namedtype.NamedType('privateKey', univ.OctetString())
+    )
+
 class ECDSA(SIG):
+  component_name = "ECDSA"
+
   def keyGen(self):
     self.sk = ec.generate_private_key(self.curve)
     self.pk = self.sk.public_key()
@@ -225,16 +275,46 @@ class ECDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.X962,
         format=serialization.PublicFormat.UncompressedPoint)
+        
+  def public_key_max_len(self):  
+    return (1 + 2 * size_in_bits_to_size_in_bytes(self.curve.key_size), True)
 
-  def private_key_bytes(self):    
-    return self.sk.private_bytes(
-        encoding=serialization.Encoding.DER,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
-        encryption_algorithm=serialization.NoEncryption())
+  def private_key_bytes(self):
+    prk = ECDSAPrivateKey()
+    prk['version'] = 1
+    prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
+    return der_encode(prk)
+        
+  def private_key_max_len(self):
+    """
+    ECPrivateKey ::= SEQUENCE {
+      version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
+      privateKey     OCTET STRING,
+      parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
+      publicKey  [1] BIT STRING OPTIONAL
+    }
+    """
+    return (calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
+        calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size))  # privateKey
+        # ECParameters are not allowed in Composite ML-DSA
+        # publicKey is not allowed in Composite ML-DSA
+    ]), False)
 
+  def signature_max_len(self):
+    """
+    Ecdsa-Sig-Value  ::=  SEQUENCE  {
+     r     INTEGER,
+     s     INTEGER  }
+    """
+    return (calculate_der_universal_sequence_max_length([
+        calculate_der_universal_integer_max_length(self.curve.key_size),  # r
+        calculate_der_universal_integer_max_length(self.curve.key_size)   # s
+    ]), False)
 
 class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
+  component_curve = "secp256r1"
   curve = ec.SECP256R1()
   hash = hashes.SHA256()
   algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
@@ -242,6 +322,7 @@ class ECDSAP256(ECDSA):
 
 class ECDSABP256(ECDSA):
   id = "ecdsa-with-SHA256"
+  component_curve = "brainpoolP256r1"
   curve = ec.BrainpoolP256R1()
   hash = hashes.SHA256()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
@@ -249,6 +330,7 @@ class ECDSABP256(ECDSA):
 
 class ECDSAP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  component_curve = "secp384r1"
   curve = ec.SECP384R1()
   hash = hashes.SHA384()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
@@ -256,6 +338,7 @@ class ECDSAP384(ECDSA):
 
 class ECDSABP384(ECDSA):
   id = "ecdsa-with-SHA384"
+  component_curve = "brainpoolP384r1"
   curve = ec.BrainpoolP384R1()
   hash = hashes.SHA384()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
@@ -263,6 +346,7 @@ class ECDSABP384(ECDSA):
 
 class ECDSAP521(ECDSA):
   id = "ecdsa-with-SHA512"
+  component_curve = "secp521r1"
   curve = ec.SECP521R1()
   hash = hashes.SHA512()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
@@ -288,6 +372,9 @@ class EdDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PublicFormat.Raw)
+        
+  def public_key_max_len(self):
+    return (len(self.public_key_bytes()), True)
 
   def private_key_bytes(self):
     raw = self.sk.private_bytes(
@@ -297,16 +384,28 @@ class EdDSA(SIG):
         )
     CurvePrivateKey = univ.OctetString(raw)
     return der_encode(CurvePrivateKey)
+        
+  def private_key_max_len(self):
+    return (len(self.private_key_bytes()), True)
+    
+  def signature_max_len(self):
+    if isinstance(self, Ed25519):
+        key_size = 256
+    if isinstance(self, Ed448):
+        key_size = 456
+    return (2 * size_in_bits_to_size_in_bytes(key_size), True)
 
 
 class Ed25519(EdDSA):
   id = "id-Ed25519"
+  component_name = "Ed25519"
   algid = "30 05 06 03 2B 65 70"
   edsda_private_key_class = ed25519.Ed25519PrivateKey
 
 
 class Ed448(EdDSA):
   id = "id-Ed448"
+  component_name = "Ed448"
   algid = "30 05 06 03 2B 65 71"
   edsda_private_key_class = ed448.Ed448PrivateKey
 
@@ -330,29 +429,45 @@ class MLDSA(SIG):
   
   def public_key_bytes(self):
     return self.pk
+    
+  def public_key_max_len(self):
+    return (len(self.public_key_bytes()), True)
   
   def loadPK(self, pkbytes):
     self.pk = pkbytes
 
   def private_key_bytes(self):    
     return self.sk
-  
+    
+  def private_key_max_len(self):
+    return (len(self.private_key_bytes()), True)
+    
+  def signature_max_len(self):    
+    if isinstance(self, MLDSA44):
+      size = 2420
+    elif isinstance(self, MLDSA65):
+      size = 3309
+    elif isinstance(self, MLDSA87):
+      size = 4627
+    return (size, True)
 
 class MLDSA44(MLDSA):
   id = "id-ML-DSA-44"
+  component_name = "ML-DSA-44"
   ML_DSA_class = ML_DSA_44
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 11"
 
 class MLDSA65(MLDSA):
   id = "id-ML-DSA-65"
+  component_name = "ML-DSA-65"
   ML_DSA_class = ML_DSA_65
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 12"
 
 class MLDSA87(MLDSA):
   id = "id-ML-DSA-87"
+  component_name = "ML-DSA-87"
   ML_DSA_class = ML_DSA_87
   algid = "30 0B 06 09 60 86 48 01 65 03 04 03 13s"
-
 
 
 ### Composites ###
@@ -366,9 +481,7 @@ class CompositeSig(SIG):
 
   def __init__(self):
     super().__init__()
-    self.domain = DOMAIN_TABLE[self.id][0]  # the first component is the domain,
-                                            # the second is a boolean controlling whether
-                                            # this renders in the domsep table in the draft.
+    self.domain = DOMAIN_TABLE[self.id]['domain']
 
   def loadPK(self, pkbytes):
     mldsapub, tradpub = self.deserializeKey(pkbytes)
@@ -384,12 +497,12 @@ class CompositeSig(SIG):
     self.pk = self.serializeKey()
 
 
-  def computeMprime(self, m, ctx, r, return_intermediates=False ):
+  def computeMprime(self, m, ctx, return_intermediates=False ):
     """
     Computes the message representative M'.
 
     return_intermediates=False is the default mode, and returns a single value: Mprime
-    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, r, ph_m, Mprime)
+    return_intermediates=True facilitates debugging by writing out the intermediate values to a file, and returns a tuple (prefix, domain, len_ctx, ctx, ph_m, Mprime)
     """
 
     h = hashes.Hash(self.PH) 
@@ -397,17 +510,16 @@ class CompositeSig(SIG):
     ph_m = h.finalize()
 
 
-    # M' :=  Prefix || Domain || len(ctx) || ctx || r || PH(M)
+    # M' :=  Prefix || Domain || len(ctx) || ctx || PH(M)
     len_ctx = len(ctx).to_bytes(1, 'big')
     Mprime = self.prefix                 + \
          self.domain                 + \
          len_ctx + \
          ctx                         + \
-         r                           + \
          ph_m
          
     if return_intermediates:
-      return (self.prefix, self.domain, len_ctx, ctx, r, ph_m, Mprime)
+      return (self.prefix, self.domain, len_ctx, ctx, ph_m, Mprime)
     else:
       return Mprime  
 
@@ -418,14 +530,13 @@ class CompositeSig(SIG):
     """    
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
-
-    r = secrets.token_bytes(32)
-    Mprime = self.computeMprime(m, ctx, r)
+    
+    Mprime = self.computeMprime(m, ctx)
 
     mldsaSig = self.mldsa.sign( Mprime, ctx=self.domain )
     tradSig = self.tradsig.sign( Mprime )
     
-    return self.serializeSignatureValue(r, mldsaSig, tradSig)
+    return self.serializeSignatureValue(mldsaSig, tradSig)
   
 
   # raises cryptography.exceptions.InvalidSignature
@@ -437,12 +548,9 @@ class CompositeSig(SIG):
     assert isinstance(m, bytes)
     assert isinstance(ctx, bytes)
 
-    (r, mldsaSig, tradSig) = self.deserializeSignatureValue(s)
+    (mldsaSig, tradSig) = self.deserializeSignatureValue(s)
 
-    if len(r) != 32:
-      raise InvalidSignature("r is the wrong length")
-
-    Mprime = self.computeMprime(m, ctx, r)
+    Mprime = self.computeMprime(m, ctx)
     
     # both of the components raise InvalidSignature exception on error
     self.mldsa.verify(mldsaSig, Mprime, ctx=self.domain)
@@ -455,16 +563,6 @@ class CompositeSig(SIG):
     """
     mldsaPK = self.mldsa.public_key_bytes()
     tradPK  = self.tradsig.public_key_bytes()
-    return mldsaPK + tradPK
-
-
-  def public_key_bytes(self):
-    return self.serializeKey()
-
-
-  def private_key_bytes(self):
-    mldsaPK = self.mldsa.private_key_bytes()
-    tradPK  = self.tradsig.private_key_bytes()
     return mldsaPK + tradPK
 
 
@@ -482,29 +580,39 @@ class CompositeSig(SIG):
     elif isinstance(self.mldsa, MLDSA87):
       return keyBytes[:2592], keyBytes[2592:]
 
+
   def public_key_bytes(self):
     return self.serializeKey()
+
+
+  def public_key_max_len(self):
+    (maxMLDSA, _) = self.mldsa.public_key_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.public_key_max_len()
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
+
 
   def private_key_bytes(self):
     mldsaSK = self.mldsa.private_key_bytes()
     tradSK  = self.tradsig.private_key_bytes()
     return mldsaSK + tradSK
 
-  def serializeSignatureValue(self, r, s1, s2):
-    assert isinstance(r, bytes)
-    assert len(r) == 32
+  
+  def private_key_max_len(self):
+    (maxMLDSA, _) = self.mldsa.private_key_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.private_key_max_len()
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
+    
+
+  def serializeSignatureValue(self, s1, s2):
     assert isinstance(s1, bytes)
     assert isinstance(s2, bytes)
-    return r + s1 + s2
+    return s1 + s2
 
   def deserializeSignatureValue(self, s):
     """
-    Returns (r, mldsaSig, tradSig)
+    Returns (mldsaSig, tradSig)
     """
     assert isinstance(s, bytes)
-
-    r = s[:32]
-    s = s[32:]  # truncate off the randomizer
 
     if isinstance(self.mldsa, MLDSA44):
       mldsaSig = s[:2420]
@@ -516,7 +624,14 @@ class CompositeSig(SIG):
       mldsaSig = s[:4627]
       tradSig  = s[4627:]
   
-    return (r, mldsaSig, tradSig)
+    return (mldsaSig, tradSig)
+   
+   
+  def signature_max_len(self):
+    (maxMLDSA, _) = self.mldsa.signature_max_len()
+    (maxTrad, fixedSizeTrad) = self.tradsig.signature_max_len()
+    return (maxMLDSA + maxTrad, fixedSizeTrad)
+
 
 class MLDSA44_RSA2048_PSS_SHA256(CompositeSig):
   id = "id-MLDSA44-RSA2048-PSS-SHA256"
@@ -725,7 +840,7 @@ caName = x509.Name(
     [
         x509.NameAttribute(NameOID.ORGANIZATION_NAME, 'IETF'),
         x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, 'LAMPS'),
-        x509.NameAttribute(NameOID.COMMON_NAME, 'Composite ML-KEM CA')
+        x509.NameAttribute(NameOID.COMMON_NAME, 'Composite ML-DSA CA')
     ]
   )
 
@@ -966,8 +1081,10 @@ def genDomainTable():
   turned on by doSig(.., includeInDomainTable=True)."""
 
   for alg in OID_TABLE:
+    DOMAIN_TABLE[alg] = {}
     domain = der_encode(OID_TABLE[alg])
-    DOMAIN_TABLE[alg] = (domain, False)
+    DOMAIN_TABLE[alg]['domain'] = domain
+    DOMAIN_TABLE[alg]['render'] = False
 
 # run this statically
 genDomainTable()
@@ -983,15 +1100,70 @@ def doSig(sig, includeInTestVectors=True, includeInDomainTable=True, includeInSi
     testVectorOutput['tests'].append(jsonResult)
 
   if includeInDomainTable:
-    DOMAIN_TABLE[sig.id] = (DOMAIN_TABLE[sig.id][0], True)
+    DOMAIN_TABLE[sig.id]['render'] = True
+    DOMAIN_TABLE[sig.id]['ph'] = type(sig.PH).__name__
+    if isinstance(sig.PH, hashes.ExtendableOutputFunction):
+      DOMAIN_TABLE[sig.id]['ph'] += "/" + str(sig.PH.digest_size) + "**"
+    DOMAIN_TABLE[sig.id]['mldsa'] = sig.mldsa.component_name
+    DOMAIN_TABLE[sig.id]['trad'] = sig.tradsig.component_name
+    if hasattr(sig.tradsig, 'component_curve'):
+      DOMAIN_TABLE[sig.id]['trad_curve'] = sig.tradsig.component_curve
+    if hasattr(sig.tradsig, 'key_size'):
+      DOMAIN_TABLE[sig.id]['trad_rsa_key_size'] = str(sig.tradsig.key_size)
+    DOMAIN_TABLE[sig.id]['trad_sig_alg'] = sig.tradsig.id
 
   if includeInSizeTable:
     sizeRow = {}
-    sizeRow['pk'] = len(sig.public_key_bytes())
-    sizeRow['sk'] = len(sig.private_key_bytes())
-    sizeRow['s'] = len(s)
+    sizeRow['pk'] = sig.public_key_max_len()
+    sizeRow['sk'] = sig.private_key_max_len()
+    sizeRow['s'] = sig.signature_max_len()
     SIZE_TABLE[sig.id] = sizeRow
     
+    
+def checkTestVectorsSize():
+  """
+  Checks that the test vectors produced match the sizes advertized in the size table.
+  Aborts if it finds a mismatch.
+  """
+  error = False
+  for test in testVectorOutput['tests']:
+    alg = test['tcId']
+    size = SIZE_TABLE[alg]
+    (pkMaxSize, pkFix) = size['pk']
+    (skMaxSize, skFix) = size['sk']
+    (sMaxSize, sFix)   = size['s']
+    pkSize = len(base64.b64decode(test['pk']))
+    skSize = len(base64.b64decode(test['sk']))
+    sSize  = len(base64.b64decode(test['s']))
+    
+    
+    if pkFix and pkSize != pkMaxSize:
+        print("Error: "+alg+" pk size does not match expected: "+str(pkSize)+" != "+str(pkMaxSize)+conditionalAsterisk(not pkFix)+"\n") 
+        error = True
+    if not pkFix and pkSize > pkMaxSize:
+        print("Error: "+alg+" pk size does not match expected: "+str(pkSize)+" > "+str(pkMaxSize)+conditionalAsterisk(not pkFix)+"\n") 
+        error = True
+    
+    if skFix and skSize != skMaxSize:
+        print("Error: "+alg+" sk size does not match expected: "+str(skSize)+" != "+str(skMaxSize)+conditionalAsterisk(not skFix)+"\n") 
+        error = True
+    if not skFix and skSize > skMaxSize:
+        print("Error: "+alg+" sk size does not match expected: "+str(skSize)+" > "+str(skMaxSize)+conditionalAsterisk(not skFix)+"\n") 
+        error = True
+        
+    if sFix and sSize != sMaxSize:
+        print("Error: "+alg+" s size does not match expected: "+str(sSize)+" != "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
+        error = True
+    if not sFix and sSize > sMaxSize:
+        print("Error: "+alg+" s size does not match expected: "+str(sSize)+" > "+str(sMaxSize)+conditionalAsterisk(not sFix)+"\n") 
+        error = True
+    
+  if error: sys.exit()
+  else: print("DEBUG: all sizes matched expected!")
+    
+
+
+
     
 def writeTestVectors():
   with open('testvectors.json', 'w') as f:
@@ -1024,6 +1196,12 @@ def writeDumpasn1Cfg():
       f.write("\n")
 
 
+def conditionalAsterisk(switch):
+    if switch:
+      return '*'
+    else:
+      return ' '
+      
 def writeSizeTable():
   # In this style:
   # | Algorithm | Public key  | Private key | Signature |
@@ -1039,25 +1217,41 @@ def writeSizeTable():
 
     for alg in SIZE_TABLE:
       row = SIZE_TABLE[alg]
+      (pk, pkFix) = row['pk']
+      (sk, skFix) = row['sk']
+      (s, sFix) = row['s']
       f.write('| '+ alg.ljust(46, ' ') +'|'+
-                 str(row['pk']).center(14, ' ') +'|'+
-                 str(row['sk']).center(14, ' ') +'|'+
-                 str(row['s']).center(14, ' ') +'|\n' )
+                 (str(pk)+conditionalAsterisk(not pkFix)).center(14, ' ') +'|'+
+                 (str(sk)+conditionalAsterisk(not skFix)).center(14, ' ') +'|'+
+                 (str(s)+conditionalAsterisk(not sFix)).center(14, ' ') +'|\n' )
       
       
-def writeDomainTable():
+def writeAlgParams():
   """
-  Writes the table of domain separators to go into the draft.
+  Writes the sets of all algorithm to go into the draft.
   """
 
-  with open('domSepTable.md', 'w') as f:
-    f.write('| Composite Signature Algorithm                | Domain Separator (in Hex encoding)|\n')
-    f.write('| -------------------------------------------  | --------------------------------- |\n')
-
+  with open('algParams.md', 'w') as f:
     for alg in DOMAIN_TABLE:
-      if DOMAIN_TABLE[alg][1]:  # boolean controlling rendering in this table.
-        f.write('| ' + alg.ljust(46, ' ') + " | " + base64.b16encode(DOMAIN_TABLE[alg][0]).decode('ASCII') + " |\n")
-        
+      if DOMAIN_TABLE[alg]['render']:  # boolean controlling rendering in this table.
+        f.write("- " + alg + "\n")
+        f.write("  - OID: " + str(OID_TABLE[alg]) + "\n")
+        f.write("  - Domain Separator: " + base64.b16encode(DOMAIN_TABLE[alg]['domain']).decode('ASCII') + "\n")
+        f.write("  - Pre-Hash function (PH): " + DOMAIN_TABLE[alg]['ph'] + "\n")
+        f.write("  - ML-DSA variant: " + DOMAIN_TABLE[alg]['mldsa'] + "\n")
+        f.write("  - Traditional Algorithm: " + DOMAIN_TABLE[alg]['trad'] + "\n")
+        f.write("    - Traditional Signature Algorithm: " + DOMAIN_TABLE[alg]['trad_sig_alg'] + "\n")
+        if 'trad_curve' in DOMAIN_TABLE[alg]:
+          f.write("    - ECDSA curve: " + DOMAIN_TABLE[alg]['trad_curve'] + "\n")
+        if 'trad_rsa_key_size' in DOMAIN_TABLE[alg]:
+          f.write("    - RSA size: " + DOMAIN_TABLE[alg]['trad_rsa_key_size'] + "\n")
+        if DOMAIN_TABLE[alg]['trad_sig_alg'] == "id-RSASSA-PSS":
+          if int(DOMAIN_TABLE[alg]['trad_rsa_key_size']) <= 3072:
+            f.write("    - RSASSA-PSS parameters: See {{rsa-pss-params2048-3072}}\n")
+          else:
+            f.write("    - RSASSA-PSS parameters: See {{rsa-pss-params4096}}\n")
+        f.write("\n")
+
 
 def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   """
@@ -1070,13 +1264,12 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   # Compute the values
   sig.keyGen()
 
-  r = secrets.token_bytes(32)
-  (prefix, domain, len_ctx, ctx, r, ph_m, Mprime) = sig.computeMprime(m, ctx, r, return_intermediates=True)
+  (prefix, domain, len_ctx, ctx, ph_m, Mprime) = sig.computeMprime(m, ctx, return_intermediates=True)
 
 
 
   # Dump the values to file
-  wrap_width = 70
+  wrap_width = 67
   f.write("# Inputs:")
   f.write("\n\n")     
   f.write( '\n'.join(textwrap.wrap("M: " + m.hex(), width=wrap_width)) +"\n" )
@@ -1093,14 +1286,60 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
       f.write("ctx: <empty>\n")
   else:
       f.write( '\n'.join(textwrap.wrap("ctx: " + ctx.hex(), width=wrap_width)) +"\n\n" )
-  f.write( '\n'.join(textwrap.wrap("r: " + r.hex(), width=wrap_width)) +"\n" )
   f.write( '\n'.join(textwrap.wrap("PH(M): " + ph_m.hex(), width=wrap_width)) +"\n\n" )
   f.write("\n")
   f.write("# Outputs:\n")
-  f.write("# M' = Prefix || Domain || len(ctx) || ctx || r || PH(M)\n\n")
+  f.write("# M' = Prefix || Domain || len(ctx) || ctx || PH(M)\n\n")
   f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
+def calculate_length_length(der_byte_count):
+    assert der_byte_count >= 0
+
+    if der_byte_count < (1 << 7):  # Short form
+        return 1  # 1 byte for length
+    elif der_byte_count < (1 << 8):
+        return 2  # 1 byte for length + 1 byte for the length value
+    elif der_byte_count < (1 << 16):
+        return 3  # 1 byte for length + 2 bytes for the length value
+    elif der_byte_count < (1 << 24):
+        return 4  # 1 byte for length + 3 bytes for the length value
+    else:
+        return 5  # 1 byte for length + 4 bytes for the length value
+
+
+def size_in_bits_to_size_in_bytes(size_in_bits):
+    return (size_in_bits + 7) // 8
+
+
+def calculate_der_universal_integer_max_length(max_size_in_bits):
+    # DER uses signed integers, so account for possible leading sign bit.
+    signed_max_size_in_bits = max_size_in_bits + 1
+
+    max_der_size_in_bytes = size_in_bits_to_size_in_bytes(signed_max_size_in_bits)
+
+    UNIVERSAL_INTEGER_IDENTIFIER_LENGTH = 1
+
+    return UNIVERSAL_INTEGER_IDENTIFIER_LENGTH + calculate_length_length(max_der_size_in_bytes) + max_der_size_in_bytes
+
+
+def calculate_der_universal_octet_string_max_length(length):
+    UNIVERSAL_OCTET_STRING_IDENTIFIER_LENGTH = 1
+
+    return UNIVERSAL_OCTET_STRING_IDENTIFIER_LENGTH + calculate_length_length(length) + length
+
+
+def calculate_der_universal_sequence_max_length(der_size_of_sequence_elements):
+    UNIVERSAL_SEQUENCE_IDENTIFIER_LENGTH = 1
+
+    length = 0
+
+    for element_size in der_size_of_sequence_elements:
+        length += element_size
+
+    length += UNIVERSAL_SEQUENCE_IDENTIFIER_LENGTH + calculate_length_length(length)
+
+    return length
 
 
 def main():
@@ -1144,10 +1383,11 @@ def main():
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_ECDSA_P521_SHA512() )
 
+  checkTestVectorsSize()
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
-  writeDomainTable()
+  writeAlgParams()
 
 
   # Write the message representative examples
