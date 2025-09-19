@@ -2796,7 +2796,8 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
           </ul>
 </li>
       </ul>
-<p id="section-7-6">**Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-6" class="pilcrow">¶</a></p>
+<p id="section-7-6">For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Implementations MAY support only 65537 and reject other exponent values. Legacy RSA implementations that use other values for the exponent MAY be used to within a composite, but need to be careful when interoperating with other implementations.<a href="#section-7-6" class="pilcrow">¶</a></p>
+<p id="section-7-7">**Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <div id="rsassa-pss-params">
 <section id="section-7.1">
         <h3 id="name-rsassa-pss-parameters">
