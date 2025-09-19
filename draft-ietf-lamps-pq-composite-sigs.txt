@@ -474,8 +474,6 @@ Table of Contents
         sk = SerializePrivateKey(mldsaSeed, tradSK)
         return (pk, sk)
 
-            Figure 1: Composite-ML-DSA<OID>.KeyGen() -> (pk, sk)
-
    In order to ensure fresh keys, the key generation functions MUST be
    executed for both component algorithms.  Compliant parties MUST NOT
    use, import or export component keys that are used in other contexts,
@@ -593,8 +591,6 @@ Signature Generation Process:
       s = SerializeSignatureValue(mldsaSig, tradSig)
       return s
 
-        Figure 2: Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
-
    Note that in step 4 above, both component signature processes are
    invoked, and no indication is given about which one failed.  This
    SHOULD be done in a timing-invariant way to prevent side-channel
@@ -699,8 +695,6 @@ Signature Generation Process:
          if all succeeded, then
             output "Valid signature"
 
-       Figure 3: Composite-ML-DSA<OID>.Verify(pk, M, signature, ctx)
-
    Note that in step 4 above, the function fails early if the first
    component fails to verify.  Since no private keys are involved in a
    signature verification, there are no timing attacks to consider, so
@@ -729,7 +723,7 @@ Signature Generation Process:
            | ML-DSA-87 | 2592       | 32          | 4627      |
            +-----------+------------+-------------+-----------+
 
-             Table 1: ML-DSA Key and Signature Sizes in bytes
+                                 Table 1
 
    For all serialization routines below, when these values are required
    to be carried in an ASN.1 structure, they are wrapped as described in
@@ -807,9 +801,6 @@ Signature Generation Process:
 
         output mldsaPK || tradPK
 
-     Figure 4: Composite-ML-DSA.SerializePublicKey(mldsaPK, tradPK) ->
-                                   bytes
-
    Deserialization reverses this process.  Each component key is
    deserialized according to their respective specification as shown in
    Appendix B.
@@ -864,9 +855,6 @@ Signature Generation Process:
 
         output (mldsaPK, tradPK)
 
-       Figure 5: Composite-ML-DSA<OID>.DeserializePublicKey(bytes) ->
-                             (mldsaPK, tradPK)
-
 5.2.  SerializePrivateKey and DeserializePrivateKey
 
    The serialization routine for keys simply concatenates the private
@@ -895,9 +883,6 @@ Signature Generation Process:
      1. Combine and output the encoded private key.
 
         output mldsaSeed || tradSK
-
-     Figure 6: Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK)
-                                  -> bytes
 
    Deserialization reverses this process.  Each component key is
    deserialized according to their respective specification as shown in
@@ -940,9 +925,6 @@ Signature Generation Process:
 
         output (mldsaSeed, tradSK)
 
-         Figure 7: Composite-ML-DSA.DeserializePrivateKey(bytes) ->
-                            (mldsaSeed, tradSK)
-
 5.3.  SerializeSignatureValue and DeserializeSignatureValue
 
    The serialization routine for the composite signature value simply
@@ -971,9 +953,6 @@ Signature Generation Process:
      1. Combine and output the encoded composite signature
 
         output mldsaSig || tradSig
-
-        Figure 8: Composite-ML-DSA.SerializeSignatureValue(mldsaSig,
-                             tradSig) -> bytes
 
    Deserialization reverses this process, raising an error in the event
    that the input is malformed.  Each component signature is
@@ -1028,9 +1007,6 @@ Signature Generation Process:
      3. Output the component signature values
 
         output (mldsaSig, tradSig)
-
-      Figure 9: Composite-ML-DSA<OID>.DeserializeSignatureValue(bytes)
-                           -> (mldsaSig, tradSig)
 
 6.  Use within X.509 and PKIX
 
@@ -1128,7 +1104,7 @@ Signature Generation Process:
             PUBLIC-KEYS {publicKeyType}
          }
 
-      Figure 10: ASN.1 Object Information Classes for Composite ML-DSA
+      Figure 1: ASN.1 Object Information Classes for Composite ML-DSA
 
    As an example, the public key and signature algorithm types
    associated with id-MLDSA44-ECDSA-P256-SHA256 are defined as:
@@ -1166,7 +1142,7 @@ Signature Generation Process:
                            -- algorithm identifier dictates the format of
                            -- the key.
 
-            Figure 11: OneAsymmetricKey as defined in [RFC5958]
+             Figure 2: OneAsymmetricKey as defined in [RFC5958]
 
    When a composite private key is conveyed inside a OneAsymmetricKey
    structure (version 1 of which is also known as PrivateKeyInfo)
@@ -2431,8 +2407,6 @@ Signature Generation Process:
 
    2. Output ph
 
-               Figure 12: Generation of the external pre-hash
-
 Composite-ML-DSA<OID>.Sign_ph(sk, ph, ctx) -> s
 
 Explicit inputs:
@@ -2468,8 +2442,6 @@ Process:
        replace the internally generated PH( M ) from step 2 of
        Composite-ML-DSA<OID>.Sign (sk, M, ctx) with ph which is
        input into this function.
-
-     Figure 13: Suggested implementation of external pre-hashing
 
 12.  References
 
