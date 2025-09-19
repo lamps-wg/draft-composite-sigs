@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 22 March 2026                                           M. Pala
+Expires: 23 March 2026                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       18 September 2025
+                                                       19 September 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 March 2026.
+   This Internet-Draft will expire on 23 March 2026.
 
 Copyright Notice
 
@@ -420,9 +420,9 @@ Table of Contents
    To generate a new key pair for composite schemes, the KeyGen() ->
    (pk, sk) function is used.  The KeyGen() function calls the two key
    generation functions of the component algorithms independently.
-   Multi-process or multi-threaded applications might choose to execute
-   the key generation functions in parallel for better key generation
-   performance.
+   Multi-threaded, multi-process, or multi-module applications might
+   choose to execute the key generation functions in parallel for better
+   key generation performance or architectural modularity.
 
    The following describes how to instantiate a KeyGen() function for a
    given composite algorithm represented by <OID>.
@@ -2697,8 +2697,8 @@ Appendix A.  Maximum Key and Signature Sizes
 
    *  Compressed vs uncompressed EC point.
 
-   *  The RSA public key (n, e) allows e to vary in size between 3 and n
-      - 1 [RFC8017].
+   *  The RSA public key (n, e) RECCOMENDS e = 65537 but allows e to
+      vary in size between 3 and n - 1 [RFC8017].
 
    *  When the underlying RSA or EC value is itself DER-encoded, integer
       values could occasionally be shorter than expected due to leading
@@ -2841,6 +2841,8 @@ Appendix B.  Component Algorithm Reference
          +=============+=========================+===============+
          | id-sha256   | 2.16.840.1.101.3.4.2.1  | [RFC6234]     |
          +-------------+-------------------------+---------------+
+         | id-sha384   | 2.16.840.1.101.3.4.2.2  | [RFC6234]     |
+         +-------------+-------------------------+---------------+
          | id-sha512   | 2.16.840.1.101.3.4.2.3  | [RFC6234]     |
          +-------------+-------------------------+---------------+
          | id-shake256 | 2.16.840.1.101.3.4.2.18 | [FIPS.202]    |
@@ -2973,13 +2975,13 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
        algorithm id-RSASSA-PSS,   -- (1.2.840.113549.1.1.10)
        parameters ANY ::= {
          AlgorithmIdentifier ::= {
-           algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
+           algorithm id-sha384,   -- (2.16.840.1.101.3.4.2.2)
            parameters NULL
            },
          AlgorithmIdentifier ::= {
            algorithm id-mgf1,       -- (1.2.840.113549.1.1.8)
            parameters AlgorithmIdentifier ::= {
-             algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
+             algorithm id-sha384,   -- (2.16.840.1.101.3.4.2.2)
              parameters NULL
              }
            },
@@ -2989,9 +2991,9 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
 
    DER:
      30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0
-     0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00
+     0F 30 0D 06 09 60 86 48 01 65 03 04 02 02 05 00
      A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30
-     0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03
+     0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A2 03
      02 01 40
 
    *RSASSA-PKCS1-v1_5 2048 & 3072*
@@ -3040,7 +3042,7 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
 
    ASN.1:
      signatureAlgorithm AlgorithmIdentifier ::= {
-       algorithm sha512WithRSAEncryption,   -- (1.2.840.113549.1.1.13)
+       algorithm sha384WithRSAEncryption,   -- (1.2.840.113549.1.1.12)
        parameters NULL
        }
 

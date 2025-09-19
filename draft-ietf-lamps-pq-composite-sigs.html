@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 22 March 2026</td>
+<td class="center">Expires 23 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-18" class="published">18 September 2025</time>
+<time datetime="2025-09-19" class="published">19 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-22">22 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-23">23 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1563,7 +1563,7 @@ See <a href="#sec-cons-prefix" class="auto internal xref">Section 10.4</a> for m
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-key-generation" class="section-name selfRef">Key Generation</a>
         </h3>
 <p id="section-4.1-1">In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> for a discussion.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">To generate a new key pair for composite schemes, the <code>KeyGen() -&gt; (pk, sk)</code> function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-process or multi-threaded applications might choose to execute the key generation functions in parallel for better key generation performance.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">To generate a new key pair for composite schemes, the <code>KeyGen() -&gt; (pk, sk)</code> function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-threaded, multi-process, or multi-module applications might choose to execute the key generation functions in parallel for better key generation performance or architectural modularity.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.1-3">The following describes how to instantiate a <code>KeyGen()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
 <span id="name-composite-ml-dsaoidkeygen-p"></span><div id="alg-composite-keygen">
 <figure id="figure-1">
@@ -3937,7 +3937,7 @@ Process:
           <p id="appendix-A-2.1.1">Compressed vs uncompressed EC point.<a href="#appendix-A-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-A-2.2">
-          <p id="appendix-A-2.2.1">The RSA public key <code>(n, e)</code> allows <code>e</code> to vary in size between 3 and <code>n - 1</code> <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
+          <p id="appendix-A-2.2.1">The RSA public key <code>(n, e)</code> RECCOMENDS <code>e = 65537</code> but allows <code>e</code> to vary in size between 3 and <code>n - 1</code> <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-A-2.3">
           <p id="appendix-A-2.3.1">When the underlying RSA or EC value is itself DER-encoded, integer values could occasionally be shorter than expected due to leading zeros being dropped from the encoding.<a href="#appendix-A-2.3.1" class="pilcrow">¶</a></p>
@@ -4266,6 +4266,13 @@ Process:
 </td>
           </tr>
           <tr>
+            <td class="text-left" rowspan="1" colspan="1">id-sha384</td>
+            <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.2</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span>[<a href="#RFC6234" class="cite xref">RFC6234</a>]</span>
+</td>
+          </tr>
+          <tr>
             <td class="text-left" rowspan="1" colspan="1">id-sha512</td>
             <td class="text-left" rowspan="1" colspan="1">2.16.840.1.101.3.4.2.3</td>
             <td class="text-left" rowspan="1" colspan="1">
@@ -4403,13 +4410,13 @@ ASN.1:
     algorithm id-RSASSA-PSS,   -- (1.2.840.113549.1.1.10)
     parameters ANY ::= {
       AlgorithmIdentifier ::= {
-        algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
+        algorithm id-sha384,   -- (2.16.840.1.101.3.4.2.2)
         parameters NULL
         },
       AlgorithmIdentifier ::= {
         algorithm id-mgf1,       -- (1.2.840.113549.1.1.8)
         parameters AlgorithmIdentifier ::= {
-          algorithm id-sha512,   -- (2.16.840.1.101.3.4.2.3)
+          algorithm id-sha384,   -- (2.16.840.1.101.3.4.2.2)
           parameters NULL
           }
         },
@@ -4419,9 +4426,9 @@ ASN.1:
 
 DER:
   30 41 06 09 2A 86 48 86 F7 0D 01 01 0A 30 34 A0
-  0F 30 0D 06 09 60 86 48 01 65 03 04 02 03 05 00
+  0F 30 0D 06 09 60 86 48 01 65 03 04 02 02 05 00
   A1 1C 30 1A 06 09 2A 86 48 86 F7 0D 01 01 08 30
-  0D 06 09 60 86 48 01 65 03 04 02 03 05 00 A2 03
+  0D 06 09 60 86 48 01 65 03 04 02 02 05 00 A2 03
   02 01 40
 </pre><a href="#appendix-C-23" class="pilcrow">¶</a>
 </div>
@@ -4472,7 +4479,7 @@ DER:
 <pre>
 ASN.1:
   signatureAlgorithm AlgorithmIdentifier ::= {
-    algorithm sha512WithRSAEncryption,   -- (1.2.840.113549.1.1.13)
+    algorithm sha384WithRSAEncryption,   -- (1.2.840.113549.1.1.12)
     parameters NULL
     }
 
