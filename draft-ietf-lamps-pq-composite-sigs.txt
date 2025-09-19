@@ -196,7 +196,8 @@ Table of Contents
    RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
    the sense of upgraded systems continuing to inter-operate with legacy
    systems is not directly covered in this specification, but is the
-   subject of Section 11.2.
+   subject of Section 11.2.  The idea of a composite was first presented
+   in [Bindel2017].
 
    Composite ML-DSA is applicable in any PKIX-related application that
    would otherwise use ML-DSA.
