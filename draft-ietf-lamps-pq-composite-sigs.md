@@ -214,7 +214,7 @@ Interop-affecting changes:
 
 Editorial changes:
 
-<none>
+None
 
 # Introduction {#sec-intro}
 
@@ -347,8 +347,8 @@ Prefix:
 : A fixed octet string which is the byte encoding of the ASCII string "CompositeAlgorithmSignatures2025" which in hex is: 436F6D706F73697465416C676F726974686D5369676E61747572657332303235
 See {{sec-cons-prefix}} for more information on the prefix.
 
-Domain:
-: A signature label which is the DER encoding of the OID of the specific composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in {{alg-parms}}.
+Label:
+: A signature label which is the DER encoding of the OID of the specific composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in {{sec-alg-parms}}.
 
 len(ctx):
 : A single unsigned byte encoding the length of the context.
@@ -358,6 +358,8 @@ ctx:
 
 PH( M ):
 : The hash of the message to be signed.
+
+Each Composite ML-DSA algorithm has a unique signature label value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
 
 Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive.
 
@@ -433,7 +435,7 @@ The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.S
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
-The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-domsep-and-ctx}} for a discussion on the signature label `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+The following describes how to instantiate a `Sign()` function for a given Composite ML-DSA algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-label-and-ctx}} for a discussion on the signature label `Label` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 ~~~
 Composite-ML-DSA<OID>.Sign(sk, M, ctx) -> s
@@ -521,7 +523,7 @@ Internally it uses pure ML-DSA as the component algorithm since there is no adva
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
-The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-domsep-and-ctx}} for a discussion on the signature label `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-label-and-ctx}} for a discussion on the signature label `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 
 ~~~
@@ -984,14 +986,14 @@ Use cases that require an interoperable encoding for composite private keys will
 ~~~
 {: artwork-name="RFC5958-OneAsymmetricKey-asn.1-structure" title="OneAsymmetricKey as defined in [RFC5958]"}
 
-When a composite private key is conveyed inside a `OneAsymmetricKey` structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the `privateKeyAlgorithm` field SHALL be set to the corresponding composite algorithm identifier defined according to {{alg-parms}} and its parameters field MUST be absent.  The `privateKey` field SHALL contain the OCTET STRING representation of the serialized composite private key as per {{sec-serialize-privkey}}. The `publicKey` field remains OPTIONAL. If the `publicKey` field is present, it MUST be a composite public key as per {{sec-serialize-pubkey}}.
+When a composite private key is conveyed inside a `OneAsymmetricKey` structure (version 1 of which is also known as PrivateKeyInfo) [RFC5958], the `privateKeyAlgorithm` field SHALL be set to the corresponding composite algorithm identifier defined according to {{sec-alg-parms}} and its parameters field MUST be absent.  The `privateKey` field SHALL contain the OCTET STRING representation of the serialized composite private key as per {{sec-serialize-privkey}}. The `publicKey` field remains OPTIONAL. If the `publicKey` field is present, it MUST be a composite public key as per {{sec-serialize-pubkey}}.
 
-Some applications might need to reconstruct the `SubjectPublicKeyInfo` or `OneAsymmetricKey` objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. {{alg-parms}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
+Some applications might need to reconstruct the `SubjectPublicKeyInfo` or `OneAsymmetricKey` objects corresponding to each component key individually, for example if this is required for invoking the underlying primitive. {{sec-alg-parms}} provides the necessary mapping between composite and their component algorithms for doing this reconstruction.
 
 Component keys of a composite MUST NOT be used in any other type of key or as a standalone key.  For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 
-# Algorithm Identifiers and Parameters {#alg-parms}
+# Algorithm Identifiers and Parameters {#sec-alg-parms}
 
 This section lists the algorithm identifiers and parameters for all Composite ML-DSA algorithms.
 
@@ -1040,13 +1042,6 @@ When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instant
 {: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 
-## signature label Values {#sec-domsep-values}
-
-Each Composite ML-DSA algorithm has a unique signature label value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
-
-The signature label is simply the DER encoding of the OID. The signature label for each composite ML-DSA algorithm is listed in HEX-encoded format in {{alg-parms}}.
-
-
 ## Rationale for choices {#sec-rationale}
 
 In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.
@@ -1085,7 +1080,7 @@ IANA is requested to assign an object identifier (OID) for the module identifier
 IANA is also requested to allocate values from the "SMI Security for PKIX Algorithms" registry (1.3.6.1.5.5.7.6) to identify the eighteen algorithms defined within.
 
 ##  Object Identifier Allocations
-EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{alg-parms}}.
+EDNOTE to IANA: OIDs will need to be replaced in both the ASN.1 module and in {{sec-alg-parms}}.
 
 ###  Module Registration
 
@@ -1826,7 +1821,7 @@ The input message for this example is the hex string "00 01 02 03 04 05 06 07 08
 Each input component is shown. Note that values are shown hex-encoded for display purposes only, they are actually raw binary values.
 
 * `Prefix` is the fixed constant defined in {{sec-label-and-ctx}}.
-* `Label` is the specific signature label for this composite algorithm, as defined in {{sec-label-values}}.
+* `Label` is the specific signature label for this composite algorithm, as defined in {{sec-alg-parms}}.
 * `len(ctx)` is the length of the Message context String which is 00 when no context is used.
 * `ctx` is the Message context string used in the composite signature combiner.  It is empty in this example.
 * `PH(M)` is the output of hashing the message `M`.
