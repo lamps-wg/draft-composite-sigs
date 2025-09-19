@@ -483,11 +483,6 @@ Table of Contents
    For more details on the security considerations around key reuse, see
    Section 10.3.
 
-   Note that in step 2 above, both component key generation processes
-   are invoked, and no indication is given about which one failed.  This
-   SHOULD be done in a timing-invariant way to prevent side-channel
-   attackers from learning which component algorithm failed.
-
    Note that this keygen routine outputs a serialized composite key,
    which contains only the ML-DSA seed.  Implementations should feel
    free to modify this routine to additionally output the expanded
