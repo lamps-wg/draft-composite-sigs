@@ -1381,7 +1381,7 @@ Non-hybrid ML-DSA is included for reference.
      This is mainly to save resources and build time on the github commits. -->
 
 {::include src/sizeTable.md}
-{: #tab-size-values title="Maximume size values of composite ML-DSA"}
+{: #tab-size-values title="Maximum size values of composite ML-DSA"}
 
 
 
@@ -1884,7 +1884,7 @@ This document incorporates contributions and comments from a large group of expe
 
 
 Serge Mister (Entrust),
-Felipe Ventura (Entrust),
+Felipe Vent (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
 Dr. Britta Hale (Naval Postgraduade School),
