@@ -1524,8 +1524,6 @@ DER:
 
 **RSASSA-PSS 4096**
 
-EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
-
 AlgorithmIdentifier of Public Key
 
 ~~~
@@ -1598,8 +1596,6 @@ DER:
 
 **RSASSA-PKCS1-v1_5 4096**
 
-EDNOTE: The previous version was inconsistent about whether RSASSA-PSS 4096 should use SHA-384 or SHA-512. The PR uses SHA-384 because it's more consistent with the key size.  If that is kept, the AlgorithmIdentifier below needs to change.
-
 AlgorithmIdentifier of Public Key
 
 ~~~
@@ -1623,7 +1619,7 @@ ASN.1:
     }
 
 DER:
-  30 0D 06 09 2A 86 48 86 F7 0D 01 01 0D 05 00
+  30 0D 06 09 2A 86 48 86 F7 0D 01 01 0C 05 00
 ~~~
 
 **ECDSA NIST P256**
