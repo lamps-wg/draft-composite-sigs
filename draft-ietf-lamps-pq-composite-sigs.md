@@ -197,7 +197,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
 
 <!-- End of Abstract -->
 
@@ -227,7 +227,7 @@ Cautious implementers may opt to combine cryptographic algorithms in such a way 
 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
-This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
+This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
 
 Composite ML-DSA is applicable in any PKIX-related application that would otherwise use ML-DSA.
 
@@ -264,7 +264,7 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
             about which algorithm.
 
 
-Notation:
+**Notation**:
 The algorithm descriptions use python-like syntax. The following symbols deserve special mention:
 
  * `||` represents concatenation of two byte arrays.
@@ -337,7 +337,7 @@ See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing 
 
 ## Prefix, Label and CTX {#sec-label-and-ctx}
 
-The to-be-signed message representative `M'` is created by concatenating several values, including the pre-hash.
+The to-be-signed message representative `M'` is created by concatenating several values, including the pre-hashed message.
 
 ~~~
 M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
@@ -348,7 +348,7 @@ Prefix:
 See {{sec-cons-prefix}} for more information on the prefix.
 
 Label:
-: A signature label which is the DER encoding of the OID of the specific composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in {{sec-alg-parms}}.
+: A signature label which is specific to each composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in {{sec-alg-parms}}.
 
 len(ctx):
 : A single unsigned byte encoding the length of the context.
@@ -361,7 +361,7 @@ PH( M ):
 
 Each Composite ML-DSA algorithm has a unique signature label value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context.
 
-Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive.
+Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. The EdDSA component primitive can also expose a `ctx` parameter, but this is not used by Composite ML-DSA.
 
 
 # Composite ML-DSA Functions {#sec-sigs}
@@ -422,6 +422,8 @@ In order to ensure fresh keys, the key generation functions MUST be executed for
 
 Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to additionally output the expanded `mldsaSK` or to make free use of `ML-DSA.KeyGen(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
 
+The above algorithm MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` if it is desirable to have a deterministic KeyGen that derives both component keys from a shared seed. Details of implementing this variation are not included in this document.
+
 Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
 For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a `ML-DSA.KeyGen(seed)` that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in {{sec-serialize-privkey}} only support ML-DSA keys as seeds.
 
@@ -458,9 +460,9 @@ Implicit inputs mapped from <OID>:
 
   Prefix  The prefix octet string.
 
-  Label   Signature label value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite label
-          is passed into the underlying ML-DSA primitive as the ctx.
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
           Signature Label values are defined in the "Signature Label Values"
           section below.
 
@@ -549,10 +551,10 @@ Implicit inputs mapped from <OID>:
 
   Prefix  The prefix octet string.
 
-  Label   Signature Label value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite label
-          is passed into the underlying ML-DSA primitive as the ctx.
-          Label values are defined in the "Signature Label Values"
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
+          Signature Label values are defined in the "Signature Label Values"
           section below.
 
   PH      The function used to pre-hash M.
@@ -612,8 +614,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 | ML-DSA-44 |     1312    |      32     |    2420   |
 | ML-DSA-65 |     1952    |      32     |    3309   |
 | ML-DSA-87 |     2592    |      32     |    4627   |
-
-For all serialization routines below, when these values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
+{: #tab-mldsa-sizes title="ML-DSA Sizes"}
 
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, a stand-alone RSA private key can be encoded in Chinese Remainder Theorem form. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
@@ -622,9 +623,9 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 * **ECDSA**: public key MUST be encoded as an uncompressed `ECPoint` as specified in section 2.2 of [RFC5480]. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] without 'NamedCurve' parameter and without 'publicKey' field.
 * **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
 
-All ASN.1 objects SHALL be encoded using DER on serialization.
+All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
-Even with fixed encodings for the traditional component, there may be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for further discussion of encoded size of each composite algorithm.
+Even with fixed encodings for the traditional component, there might be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for a table of maximum sizes for each composite algorithm and further discussion of the reason for variations in these sizes.
 
 The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.
 
@@ -995,6 +996,8 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 As the number of algorithms can be daunting to implementers, see {{sec-impl-profile}} for a discussion of choosing a subset to support.
 
+Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings using the obvious ASCII conversions prior to concatenating them with other byte values as described in {{sec-label-and-ctx}}.
+
 EDNOTE: the OIDs listed below are prototyping OIDs defined in Entrust's 2.16.840.1.114027.80.9.1 arc but will be replaced by IANA.
 
 <!-- Note to authors, this is not auto-generated on build;
@@ -1004,7 +1007,7 @@ EDNOTE: the OIDs listed below are prototyping OIDs defined in Entrust's 2.16.840
 
 {::include src/algParams.md}
 
-For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Implementations MAY support only 65537 and reject other exponent values. Legacy RSA implementations that use other values for the exponent MAY be used to within a composite, but need to be careful when interoperating with other implementations.
+For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Implementations MAY support only 65537 and reject other exponent values. Legacy RSA implementations that use other values for the exponent MAY be used within a composite, but need to be careful when interoperating with other implementations.
 
 **Note: The pre-hash functions were chosen to roughly match the security level of the stronger component. In the case of Ed25519 and Ed448 they match the hash function defined in [RFC8032]; SHA512 for Ed25519ph and SHAKE256(x, 64), which is SHAKE256 producing 64 bytes (512 bits) of output, for Ed448ph.
 
@@ -1013,7 +1016,7 @@ For all RSA key types and sizes, the exponent is RECOMMENDED to be 65537. Implem
 
 Use of RSASSA-PSS [RFC8017] requires extra parameters to be specified.
 
-The RSASSA-PSS-params ASN.1 type defined in [RFC8017] is not used in Composite ML-DSA encodings, however its fields are referred to below to provide a mapping between the use of RSASSA-PSS in Composite ML-DSA and [RFC8017]
+The RSASSA-PSS-params ASN.1 type defined in [RFC8017] is not used in Composite ML-DSA encodings since the parameter values are fixed by this specification. However, below refer to the named fields of the RSASSA-PSS-params ASN.1 type in order to provide a mapping between the use of RSASSA-PSS in Composite ML-DSA and [RFC8017]
 
 When RSA-PSS is used at the 2048-bit or 3072-bit security level, RSASSA-PSS SHALL be instantiated with the following parameters:
 
@@ -1190,9 +1193,9 @@ The following are to be registered in "SMI Security for PKIX Algorithms":
 
 In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.
 
-Dual-algorithm security. The general idea is that the data is protected by two algorithms such that an attacker would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. {{sec-cons-non-separability}} goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an attacker can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value.
+**Dual-algorithm security**. The general idea is that the data is protected by two algorithms such that an attacker would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. {{sec-cons-non-separability}} goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an attacker can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value, and also in the fact that the composite public key could be trusted by the verifier while the component keys in isolation are not, thus requiring the attacker to forge a whole composite signature.
 
-Migration flexibility. Some PQ/T hybrids exist to provide a sort of "OR" mode where the application can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded applications to co-exist and communicate. The composites presented in this specification do not provide this since they operate in a strict "AND" mode. They do, however, provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC; composites allow them to add an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still an experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
+**Migration flexibility**. Some PQ/T hybrids exist to provide a sort of "OR" mode where the application can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded applications to co-exist and communicate. The composites presented in this specification do not provide this since they operate in a strict "AND" mode. They do, however, provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC; composites allow them to add an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still an experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
 
 
 ## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
@@ -1340,10 +1343,11 @@ Implicit inputs mapped from <OID>:
 
   Prefix  The prefix octet string.
 
-  Label     Signature label value for binding the signature to the
-            Composite OID. Additionally, the composite signature label is passed into
-            the underlying ML-DSA primitive as the ctx.
-            Label values are defined in the "Signature Label Values" section below.
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
+          Signature Label values are defined in the "Signature Label Values"
+          section below.
 
 Process:
 
@@ -1369,9 +1373,7 @@ The sizes listed below are maximas. Several factors could cause fluctuations in 
 * The RSA public key `(n, e)` allows `e` to vary is size between 3 and `n - 1` [RFC8017]. Note that the size table below assumes the recommended value of `e = 65537`, so for RSA combinations it is in fact not a true maximum.
 * When the underlying RSA or EC value is itself DER-encoded, integer values could occasionally be shorter than expected due to leading zeros being dropped from the encoding.
 
-By contrast, ML-DSA values are always fixed size, so composite values can always be correctly de-serialized based on the size of the ML-DSA component. It is expected for the size values of RSA and ECDSA variants to fluctuate by a few bytes even between subsequent runs of the same composite implementation.
-
-Size values marked with an asterisk (\*) in the table are not fixed but maximum possible values for the composite key or ciphertext. Implementations MUST NOT perform strict length checking based on such values.
+Size values marked with an asterisk (\*) in the table are not fixed but maximum possible values for the composite key or ciphertext. Implementations should be careful when performing length checking based on such values.
 
 Non-hybrid ML-DSA is included for reference.
 
