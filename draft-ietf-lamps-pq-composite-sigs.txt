@@ -20,7 +20,7 @@ Expires: 24 March 2026                                           M. Pala
 Abstract
 
    This document defines combinations of ML-DSA [FIPS.204] in hybrid
-   with traditional algorithms RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA,
+   with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA,
    Ed25519, and Ed448.  These combinations are tailored to meet security
    best practices and regulatory guidelines.  Composite ML-DSA is
    applicable in any application that uses X.509 or PKIX data structures
@@ -192,7 +192,7 @@ Table of Contents
    Composite algorithms address algorithm strength uncertainty because
    the composite algorithm remains strong so long as one of its
    components remains strong.  Concrete instantiations of composite ML-
-   DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1_5,
+   DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5,
    RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
    the sense of upgraded systems continuing to inter-operate with legacy
    systems is not directly covered in this specification, but is the
@@ -236,7 +236,7 @@ Table of Contents
    *SIGNATURE*: A digital cryptographic signature, making no assumptions
    about which algorithm.
 
-   Notation: The algorithm descriptions use python-like syntax.  The
+   *Notation*: The algorithm descriptions use python-like syntax.  The
    following symbols deserve special mention:
 
    *  || represents concatenation of two byte arrays.
@@ -378,7 +378,7 @@ Table of Contents
 3.2.  Prefix, Label and CTX
 
    The to-be-signed message representative M' is created by
-   concatenating several values, including the pre-hash.
+   concatenating several values, including the pre-hashed message.
 
    M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 
@@ -387,10 +387,10 @@ Table of Contents
       436F6D706F73697465416C676F726974686D5369676E61747572657332303235
       See Section 10.4 for more information on the prefix.
 
-   Label:  A signature label which is the DER encoding of the OID of the
-      specific composite algorithm.  The signature label binds the
-      signature to the specific composite algorithm.  signature label
-      values for each algorithm are listed in Section 7.
+   Label:  A signature label which is specific to each composite
+      algorithm.  The signature label binds the signature to the
+      specific composite algorithm.  signature label values for each
+      algorithm are listed in Section 7.
 
    len(ctx):  A single unsigned byte encoding the length of the context.
 
@@ -411,7 +411,8 @@ Table of Contents
    ctx that is passed down into the underlying ML-DSA.Sign and here
    Composite ML-DSA itself is the application that we wish to bind and
    so per-algorithm Label is used as the ctx for the underlying ML-DSA
-   primitive.
+   primitive.  The EdDSA component primitive can also expose a ctx
+   parameter, but this is not used by Composite ML-DSA.
 
 4.  Composite ML-DSA Functions
 
@@ -489,6 +490,12 @@ Table of Contents
    expand the ML-DSA seed into an expanded key prior to performing a
    signing operation.
 
+   The above algorithm MAY be modified to expose an interface of
+   Composite-ML-DSA<OID>.KeyGen(seed) if it is desirable to have a
+   deterministic KeyGen that derives both component keys from a shared
+   seed.  Details of implementing this variation are not included in
+   this document.
+
    Variations in the keygen process above and signature processes below
    to accommodate particular private key storage mechanisms or alternate
    interfaces to the underlying cryptographic modules are considered to
@@ -544,9 +551,9 @@ Implicit inputs mapped from <OID>:
 
   Prefix  The prefix octet string.
 
-  Label   Signature label value for binding the signature to the
-          Composite ML-DSA OID. Additionally, the composite label
-          is passed into the underlying ML-DSA primitive as the ctx.
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
           Signature Label values are defined in the "Signature Label Values"
           section below.
 
@@ -623,78 +630,78 @@ Signature Generation Process:
    See Section 11.4 for a discussion of externalizing the pre-hashing
    step.
 
-   Composite-ML-DSA<OID>.Verify(pk, M, s, ctx) -> true or false
+Composite-ML-DSA<OID>.Verify(pk, M, s, ctx) -> true or false
 
-   Explicit inputs:
+Explicit inputs:
 
-     pk      Composite public key consisting of verification public
-             keys for each component.
+  pk      Composite public key consisting of verification public
+          keys for each component.
 
-     M       Message whose signature is to be verified, an octet
-             string.
+  M       Message whose signature is to be verified, an octet
+          string.
 
-     s       A composite signature value to be verified.
+  s       A composite signature value to be verified.
 
-     ctx     The application context string used in the composite
-             signature combiner, which defaults to the empty string.
+  ctx     The application context string used in the composite
+          signature combiner, which defaults to the empty string.
 
-   Implicit inputs mapped from <OID>:
+Implicit inputs mapped from <OID>:
 
-     ML-DSA  The underlying ML-DSA algorithm and parameter set, for
-             example "ML-DSA-65".
+  ML-DSA  The underlying ML-DSA algorithm and parameter set, for
+          example "ML-DSA-65".
 
-     Trad    The underlying traditional algorithm and
-             parameter set, for example "sha256WithRSAEncryption"
-             or "Ed25519".
+  Trad    The underlying traditional algorithm and
+          parameter set, for example "sha256WithRSAEncryption"
+          or "Ed25519".
 
-     Prefix  The prefix octet string.
+  Prefix  The prefix octet string.
 
-     Label   Signature Label value for binding the signature to the
-             Composite ML-DSA OID. Additionally, the composite label
-             is passed into the underlying ML-DSA primitive as the ctx.
-             Label values are defined in the "Signature Label Values"
-             section below.
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
+          Signature Label values are defined in the "Signature Label Values"
+          section below.
 
-     PH      The function used to pre-hash M.
+  PH      The function used to pre-hash M.
 
-   Output:
+Output:
 
-     Validity (bool)   "Valid signature" (true) if the composite
-                       signature is valid, "Invalid signature"
-                       (false) otherwise.
+  Validity (bool)   "Valid signature" (true) if the composite
+                    signature is valid, "Invalid signature"
+                    (false) otherwise.
 
-   Signature Verification Process:
+Signature Verification Process:
 
-     1. If len(ctx) > 255
-          return error
+  1. If len(ctx) > 255
+       return error
 
-     2. Separate the keys and signatures
+  2. Separate the keys and signatures
 
-        (mldsaPK, tradPK)       = DeserializePublicKey(pk)
-        (mldsaSig, tradSig)  = DeserializeSignatureValue(s)
+     (mldsaPK, tradPK)       = DeserializePublicKey(pk)
+     (mldsaSig, tradSig)  = DeserializeSignatureValue(s)
 
-      If Error during deserialization, or if any of the component
-      keys or signature values are not of the correct type or
-      length for the given component algorithm then output
-      "Invalid signature" and stop.
+   If Error during deserialization, or if any of the component
+   keys or signature values are not of the correct type or
+   length for the given component algorithm then output
+   "Invalid signature" and stop.
 
-     3. Compute a Hash of the Message.
-        As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
+  3. Compute a Hash of the Message.
+     As in FIPS 204, len(ctx) is encoded as a single unsigned byte.
 
-         M' = Prefix || Label || len(ctx) || ctx || PH( M )
+      M' = Prefix || Label || len(ctx) || ctx || PH( M )
 
-     4. Check each component signature individually, according to its
-        algorithm specification.
-        If any fail, then the entire signature validation fails.
+  4. Check each component signature individually, according to its
+     algorithm specification.
+     If any fail, then the entire signature validation fails.
 
-         if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Label ) then
-             output "Invalid signature"
+      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Label ) then
+          output "Invalid signature"
 
-         if not Trad.Verify( tradPK, M', tradSig ) then
-             output "Invalid signature"
+      if not Trad.Verify( tradPK, M', tradSig ) then
+          output "Invalid signature"
 
-         if all succeeded, then
-            output "Valid signature"
+      if all succeeded, then
+         output "Valid signature"
 
    Note that in step 4 above, the function fails early if the first
    component fails to verify.  Since no private keys are involved in a
@@ -724,11 +731,7 @@ Signature Generation Process:
            | ML-DSA-87 | 2592       | 32          | 4627      |
            +-----------+------------+-------------+-----------+
 
-                                 Table 1
-
-   For all serialization routines below, when these values are required
-   to be carried in an ASN.1 structure, they are wrapped as described in
-   Section 6.1.
+                          Table 1: ML-DSA Sizes
 
    While ML-DSA has a single fixed-size representation for each of
    public key, private key (seed), and signature, a traditional
@@ -762,12 +765,16 @@ Signature Generation Process:
       of [RFC8032] and the private key as CurvePrivateKey specified in
       [RFC8410].
 
-   All ASN.1 objects SHALL be encoded using DER on serialization.
+   All ASN.1 objects SHALL be encoded using DER on serialization.  For
+   all serialization routines below, when their output values are
+   required to be carried in an ASN.1 structure, they are wrapped as
+   described in Section 6.1.
 
-   Even with fixed encodings for the traditional component, there may be
-   slight differences in size of the encoded value due to, for example,
-   encoding rules that drop leading zeroes.  See Appendix A for further
-   discussion of encoded size of each composite algorithm.
+   Even with fixed encodings for the traditional component, there might
+   be slight differences in size of the encoded value due to, for
+   example, encoding rules that drop leading zeroes.  See Appendix A for
+   a table of maximum sizes for each composite algorithm and further
+   discussion of the reason for variations in these sizes.
 
    The deserialization routines described below do not check for well-
    formedness of the cryptographic material they are recovering.  It is
@@ -1177,6 +1184,11 @@ Signature Generation Process:
    As the number of algorithms can be daunting to implementers, see
    Section 11.3 for a discussion of choosing a subset to support.
 
+   Labels are represented here as ASCII strings, but implementers MUST
+   convert them to byte strings using the obvious ASCII conversions
+   prior to concatenating them with other byte values as described in
+   Section 3.2.
+
    EDNOTE: the OIDs listed below are prototyping OIDs defined in
    Entrust's 2.16.840.1.114027.80.9.1 arc but will be replaced by IANA.
 
@@ -1475,7 +1487,7 @@ Signature Generation Process:
    For all RSA key types and sizes, the exponent is RECOMMENDED to be
    65537.  Implementations MAY support only 65537 and reject other
    exponent values.  Legacy RSA implementations that use other values
-   for the exponent MAY be used to within a composite, but need to be
+   for the exponent MAY be used within a composite, but need to be
    careful when interoperating with other implementations.
 
    **Note: The pre-hash functions were chosen to roughly match the
@@ -1490,9 +1502,10 @@ Signature Generation Process:
    specified.
 
    The RSASSA-PSS-params ASN.1 type defined in [RFC8017] is not used in
-   Composite ML-DSA encodings, however its fields are referred to below
-   to provide a mapping between the use of RSASSA-PSS in Composite ML-
-   DSA and [RFC8017]
+   Composite ML-DSA encodings since the parameter values are fixed by
+   this specification.  However, below refer to the named fields of the
+   RSASSA-PSS-params ASN.1 type in order to provide a mapping between
+   the use of RSASSA-PSS in Composite ML-DSA and [RFC8017]
 
    When RSA-PSS is used at the 2048-bit or 3072-bit security level,
    RSASSA-PSS SHALL be instantiated with the following parameters:
@@ -2082,7 +2095,7 @@ Signature Generation Process:
    algorithm security or to provide migration flexibility.  Let's
    quickly explore both.
 
-   Dual-algorithm security.  The general idea is that the data is
+   *Dual-algorithm security*. The general idea is that the data is
    protected by two algorithms such that an attacker would need to break
    both in order to compromise the data.  As with most of cryptography,
    this property is easy to state in general terms, but becomes more
@@ -2095,9 +2108,12 @@ Signature Generation Process:
    themselves, and instead in policy; once an algorithm is known to be
    broken it ought to be disallowed for single-algorithm use by
    cryptographic policy, while hybrids involving that algorithm may
-   continue to be used and to provide value.
+   continue to be used and to provide value, and also in the fact that
+   the composite public key could be trusted by the verifier while the
+   component keys in isolation are not, thus requiring the attacker to
+   forge a whole composite signature.
 
-   Migration flexibility.  Some PQ/T hybrids exist to provide a sort of
+   *Migration flexibility*. Some PQ/T hybrids exist to provide a sort of
    "OR" mode where the application can choose to use one algorithm or
    the other or both.  The intention is that the PQ/T hybrid mechanism
    builds in backwards compatibility to allow legacy and upgraded
@@ -2432,10 +2448,11 @@ Implicit inputs mapped from <OID>:
 
   Prefix  The prefix octet string.
 
-  Label     Signature label value for binding the signature to the
-            Composite OID. Additionally, the composite signature label is passed into
-            the underlying ML-DSA primitive as the ctx.
-            Label values are defined in the "Signature Label Values" section below.
+  Label   A signature label which is specific to each composite
+          algorithm. Additionally, the composite label is passed
+          into the underlying ML-DSA primitive as the ctx.
+          Signature Label values are defined in the "Signature Label Values"
+          section below.
 
 Process:
 
@@ -2688,16 +2705,10 @@ Appendix A.  Maximum Key and Signature Sizes
       values could occasionally be shorter than expected due to leading
       zeros being dropped from the encoding.
 
-   By contrast, ML-DSA values are always fixed size, so composite values
-   can always be correctly de-serialized based on the size of the ML-DSA
-   component.  It is expected for the size values of RSA and ECDSA
-   variants to fluctuate by a few bytes even between subsequent runs of
-   the same composite implementation.
-
    Size values marked with an asterisk (*) in the table are not fixed
    but maximum possible values for the composite key or ciphertext.
-   Implementations MUST NOT perform strict length checking based on such
-   values.
+   Implementations should be careful when performing length checking
+   based on such values.
 
    Non-hybrid ML-DSA is included for reference.
 
