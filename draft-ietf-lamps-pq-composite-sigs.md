@@ -213,7 +213,9 @@ Interop-affecting changes:
 * Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
 * Updated to new prototype OIDs since it is not binary compatible with the previous release.
 
+
 Editorial changes:
+
 * Incorporated the feedback from IETF 123, clarifying the pubic, private key and signature encodings.
 * Many minor editorial fixes based on comments from the working group.
 
