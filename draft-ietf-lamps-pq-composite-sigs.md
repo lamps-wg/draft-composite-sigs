@@ -209,12 +209,14 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 Interop-affecting changes:
 
 * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
-* Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!)
+* Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).
 * Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
+* Updated to new prototype OIDs since it is not binary compatible with the previous release.
 
 Editorial changes:
+* Incorporated the feedback from IETF 123, clarifying the pubic, private key and signature encodings.
+* Many minor editorial fixes based on comments from the working group.
 
-None
 
 # Introduction {#sec-intro}
 
