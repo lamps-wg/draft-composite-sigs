@@ -1890,7 +1890,7 @@ This document incorporates contributions and comments from a large group of expe
 
 
 Serge Mister (Entrust),
-Felipe Vent (Entrust),
+Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
 Dr. Britta Hale (Naval Postgraduade School),
