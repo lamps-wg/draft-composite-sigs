@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 24 March 2026                                           M. Pala
+Expires: 25 March 2026                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       20 September 2025
+                                                       21 September 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 March 2026.
+   This Internet-Draft will expire on 25 March 2026.
 
 Copyright Notice
 
@@ -139,14 +139,17 @@ Table of Contents
       decoders from the ASN.1 and ended up with a non-intended encoding.
 
    *  Aligned the hash function used for the RSA component to the RSA
-      key size (Thanks Dan!)
+      key size (Thanks Dan!).
 
    *  Changed the OID-based Domain Separators into HPKE-style signature
       label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
 
-   Editorial changes:
+   *  Updated to new prototype OIDs since it is not binary compatible
+      with the previous release.
 
-   None
+   Editorial changes: * Incorporated the feedback from IETF 123,
+   clarifying the pubic, private key and signature encodings. * Many
+   minor editorial fixes based on comments from the working group.
 
 2.  Introduction
 
