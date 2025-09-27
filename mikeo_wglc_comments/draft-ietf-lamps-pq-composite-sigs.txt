@@ -2231,7 +2231,7 @@ Signature Verification Process:
    "CompositeAlgorithmSignatures2025" was introduced specifically for
    this reason; an implementation can wrap the standalone component
    implementations such that they check for and will refuse to sign a
-   message that begins wit hthe composite prefix bytes, thus closing the
+   message that begins with the composite prefix bytes, thus closing the
    EUF-CMA issue.  In the second case, the message M' (containing the
    composite signature label) can be presented as having been signed by
    a standalone component algorithm.  However, use of the context string
