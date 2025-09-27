@@ -2219,15 +2219,20 @@ Signature Verification Process:
    component verification oracle(s) of either ML-DSA.Verify() or
    Trad.Verify().  In the first case, an attacker with access to signing
    oracles for the two component algorithms can sign M' and then
-   trivially assemble a composite.  In the second case, the message M'
-   (containing the composite signature label) can be presented as having
-   been signed by a standalone component algorithm.  However, use of the
-   context string for domain separation enables Weak Non-Separability
-   and auditable checks on hybrid use, which is deemed a reasonable
-   trade-off.  Moreover and very importantly, the cross-protocol EUF-CMA
-   attack in either direction is foiled if implementers strictly follow
-   the prohibition on key reuse presented in Section 10.3 since there
-   cannot exist simultaneously composite and non-composite signers and
+   trivially assemble a composite.  Note that the static prefix
+   "CompositeAlgorithmSignatures2025" was introduced specifically for
+   this reason; an implementation can wrap the standalone component
+   implementations such that they check for and will refuse to sign a
+   message that begins wit hthe composite prefix bytes, thus closing the
+   EUF-CMA issue.  In the second case, the message M' (containing the
+   composite signature label) can be presented as having been signed by
+   a standalone component algorithm.  However, use of the context string
+   for domain separation enables Weak Non-Separability and auditable
+   checks on hybrid use, which is deemed a reasonable trade-off.
+   Moreover and very importantly, the cross-protocol EUF-CMA attack in
+   either direction is foiled if implementers strictly follow the
+   prohibition on key reuse presented in Section 10.3 since there cannot
+   exist simultaneously composite and non-composite signers and
    verifiers for the same keys.
 
 10.3.  Key Reuse
