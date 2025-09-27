@@ -2162,12 +2162,20 @@ Signature Verification Process:
    The signature combiner defined in this specification is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
-   M' will include the composite signature label as evidence.  The
-   prohibition on key reuse between composite and single-algorithm
+   M' will include the composite signature label as evidence.  In many
+   protocol contexts, M' will fail to parse as a valid protocol message.
+   The prohibition on key reuse between composite and single-algorithm
    contexts discussed in Section 10.3 further strengthens the non-
    separability in practice, but does not achieve Strong Non-
    Separability (SNS) since policy mechanisms such as this are outside
-   the definition of SNS.
+   the definition of SNS.  Additionally, when composite signatures may
+   achieve Strong Non-Separability conditionally when used with within
+   protocols that add additional signature checking.  For example, both
+   X.509 and CRL [RFC5280] embed the algorithm identifier OID within the
+   signed message, and thus a well designed X.509 / CRL verifier will
+   fail the signature validation if it is presented as a standalone
+   component signature but the inner OID indicates a composite, which is
+   sufficient to satisfy the definition of Strong Non-Separability.
 
    Unforgeability properties are somewhat more nuanced.  We recall first
    the definitions of Existential Unforgeability under Chosen Message
@@ -2234,6 +2242,14 @@ Signature Verification Process:
    prohibition on key reuse presented in Section 10.3 since there cannot
    exist simultaneously composite and non-composite signers and
    verifiers for the same keys.
+
+   Additionally, within some protocol contexts, SUF security may be
+   restored by properties of the protocol; for example within X.509
+   certificates [RFC5280], every signature produced by a CA will
+   necessarily include a unique serial number, so the CA will never
+   produce two different signatures over the same data, so the SUF
+   property can be considered to be satisfied under realistic
+   conditions.
 
 10.3.  Key Reuse
 
