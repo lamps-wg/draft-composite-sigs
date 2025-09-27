@@ -2421,6 +2421,11 @@ Signature Verification Process:
 
    id-MLDSA87-ECDSA-P384-SHA512
 
+   In applications that require the signature primitive to provide SUF-
+   CMA, it is RECOMMENDED to focus implementation effort on:
+
+   id-MLDSA65-Ed25519-SHA512
+
 11.4.  External Pre-hashing
 
    Implementers MAY externalize the pre-hash computation outside the
