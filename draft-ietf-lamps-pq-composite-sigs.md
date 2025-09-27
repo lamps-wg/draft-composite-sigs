@@ -1297,6 +1297,11 @@ In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus imp
     id-MLDSA87-ECDSA-P384-SHA512
 
 
+In applications that require the signature primitive to provide SUF-CMA, it is RECOMMENDED to focus implementation effort on:
+
+    id-MLDSA65-Ed25519-SHA512
+
+
 ## External Pre-hashing {#impl-cons-external-ph}
 
 Implementers MAY externalize the pre-hash computation outside the module that computes `Composite-ML-DSA.Sign()` in an analogous way to how pre-hash signing is used for RSA, ECDSA or HashML-DSA. Such a modification to the `Composite-ML-DSA.Sign()` algorithm is considered compliant to this specification so long as it produces the same output and error conditions.
