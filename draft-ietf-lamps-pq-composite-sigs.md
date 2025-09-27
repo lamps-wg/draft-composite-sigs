@@ -204,10 +204,11 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 
 --- middle
 
-# Changes in -08
+# Changes since -07 (WGLC)
 
 Interop-affecting changes:
 
+* Removed the randomizer, reverting the signature combiner construction to be similar to the HashComposite construction from -05.
 * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).
 * Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
@@ -218,6 +219,7 @@ Editorial changes:
 
 * Incorporated the feedback from IETF 123, clarifying the pubic, private key and signature encodings.
 * Many minor editorial fixes based on comments from the working group.
+* Adjusted the Security Considerations about EUF-CMA and Non-Separability to match the removal of the randomizer.
 
 
 # Introduction {#sec-intro}
@@ -293,6 +295,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
 Composite algorithms, as defined in this specification, follow this definition and should be regarded as a single key that performs a single cryptographic operation typical of a digital signature algorithm, such as key generation, signing, or verifying -- using its internal sequence of component keys as if they form a single key. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module, and the single composite public key, private key, and signature value can be carried in existing fields in protocols such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], the CMS [RFC5652], and the Trust Anchor Format [RFC5914]. In this way, composites achieve "protocol backwards-compatibility" in that they will drop cleanly into any protocol that accepts an analogous single-algorithm cryptographic scheme without requiring any modification of the protocol to handle multiple algorithms.
 
 Discussion of the specific choices of algorithm pairings can be found in {{sec-rationale}}.
+
+In terms of security properties, the design of Composite ML-DSA only if both components are SUF-CMA -- specifically, that means the ML-DSA and EdDSA combinations are SUF-CMA, but the ML-DSA and RSA or ECDSA combinations are only EUF-CMA. This means that replacing an ML-DSA signature with a Composite ML-DSA signature with RSA or ECDSA could be considered a reduction in security if your application is sensitive to the difference between SUF and EUF security. In these cases, the ML-DSA + EdDSA combinations are recommended.
 
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
@@ -406,7 +410,7 @@ Key Generation Process:
   1. Generate component keys
 
      mldsaSeed = Random(32)
-     (mldsaPK, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
+     (mldsaPK, mldsaSK) = ML-DSA.KeyGen_internal(mldsaSeed)
      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
@@ -422,14 +426,16 @@ Key Generation Process:
 
 ~~~
 
+This keygen routine make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
+
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
-Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to additionally output the expanded `mldsaSK` or to make free use of `ML-DSA.KeyGen(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
+Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to additionally output the expanded `mldsaSK` or to make free use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
 
 The above algorithm MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` if it is desirable to have a deterministic KeyGen that derives both component keys from a shared seed. Details of implementing this variation are not included in this document.
 
 Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
-For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a `ML-DSA.KeyGen(seed)` that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in {{sec-serialize-privkey}} only support ML-DSA keys as seeds.
+For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a `ML-DSA.KeyGen_internal(seed)` that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in {{sec-serialize-privkey}} only support ML-DSA keys as seeds.
 
 
 ## Sign {#sec-hash-comp-sig-sign}
@@ -492,7 +498,7 @@ Signature Generation Process:
      and re-generate the ML-DSA key from seed.
 
        (mldsaSeed, tradSK) = DeserializePrivateKey(sk)
-       (_, mldsaSK) = ML-DSA.KeyGen(mldsaSeed)
+       (_, mldsaSK) = ML-DSA.KeyGen_internal(mldsaSeed)
 
   4. Generate the two component signatures independently by
      calculating the signature over M' according to their algorithm
@@ -1210,7 +1216,7 @@ Unforgeability properties are somewhat more nuanced. We recall first the definit
 
 The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its `Verify()` which in turn will cause `CompositeML-DSA.Verify()` to fail.
 
-Composite ML-DSA only achieves SUF security if both components are SUF secure, which is not a useful property; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(m, s1')` pair where `s1'` was not produced by the honest signer, and the attacker can then combine it with an honestly-signed `(m, s2)` signature produced by the second algorithm over the same message `m` to create `(m, (s1', s2))` which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security to be maintained even in the event that ML-DSA is broken SHOULD use it in composite with Ed25519 or Ed448.
+Composite ML-DSA only achieves SUF security if both components are SUF secure, but does not necessarily provide it if one component is compromised; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(m, s1')` pair where `s1'` was not produced by the honest signer, and the attacker can then combine it with an honestly-signed `(m, s2)` signature produced by the second algorithm over the same message `m` to create `(m, (s1', s2))` which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security SHOULD use the composite combinations with Ed25519 or Ed448.
 
 In addition to the classic EUF-CMA game, we also consider a "cross-protocol" version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, `Trad.Sign()` and `ML-DSA.Sign()`, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either `ML-DSA.Verify()` or `Trad.Verify()`.
 
@@ -1254,7 +1260,9 @@ One of the primary design goals of this specification is for the overall composi
 
 Implementers seeking FIPS certification of a composite signature algorithm where only one of the component algorithms has been FIPS-validated or FIPS-approved should credit the FIPS-validated component algorithm with full security strength, the non-FIPS-validated component algorithm with zero security, and the overall composite should be considered at least as strong and thus FIPS-approved.
 
-The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen(seed)` which might not be available in a cryptographic module running in FIPS-mode, but {{sec-keygen}} is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen.  However, using an interface which doesn't support a seed will prevent the implementation from encoding the private key according to {{sec-serialize-privkey}}. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.
+The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen_internal(seed)` which might not be available in a cryptographic module running in FIPS-mode, but {{sec-keygen}} is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen.  However, using an interface which doesn't support a seed will prevent the implementation from encoding the private key according to {{sec-serialize-privkey}}. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.
+
+Note also that also that {{sec-keygen}} depicts the generation of the seed as `mldsaSeed = Random()`, when implementing this for FIPS certification, this MUST be the direct output of a FIPS-approved DRBG.
 
 The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.
 
