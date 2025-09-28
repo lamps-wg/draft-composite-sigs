@@ -176,14 +176,16 @@ Table of Contents
    uncover and rectify both algorithmic weaknesses as well as
    implementation flaws across all the new implementations.
 
-   Unlike previous migrations between cryptographic algorithms, the
-   decision of when to migrate and which algorithms to adopt is far from
-   straightforward.  For instance, the aggressive migration timelines
-   may require deploying PQC algorithms before their implementations
-   have been fully hardened or certified, and dual-algorithm data
-   protection may be desirable over a longer time period to hedge
-   against CVEs and other implementation flaws in the new
-   implementations.
+   Unlike previous migrations between cryptographic algorithms, this
+   migration gives us the foresight that Traditional cryptographic
+   algorithms will be broken in the future, with the Traditional
+   algorithms remaining strong in the interim, the only uncertainty is
+   around the timing.  But there are also some novel challenges.  For
+   instance, the aggressive migration timelines may require deploying
+   PQC algorithms before their implementations have been fully hardened
+   or certified, and dual-algorithm data protection may be desirable
+   over a longer time period to hedge against CVEs and other
+   implementation flaws in the new implementations.
 
    Cautious implementers may opt to combine cryptographic algorithms in
    such a way that an attacker would need to break all of them
@@ -195,6 +197,19 @@ Table of Contents
    The use of a composite scheme provides a straightforward
    implementation of hybrid solutions compatible with (and advocated by)
    some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
+
+   Another motivation for using PQ/T Hybrids is regulatory compliance;
+   for example, in some situations it might be possible to add Post-
+   Quantum, via a PQ/T Hybrid, to an already audited and compliant
+   solution without invalidating the existing certification, whereas a
+   full replacement of the Traditional cryptography would almost
+   certainly incur regulatory and compliance delays.  In other words,
+   PQ/T Hybrids can allow for deploying Post-Quantum before the PQ
+   modules and operational procedures are fully audited and certified.
+   This, more than any other requirement, is what motivates the large
+   number of algorithm combinations in this specification: the intention
+   is to provide a stepping-stone off of which ever cryptographic
+   algorithm(s) an organization might have deployed today.
 
    This specification defines a specific instantiation of the PQ/T
    Hybrid paradigm called "composite" where multiple cryptographic
@@ -238,10 +253,10 @@ Table of Contents
    [RFC9794].
 
    *COMPONENT / PRIMITIVE*: The words "component" or "primitive" are
-   used interchangeably to refer to a cryptographic algorithm that is
-   used internally within a composite algorithm.  For example this could
-   be an asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS", or a
-   Hash such as "SHA256".
+   used interchangeably to refer to an asymmetric cryptographic
+   algorithm that is used internally within a composite algorithm.  For
+   example this could be an asymmetric algorithm such as "ML-DSA-65" or
+   "RSASSA-PSS".
 
    *DER*: Distinguished Encoding Rules as defined in [X.690].
 
@@ -324,7 +339,8 @@ Table of Contents
    described in the Security Considerations in Section 10.
 
    Composite signature schemes are defined as cryptographic primitives
-   that consist of three algorithms:
+   that match the API of a generic signature scheme, which consists of
+   three algorithms:
 
    *  KeyGen() -> (pk, sk): A probabilistic key generation algorithm
       which generates a public key pk and a secret key sk.  Some
@@ -345,8 +361,9 @@ Table of Contents
       pre-hashing the message.
 
    The following algorithms are defined for serializing and
-   deserializing component values.  These algorithms are inspired by
-   similar algorithms in [RFC9180].
+   deserializing component values and are provided as internal functions
+   for use by the public functions KeyGen(), Sign(), and Verify().
+   These algorithms are inspired by similar algorithms in [RFC9180].
 
    *  SerializePublicKey(mlkdsaPK, tradPK) -> bytes: Produce a byte
       string encoding of the component public keys.
@@ -426,7 +443,9 @@ Table of Contents
    which is used in constructing the message representative M' in the
    Composite-ML-DSA.Sign() (Section 4.2) and Composite-ML-DSA.Verify()
    (Section 4.3).  This helps protect against component signature values
-   being removed from the composite and used out of context.
+   being removed from the composite and used out of context of X.509, or
+   if the prohibition on reusing key material between a composite and a
+   non-composite, or between two composites is not adhered to.
 
    Note that there are two different context strings ctx at play: the
    first is the application context that is passed in to Composite-ML-
@@ -436,6 +455,12 @@ Table of Contents
    so per-algorithm Label is used as the ctx for the underlying ML-DSA
    primitive.  The EdDSA component primitive can also expose a ctx
    parameter, but this is not used by Composite ML-DSA.
+
+   Within Composite ML-DSA, values of Label are fully specified, and
+   user-supplied Label values are not allowed.  For authors of follow-on
+   specifications that allow Label to be runtime-variable, it should be
+   pre-fixed with the length, len(Label) || Label to prevent using this
+   as an injection site that could enable various cryptographic attacks.
 
 4.  Composite ML-DSA Functions
 
@@ -783,7 +808,8 @@ Signature Verification Process:
       [RFC8017].
 
    *  *ECDSA*: public key MUST be encoded as an uncompressed ECPoint as
-      specified in section 2.2 of [RFC5480].  A signature MUST be
+      specified in section 2.2 of [RFC5480], including the leading 0x04
+      byte to indicate that it is uncompressed.  A signature MUST be
       encoded as an Ecdsa-Sig-Value as specified in section 2.2.3 of
       [RFC3279].  The private key MUST be encoded as ECPrivateKey
       specified in [RFC5915] without 'NamedCurve' parameter and without
@@ -1209,8 +1235,9 @@ Signature Verification Process:
    Full specifications for the referenced algorithms can be found in
    Appendix B.
 
-   As the number of algorithms can be daunting to implementers, see
-   Section 11.3 for a discussion of choosing a subset to support.
+   As the number of algorithms can be daunting, implementers who wish to
+   implement only a single composite algorithm should see Section 11.3
+   for a discussion of the best algorithm for the most common use cases.
 
    Labels are represented here as ASCII strings, but implementers MUST
    convert them to byte strings using the obvious ASCII conversions
