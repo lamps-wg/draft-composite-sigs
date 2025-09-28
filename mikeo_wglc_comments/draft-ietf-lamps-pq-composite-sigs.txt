@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 31 March 2026                                           M. Pala
+Expires: 1 April 2026                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       27 September 2025
+                                                       28 September 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 March 2026.
+   This Internet-Draft will expire on 1 April 2026.
 
 Copyright Notice
 
@@ -2159,6 +2159,20 @@ Signature Verification Process:
 
 10.2.  Non-separability, EUF-CMA and SUF
 
+   First, a note about the security model under which this analysis is
+   performed.  This specification strictly forbids re-using component
+   key material between composite and non-composite keys, or between
+   multiple composite keys.  This specification also exists within the
+   X.509 PKI architecture where trust in a public verification key is
+   assumed to be established either directly via a trust store or via a
+   certificate chain.  That said, these are both policy mechanisms that
+   are outside the formal definitions of EUF-CMA and SUF-CMA under which
+   a signature primitive must be analysed, therefore this section
+   considers attacks that may be mitigated partially or completely
+   within a strictly-implemented PKI setting, but which need to be
+   considered when considering Composite ML-DSA as a general-purpose
+   signature primitive that could be used outside of the X.509 setting.
+
    The signature combiner defined in this specification is Weakly Non-
    Separable (WNS), as defined in
    [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
@@ -2426,16 +2440,28 @@ Signature Verification Process:
    as mandatory-to-implement, however organizations that operate within
    specific application domains are encouraged to define profiles that
    select a small number of composites appropriate for that application
-   domain.  For applications that do not have any regulatory
-   requirements or legacy implementations to consider, it is RECOMMENDED
-   to focus implementation effort on:
+   domain.
+
+   For applications that do not have any regulatory requirements or
+   legacy implementations to consider, it is RECOMMENDED to focus
+   implementation effort on as it provides the best overall balance of
+   performance and security.
 
    id-MLDSA65-ECDSA-P256-SHA512
+
+   Below we list a few other recommendations for specific scenarios.
 
    In applications that require RSA, it is RECOMMENDED to focus
    implementation effort on:
 
    id-MLDSA65-RSA3072-PSS-SHA512
+
+   In applications that are performance and bandwidth-sensitive, it is
+   RECOMMENDED to focus implementation effort on:
+
+   id-MLDSA44-ECDSA-P256-SHA256
+   or
+   id-MLDSA44-Ed25519-SHA512
 
    In applications that only allow NIST PQC Level 5, it is RECOMMENDED
    to focus implementation effort on:

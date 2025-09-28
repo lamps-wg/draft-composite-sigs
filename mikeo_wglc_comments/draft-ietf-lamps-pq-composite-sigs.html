@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 31 March 2026</td>
+<td class="center">Expires 1 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-27" class="published">27 September 2025</time>
+<time datetime="2025-09-28" class="published">28 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-31">31 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-01">1 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3522,13 +3522,14 @@ END
         <h3 id="name-non-separability-euf-cma-an">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-non-separability-euf-cma-an" class="section-name selfRef">Non-separability, EUF-CMA and SUF</a>
         </h3>
-<p id="section-10.2-1">The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>, since the forged message <code>M'</code> will include the composite signature label as evidence. In many protocol contexts, <code>M'</code> will fail to parse as a valid protocol message. The prohibition on key reuse between composite and single-algorithm contexts discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS. Additionally, when composite signatures may achieve Strong Non-Separability conditionally when used with within protocols that add additional signature checking. For example, both X.509 and CRL <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> embed the algorithm identifier OID within the signed message, and thus a well designed X.509 / CRL verifier will fail the signature validation if it is presented as a standalone component signature but the inner OID indicates a composite, which is sufficient to satisfy the definition of Strong Non-Separability.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
-<p id="section-10.2-2">Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms <code>( Sign(), Verify() )</code> where the attacker has access to a signing oracle using the <code>Sign()</code> and must produce a message-signature pair <code>(m', s')</code> that is accepted by the verifier using <code>Verify()</code> and where <code>m'</code> was never signed by the oracle. SUF is similar but requires only that <code>(m', s') != (m, s)</code> for any honestly-generated <code>(m, s)</code>, i.e. that the attacker cannot construct a new signature to an already-signed message.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
-<p id="section-10.2-3">The pair <code>( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )</code> is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its <code>Verify()</code> which in turn will cause <code>CompositeML-DSA.Verify()</code> to fail.<a href="#section-10.2-3" class="pilcrow">¶</a></p>
-<p id="section-10.2-4">Composite ML-DSA only achieves SUF security if both components are SUF secure, but does not necessarily provide it if one component is compromised; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(m, s1')</code> pair where <code>s1'</code> was not produced by the honest signer, and the attacker can then combine it with an honestly-signed <code>(m, s2)</code> signature produced by the second algorithm over the same message <code>m</code> to create <code>(m, (s1', s2))</code> which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security SHOULD use the composite combinations with Ed25519 or Ed448.<a href="#section-10.2-4" class="pilcrow">¶</a></p>
-<p id="section-10.2-5">In addition to the classic EUF-CMA game, we also consider a "cross-protocol" version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
-<p id="section-10.2-6">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M'</code> and then trivially assemble a composite. Note that the static prefix "CompositeAlgorithmSignatures2025" was introduced specifically for this reason; an implementation can wrap the standalone component implementations such that they check for and will refuse to sign a message that begins with the composite prefix bytes, thus closing the EUF-CMA issue. In the second case, the message <code>M'</code> (containing the composite signature label) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
-<p id="section-10.2-7">Additionally, within some protocol contexts, SUF security may be restored by properties of the protocol; for example within X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, every signature produced by a CA will necessarily include a unique serial number, so the CA will never produce two different signatures over the same data, so the SUF property can be considered to be satisfied under realistic conditions.<a href="#section-10.2-7" class="pilcrow">¶</a></p>
+<p id="section-10.2-1">First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-2">The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in <span>[<a href="#I-D.ietf-pquip-hybrid-signature-spectrums" class="cite xref">I-D.ietf-pquip-hybrid-signature-spectrums</a>]</span>, since the forged message <code>M'</code> will include the composite signature label as evidence. In many protocol contexts, <code>M'</code> will fail to parse as a valid protocol message. The prohibition on key reuse between composite and single-algorithm contexts discussed in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS. Additionally, when composite signatures may achieve Strong Non-Separability conditionally when used with within protocols that add additional signature checking. For example, both X.509 and CRL <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> embed the algorithm identifier OID within the signed message, and thus a well designed X.509 / CRL verifier will fail the signature validation if it is presented as a standalone component signature but the inner OID indicates a composite, which is sufficient to satisfy the definition of Strong Non-Separability.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
+<p id="section-10.2-3">Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms <code>( Sign(), Verify() )</code> where the attacker has access to a signing oracle using the <code>Sign()</code> and must produce a message-signature pair <code>(m', s')</code> that is accepted by the verifier using <code>Verify()</code> and where <code>m'</code> was never signed by the oracle. SUF is similar but requires only that <code>(m', s') != (m, s)</code> for any honestly-generated <code>(m, s)</code>, i.e. that the attacker cannot construct a new signature to an already-signed message.<a href="#section-10.2-3" class="pilcrow">¶</a></p>
+<p id="section-10.2-4">The pair <code>( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )</code> is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its <code>Verify()</code> which in turn will cause <code>CompositeML-DSA.Verify()</code> to fail.<a href="#section-10.2-4" class="pilcrow">¶</a></p>
+<p id="section-10.2-5">Composite ML-DSA only achieves SUF security if both components are SUF secure, but does not necessarily provide it if one component is compromised; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one <code>(m, s1')</code> pair where <code>s1'</code> was not produced by the honest signer, and the attacker can then combine it with an honestly-signed <code>(m, s2)</code> signature produced by the second algorithm over the same message <code>m</code> to create <code>(m, (s1', s2))</code> which violates SUF for the composite algorithm. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security SHOULD use the composite combinations with Ed25519 or Ed448.<a href="#section-10.2-5" class="pilcrow">¶</a></p>
+<p id="section-10.2-6">In addition to the classic EUF-CMA game, we also consider a "cross-protocol" version of the EUF-CMA game that is relevant to hybrids. Specifically, we want to consider a modified version of the EUF-CMA game where the attacker has access to either a signing oracle over the two component algorithms in isolation, <code>Trad.Sign()</code> and <code>ML-DSA.Sign()</code>, and attempts to fraudulently present them as a composite, or where the attacker has access to a composite signing oracle and then attempts to split the signature back into components and present them to either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>.<a href="#section-10.2-6" class="pilcrow">¶</a></p>
+<p id="section-10.2-7">In the case of Composite ML-DSA, a specific message forgery exists for a cross-protocol EUF-CMA attack, namely introduced by the prefix construction used to construct the to-be-signed message representative <code>M'</code>. This applies to use of individual component signing oracles with fraudulent presentation of the signature to a composite verification oracle, and use of a composite signing oracle with fraudulent splitting of the signature for presentation to component verification oracle(s) of either <code>ML-DSA.Verify()</code> or <code>Trad.Verify()</code>. In the first case, an attacker with access to signing oracles for the two component algorithms can sign <code>M'</code> and then trivially assemble a composite. Note that the static prefix "CompositeAlgorithmSignatures2025" was introduced specifically for this reason; an implementation can wrap the standalone component implementations such that they check for and will refuse to sign a message that begins with the composite prefix bytes, thus closing the EUF-CMA issue. In the second case, the message <code>M'</code> (containing the composite signature label) can be presented as having been signed by a standalone component algorithm. However, use of the context string for domain separation enables Weak Non-Separability and auditable checks on hybrid use, which is deemed a reasonable trade-off. Moreover and very importantly, the cross-protocol EUF-CMA attack in either direction is foiled if implementers strictly follow the prohibition on key reuse presented in <a href="#sec-cons-key-reuse" class="auto internal xref">Section 10.3</a> since there cannot exist simultaneously composite and non-composite signers and verifiers for the same keys.<a href="#section-10.2-7" class="pilcrow">¶</a></p>
+<p id="section-10.2-8">Additionally, within some protocol contexts, SUF security may be restored by properties of the protocol; for example within X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, every signature produced by a CA will necessarily include a unique serial number, so the CA will never produce two different signatures over the same data, so the SUF property can be considered to be satisfied under realistic conditions.<a href="#section-10.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cons-key-reuse">
@@ -3598,30 +3599,39 @@ END
 <p id="section-11.3-1">One daunting aspect of this specification is the number of composite algorithm combinations.
 Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <p id="section-11.3-2">However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.<a href="#section-11.3-2" class="pilcrow">¶</a></p>
-<p id="section-11.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-11.3-4">
+<p id="section-11.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.<a href="#section-11.3-3" class="pilcrow">¶</a></p>
+<p id="section-11.3-4">For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on as it provides the best overall balance of performance and security.<a href="#section-11.3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.3-5">
 <pre>
 id-MLDSA65-ECDSA-P256-SHA512
-</pre><a href="#section-11.3-4" class="pilcrow">¶</a>
+</pre><a href="#section-11.3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-11.3-5">In applications that require RSA, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-11.3-6">
-<pre>
-id-MLDSA65-RSA3072-PSS-SHA512
-</pre><a href="#section-11.3-6" class="pilcrow">¶</a>
-</div>
-<p id="section-11.3-7">In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-7" class="pilcrow">¶</a></p>
+<p id="section-11.3-6">Below we list a few  other recommendations for specific scenarios.<a href="#section-11.3-6" class="pilcrow">¶</a></p>
+<p id="section-11.3-7">In applications that require RSA, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-7" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-11.3-8">
 <pre>
-id-MLDSA87-ECDSA-P384-SHA512
+id-MLDSA65-RSA3072-PSS-SHA512
 </pre><a href="#section-11.3-8" class="pilcrow">¶</a>
 </div>
-<p id="section-11.3-9">In applications that require the signature primitive to provide SUF-CMA, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-9" class="pilcrow">¶</a></p>
+<p id="section-11.3-9">In applications that are performance and bandwidth-sensitive, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-9" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-11.3-10">
 <pre>
-id-MLDSA65-Ed25519-SHA512
+id-MLDSA44-ECDSA-P256-SHA256
+or
+id-MLDSA44-Ed25519-SHA512
 </pre><a href="#section-11.3-10" class="pilcrow">¶</a>
+</div>
+<p id="section-11.3-11">In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-11" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.3-12">
+<pre>
+id-MLDSA87-ECDSA-P384-SHA512
+</pre><a href="#section-11.3-12" class="pilcrow">¶</a>
+</div>
+<p id="section-11.3-13">In applications that require the signature primitive to provide SUF-CMA, it is RECOMMENDED to focus implementation effort on:<a href="#section-11.3-13" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-11.3-14">
+<pre>
+id-MLDSA65-Ed25519-SHA512
+</pre><a href="#section-11.3-14" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
