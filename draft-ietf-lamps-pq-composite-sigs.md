@@ -1210,6 +1210,8 @@ In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm secur
 
 ## Non-separability, EUF-CMA and SUF {#sec-cons-non-separability}
 
+First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.
+
 The signature combiner defined in this specification is Weakly Non-Separable (WNS), as defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}}, since the forged message `M'` will include the composite signature label as evidence. In many protocol contexts, `M'` will fail to parse as a valid protocol message. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS. Additionally, when composite signatures may achieve Strong Non-Separability conditionally when used with within protocols that add additional signature checking. For example, both X.509 and CRL [RFC5280] embed the algorithm identifier OID within the signed message, and thus a well designed X.509 / CRL verifier will fail the signature validation if it is presented as a standalone component signature but the inner OID indicates a composite, which is sufficient to satisfy the definition of Strong Non-Separability.
 
 Unforgeability properties are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the attacker has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m'` was never signed by the oracle. SUF is similar but requires only that `(m', s') != (m, s)` for any honestly-generated `(m, s)`, i.e. that the attacker cannot construct a new signature to an already-signed message.
@@ -1284,20 +1286,27 @@ Each option has been specified because there is a community that has a direct ap
 However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.
 
 This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on:
+
+
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on as it provides the best overall balance of performance and security.
 
     id-MLDSA65-ECDSA-P256-SHA512
 
+Below we list a few  other recommendations for specific scenarios.
 
 In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
 
     id-MLDSA65-RSA3072-PSS-SHA512
 
+In applications that are performance and bandwidth-sensitive, it is RECOMMENDED to focus implementation effort on:
+
+    id-MLDSA44-ECDSA-P256-SHA256
+    or
+    id-MLDSA44-Ed25519-SHA512
 
 In applications that only allow NIST PQC Level 5, it is RECOMMENDED to focus implementation effort on:
 
     id-MLDSA87-ECDSA-P384-SHA512
-
 
 In applications that require the signature primitive to provide SUF-CMA, it is RECOMMENDED to focus implementation effort on:
 
