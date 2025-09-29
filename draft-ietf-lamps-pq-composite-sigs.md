@@ -297,7 +297,7 @@ Composite algorithms, as defined in this specification, follow this definition a
 
 Discussion of the specific choices of algorithm pairings can be found in {{sec-rationale}}.
 
-In terms of security properties, the design of Composite ML-DSA only if both components are SUF-CMA -- specifically, that means the ML-DSA and EdDSA combinations are SUF-CMA, but the ML-DSA and RSA or ECDSA combinations are only EUF-CMA. This means that replacing an ML-DSA signature with a Composite ML-DSA signature with RSA or ECDSA could be considered a reduction in security if your application is sensitive to the difference between SUF and EUF security. In these cases, the ML-DSA + EdDSA combinations are recommended.
+In terms of security properties, Composite ML-DSA is SUF-CMA only if both components are SUF-CMA. Specifically, that means the ML-DSA and EdDSA combinations are SUF-CMA, but the ML-DSA and RSA or ECDSA combinations are only EUF-CMA. This means that replacing an ML-DSA signature with a Composite ML-DSA signature with RSA or ECDSA could be considered a reduction in security if your application is sensitive to the difference between SUF and EUF security. In these cases, the ML-DSA + EdDSA combinations could be considered, although Composite ML-DSA is always reduced to EUF-CMA against a quantum attacker. Further discussion can be found in {{sec-cons-non-separability}}.
 
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
