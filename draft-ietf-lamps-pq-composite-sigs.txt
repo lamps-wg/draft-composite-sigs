@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 April 2026                                            M. Pala
+Expires: 4 April 2026                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       28 September 2025
+                                                          1 October 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 April 2026.
+   This Internet-Draft will expire on 4 April 2026.
 
 Copyright Notice
 
@@ -2410,7 +2410,7 @@ Signature Verification Process:
    interface for ML-DSA.KeyGen.  However, using an interface which
    doesn't support a seed will prevent the implementation from encoding
    the private key according to Section 5.2.  Another example is pre-
-   hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (mu), and
+   hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (μ), and
    composite makes no assumptions or requirements about whether
    component-specific pre-hashing is done locally as part of the
    composite, or remotely as part of the component primitive.
