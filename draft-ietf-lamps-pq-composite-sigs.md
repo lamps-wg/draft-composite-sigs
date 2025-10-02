@@ -372,7 +372,7 @@ Each Composite ML-DSA algorithm has a unique signature label value which is used
 
 Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. The EdDSA component primitive can also expose a `ctx` parameter, but this is not used by Composite ML-DSA.
 
-Within Composite ML-DSA, values of `Label` are fully specified, and user-supplied `Label` values are not allowed. For authors of follow-on specifications that allow `Label` to be runtime-variable, it should be pre-fixed with the length, `len(Label) || Label` to prevent using this as an injection site that could enable various cryptographic attacks.
+Within Composite ML-DSA, values of `Label` are fully specified, and runtime-variable `Label` values are not allowed. For authors of follow-on specifications that allow `Label` to be runtime-variable, it should be pre-fixed with the length, `len(Label) || Label` to prevent using this as an injection site that could enable various cryptographic attacks.
 
 
 # Composite ML-DSA Functions {#sec-sigs}
