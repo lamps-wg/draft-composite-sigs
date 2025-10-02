@@ -1540,7 +1540,7 @@ See <a href="#sec-cons-prefix" class="auto internal xref">Section 10.4</a> for m
           <dd class="break"></dd>
 <dt id="section-3.2-3.3">Label:</dt>
           <dd style="margin-left: 1.5em" id="section-3.2-3.4">
-            <p id="section-3.2-3.4.1">A signature label which is specific to each composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in <a href="#sec-alg-parms" class="auto internal xref">Section 7</a>.<a href="#section-3.2-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-3.4.1">A signature label which is specific to each composite algorithm. The signature label binds the signature to the specific composite algorithm. Signature label values for each algorithm are listed in <a href="#sec-alg-parms" class="auto internal xref">Section 7</a>.<a href="#section-3.2-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-3.2-3.5">len(ctx):</dt>
@@ -1727,7 +1727,7 @@ Signature Generation Process:
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">The following describes how to instantiate a <code>Verify()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>. See <a href="#sec-prehash" class="auto internal xref">Section 3.1</a> for a discussion of the pre-hash function <code>PH</code>. See <a href="#sec-label-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the signature label <code>Domain</code> and application context <code>ctx</code>. See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">The following describes how to instantiate a <code>Verify()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>. See <a href="#sec-prehash" class="auto internal xref">Section 3.1</a> for a discussion of the pre-hash function <code>PH</code>. See <a href="#sec-label-and-ctx" class="auto internal xref">Section 3.2</a> for a discussion on the signature label <code>Label</code> and application context <code>ctx</code>. See <a href="#impl-cons-external-ph" class="auto internal xref">Section 11.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.3-4">
 <pre>
 Composite-ML-DSA&lt;OID&gt;.Verify(pk, M, s, ctx) -&gt; true or false
