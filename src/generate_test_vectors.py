@@ -191,7 +191,7 @@ class RSA(SIG):
     ]), False)
 
   def signature_max_len(self):
-    return (size_in_bits_to_size_in_bytes(self.sk.key_size), False)
+    return (size_in_bits_to_size_in_bytes(self.sk.key_size), True)
     
 class RSAPSS(RSA):
   id = "id-RSASSA-PSS"
@@ -299,7 +299,7 @@ class ECDSA(SIG):
         calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size))  # privateKey
         # ECParameters are not allowed in Composite ML-DSA
         # publicKey is not allowed in Composite ML-DSA
-    ]), False)
+    ]), True)
 
   def signature_max_len(self):
     """
