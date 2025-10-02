@@ -23,7 +23,7 @@ from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
-VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-07"
+VERSION_IMPLEMENTED = "draft-ietf-lamps-pq-composite-sigs-09"
 
 OID_TABLE = {
     "sha256WithRSAEncryption": univ.ObjectIdentifier((1,2,840,113549,1,1,11)),
