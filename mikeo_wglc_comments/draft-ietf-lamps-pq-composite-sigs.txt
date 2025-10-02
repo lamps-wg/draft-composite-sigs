@@ -458,10 +458,11 @@ Table of Contents
    parameter, but this is not used by Composite ML-DSA.
 
    Within Composite ML-DSA, values of Label are fully specified, and
-   user-supplied Label values are not allowed.  For authors of follow-on
-   specifications that allow Label to be runtime-variable, it should be
-   pre-fixed with the length, len(Label) || Label to prevent using this
-   as an injection site that could enable various cryptographic attacks.
+   runtime-variable Label values are not allowed.  For authors of
+   follow-on specifications that allow Label to be runtime-variable, it
+   should be pre-fixed with the length, len(Label) || Label to prevent
+   using this as an injection site that could enable various
+   cryptographic attacks.
 
 4.  Composite ML-DSA Functions
 
