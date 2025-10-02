@@ -188,7 +188,7 @@ Table of Contents
    implementation flaws in the new implementations.
 
    Cautious implementers may opt to combine cryptographic algorithms in
-   such a way that an attacker would need to break all of them
+   such a way that an adversary would need to break all of them
    simultaneously to compromise the protected data.  These mechanisms
    are referred to as Post-Quantum/Traditional (PQ/T) Hybrids [RFC9794].
 
@@ -314,14 +314,15 @@ Table of Contents
    Discussion of the specific choices of algorithm pairings can be found
    in Section 7.2.
 
-   In terms of security properties, the design of Composite ML-DSA only
-   if both components are SUF-CMA -- specifically, that means the ML-DSA
-   and EdDSA combinations are SUF-CMA, but the ML-DSA and RSA or ECDSA
-   combinations are only EUF-CMA.  This means that replacing an ML-DSA
-   signature with a Composite ML-DSA signature with RSA or ECDSA could
-   be considered a reduction in security if your application is
-   sensitive to the difference between SUF and EUF security.  In these
-   cases, the ML-DSA + EdDSA combinations are recommended.
+   In terms of security properties, the design of Composite ML-DSA is
+   SUF-CMA secure only if both components are SUF-CMA secure --
+   specifically, that means the ML-DSA and EdDSA combinations are SUF-
+   CMA, but the ML-DSA and RSA or ECDSA combinations are only EUF-CMA.
+   This means that replacing an ML-DSA signature with a Composite ML-DSA
+   signature with RSA or ECDSA could be considered a reduction in
+   security if your application is sensitive to the difference between
+   SUF and EUF security.  Applications requiring SUF-CMA security are
+   RECOMMENDED to use the ML-DSA + EdDSA combinations.
 
 3.  Overview of the Composite ML-DSA Signature Scheme
 
@@ -1616,8 +1617,8 @@ Signature Verification Process:
    attempting to exactly match the security level of the post-quantum
    and traditional components -- which in general is difficult to do
    since there is no academic consensus on how to compare the "bits of
-   security" against classical attackers and "qubits of security"
-   against quantum attackers.
+   security" against classical adversaries and "qubits of security"
+   against quantum adversaries.
 
    SHA2 is prioritized over SHA3 in order to facilitate implementations
    that do not have easy access to SHA3 outside of the ML-DSA module.
@@ -2151,21 +2152,21 @@ Signature Verification Process:
    quickly explore both.
 
    *Dual-algorithm security*. The general idea is that the data is
-   protected by two algorithms such that an attacker would need to break
-   both in order to compromise the data.  As with most of cryptography,
-   this property is easy to state in general terms, but becomes more
-   complicated when expressed in formalisms.  Section 10.2 goes into
-   more detail here.  One common counter-argument against PQ/T hybrid
-   signatures is that if an attacker can forge one of the component
-   algorithms, then why attack the hybrid-signed message at all when
-   they could simply forge a completely new message?  The answer to this
-   question must be found outside the cryptographic primitives
-   themselves, and instead in policy; once an algorithm is known to be
-   broken it ought to be disallowed for single-algorithm use by
-   cryptographic policy, while hybrids involving that algorithm may
+   protected by two algorithms such that an adversary would need to
+   break both in order to compromise the data.  As with most of
+   cryptography, this property is easy to state in general terms, but
+   becomes more complicated when expressed in formalisms.  Section 10.2
+   goes into more detail here.  One common counter-argument against PQ/T
+   hybrid signatures is that if an adversary can forge one of the
+   component algorithms, then why attack the hybrid-signed message at
+   all when they could simply forge a completely new message?  The
+   answer to this question must be found outside the cryptographic
+   primitives themselves, and instead in policy; once an algorithm is
+   known to be broken it ought to be disallowed for single-algorithm use
+   by cryptographic policy, while hybrids involving that algorithm may
    continue to be used and to provide value, and also in the fact that
    the composite public key could be trusted by the verifier while the
-   component keys in isolation are not, thus requiring the attacker to
+   component keys in isolation are not, thus requiring the adversary to
    forge a whole composite signature.
 
    *Migration flexibility*. Some PQ/T hybrids exist to provide a sort of
@@ -2200,34 +2201,63 @@ Signature Verification Process:
    considered when considering Composite ML-DSA as a general-purpose
    signature primitive that could be used outside of the X.509 setting.
 
-   The signature combiner defined in this specification is Weakly Non-
-   Separable (WNS), as defined in
-   [I-D.ietf-pquip-hybrid-signature-spectrums], since the forged message
-   M' will include the composite signature label as evidence.  In many
-   protocol contexts, M' will fail to parse as a valid protocol message.
-   The prohibition on key reuse between composite and single-algorithm
-   contexts discussed in Section 10.3 further strengthens the non-
-   separability in practice, but does not achieve Strong Non-
-   Separability (SNS) since policy mechanisms such as this are outside
-   the definition of SNS.  Additionally, when composite signatures may
-   achieve Strong Non-Separability conditionally when used with within
-   protocols that add additional signature checking.  For example, both
-   X.509 and CRL [RFC5280] embed the algorithm identifier OID within the
-   signed message, and thus a well designed X.509 / CRL verifier will
-   fail the signature validation if it is presented as a standalone
-   component signature but the inner OID indicates a composite, which is
-   sufficient to satisfy the definition of Strong Non-Separability.
+   The second securtiy model considiration is that composites are
+   designed to provide value even if one algorithm is broken, even if
+   you do not know which.  However, the security properties offered by
+   the composite signature can differ based on which algorithm you
+   consider to be broken.
 
-   Unforgeability properties are somewhat more nuanced.  We recall first
-   the definitions of Existential Unforgeability under Chosen Message
-   Attack (EUF-CMA) and Strong Unforgeability (SUF).  The classic EUF-
-   CMA game is in reference to a pair of algorithms ( Sign(), Verify() )
-   where the attacker has access to a signing oracle using the Sign()
-   and must produce a message-signature pair (m', s') that is accepted
-   by the verifier using Verify() and where m' was never signed by the
-   oracle.  SUF is similar but requires only that (m', s') != (m, s) for
-   any honestly-generated (m, s), i.e. that the attacker cannot
-   construct a new signature to an already-signed message.
+   The security notion of Weak Non-Separability (WNS) of a hybrid
+   signature is defined in [I-D.ietf-pquip-hybrid-signature-spectrums]
+   as the guarantee that an adversary cannot simply "remove" one of the
+   component signatures without evidence left behind.  We also position
+   this as being a hybrid variant of the unforgeability game: given a
+   composite signature (M, (mldsaSig, tradSig)), can an adversary with
+   access to a signing oracle but not to the signing private keys,
+   produce a (M', mldsaSig') or (M', tradSig') that will be accepted by
+   the respective standalone primitives.  If M' is different from M then
+   this is "Hybrid EUF-CMA".  If M' = M, but the signature is new, then
+   this is "Hybrid SUF-CMA".
+
+   The signature combiner defined in this specification is Weakly Non-
+   Separable (WNS) when used within X.509 because all X.509 data
+   structures include the OID of the signature algorithm inside the
+   signed object; if a composite signature is split into two separate
+   signatures, then the signed-over OID will still indicate a composite
+   signature algorithm, and this will fail at the X.509 processing
+   layer.  Similar if two independent signatures are assempbled into a
+   composite.  This meets the definition of WNS.  The prohibition on key
+   reuse between composite and single-algorithm contexts discussed in
+   Section 10.3 further strengthens the non-separability in practice,
+   but does not achieve Strong Non-Separability (SNS) since policy
+   mechanisms such as this are outside the definition of SNS.  Moreover,
+   composite signatures have Hybrid EUF-CMA security built into the
+   primitive, independent of any enforcement done at the protocol layer:
+   if a signer wishes to sign a message M, it is instead M' as defined
+   in Section 3.2 which is passed to the component signature primitives.
+   Consider that an adversary splits (M, (mldsaSig, tradSig)) into (M',
+   mldsaSig) and (M', tradSig).  On the ML-DSA side, (M', mldsaSig) will
+   not be accepted by a standalone because the composite signed with ML-
+   DSA's context value equal to the composite algorithm's Label which
+   will fail to verify under ML-DSA.Verify(M, ctx="").  On the
+   traditional side, (M', tradSig) would be accepted, but the static
+   Prefix defined in Section 3.2 provides a way to mitigate against
+   this.  So, to be precise, Composite ML-DSA achieves Hybrid EUF-CMA
+   security on the ML-DSA side, and conditionally achieves it on the
+   traditional side if the prefix-based mitigation described in
+   Section 3.2 is applied.
+
+   The (non-hibred) unforgeability properties of the composite as a
+   whole are somewhat more nuanced.  We recall first the definitions of
+   Existential Unforgeability under Chosen Message Attack (EUF-CMA) and
+   Strong Unforgeability (SUF).  The classic EUF-CMA game is in
+   reference to a pair of algorithms ( Sign(), Verify() ) where the
+   adversary has access to a signing oracle using the Sign() and must
+   produce a message-signature pair (m', s') that is accepted by the
+   verifier using Verify() and where m' was never signed by the oracle.
+   SUF is similar but requires only that (m', s') != (m, s) for any
+   honestly-generated (m, s), i.e. that the adversary cannot construct a
+   new signature to an already-signed message.
 
    The pair ( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() ) is EUF-
    CMA secure so long as at least one component algorithm is EUF-CMA
@@ -2236,53 +2266,18 @@ Signature Verification Process:
    CompositeML-DSA.Verify() to fail.
 
    Composite ML-DSA only achieves SUF security if both components are
-   SUF secure, but does not necessarily provide it if one component is
+   SUF secure, but does not necessarily provide SUF if one component is
    compromised; the argument is that if the first component algorithm is
    not SUF secure then by definition it admits at least one (m, s1')
    pair where s1' was not produced by the honest signer, and the
-   attacker can then combine it with an honestly-signed (m, s2)
+   adversary can then combine it with an honestly-signed (m, s2)
    signature produced by the second algorithm over the same message m to
    create (m, (s1', s2)) which violates SUF for the composite algorithm.
-   Of the traditional signature component algorithms used in this
-   specification, only Ed25519 and Ed448 are SUF secure and therefore
-   applications that require SUF security SHOULD use the composite
-   combinations with Ed25519 or Ed448.
-
-   In addition to the classic EUF-CMA game, we also consider a "cross-
-   protocol" version of the EUF-CMA game that is relevant to hybrids.
-   Specifically, we want to consider a modified version of the EUF-CMA
-   game where the attacker has access to either a signing oracle over
-   the two component algorithms in isolation, Trad.Sign() and ML-
-   DSA.Sign(), and attempts to fraudulently present them as a composite,
-   or where the attacker has access to a composite signing oracle and
-   then attempts to split the signature back into components and present
-   them to either ML-DSA.Verify() or Trad.Verify().
-
-   In the case of Composite ML-DSA, a specific message forgery exists
-   for a cross-protocol EUF-CMA attack, namely introduced by the prefix
-   construction used to construct the to-be-signed message
-   representative M'.  This applies to use of individual component
-   signing oracles with fraudulent presentation of the signature to a
-   composite verification oracle, and use of a composite signing oracle
-   with fraudulent splitting of the signature for presentation to
-   component verification oracle(s) of either ML-DSA.Verify() or
-   Trad.Verify().  In the first case, an attacker with access to signing
-   oracles for the two component algorithms can sign M' and then
-   trivially assemble a composite.  Note that the static prefix
-   "CompositeAlgorithmSignatures2025" was introduced specifically for
-   this reason; an implementation can wrap the standalone component
-   implementations such that they check for and will refuse to sign a
-   message that begins with the composite prefix bytes, thus closing the
-   EUF-CMA issue.  In the second case, the message M' (containing the
-   composite signature label) can be presented as having been signed by
-   a standalone component algorithm.  However, use of the context string
-   for domain separation enables Weak Non-Separability and auditable
-   checks on hybrid use, which is deemed a reasonable trade-off.
-   Moreover and very importantly, the cross-protocol EUF-CMA attack in
-   either direction is foiled if implementers strictly follow the
-   prohibition on key reuse presented in Section 10.3 since there cannot
-   exist simultaneously composite and non-composite signers and
-   verifiers for the same keys.
+   ML-DSA is SUF secure.  Of the traditional signature component
+   algorithms used in this specification, only Ed25519 and Ed448 are SUF
+   secure and therefore applications that require SUF security SHOULD
+   use the composite combinations with ML-DSA and either Ed25519 or
+   Ed448.
 
    Additionally, within some protocol contexts, SUF security may be
    restored by properties of the protocol; for example within X.509
@@ -2834,41 +2829,41 @@ Appendix A.  Maximum Key and Signature Sizes
    +-----------------------------------------+------+-------+---------+
    | id-ML-DSA-87                            |2592  |32     |4627     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-RSA2048-PSS-SHA256           |1582* |1226*  |2676*    |
+   | id-MLDSA44-RSA2048-PSS-SHA256           |1582* |1226*  |2676     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-RSA2048-PKCS15-SHA256        |1582* |1226*  |2676*    |
+   | id-MLDSA44-RSA2048-PKCS15-SHA256        |1582* |1226*  |2676     |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA44-Ed25519-SHA512               |1344  |66     |2484     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA44-ECDSA-P256-SHA256            |1377  |71*    |2492*    |
+   | id-MLDSA44-ECDSA-P256-SHA256            |1377  |71     |2492*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA3072-PSS-SHA512           |2350* |1802*  |3693*    |
+   | id-MLDSA65-RSA3072-PSS-SHA512           |2350* |1802*  |3693     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA3072-PKCS15-SHA512        |2350* |1802*  |3693*    |
+   | id-MLDSA65-RSA3072-PKCS15-SHA512        |2350* |1802*  |3693     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA4096-PSS-SHA512           |2478* |2383*  |3821*    |
+   | id-MLDSA65-RSA4096-PSS-SHA512           |2478* |2383*  |3821     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-RSA4096-PKCS15-SHA512        |2478* |2383*  |3821*    |
+   | id-MLDSA65-RSA4096-PKCS15-SHA512        |2478* |2383*  |3821     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-P256-SHA512            |2017  |71*    |3381*    |
+   | id-MLDSA65-ECDSA-P256-SHA512            |2017  |71     |3381*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-P384-SHA512            |2049  |87*    |3413*    |
+   | id-MLDSA65-ECDSA-P384-SHA512            |2049  |87     |3413*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |2017  |71*    |3381*    |
+   | id-MLDSA65-ECDSA-brainpoolP256r1-SHA512 |2017  |71     |3381*    |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA65-Ed25519-SHA512               |1984  |66     |3373     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-P384-SHA512            |2689  |87*    |4731*    |
+   | id-MLDSA87-ECDSA-P384-SHA512            |2689  |87     |4731*    |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |2689  |87*    |4731*    |
+   | id-MLDSA87-ECDSA-brainpoolP384r1-SHA512 |2689  |87     |4731*    |
    +-----------------------------------------+------+-------+---------+
    | id-MLDSA87-Ed448-SHAKE256               |2649  |91     |4741     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-RSA3072-PSS-SHA512           |2990* |1802*  |5011*    |
+   | id-MLDSA87-RSA3072-PSS-SHA512           |2990* |1802*  |5011     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-RSA4096-PSS-SHA512           |3118* |2383*  |5139*    |
+   | id-MLDSA87-RSA4096-PSS-SHA512           |3118* |2383*  |5139     |
    +-----------------------------------------+------+-------+---------+
-   | id-MLDSA87-ECDSA-P521-SHA512            |2725  |105*   |4766*    |
+   | id-MLDSA87-ECDSA-P521-SHA512            |2725  |105    |4766*    |
    +-----------------------------------------+------+-------+---------+
 
              Table 4: Maximum size values of composite ML-DSA
