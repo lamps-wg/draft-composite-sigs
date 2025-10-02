@@ -357,7 +357,7 @@ Prefix:
 See {{sec-cons-prefix}} for more information on the prefix.
 
 Label:
-: A signature label which is specific to each composite algorithm. The signature label binds the signature to the specific composite algorithm.  signature label values for each algorithm are listed in {{sec-alg-parms}}.
+: A signature label which is specific to each composite algorithm. The signature label binds the signature to the specific composite algorithm. Signature label values for each algorithm are listed in {{sec-alg-parms}}.
 
 len(ctx):
 : A single unsigned byte encoding the length of the context.
@@ -534,7 +534,7 @@ Internally it uses pure ML-DSA as the component algorithm since there is no adva
 
 Compliant applications MUST output "Valid signature" (true) if and only if all component signatures were successfully validated, and "Invalid signature" (false) otherwise.
 
-The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-label-and-ctx}} for a discussion on the signature label `Domain` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+The following describes how to instantiate a `Verify()` function for a given composite algorithm represented by `<OID>`. See {{sec-prehash}} for a discussion of the pre-hash function `PH`. See {{sec-label-and-ctx}} for a discussion on the signature label `Label` and application context `ctx`. See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
 
 
 ~~~
