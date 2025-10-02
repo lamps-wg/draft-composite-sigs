@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 1 April 2026                                            M. Pala
+Expires: 5 April 2026                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                       28 September 2025
+                                                          2 October 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 April 2026.
+   This Internet-Draft will expire on 5 April 2026.
 
 Copyright Notice
 
@@ -429,7 +429,7 @@ Table of Contents
 
    Label:  A signature label which is specific to each composite
       algorithm.  The signature label binds the signature to the
-      specific composite algorithm.  signature label values for each
+      specific composite algorithm.  Signature label values for each
       algorithm are listed in Section 7.
 
    len(ctx):  A single unsigned byte encoding the length of the context.
@@ -679,7 +679,7 @@ Signature Generation Process:
    The following describes how to instantiate a Verify() function for a
    given composite algorithm represented by <OID>.  See Section 3.1 for
    a discussion of the pre-hash function PH.  See Section 3.2 for a
-   discussion on the signature label Domain and application context ctx.
+   discussion on the signature label Label and application context ctx.
    See Section 11.4 for a discussion of externalizing the pre-hashing
    step.
 
