@@ -86,6 +86,7 @@ normative:
   RFC8032:
   #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
+  I-D.draft-ietf-lamps-dilithium-certificates:
   X.690:
       title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
       date: November 2015
@@ -141,7 +142,6 @@ informative:
   RFC8551:
   RFC9180:
   RFC9794:
-  I-D.draft-ietf-lamps-dilithium-certificates-11:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-06:
   Bindel2017: # Not referenced, but I think it's important to included.
     title: "Transitioning to a quantum-resistant public key infrastructure"
@@ -413,8 +413,7 @@ Key Generation Process:
 
   1. Generate component keys
 
-     mldsaSeed = Random(32)
-     (mldsaPK, mldsaSK) = ML-DSA.KeyGen_internal(mldsaSeed)
+     (mldsaPK, mldsaSK) = ML-DSA.KeyGen()
      (tradPK, tradSK) = Trad.KeyGen()
 
   2. Check for component key gen failure
@@ -425,12 +424,12 @@ Key Generation Process:
   3. Output the composite public and private keys
 
      pk = SerializePublicKey(mldsaPK, tradPK)
-     sk = SerializePrivateKey(mldsaSeed, tradSK)
+     sk = SerializePrivateKey(mldsaSK, tradSK)
      return (pk, sk)
 
 ~~~
 
-This keygen routine make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
+This keygen routine leaves ambiguous whether `mldsaSK` is the seed 𝜉, the expanded private key, or both. In short, any of those are allowed in the upstream {{draft-ietf-lamps-dilithium-certificates}}, and therefore are allowed here. See {{sec-serialize-privkey}} for more discussion. For FIPS-certification implications, see {{sec-fips}}.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
@@ -732,11 +731,12 @@ Deserialization Process:
 The serialization routine for keys simply concatenates the private keys of the component signature algorithms, as defined below:
 
 ~~~
-Composite-ML-DSA.SerializePrivateKey(mldsaSeed, tradSK) -> bytes
+Composite-ML-DSA.SerializePrivateKey(mldsaSk, tradSK) -> bytes
 
 Explicit inputs:
 
-  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+  mldsaSk    The ML-DSA private key, which can be any of seed,
+             expanded, or both.
 
   tradSK     The traditional private key in the appropriate
              encoding for the underlying component algorithm.
@@ -754,8 +754,33 @@ Serialization Process:
 
   1. Combine and output the encoded private key.
 
-     output mldsaSeed || tradSK
+     output len(mldsaSK) || mldsaSk || tradSK
 ~~~
+
+
+{{draft-ietf-lamps-dilithium-certificates}} defines the ML-DSA private key using the following structure:
+
+```
+ML-DSA-44-PrivateKey ::= CHOICE {
+  seed [0] OCTET STRING (SIZE (32)),
+  expandedKey OCTET STRING (SIZE (2560)),
+  both SEQUENCE {
+      seed OCTET STRING (SIZE (32)),
+      expandedKey OCTET STRING (SIZE (2560))
+      }
+  }
+```
+
+Composite ML-DSA carries forward the core behaviour of allowing the three variants: `seed`, `expandedKey` and `both`, but drops the ASN.1 encoding in favour of a straight binary encoding which can be differentiated based on the value of `len(mldsaSK)`, which is encoded as a little-endian two-byte unsigned integer and MUST be one of the values in {{mldsa-sk-sizes}}.
+
+| ML-DSA alg  | seed  | expandedKey  | both |
+| ----------- | ----- | ------------ | ---- |
+| ML-DSA-44   | 32    | 2560         | 2592 |
+| ML-DSA-65   | 32    | 4032         | 4064 |
+| ML-DSA-87   | 32    | 4896         | 4928 |
+{: #mldsa-sk-sizes title="Sizes of the various representations of ML-DSA private keys"}
+
+When encoding `both`, it is the raw concatenation of 32 byte seed followed by the expandedKey.
 
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
@@ -775,17 +800,21 @@ Implicit inputs:
 
 Output:
 
-  mldsaSeed  The ML-DSA private key, which is the bytes of the seed.
+  mldsaSk  The ML-DSA private key, which is the bytes of the seed.
 
   tradSK     The traditional private key in the appropriate
              encoding for the underlying component algorithm.
 
 Deserialization Process:
 
+  1. Parse the length of the ML-DSA key
+
+     lenMldsa = bytes[:2]
+
   1. Parse each constituent encoded key.
 
-     mldsaSeed = bytes[:32]
-     tradSK  = bytes[32:]
+     mldsaSk = bytes[2:lenMldsa+2]
+     tradSK  = bytes[lenMldsa+2:]
 
      Note that while ML-DSA has fixed-length keys, RSA and ECDSA
      may not, depending on encoding, so rigorous length-checking
@@ -793,10 +822,10 @@ Deserialization Process:
 
   2. Output the component private keys
 
-     output (mldsaSeed, tradSK)
+     output (mldsaSk, tradSK)
 ~~~
 
-
+Additional error-checking and decoding MAY be performed based on the `lenMldsa` value, as described in {{mldsa-sk-sizes}}.
 
 ## SerializeSignatureValue and DeserializeSignatureValue {#sec-serialize-sig}
 
@@ -1906,6 +1935,14 @@ TODO: lock this to a specific commit.
 {::include src/testvectors_wrapped.json}
 ~~~
 
+
+# Example of ExpandedKey and Both Private Keys
+
+The test vectors above all use the seed private key for the ML-DSA component. Here we show the private key from the `id-MLDSA65-ECDSA-P256-SHA512` test vector in its Expanded and Both representations.
+
+{::include src/id-MLDSA65-ECDSA-P256-SHA512_expandedkey.priv}
+
+{::include src/id-MLDSA65-ECDSA-P256-SHA512_both.priv}
 
 # Intellectual Property Considerations
 

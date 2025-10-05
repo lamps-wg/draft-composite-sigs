@@ -483,17 +483,17 @@ class CompositeSig(SIG):
     super().__init__()
 
   def loadPK(self, pkbytes):
-    mldsapub, tradpub = self.deserializeKey(pkbytes)
+    mldsapub, tradpub = self.deserializePublicKey(pkbytes)
     self.mldsa.loadPK(mldsapub)
     self.tradsig.loadPK(tradpub)
-    self.pk = self.serializeKey()
+    self.pk = self.serializePublicKey()
 
 
   def keyGen(self):
     self.mldsa.keyGen()
     self.tradsig.keyGen()
 
-    self.pk = self.serializeKey()
+    self.pk = self.serializePublicKey()
 
 
   def computeMprime(self, m, ctx, return_intermediates=False ):
@@ -556,7 +556,7 @@ class CompositeSig(SIG):
     self.tradsig.verify(tradSig, Mprime)
 
 
-  def serializeKey(self):
+  def serializePublicKey(self):
     """
     (pk1, pk2) -> pk
     """
@@ -565,7 +565,7 @@ class CompositeSig(SIG):
     return mldsaPK + tradPK
 
 
-  def deserializeKey(self, keyBytes):
+  def deserializePublicKey(self, keyBytes):
     """
     pk -> (pk1, pk2)
     """
@@ -581,7 +581,7 @@ class CompositeSig(SIG):
 
 
   def public_key_bytes(self):
-    return self.serializeKey()
+    return self.serializePublicKey()
 
 
   def public_key_max_len(self):
@@ -592,14 +592,15 @@ class CompositeSig(SIG):
 
   def private_key_bytes(self):
     mldsaSK = self.mldsa.private_key_bytes()
+    lenMldsaSK = len(mldsaSK).to_bytes(2, 'little')
     tradSK  = self.tradsig.private_key_bytes()
-    return mldsaSK + tradSK
+    return lenMldsaSK + mldsaSK + tradSK
 
   
   def private_key_max_len(self):
     (maxMLDSA, _) = self.mldsa.private_key_max_len()
     (maxTrad, fixedSizeTrad) = self.tradsig.private_key_max_len()
-    return (maxMLDSA + maxTrad, fixedSizeTrad)
+    return (2 + maxMLDSA + maxTrad, fixedSizeTrad)
     
 
   def serializeSignatureValue(self, s1, s2):
@@ -1296,6 +1297,31 @@ def writeMessageFormatExamples(sig, filename,  m=b'', ctx=b''):
   f.write( '\n'.join(textwrap.wrap("M': " + Mprime.hex(), width=wrap_width)) +"\n\n" )
 
 
+def writeAlternatePrivateKeyExample(sig, filename, format):
+  assert(format in ['expandedkey', 'both'])
+
+  mldsaSeed = sig.mldsa.private_key_bytes()
+  (_, mldsaSK) = sig.mldsa.ML_DSA_class.key_derive(mldsaSeed)
+  tradSK = sig.tradsig.private_key_bytes()
+
+  if(format == 'both'):
+    mldsaSK = mldsaSeed + mldsaSK
+
+    
+  """
+  | ML-DSA alg  | seed  | expandedKey  | both |
+  | ----------- | ----- | ------------ | ---- |
+  | ML-DSA-44   | 32    | 2560         | 2592 |
+  | ML-DSA-65   | 32    | 4032         | 4064 |
+  | ML-DSA-87   | 32    | 4896         | 4928 |
+  """
+  assert(len(mldsaSK) in [32,2560,2592,4032,4064,4896,4928])
+
+  wrap_width = 67
+  with open(filename, 'w') as f:
+    output_bin = len(mldsaSK).to_bytes(2, 'little') + mldsaSK + tradSK
+    f.write( '\n'.join(textwrap.wrap(base64.b64encode(output_bin).decode('ascii'), width=wrap_width)) )
+
 def calculate_length_length(der_byte_count):
     assert der_byte_count >= 0
 
@@ -1375,7 +1401,10 @@ def main():
   doSig(MLDSA65_RSA3072_PKCS15_SHA512() )
   doSig(MLDSA65_RSA4096_PSS_SHA512() )
   doSig(MLDSA65_RSA4096_PKCS15_SHA512() )
-  doSig(MLDSA65_ECDSA_P256_SHA512() )
+  
+  # Save this one so that we can do the ExpandedKey and Both samples with the same private key.
+  xwing_p256 = MLDSA65_ECDSA_P256_SHA512()
+  doSig(xwing_p256)
   doSig(MLDSA65_ECDSA_P384_SHA512() )
   doSig(MLDSA65_ECDSA_brainpoolP256r1_SHA512() )
   doSig(MLDSA65_Ed25519_SHA512() )
@@ -1386,20 +1415,16 @@ def main():
   doSig(MLDSA87_RSA4096_PSS_SHA512() )
   doSig(MLDSA87_ECDSA_P521_SHA512() )
 
+  # Output the various samples needed for contructing the draft.
   checkTestVectorsSize()
   writeTestVectors()
   writeDumpasn1Cfg()
   writeSizeTable()
   writeAlgParams()
-
-
-  # Write the message representative examples
-
   writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_noctx.md', m=bytes.fromhex("00010203040506070809"), ctx=b'' )
-
-  
   writeMessageFormatExamples(MLDSA65_ECDSA_P256_SHA512(), 'messageFormatSample_ctx.md', m=bytes.fromhex("00010203040506070809"), ctx=bytes.fromhex("0813061205162623") )
-
+  writeAlternatePrivateKeyExample(xwing_p256, 'id-MLDSA65-ECDSA-P256-SHA512_expandedkey.priv', 'expandedkey')
+  writeAlternatePrivateKeyExample(xwing_p256, 'id-MLDSA65-ECDSA-P256-SHA512_both.priv', 'both')
 
 
 if __name__ == "__main__":
