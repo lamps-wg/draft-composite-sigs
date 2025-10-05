@@ -86,7 +86,7 @@ normative:
   RFC8032:
   #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
-  I-D.draft-ietf-lamps-dilithium-certificates:
+  I-D.draft-ietf-lamps-dilithium-certificates-13:
   X.690:
       title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
       date: November 2015
