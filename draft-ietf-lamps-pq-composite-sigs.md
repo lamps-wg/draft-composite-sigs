@@ -757,7 +757,8 @@ Serialization Process:
      output mldsaSeed || tradSK
 ~~~
 
-As noted in {#sec-hash-comp-sig-sign}, variations in the process to accommodate particular private key storage mechanisms are considered to be conformant, so this private key serialization is only RECOMMENDED. It is considered conformant to use alternate private key representations, such as if each component key is wrapped individually Alternitavely, one or both components might not be able to be serialized according to this specification, in which case an implementer might choose to export a composite private key as a single PKCS#12 object containing two separate PKCs#8 PrivateKeyInfos, which would then allow access to a broader range of possible encodings for each component private key.
+As noted in {#sec-hash-comp-sig-sign}, variations in the process to accommodate particular private key storage mechanisms are considered to be conformant, so this private key serialization is only RECOMMENDED. It is considered conformant to use alternate private key representations, such as if each component key is wrapped individually.
+Alternitavely, one or both components might not be able to be serialized according to this specification, in which case an implementer might choose to export a composite private key as a single PKCS#12 object containing two separate PKCs#8 PrivateKeyInfos, which would then allow access to a broader range of possible encodings for each component private key.
 
 Deserialization reverses this process. Each component key is deserialized according to their respective specification as shown in {{appdx_components}}.
 
