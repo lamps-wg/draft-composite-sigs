@@ -1218,17 +1218,35 @@ First, a note about the security model under which this analysis is performed. T
 
 The second securtiy model considiration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.
 
+### EUF-CMA
+
+A signature algorithm is Existentially Unforgeable under Chosen-Message Attack (EUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that would be accepted by the verifier for any message m that was not an input to a signing oracle query.
+
+Composite ML-DSA achieves EUF-CMA security against classical adversaries if at least one of the component algorithms is classically EUF-CMA secure. This is since any forgery for the composite algorithm necessarily requires the adversary to create forgeries for both component algorithms.
+
+Composite ML-DSA will only achieve EUF-CMA security against quantum adversaries if ML-DSA remains quantumly EUF-CMA secure since a quantum adversary will already be able to create a forgery for the traditional component algorithm.
+
+The same properties will hold for certificates that use composite ML-DSA: a classical adversary cannot forge a composite ML-DSA signed certificate if at least one component algorithm is classically EUF-CMA secure, and a quantum adversary cannot forge a composite ML-DSA signed certificate if ML-DSA remains quantumly EUF-CMA secure.  
+
+### SUF-CMA
+
+A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different.
+
+Composite ML-DSA will only be SUF-CMA secure against classical adversaries if both component algorithms are classically SUF-CMA secure and the traditional component algorithm is deterministic; that is, repeated calls to the component signing oracle with the same message m will always return the same message-signature pair (m, s). ML-DSA is non-deterministic so if the traditional component algorithms is also non-deterministic then an adversary can use two pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) to construct a third pair (m, s'' = (s1 || s2')) that would be accepted by the verifier.
+
+Note that composite ML-DSA signed certificates will be strongly unforgeable against a classical adversary without the requirement that a component algorithm is deterministic. This is since repeated calls to a certificate signing oracle will give certificates with different serial numbers so it will no longer be possible to mix the component signatures in the same way. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure
+
+However, composite ML-DSA will not be SUF-CMA secure, and composite ML-DSA signed certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
+
+Consequently, applications where SUF-CMA security is critical SHOULD NOT use composite ML-DSA.
+
+### Non-separability [TODO]
+
 The security notion of Weak Non-Separability (WNS) of a hybrid signature is defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}} as the guarantee that an adversary cannot simply "remove" one of the component signatures without evidence left behind. We also position this as being a hybrid variant of the unforgeability game: given a composite signature `(M, (mldsaSig, tradSig))`, can an adversary with access to a signing oracle but not to the signing private keys, produce a `(M', mldsaSig')` or `(M', tradSig')` that will be accepted by the respective standalone primitives. If `M'` is different from `M` then this is "Hybrid EUF-CMA". If `M' = M`, but the signature is new, then this is "Hybrid SUF-CMA".
 
 The signature combiner defined in this specification is Weakly Non-Separable (WNS) when used within X.509 because all X.509 data structures include the OID of the signature algorithm inside the signed object; if a composite signature is split into two separate signatures, then the signed-over OID will still indicate a composite signature algorithm, and this will fail at the X.509 processing layer. Similar if two independent signatures are assempbled into a composite. This meets the definition of WNS. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice, but does not achieve Strong Non-Separability (SNS) since policy mechanisms such as this are outside the definition of SNS. Moreover, composite signatures have Hybrid EUF-CMA security built into the primitive, independent of any enforcement done at the protocol layer: if a signer wishes to sign a message `M`, it is instead `M'` as defined in {{sec-label-and-ctx}} which is passed to the component signature primitives. Consider that an adversary splits `(M, (mldsaSig, tradSig))` into `(M', mldsaSig)` and `(M', tradSig)`. On the ML-DSA side, `(M', mldsaSig)` will not be accepted by a standalone because the composite signed with ML-DSA's context value equal to the composite algorithm's `Label` which will fail to verify under `ML-DSA.Verify(M, ctx="")`. On the traditional side, `(M', tradSig)` would be accepted, but the static `Prefix` defined in {{sec-label-and-ctx}} provides a way to mitigate against this. So, to be precise, Composite ML-DSA achieves Hybrid EUF-CMA security on the ML-DSA side, and conditionally achieves it on the traditional side if the prefix-based mitigation described in {{sec-label-and-ctx}} is applied.
 
 The (non-hibred) unforgeability properties of the composite as a whole are somewhat more nuanced. We recall first the definitions of Existential Unforgeability under Chosen Message Attack (EUF-CMA) and Strong Unforgeability (SUF). The classic EUF-CMA game is in reference to a pair of algorithms `( Sign(), Verify() )` where the adversary has access to a signing oracle using the `Sign()` and must produce a message-signature pair `(m', s')` that is accepted by the verifier using `Verify()` and where `m'` was never signed by the oracle. SUF is similar but requires only that `(m', s') != (m, s)` for any honestly-generated `(m, s)`, i.e. that the adversary cannot construct a new signature to an already-signed message.
-
-The pair `( CompositeML-DSA.Sign(), CompositeML-DSA.Verify() )` is EUF-CMA secure so long as at least one component algorithm is EUF-CMA secure since any attempt to modify the message would cause the EUF-CMA secure component to fail its `Verify()` which in turn will cause `CompositeML-DSA.Verify()` to fail.
-
-Composite ML-DSA only achieves SUF security if both components are SUF secure, but does not necessarily provide SUF if one component is compromised; the argument is that if the first component algorithm is not SUF secure then by definition it admits at least one `(m, s1')` pair where `s1'` was not produced by the honest signer, and the adversary can then combine it with an honestly-signed `(m, s2)` signature produced by the second algorithm over the same message `m` to create `(m, (s1', s2))` which violates SUF for the composite algorithm. ML-DSA is SUF secure. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure and therefore applications that require SUF security SHOULD use the composite combinations with ML-DSA and either Ed25519 or Ed448.
-
-Additionally, within some protocol contexts, SUF security may be restored by properties of the protocol; for example within X.509 certificates [RFC5280], every signature produced by a CA will necessarily include a unique serial number, so the CA will never produce two different signatures over the same data, so the SUF property can be considered to be satisfied under realistic conditions.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
