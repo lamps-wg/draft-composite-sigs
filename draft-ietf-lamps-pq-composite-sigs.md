@@ -1234,15 +1234,13 @@ The same properties will hold for certificates that use composite ML-DSA: a clas
 
 ### SUF-CMA
 
-A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different.
+A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different. SUF-CMA is also more complicated for composite ML-DSA than EUF-CMA.
 
-The SUF-CMA security of composite ML-DSA is more complicated than EUF-CMA.
+A SUF-CMA failure in one component algorithm can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to composite ML-DSA with ECDSA.
 
-A SUF-CMA failure in one component algorith can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to composite ML-DSA with ECDSA.
+Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA. If repeated calls to the signing oracle produce two valid message-signature pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) for the same message m, but where s1 =/= s1' and s2 =/= s2', then the adversary can construct a third pair (m, s'' = (s1 || s2')) that will also be valid.
 
-Unfortunately, it is not sufficient in general for both component algorithms to be SUF-CMA. If repeated calls to the signing oracle produce two message-signature pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) for the same message m, but where s1 =/= s1' and s2 =/= s2', then the adversary can construct a third pair (m, s'' = (s1 || s2')) that will also be valid.
-
-Note that this SUF-CMA failure does not apply when composite ML-DSA is used in certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so it will not be possible to mix the component signatures in the same way.
+Note that this SUF-CMA failure does not apply to the situation where composite ML-DSA is used to sign X.509 certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so mixing the component signatures will not give a valid composite signature in the same way.
 
 Nevertheless, composite ML-DSA will not be SUF-CMA secure, and composite ML-DSA signed certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component. Consequently, applications where SUF-CMA security is critical SHOULD NOT use composite ML-DSA.
 
