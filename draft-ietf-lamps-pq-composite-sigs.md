@@ -1230,7 +1230,7 @@ However, the nature of the EUF-CMA security guarantee can still change if one of
 
 * If ML-DSA is broken, then Composite ML-DSA will only be EUF-CMA secure against classical adversaries.
 
-The same properties will hold for certificates that use Composite ML-DSA: a classical adversary cannot forge a Composite ML-DSA signed certificate if at least one component algorithm is classically EUF-CMA secure, and a quantum adversary cannot forge a Composite ML-DSA signed certificate if ML-DSA remains quantumly EUF-CMA secure.  
+The same properties will hold for X.509 certificates that use Composite ML-DSA: a classical adversary cannot forge a Composite ML-DSA signed certificate if at least one component algorithm is classically EUF-CMA secure, and a quantum adversary cannot forge a Composite ML-DSA signed certificate if ML-DSA remains quantumly EUF-CMA secure.  
 
 ### SUF-CMA
 
@@ -1242,7 +1242,7 @@ Unfortunately, it is not generally sufficient for both component algorithms to b
 
 Note that this SUF-CMA failure does not apply to the situation where Composite ML-DSA is used to sign X.509 certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so mixing the component signatures does not give a valid composite signature in the same way.
 
-Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and Composite ML-DSA signed certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
+Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and Composite ML-DSA signed X.509 certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
 
 Consequently, applications where SUF-CMA security is critical SHOULD NOT use Composite ML-DSA.
 
@@ -1250,11 +1250,11 @@ Consequently, applications where SUF-CMA security is critical SHOULD NOT use Com
 
 Weak Non-Separability (WNS) of a hybrid signature is defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}} as the guarantee that an adversary cannot simply "remove" one of the component signatures without evidence left behind.
 
-Strong Non-Separability (SNS) is the stronger notion that an adversary cannot take a hybrid signature and produce a component signature, and a potentially different message, that will verify correctly.
+Strong Non-Separability (SNS) is the stronger notion that an adversary cannot take a hybrid signature and produce a component signature, with a potentially different message, that will be accepted by the component verifier.
 
-Composite ML-DSA signs a message `M` by passing `M'` as defined in {{sec-label-and-ctx}} to the component signature primitives. Consider an adversary that takes a composite signature `(M, (mldsaSig, tradSig))` and splits it into the component signatures `(M', mldsaSig)` and `(M', tradSig)`. On the traditional side, `(M', tradSig)` will verify correctly, but the static Prefix defined in {{sec-label-and-ctx}} remains as evidence of the original composite. On the ML-DSA side, `(M', mldsaSig)` is signed with ML-DSA's context value equal to the composite algorithm's `Label` so will fail to verify under `ML-DSA.Verify(M', ctx="")`. Consequently, Composite ML-DSA will provide WNS for both components and a form of SNS for the ML-DSA component. It can achieve stronger non-separability in practice for both components if the prefix-based mitigation described in {{sec-cons-prefix}} is applied.
+Composite ML-DSA signs a message `M` by passing `M'` as defined in {{sec-label-and-ctx}} to the component signature primitives. Consider an adversary that takes a composite signature `(M, (mldsaSig, tradSig))` and splits it into the component signatures `(M', mldsaSig)` and `(M', tradSig)`. On the traditional side, `(M', tradSig)` will verify correctly, but the static Prefix defined in {{sec-label-and-ctx}} remains as evidence of the original composite. On the ML-DSA side, `(M', mldsaSig)` is signed with ML-DSA's context value equal to the composite algorithm's `Label` so will fail to verify under `ML-DSA.Verify(M', ctx="")`. Consequently, Composite ML-DSA will provide WNS for both components and a limited form of SNS for the ML-DSA component. It can achieve stronger non-separability in practice for both components if the prefix-based mitigation described in {{sec-cons-prefix}} is applied.
 
-When used within X.509, the OID of the signature algorithm is included in the signed object so if one of the component signatures is removed from the Composite ML-DSA signature then the signed-over OID will still indicate the composite algorithm, and this will fail at the X.509 processing layer. Composite ML-DSA therefore provides a version of strong non-separability for X.509. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice.
+When used within X.509, the OID of the signature algorithm is included in the signed object so if one of the component signatures is removed from the Composite ML-DSA signature then the signed-over OID will still indicate the composite algorithm, and this will fail at the X.509 processing layer. Composite ML-DSA therefore provides a version of SNS for X.509. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
