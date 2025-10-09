@@ -1222,9 +1222,13 @@ The second securtiy model considiration is that composites are designed to provi
 
 A signature algorithm is Existentially Unforgeable under Chosen-Message Attack (EUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that would be accepted by the verifier for any message m that was not an input to a signing oracle query.
 
-Composite ML-DSA achieves EUF-CMA security against classical adversaries if at least one of the component algorithms is classically EUF-CMA secure. This is since any forgery for the composite algorithm necessarily requires the adversary to create forgeries for both component algorithms.
+In general, composite ML-DSA will be EUF-CMA secure if at least one of the component algorithms is EUF-CMA secure and PH is collision resistant. Any algorithm that creates and existential forgery (m, s = (s1, s2)) for composite ML-DSA can be converted into a pair of algorithms that will either create existential forgeries (m', s1) and (m', s2) for the component algorithms or a collision in PH.
 
-Composite ML-DSA will only achieve EUF-CMA security against quantum adversaries if ML-DSA remains quantumly EUF-CMA secure since a quantum adversary will already be able to create a forgery for the traditional component algorithm.
+However, the nature of the EUF-CMA security guarantee can change if one of the component algorithms is broken:
+
+* If the traditional component is broken, then composite ML-DSA will remain EUF-CMA secure against quantum adversaries.
+
+* If ML-DSA is broken, then composite ML-DSA will only be EUF-CMA secure against classical adversaries.
 
 The same properties will hold for certificates that use composite ML-DSA: a classical adversary cannot forge a composite ML-DSA signed certificate if at least one component algorithm is classically EUF-CMA secure, and a quantum adversary cannot forge a composite ML-DSA signed certificate if ML-DSA remains quantumly EUF-CMA secure.  
 
@@ -1232,13 +1236,15 @@ The same properties will hold for certificates that use composite ML-DSA: a clas
 
 A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different.
 
-Composite ML-DSA will only be SUF-CMA secure against classical adversaries if both component algorithms are classically SUF-CMA secure and the traditional component algorithm is deterministic; that is, repeated calls to the component signing oracle with the same message m will always return the same message-signature pair (m, s). ML-DSA is non-deterministic so if the traditional component algorithms is also non-deterministic then an adversary can use two pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) to construct a third pair (m, s'' = (s1 || s2')) that would be accepted by the verifier.
+The SUF-CMA security of composite ML-DSA is more complicated than EUF-CMA.
 
-Note that composite ML-DSA signed certificates will be strongly unforgeable against a classical adversary without the requirement that a component algorithm is deterministic. This is since repeated calls to a certificate signing oracle will give certificates with different serial numbers so it will no longer be possible to mix the component signatures in the same way. Of the traditional signature component algorithms used in this specification, only Ed25519 and Ed448 are SUF secure
+A SUF-CMA failure in one component algorith can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to composite ML-DSA with ECDSA.
 
-However, composite ML-DSA will not be SUF-CMA secure, and composite ML-DSA signed certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
+Unfortunately, it is not sufficient in general for both component algorithms to be SUF-CMA. If repeated calls to the signing oracle produce two message-signature pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) for the same message m, but where s1 =/= s1' and s2 =/= s2', then the adversary can construct a third pair (m, s'' = (s1 || s2')) that will also be valid.
 
-Consequently, applications where SUF-CMA security is critical SHOULD NOT use composite ML-DSA.
+Note that this SUF-CMA failure does not apply when composite ML-DSA is used in certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so it will not be possible to mix the component signatures in the same way.
+
+Nevertheless, composite ML-DSA will not be SUF-CMA secure, and composite ML-DSA signed certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component. Consequently, applications where SUF-CMA security is critical SHOULD NOT use composite ML-DSA.
 
 ### Non-separability [TODO]
 
