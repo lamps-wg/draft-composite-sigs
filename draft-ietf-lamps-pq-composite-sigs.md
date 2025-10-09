@@ -1220,9 +1220,9 @@ The second securtiy model considiration is that composites are designed to provi
 
 ### EUF-CMA
 
-A signature algorithm is Existentially Unforgeable under Chosen-Message Attack (EUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that would be accepted by the verifier for any message m that was not an input to a signing oracle query.
+A signature algorithm is Existentially Unforgeable under Chosen-Message Attack (EUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (M, Sig) that would be accepted by the verifier for any message m that was not an input to a signing oracle query.
 
-In general, composite ML-DSA will be EUF-CMA secure if at least one of the component algorithms is EUF-CMA secure and PH is collision resistant. Any algorithm that creates and existential forgery (m, s = (s1, s2)) for composite ML-DSA can be converted into a pair of algorithms that will either create existential forgeries (m', s1) and (m', s2) for the component algorithms or a collision in PH.
+In general, composite ML-DSA will be EUF-CMA secure if at least one of the component algorithms is EUF-CMA secure and PH is collision resistant. Any algorithm that creates and existential forgery (M, (mldsaSig, tradSig)) for composite ML-DSA can be converted into a pair of algorithms that will either create existential forgeries (M', mldsaSig) and (M', tradSig) for the component algorithms or a collision in PH.
 
 However, the nature of the EUF-CMA security guarantee can change if one of the component algorithms is broken:
 
@@ -1234,11 +1234,11 @@ The same properties will hold for certificates that use composite ML-DSA: a clas
 
 ### SUF-CMA
 
-A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (m, s) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different. SUF-CMA is also more complicated for composite ML-DSA than EUF-CMA.
+A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair (M, Sig) that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message m does not need to be different. SUF-CMA is also more complicated for composite ML-DSA than EUF-CMA.
 
 A SUF-CMA failure in one component algorithm can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to composite ML-DSA with ECDSA.
 
-Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA. If repeated calls to the signing oracle produce two valid message-signature pairs (m, s = (s1 || s2)) and (m, s' = (s1' || s2')) for the same message m, but where s1 =/= s1' and s2 =/= s2', then the adversary can construct a third pair (m, s'' = (s1 || s2')) that will also be valid.
+Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA. If repeated calls to the signing oracle produce two valid message-signature pairs (M, (mldsaSig1, tradSig1)) and (M, (mldsaSig2, tradSig2)) for the same message M, but where mldsaSig1 =/= mldsaSig2 and tradSig1 =/= tradSig2, then the adversary can construct a third pair (M, (mldsaSig1, tradSig2)) that will also be valid.
 
 Note that this SUF-CMA failure does not apply to the situation where composite ML-DSA is used to sign X.509 certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so mixing the component signatures will not give a valid composite signature in the same way.
 
