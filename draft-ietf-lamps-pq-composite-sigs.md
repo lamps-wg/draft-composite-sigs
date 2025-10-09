@@ -297,7 +297,7 @@ Composite algorithms, as defined in this specification, follow this definition a
 
 Discussion of the specific choices of algorithm pairings can be found in {{sec-rationale}}.
 
-In terms of security properties, Composite ML-DSA is SUF-CMA secure only if both components are SUF-CMA secure. Specifically, that means the ML-DSA and EdDSA combinations are SUF-CMA, but the ML-DSA and RSA or ECDSA combinations are only EUF-CMA. This means that replacing an ML-DSA signature with a Composite ML-DSA signature with RSA or ECDSA could be considered a reduction in security if your application is sensitive to the difference between SUF and EUF security. Applications requiring SUF-CMA security are RECOMMENDED to use the ML-DSA + EdDSA combinations. Further discussion can be found in {{sec-cons-non-separability}}.
+In terms of security properites, Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature could be considered a reduction in security if your application is sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications requiring SUF-CMA security. Further discussion can be found in {{sec-cons-non-separability}}.
 
 
 
