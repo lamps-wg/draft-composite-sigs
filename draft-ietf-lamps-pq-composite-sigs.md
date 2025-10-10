@@ -1921,8 +1921,6 @@ Due to the length of the test vectors, some readers will prefer to retrieve the 
 
 https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 
-TODO: lock this to a specific commit.
-
 ~~~
 {::include src/testvectors_wrapped.json}
 ~~~
