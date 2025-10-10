@@ -197,7 +197,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet security best practices and regulatory guidelines. Composite ML-DSA is applicable in any application that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA.
+This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
 
 <!-- End of Abstract -->
 
@@ -256,9 +256,9 @@ Certain jurisdictions are already recommending or mandating that PQC lattice sch
 
 Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: the intention is to provide a stepping-stone off of which ever cryptographic algorithm(s) an organization might have deployed today.
 
-This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains strong so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
+This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
 
-Composite ML-DSA is applicable in any PKIX-related application that would otherwise use ML-DSA.
+Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.
 
 ## Conventions and Terminology {#sec-terminology}
 
@@ -318,7 +318,7 @@ Composite algorithms, as defined in this specification, follow this definition a
 
 Discussion of the specific choices of algorithm pairings can be found in {{sec-rationale}}.
 
-In terms of security properties, Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature could be considered a reduction in security if your application is sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications requiring SUF-CMA security. Further discussion can be found in {{sec-cons-non-separability}}.
+In terms of security properties, Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in {{sec-cons-non-separability}}.
 
 
 
@@ -1261,8 +1261,6 @@ A SUF-CMA failure in one component algorithm can lead to a SUF-CMA failure in th
 
 Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA secure. If repeated calls to the signing oracle produce two valid message-signature pairs `(M, (mldsaSig1, tradSig1))` and `(M, (mldsaSig2, tradSig2))` for the same message `M`, but where `mldsaSig1 =/= mldsaSig2` and `tradSig1 =/= tradSig2`, then the adversary can construct a third pair `(M, (mldsaSig1, tradSig2))` that will also be valid.
 
-Note that this SUF-CMA failure does not apply to the situation where Composite ML-DSA is used to sign X.509 certificates. Repeated calls to a certificate signing oracle will produce certificates with different serial numbers and so mixing the component signatures does not give a valid composite signature in the same way.
-
 Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and Composite ML-DSA signed X.509 certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
 
 Consequently, applications where SUF-CMA security is critical SHOULD NOT use Composite ML-DSA.
@@ -1994,7 +1992,7 @@ Mojtaba Bisheh-Niasar and
 Douglas Stebila (University of Waterloo).
 
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
 
 We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
 
