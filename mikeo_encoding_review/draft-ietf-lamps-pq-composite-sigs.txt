@@ -3510,8 +3510,6 @@ Appendix E.  Test Vectors
 
    https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 
-   TODO: lock this to a specific commit.
-
    {
    "m":
    "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZy4=",
