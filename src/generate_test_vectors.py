@@ -250,12 +250,14 @@ class RSA4096PKCS15(RSAPKCS15):
 
 class Version(univ.Integer):
     pass
-    
+
 class ECDSAPrivateKey(univ.Sequence):
+    parameters = univ.ObjectIdentifier().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('version', Version()),
         namedtype.NamedType('privateKey', univ.OctetString()),
-        namedtype.NamedType('parameters', univ.ObjectIdentifier())
+        namedtype.NamedType('parameters', parameters
+      )
     )
 
 class ECDSA(SIG):
@@ -284,7 +286,7 @@ class ECDSA(SIG):
     prk = ECDSAPrivateKey()
     prk['version'] = 1
     prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
-    prk['parameters'] = univ.ObjectIdentifier(self.curveOid)
+    prk['parameters'] = ECDSAPrivateKey.parameters.clone(self.curveOid)
     return der_encode(prk)
         
   def private_key_max_len(self):
@@ -299,7 +301,7 @@ class ECDSA(SIG):
     return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
         calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size)),  # privateKey
-        len(der_encode(univ.ObjectIdentifier(self.curveOid))) # ECParameters
+        len(der_encode(ECDSAPrivateKey.parameters.clone(self.curveOid))) # ECParameters
         # publicKey is not allowed in Composite ML-DSA
     ]), True)
 
