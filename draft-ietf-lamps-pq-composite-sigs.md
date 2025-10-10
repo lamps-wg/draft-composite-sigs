@@ -213,6 +213,8 @@ Interop-affecting changes:
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).
 * Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
 * Updated to new prototype OIDs since it is not binary compatible with the previous release.
+* Dan Van Geest correctly pointed out that in ECPrivateKey (RFC5915), the parameters are not optional. They have been added to the private keys in the test vectors.
+* The Ed25519 and Ed448 private keys had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.
 
 
 Editorial changes:
@@ -220,6 +222,25 @@ Editorial changes:
 * Incorporated the feedback from IETF 123, clarifying the pubic, private key and signature encodings.
 * Many minor editorial fixes based on comments from the working group.
 * Adjusted the Security Considerations about EUF-CMA and Non-Separability to match the removal of the randomizer.
+* Clarified that the ECDSA public key is raw X9.62 with no OCTET STRING wrapping. Test vectors were already correct.
+
+
+A full review was performed of the encoding of each component:
+
+* ML-DSA:
+  * pub key, priv key, sig value: Raw, according to FIPS 204. Test vectors appear to match.
+* RSA:
+  * pub key: ASN.1 RSAPublicKey. Test vectors appear to match (manually inspected "id-MLDSA44-RSA2048-PSS-SHA256").
+  * priv key: RSAPrivateKey (CRT). Test vectors appear to match (manually inspected "id-MLDSA44-RSA2048-PSS-SHA256").
+  * sig value: length of sig for "id-MLDSA44-RSA2048-PSS-SHA256" and "id-MLDSA44-RSA2048-PKCS15-SHA256" verified to be 256 bytes, format hard to manually inspect.
+* ECDSA: Inspecting test vectors for "id-MLDSA44-ECDSA-P256-SHA256"
+  * pub key: The wording of the pub key format in Section 2.2 of RFC5480 is extremely confusing in how it would apply outside of a SubjectPublicKeyInfo. The Composite author's interpretation was for it to be raw X9.62, which is what is already in the test vectors: verified to be raw X9.62 with a leading byte of 0x04 (uncompressed). Normative text in Section 5 is incorrect and has been changed.
+  * priv key: This is the ASN.1 structure ECPrivateKey [RFC5915] as intended, however, as Dan Van Geest points out, the `parameters` field, while marked OPTIONAL is actually required by Section 3 of RFC5915. That means the private keys here are invalid. This has been corrected in the test vectors.
+  * sig value: This is an ASN.1 Ecdsa-Sig-Value [RFC3279] as intended.
+* EdDSA:
+  * pub key: 32 byte raw.
+  * priv key: Had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.
+  * sig value: 64 byte raw.
 
 
 # Introduction {#sec-intro}
@@ -634,8 +655,8 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 * **ML-DSA**: MUST be encoded as specified in section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in section 7.2 of [FIPS.204].
 * **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in section 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an uncompressed `ECPoint` as specified in section 2.2 of [RFC5480], including the leading `0x04` byte to indicate that it is uncompressed. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] without 'NamedCurve' parameter and without 'publicKey' field.
-* **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key as CurvePrivateKey specified in [RFC8410].
+* **ECDSA**: public key MUST be encoded as an uncompressed X9.62 [X9.62–2005], including the leading byte `0x04` indicating uncompressed. This is consistent with the encoding of `ECPoint` as specified in section 2.2 of [RFC5480] when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] without 'NamedCurve' parameter and without 'publicKey' field.
+* **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key is a 32 or 57 byte raw value for Ed25519 and Ed448 respectively, which can be converted to a CurvePrivateKey specified in [RFC8410] by the addition of an OCTET STRING wrapper.
 
 All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 

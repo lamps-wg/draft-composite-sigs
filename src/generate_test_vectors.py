@@ -254,7 +254,8 @@ class Version(univ.Integer):
 class ECDSAPrivateKey(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('version', Version()),
-        namedtype.NamedType('privateKey', univ.OctetString())
+        namedtype.NamedType('privateKey', univ.OctetString()),
+        namedtype.NamedType('parameters', univ.ObjectIdentifier())
     )
 
 class ECDSA(SIG):
@@ -283,6 +284,7 @@ class ECDSA(SIG):
     prk = ECDSAPrivateKey()
     prk['version'] = 1
     prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
+    prk['parameters'] = univ.ObjectIdentifier(self.curveOid)
     return der_encode(prk)
         
   def private_key_max_len(self):
@@ -296,8 +298,8 @@ class ECDSA(SIG):
     """
     return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
-        calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size))  # privateKey
-        # ECParameters are not allowed in Composite ML-DSA
+        calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size)),  # privateKey
+        len(der_encode(univ.ObjectIdentifier(self.curveOid))) # ECParameters
         # publicKey is not allowed in Composite ML-DSA
     ]), True)
 
@@ -316,6 +318,7 @@ class ECDSAP256(ECDSA):
   id = "ecdsa-with-SHA256"
   component_curve = "secp256r1"
   curve = ec.SECP256R1()
+  curveOid = "1.2.840.10045.3.1.7"
   hash = hashes.SHA256()
   algid = "30 13 06 07 2A 86 48 CE 3D 02 01 06 08 2A 86 48 CE 3D 03 01 07"
 
@@ -324,6 +327,7 @@ class ECDSABP256(ECDSA):
   id = "ecdsa-with-SHA256"
   component_curve = "brainpoolP256r1"
   curve = ec.BrainpoolP256R1()
+  curveOid = "1.3.36.3.3.2.8.1.1.7"
   hash = hashes.SHA256()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 07"
 
@@ -332,6 +336,7 @@ class ECDSAP384(ECDSA):
   id = "ecdsa-with-SHA384"
   component_curve = "secp384r1"
   curve = ec.SECP384R1()
+  curveOid = "1.3.132.0.34"
   hash = hashes.SHA384()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 22"
   
@@ -340,6 +345,7 @@ class ECDSABP384(ECDSA):
   id = "ecdsa-with-SHA384"
   component_curve = "brainpoolP384r1"
   curve = ec.BrainpoolP384R1()
+  curveOid = "1.3.36.3.3.2.8.1.1.11"
   hash = hashes.SHA384()
   algid = "30 14 06 07 2A 86 48 CE 3D 02 01 06 09 2B 24 03 03 02 08 01 01 0B"
 
@@ -348,6 +354,7 @@ class ECDSAP521(ECDSA):
   id = "ecdsa-with-SHA512"
   component_curve = "secp521r1"
   curve = ec.SECP521R1()
+  curveOid = "1.3.132.0.35"
   hash = hashes.SHA512()
   algid = "30 10 06 07 2A 86 48 CE 3D 02 01 06 05 2B 81 04 00 23"
 
@@ -377,13 +384,11 @@ class EdDSA(SIG):
     return (len(self.public_key_bytes()), True)
 
   def private_key_bytes(self):
-    raw = self.sk.private_bytes(
+    return self.sk.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
         encryption_algorithm=serialization.NoEncryption()
         )
-    CurvePrivateKey = univ.OctetString(raw)
-    return der_encode(CurvePrivateKey)
         
   def private_key_max_len(self):
     return (len(self.private_key_bytes()), True)
