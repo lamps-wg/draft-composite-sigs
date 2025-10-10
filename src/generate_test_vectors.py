@@ -251,11 +251,16 @@ class RSA4096PKCS15(RSAPKCS15):
 class Version(univ.Integer):
     pass
     
+class ECParameters(univ.Choice):
+    componentType = namedtype.NamedTypes(
+        namedtype.NamedType('namedCurve', univ.ObjectIdentifier()),
+    )
+    
 class ECDSAPrivateKey(univ.Sequence):
     componentType = namedtype.NamedTypes(
         namedtype.NamedType('version', Version()),
         namedtype.NamedType('privateKey', univ.OctetString()),
-        namedtype.NamedType('parameters', univ.ObjectIdentifier())
+        namedtype.OptionalNamedType('parameters', ECParameters().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
     )
 
 class ECDSA(SIG):
@@ -284,7 +289,9 @@ class ECDSA(SIG):
     prk = ECDSAPrivateKey()
     prk['version'] = 1
     prk['privateKey'] = self.sk.private_numbers().private_value.to_bytes((self.sk.key_size + 7) // 8)
-    prk['parameters'] = univ.ObjectIdentifier(self.curveOid)
+    ecparams = ECParameters().subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
+    ecparams['namedCurve'] = univ.ObjectIdentifier(self.curveOid)
+    prk['parameters'] = ecparams
     return der_encode(prk)
         
   def private_key_max_len(self):
@@ -299,7 +306,7 @@ class ECDSA(SIG):
     return (calculate_der_universal_sequence_max_length([
         calculate_der_universal_integer_max_length(max_size_in_bits=1),  # version must be 1
         calculate_der_universal_octet_string_max_length(size_in_bits_to_size_in_bytes(self.curve.key_size)),  # privateKey
-        len(der_encode(univ.ObjectIdentifier(self.curveOid))) # ECParameters
+        calculate_der_context_specific_tag_0_constructed_max_length(len(der_encode(univ.ObjectIdentifier(self.curveOid)))),  # ECParameters
         # publicKey is not allowed in Composite ML-DSA
     ]), True)
 
@@ -1349,6 +1356,10 @@ def calculate_der_universal_sequence_max_length(der_size_of_sequence_elements):
 
     return length
 
+def calculate_der_context_specific_tag_0_constructed_max_length(length):
+    CONTEXT_SPECIFIC_TAG_0_CONSTRUCTED_IDENTIFIER_LENGTH = 1
+
+    return CONTEXT_SPECIFIC_TAG_0_CONSTRUCTED_IDENTIFIER_LENGTH + calculate_length_length(length) + length
 
 def main():
   
