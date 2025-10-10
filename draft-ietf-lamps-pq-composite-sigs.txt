@@ -21,11 +21,12 @@ Abstract
 
    This document defines combinations of ML-DSA [FIPS.204] in hybrid
    with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA,
-   Ed25519, and Ed448.  These combinations are tailored to meet security
-   best practices and regulatory guidelines.  Composite ML-DSA is
-   applicable in any application that uses X.509 or PKIX data structures
-   that accept ML-DSA, but where the operator wants extra protection
-   against breaks or catastrophic bugs in ML-DSA.
+   Ed25519, and Ed448.  These combinations are tailored to meet
+   regulatory guidelines.  Composite ML-DSA is applicable in
+   applications that uses X.509 or PKIX data structures that accept ML-
+   DSA, but where the operator wants extra protection against breaks or
+   catastrophic bugs in ML-DSA, and where EUF-CMA-level security is
+   acceptable.
 
 About This Document
 
@@ -281,7 +282,7 @@ Table of Contents
    property referred to as "protocol backwards compatibility" since it
    can be applied to protocols that are not explicitly hybrid-aware.
    Composite algorithms address algorithm strength uncertainty because
-   the composite algorithm remains strong so long as one of its
+   the composite algorithm remains some security so long as one of its
    components remains strong.  Concrete instantiations of composite ML-
    DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5,
    RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
@@ -290,8 +291,9 @@ Table of Contents
    subject of Section 11.2.  The idea of a composite was first presented
    in [Bindel2017].
 
-   Composite ML-DSA is applicable in any PKIX-related application that
-   would otherwise use ML-DSA.
+   Composite ML-DSA is applicable in PKIX-related applications that
+   would otherwise use ML-DSA and where EUF-CMA-level security is
+   acceptable.
 
 2.1.  Conventions and Terminology
 
@@ -383,11 +385,12 @@ Table of Contents
    combinations defined in this specification are likely to be SUF-CMA
    secure against classical adversaries, none are SUF-CMA secure against
    a quantum adversary.  This means that replacing an ML-DSA signature
-   with a Composite ML-DSA signature could be considered a reduction in
-   security if your application is sensitive to the difference between
-   SUF-CMA and EUF-CMA security.  Composite ML-DSA is NOT RECOMMENDED
-   for use in applications requiring SUF-CMA security.  Further
-   discussion can be found in Section 10.2.
+   with a Composite ML-DSA signature is a reduction in security and
+   should not be used in applications sensitive to the difference
+   between SUF-CMA and EUF-CMA security.  Composite ML-DSA is NOT
+   RECOMMENDED for use in applications where it is has not been shown
+   that EUF-CMA is acceptable.  Further discussion can be found in
+   Section 10.2.
 
 3.  Overview of the Composite ML-DSA Signature Scheme
 
@@ -2330,12 +2333,6 @@ Signature Verification Process:
    where mldsaSig1 =/= mldsaSig2 and tradSig1 =/= tradSig2, then the
    adversary can construct a third pair (M, (mldsaSig1, tradSig2)) that
    will also be valid.
-
-   Note that this SUF-CMA failure does not apply to the situation where
-   Composite ML-DSA is used to sign X.509 certificates.  Repeated calls
-   to a certificate signing oracle will produce certificates with
-   different serial numbers and so mixing the component signatures does
-   not give a valid composite signature in the same way.
 
    Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and
    Composite ML-DSA signed X.509 certificates will not be strongly
@@ -9424,9 +9421,9 @@ Appendix G.  Contributors and Acknowledgements
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensely with strengthening the signature combiner
-   construction, and to Dr. Hale along with Peter C and John Mattsson
-   with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-
-   Separability properties.
+   construction, and to Dr. Hale along with Peter C and John Preuß
+   Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA
+   and Non-Separability properties.
 
    We wish to acknowledge particular effort from Carl Wallace and Daniel
    Van Geest (CryptoNext Security), who have put in sustained effort
