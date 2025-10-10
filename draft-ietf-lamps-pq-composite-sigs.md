@@ -1994,7 +1994,7 @@ Mojtaba Bisheh-Niasar and
 Douglas Stebila (University of Waterloo).
 
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and with analyzing the scheme with respect to EUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
 
 We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
 
