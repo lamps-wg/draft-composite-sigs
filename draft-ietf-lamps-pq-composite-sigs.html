@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 13 April 2026</td>
+<td class="center">Expires 18 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-10" class="published">10 October 2025</time>
+<time datetime="2025-10-15" class="published">15 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-13">13 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-18">18 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 13 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1935,7 +1935,7 @@ The functions defined in this section are considered internal implementation det
           <p id="section-5-5.2.1"><strong>RSA</strong>: the public key MUST be encoded as RSAPublicKey with the <code>(n,e)</code> public key representation as specified in A.1.1 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> and the private key representation as RSAPrivateKey specified in A.1.2 of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span> with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in section 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-5-5.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-5.3">
-          <p id="section-5-5.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an uncompressed X9.62 <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>, including the leading byte <code>0x04</code> indicating uncompressed. This is consistent with the encoding of <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span> when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an <code>Ecdsa-Sig-Value</code> as specified in section 2.2.3 of <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>. The private key MUST be encoded as ECPrivateKey specified in <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span> with the 'NamedCurve' parameter and without the 'publicKey' field.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
+          <p id="section-5-5.3.1"><strong>ECDSA</strong>: public key MUST be encoded as an uncompressed X9.62 <span>[<a href="#X9.62_2005" class="cite xref">X9.62_2005</a>]</span>, including the leading byte <code>0x04</code> indicating uncompressed. This is consistent with the encoding of <code>ECPoint</code> as specified in section 2.2 of <span>[<a href="#RFC5480" class="cite xref">RFC5480</a>]</span> when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an <code>Ecdsa-Sig-Value</code> as specified in section 2.2.3 of <span>[<a href="#RFC3279" class="cite xref">RFC3279</a>]</span>. The private key MUST be encoded as ECPrivateKey specified in <span>[<a href="#RFC5915" class="cite xref">RFC5915</a>]</span> with the 'NamedCurve' parameter set to the OID of the curve, but without the 'publicKey' field.<a href="#section-5-5.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-5.4">
           <p id="section-5-5.4.1"><strong>EdDSA</strong>: public key and signature MUST be encoded as per section 3 of <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span> and the private key is a 32 or 57 byte raw value for Ed25519 and Ed448 respectively, which can be converted to a CurvePrivateKey specified in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span> by the addition of an OCTET STRING wrapper.<a href="#section-5-5.4.1" class="pilcrow">¶</a></p>

@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 13 April 2026                                           M. Pala
+Expires: 18 April 2026                                           M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         10 October 2025
+                                                         15 October 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -60,7 +60,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2026.
+   This Internet-Draft will expire on 18 April 2026.
 
 Copyright Notice
 
@@ -884,7 +884,8 @@ Signature Verification Process:
       wrapping is present.  A signature MUST be encoded as an Ecdsa-Sig-
       Value as specified in section 2.2.3 of [RFC3279].  The private key
       MUST be encoded as ECPrivateKey specified in [RFC5915] with the
-      'NamedCurve' parameter and without the 'publicKey' field.
+      'NamedCurve' parameter set to the OID of the curve, but without
+      the 'publicKey' field.
 
    *  *EdDSA*: public key and signature MUST be encoded as per section 3
       of [RFC8032] and the private key is a 32 or 57 byte raw value for
