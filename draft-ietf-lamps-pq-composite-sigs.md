@@ -656,7 +656,7 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 * **ML-DSA**: MUST be encoded as specified in section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in section 7.2 of [FIPS.204].
 * **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in section 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an uncompressed X9.62 [X9.62–2005], including the leading byte `0x04` indicating uncompressed. This is consistent with the encoding of `ECPoint` as specified in section 2.2 of [RFC5480] when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] with the 'NamedCurve' parameter and without the 'publicKey' field.
+* **ECDSA**: public key MUST be encoded as an uncompressed X9.62 [X9.62–2005], including the leading byte `0x04` indicating uncompressed. This is consistent with the encoding of `ECPoint` as specified in section 2.2 of [RFC5480] when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] with the 'NamedCurve' parameter set to the OID of the curve, but without the 'publicKey' field.
 * **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key is a 32 or 57 byte raw value for Ed25519 and Ed448 respectively, which can be converted to a CurvePrivateKey specified in [RFC8410] by the addition of an OCTET STRING wrapper.
 
 All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
@@ -1951,16 +1951,9 @@ https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 ~~~
 
 
-# Intellectual Property Considerations
-
-The following IPR Disclosure relates to this document:
-
-https://datatracker.ietf.org/ipr/3588/
-
-
 # Contributors and Acknowledgements
-This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:
 
+This document represents the results of a many-year effort by the LAMPS working group. Over that time the following working group members provided valuable review and commentary on the document:
 
 Serge Mister (Entrust),
 Felipe Ventura (Entrust),
@@ -1988,14 +1981,21 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
+Peter Campbell,
+John Preuß Mattsson,
+Carl Wallace,
+Daniel Van Geest (CryptoNext Security),
+Tim Hudson (OpenSSL),
+Viktor Dukhovni (OpenSSL),
 Varun Chatterji (Seventh Sense AI),
 Mojtaba Bisheh-Niasar and
 Douglas Stebila (University of Waterloo).
 
+We wish to acknowledge a few people who have made notable contributions to specific sections of this document.
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction. Dr. Hale, along with Peter Campbell and John Preuß Mattsson provided analysis the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
 
-We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
+We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have implemented each successive version of the draft over multiple years to provide valuable implementation experience and hackathon testing.
 
 Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.
 
