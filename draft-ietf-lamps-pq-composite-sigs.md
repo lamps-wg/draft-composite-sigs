@@ -1950,16 +1950,9 @@ https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 ~~~
 
 
-# Intellectual Property Considerations
-
-The following IPR Disclosure relates to this document:
-
-https://datatracker.ietf.org/ipr/3588/
-
-
 # Contributors and Acknowledgements
-This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:
 
+This document represents the results of a many-year effort by the LAMPS working group. Over that time the following working group members provided valuable review and commentary on the document:
 
 Serge Mister (Entrust),
 Felipe Ventura (Entrust),
@@ -1987,14 +1980,21 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
+Peter Campbell,
+John Preuß Mattsson,
+Carl Wallace,
+Daniel Van Geest (CryptoNext Security),
+Tim Hudson (OpenSSL),
+Viktor Dukhovni (OpenSSL),
 Varun Chatterji (Seventh Sense AI),
 Mojtaba Bisheh-Niasar and
 Douglas Stebila (University of Waterloo).
 
+We wish to acknowledge a few people who have made notable contributions to specific sections of this document.
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction. Dr. Hale, along with Peter Campbell and John Preuß Mattsson provided analysis the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
 
-We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
+We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have implemented each successive version of the draft over multiple years to provide valuable implementation experience and hackathon testing.
 
 Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.
 
