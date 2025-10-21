@@ -1033,8 +1033,6 @@ As the number of algorithms can be daunting, implementers who wish to implement 
 
 Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings using the obvious ASCII conversions prior to concatenating them with other byte values as described in {{sec-label-and-ctx}}.
 
-EDNOTE: the OIDs listed below are prototyping OIDs defined in Entrust's 2.16.840.1.114027.80.9.1 arc but will be replaced by IANA.
-
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
      commit the results to git.
@@ -1127,6 +1125,8 @@ The following is to be registered in "SMI Security for PKIX Module Identifier":
 ###  Object Identifier Registrations
 
 The following are to be registered in "SMI Security for PKIX Algorithms":
+
+Note to IANA / RPC: these were all early allocated on 2025-10-20, so they should all already be assigned to the values used above in {{sec-alg-parms}} and {{sec-asn1-module}}.
 
 - id-MLDSA44-RSA2048-PSS-SHA256
   - Decimal: IANA Assigned
