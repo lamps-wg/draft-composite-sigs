@@ -708,7 +708,7 @@ class MLDSA65_ECDSA_P256_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP256()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA65-P256-SHA512"
+  label = "COMPSIG-MLDSA65-ECDSA-P256-SHA512"
 
 
 class MLDSA65_ECDSA_P384_SHA512(CompositeSig):
@@ -716,7 +716,7 @@ class MLDSA65_ECDSA_P384_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA65-P384-SHA512"
+  label = "COMPSIG-MLDSA65-ECDSA-P384-SHA512"
 
 
 class MLDSA65_ECDSA_brainpoolP256r1_SHA512(CompositeSig):
@@ -724,7 +724,7 @@ class MLDSA65_ECDSA_brainpoolP256r1_SHA512(CompositeSig):
   mldsa = MLDSA65()
   tradsig = ECDSABP256()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA65-BP256-SHA512"
+  label = "COMPSIG-MLDSA65-ECDSA-BP256-SHA512"
 
 
 class MLDSA65_Ed25519_SHA512(CompositeSig):
@@ -740,7 +740,7 @@ class MLDSA87_ECDSA_P384_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSAP384()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA87-P384-SHA512"
+  label = "COMPSIG-MLDSA87-ECDSA-P384-SHA512"
 
 
 class MLDSA87_ECDSA_brainpoolP384r1_SHA512(CompositeSig):
@@ -748,7 +748,7 @@ class MLDSA87_ECDSA_brainpoolP384r1_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSABP384()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA87-BP384-SHA512"
+  label = "COMPSIG-MLDSA87-ECDSA-BP384-SHA512"
 
 
 class MLDSA87_Ed448_SHA512(CompositeSig):
@@ -788,7 +788,7 @@ class MLDSA87_ECDSA_P521_SHA512(CompositeSig):
   mldsa = MLDSA87()
   tradsig = ECDSAP521()
   PH = hashes.SHA512()
-  label = "COMPSIG-MLDSA87-P521-SHA512"
+  label = "COMPSIG-MLDSA87-ECDSA-P521-SHA512"
 
 
 def getNewInstanceByName(oidName):
