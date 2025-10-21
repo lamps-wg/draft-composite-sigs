@@ -74,7 +74,7 @@
 
 - id-MLDSA65-ECDSA-P256-SHA512
   - OID: 1.3.6.1.5.5.7.6.45
-  - Label: COMPSIG-MLDSA65-P256-SHA512
+  - Label: COMPSIG-MLDSA65-ECDSA-P256-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -83,7 +83,7 @@
 
 - id-MLDSA65-ECDSA-P384-SHA512
   - OID: 1.3.6.1.5.5.7.6.46
-  - Label: COMPSIG-MLDSA65-P384-SHA512
+  - Label: COMPSIG-MLDSA65-ECDSA-P384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -92,7 +92,7 @@
 
 - id-MLDSA65-ECDSA-brainpoolP256r1-SHA512
   - OID: 1.3.6.1.5.5.7.6.47
-  - Label: COMPSIG-MLDSA65-BP256-SHA512
+  - Label: COMPSIG-MLDSA65-ECDSA-BP256-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-65
   - Traditional Algorithm: ECDSA
@@ -109,7 +109,7 @@
 
 - id-MLDSA87-ECDSA-P384-SHA512
   - OID: 1.3.6.1.5.5.7.6.49
-  - Label: COMPSIG-MLDSA87-P384-SHA512
+  - Label: COMPSIG-MLDSA87-ECDSA-P384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
@@ -118,7 +118,7 @@
 
 - id-MLDSA87-ECDSA-brainpoolP384r1-SHA512
   - OID: 1.3.6.1.5.5.7.6.50
-  - Label: COMPSIG-MLDSA87-BP384-SHA512
+  - Label: COMPSIG-MLDSA87-ECDSA-BP384-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
@@ -155,7 +155,7 @@
 
 - id-MLDSA87-ECDSA-P521-SHA512
   - OID: 1.3.6.1.5.5.7.6.54
-  - Label: COMPSIG-MLDSA87-P521-SHA512
+  - Label: COMPSIG-MLDSA87-ECDSA-P521-SHA512
   - Pre-Hash function (PH): SHA512
   - ML-DSA variant: ML-DSA-87
   - Traditional Algorithm: ECDSA
