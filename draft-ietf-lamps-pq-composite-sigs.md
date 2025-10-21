@@ -209,6 +209,13 @@ This document defines combinations of ML-DSA [FIPS.204] in hybrid with tradition
 Interop-affecting changes:
 
 * Version -13 uses the final IANA-assigned OIDs.
+* Version -13 updates the following Labels for consistency. Please update the hard-coded labels in your implementations:
+  * "COMPSIG-MLDSA65-P256-SHA512" -> "COMPSIG-MLDSA65-ECDSA-P256-SHA512"
+  * "COMPSIG-MLDSA65-P384-SHA512" -> "COMPSIG-MLDSA65-ECDSA-P384-SHA512"
+  * "COMPSIG-MLDSA65-BP256-SHA512" -> "COMPSIG-MLDSA65-ECDSA-BP256-SHA512"
+  * "COMPSIG-MLDSA87-P384-SHA512" -> "COMPSIG-MLDSA87-ECDSA-P384-SHA512"
+  * "COMPSIG-MLDSA87-BP384-SHA512" -> "COMPSIG-MLDSA87-ECDSA-BP384-SHA512"
+  * "COMPSIG-MLDSA87-P521-SHA512" -> "COMPSIG-MLDSA87-ECDSA-P521-SHA512"
 * Removed the randomizer, reverting the signature combiner construction to be similar to the HashComposite construction from -05.
 * Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
 * Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).
