@@ -136,6 +136,8 @@ Table of Contents
 
    Interop-affecting changes:
 
+   *  Version -13 uses the final IANA-assigned OIDs.
+
    *  Removed the randomizer, reverting the signature combiner
       construction to be similar to the HashComposite construction from
       -05.

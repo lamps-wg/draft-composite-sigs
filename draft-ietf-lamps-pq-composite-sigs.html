@@ -1360,25 +1360,28 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-1">Interop-affecting changes:<a href="#section-1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-2.1">
-          <p id="section-1-2.1.1">Removed the randomizer, reverting the signature combiner construction to be similar to the HashComposite construction from -05.<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.1.1">Version -13 uses the final IANA-assigned OIDs.<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.2">
-          <p id="section-1-2.2.1">Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.2.1">Removed the randomizer, reverting the signature combiner construction to be similar to the HashComposite construction from -05.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.3">
-          <p id="section-1-2.3.1">Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).<a href="#section-1-2.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.3.1">Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.<a href="#section-1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.4">
-          <p id="section-1-2.4.1">Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.<a href="#section-1-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.4.1">Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).<a href="#section-1-2.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.5">
-          <p id="section-1-2.5.1">Updated to new prototype OIDs since it is not binary compatible with the previous release.<a href="#section-1-2.5.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.5.1">Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.<a href="#section-1-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.6">
-          <p id="section-1-2.6.1">Dan Van Geest correctly pointed out that in ECPrivateKey (RFC5915), the parameters are not optional. They have been added to the private keys in the test vectors.<a href="#section-1-2.6.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.6.1">Updated to new prototype OIDs since it is not binary compatible with the previous release.<a href="#section-1-2.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-2.7">
-          <p id="section-1-2.7.1">The Ed25519 and Ed448 private keys had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.<a href="#section-1-2.7.1" class="pilcrow">¶</a></p>
+          <p id="section-1-2.7.1">Dan Van Geest correctly pointed out that in ECPrivateKey (RFC5915), the parameters are not optional. They have been added to the private keys in the test vectors.<a href="#section-1-2.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-2.8">
+          <p id="section-1-2.8.1">The Ed25519 and Ed448 private keys had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.<a href="#section-1-2.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-3">Editorial changes:<a href="#section-1-3" class="pilcrow">¶</a></p>
