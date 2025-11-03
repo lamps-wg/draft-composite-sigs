@@ -1051,11 +1051,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">October 2025</td>
+<td class="right">November 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 24 April 2026</td>
+<td class="center">Expires 7 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-21" class="published">21 October 2025</time>
+<time datetime="2025-11-03" class="published">3 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-24">24 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-07">7 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1340,10 +1340,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.17.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-test-vectors" class="internal xref">Test Vectors</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18">
-            <p id="section-toc.1-1.18.1"><a href="#appendix-F" class="auto internal xref">Appendix F</a>.  <a href="#name-contributors-and-acknowledg" class="internal xref">Contributors and Acknowledgements</a></p>
+            <p id="section-toc.1-1.18.1"><a href="#appendix-F" class="auto internal xref">Appendix F</a>.  <a href="#name-intellectual-property-consi" class="internal xref">Intellectual Property Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19">
-            <p id="section-toc.1-1.19.1"><a href="#appendix-G" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.19.1"><a href="#appendix-G" class="auto internal xref">Appendix G</a>.  <a href="#name-contributors-and-acknowledg" class="internal xref">Contributors and Acknowledgements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.20">
+            <p id="section-toc.1-1.20.1"><a href="#appendix-H" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1418,9 +1421,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
         <li class="normal" id="section-1-4.4">
           <p id="section-1-4.4.1">Clarified that the ECDSA public key is raw X9.62 with no OCTET STRING wrapping. Test vectors were already correct.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-4.5">
-          <p id="section-1-4.5.1">Fixed up clumsy text and typos in section 2.<a href="#section-1-4.5.1" class="pilcrow">¶</a></p>
-</li>
       </ul>
 <p id="section-1-5">A full review was performed of the encoding of each component:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1488,7 +1488,7 @@ For instance, the aggressive migration timelines may require deploying PQC algor
 <p id="section-2-3">Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>, <span>[<a href="#ANSSI2024" class="cite xref">ANSSI2024</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: the intention is to provide a stepping-stone off of which ever cryptographic algorithm(s) an organization might have deployed today.<a href="#section-2-5" class="pilcrow">¶</a></p>
-<p id="section-2-6">This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms retain some security even if one of their component algorithms is broken. Concrete instantiations of composite ML-DSA algorithms are provided that combine ML-DSA with RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Section 11.2</a>. The idea of a composite was first presented in <span>[<a href="#Bindel2017" class="cite xref">Bindel2017</a>]</span>.<a href="#section-2-6" class="pilcrow">¶</a></p>
+<p id="section-2-6">This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Section 11.2</a>. The idea of a composite was first presented in <span>[<a href="#Bindel2017" class="cite xref">Bindel2017</a>]</span>.<a href="#section-2-6" class="pilcrow">¶</a></p>
 <p id="section-2-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.<a href="#section-2-7" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
 <section id="section-2.1">
@@ -2225,7 +2225,7 @@ Deserialization Process:
         <h3 id="name-encoding-to-der">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-encoding-to-der" class="section-name selfRef">Encoding to DER</a>
         </h3>
-<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a <code>OneAsymmetricKey.privateKey OCTET STRING</code> <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then the BIT STRING or OCTET STRING contains this raw byte string encoding of the public key.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">The serialization routines presented in <a href="#sec-serialization" class="auto internal xref">Section 5</a> produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's <code>subjectPublicKey</code> and <code>signatureValue</code> BIT STRING <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or a <code>OneAsymmetricKey.privateKey OCTET STRING</code> <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, then the BIT STRING or OCTET STRING contains this raw byte string output of the appropriate serialization routine from <a href="#sec-serialization" class="auto internal xref">Section 5</a> without further encoding.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">When a Composite ML-DSA
 public key appears outside of a <code>SubjectPublicKeyInfo</code> type in an
 environment that uses ASN.1 encoding, it could be encoded as an OCTET
@@ -10759,13 +10759,22 @@ nBaFQALRUyH+IzsENOYf50Af5uzKU0Zne8b4HZ5skRBY9Yt+kFTBUgaSp6icL8Yk4Bw=
 </div>
 </section>
 </div>
-<div id="contributors-and-acknowledgements">
+<div id="intellectual-property-considerations">
 <section id="appendix-F">
-      <h2 id="name-contributors-and-acknowledg">
-<a href="#appendix-F" class="section-number selfRef">Appendix F. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
+      <h2 id="name-intellectual-property-consi">
+<a href="#appendix-F" class="section-number selfRef">Appendix F. </a><a href="#name-intellectual-property-consi" class="section-name selfRef">Intellectual Property Considerations</a>
       </h2>
-<p id="appendix-F-1">This document represents the results of a many-year effort by the LAMPS working group. Over that time the following working group members provided valuable review and commentary on the document:<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<p id="appendix-F-2">Serge Mister (Entrust),
+<p id="appendix-F-1">The following IPR Disclosure relates to this document:<a href="#appendix-F-1" class="pilcrow">¶</a></p>
+<p id="appendix-F-2">https://datatracker.ietf.org/ipr/3588/<a href="#appendix-F-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="contributors-and-acknowledgements">
+<section id="appendix-G">
+      <h2 id="name-contributors-and-acknowledg">
+<a href="#appendix-G" class="section-number selfRef">Appendix G. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
+      </h2>
+<p id="appendix-G-1">This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:<a href="#appendix-G-1" class="pilcrow">¶</a></p>
+<p id="appendix-G-2">Serge Mister (Entrust),
 Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
@@ -10791,25 +10800,18 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
-Peter Campbell,
-John Preuß Mattsson,
-Carl Wallace,
-Daniel Van Geest (CryptoNext Security),
-Tim Hudson (OpenSSL),
-Viktor Dukhovni (OpenSSL),
 Varun Chatterji (Seventh Sense AI),
 Mojtaba Bisheh-Niasar and
-Douglas Stebila (University of Waterloo).<a href="#appendix-F-2" class="pilcrow">¶</a></p>
-<p id="appendix-F-3">We wish to acknowledge a few people who have made notable contributions to specific sections of this document.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
-<p id="appendix-F-4">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction. Dr. Hale, along with Peter Campbell and John Preuß Mattsson provided analysis the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.<a href="#appendix-F-4" class="pilcrow">¶</a></p>
-<p id="appendix-F-5">We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have implemented each successive version of the draft over multiple years to provide valuable implementation experience and hackathon testing.<a href="#appendix-F-5" class="pilcrow">¶</a></p>
-<p id="appendix-F-6">Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.<a href="#appendix-F-6" class="pilcrow">¶</a></p>
-<p id="appendix-F-7">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-F-7" class="pilcrow">¶</a></p>
-<p id="appendix-F-8">Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-F-8" class="pilcrow">¶</a></p>
+Douglas Stebila (University of Waterloo).<a href="#appendix-G-2" class="pilcrow">¶</a></p>
+<p id="appendix-G-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.<a href="#appendix-G-3" class="pilcrow">¶</a></p>
+<p id="appendix-G-4">We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.<a href="#appendix-G-4" class="pilcrow">¶</a></p>
+<p id="appendix-G-5">Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.<a href="#appendix-G-5" class="pilcrow">¶</a></p>
+<p id="appendix-G-6">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-G-6" class="pilcrow">¶</a></p>
+<p id="appendix-G-7">Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-G-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-G">
+<section id="appendix-H">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

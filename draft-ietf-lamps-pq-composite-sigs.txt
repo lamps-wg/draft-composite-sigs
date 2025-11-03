@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 24 April 2026                                           M. Pala
+Expires: 7 May 2026                                              M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         21 October 2025
+                                                         3 November 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -60,7 +60,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 April 2026.
+   This Internet-Draft will expire on 7 May 2026.
 
 Copyright Notice
 
@@ -128,7 +128,8 @@ Table of Contents
            Signatures
    Appendix D.  Message Representative Examples
    Appendix E.  Test Vectors
-   Appendix F.  Contributors and Acknowledgements
+   Appendix F.  Intellectual Property Considerations
+   Appendix G.  Contributors and Acknowledgements
    Authors' Addresses
 
 1.  Changes since -07 (WGLC)
@@ -198,8 +199,6 @@ Table of Contents
 
    *  Clarified that the ECDSA public key is raw X9.62 with no OCTET
       STRING wrapping.  Test vectors were already correct.
-
-   *  Fixed up clumsy text and typos in section 2.
 
    A full review was performed of the encoding of each component:
 
@@ -305,14 +304,15 @@ Table of Contents
    be treated as a single atomic algorithm at the protocol level; a
    property referred to as "protocol backwards compatibility" since it
    can be applied to protocols that are not explicitly hybrid-aware.
-   Composite algorithms retain some security even if one of their
-   component algorithms is broken.  Concrete instantiations of composite
-   ML-DSA algorithms are provided that combine ML-DSA with RSASSA-
-   PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards
-   compatibility in the sense of upgraded systems continuing to inter-
-   operate with legacy systems is not directly covered in this
-   specification, but is the subject of Section 11.2.  The idea of a
-   composite was first presented in [Bindel2017].
+   Composite algorithms address algorithm strength uncertainty because
+   the composite algorithm remains some security so long as one of its
+   components remains strong.  Concrete instantiations of composite ML-
+   DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5,
+   RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
+   the sense of upgraded systems continuing to inter-operate with legacy
+   systems is not directly covered in this specification, but is the
+   subject of Section 11.2.  The idea of a composite was first presented
+   in [Bindel2017].
 
    Composite ML-DSA is applicable in PKIX-related applications that
    would otherwise use ML-DSA and where EUF-CMA-level security is
@@ -1188,7 +1188,8 @@ Signature Verification Process:
    encoded message format such as an X.509's subjectPublicKey and
    signatureValue BIT STRING [RFC5280] or a OneAsymmetricKey.privateKey
    OCTET STRING [RFC5958], then the BIT STRING or OCTET STRING contains
-   this raw byte string encoding of the public key.
+   this raw byte string output of the appropriate serialization routine
+   from Section 5 without further encoding.
 
    When a Composite ML-DSA public key appears outside of a
    SubjectPublicKeyInfo type in an environment that uses ASN.1 encoding,
@@ -9399,11 +9400,20 @@ Appendix E.  Test Vectors
    ]
    }
 
-Appendix F.  Contributors and Acknowledgements
+Appendix F.  Intellectual Property Considerations
 
-   This document represents the results of a many-year effort by the
-   LAMPS working group.  Over that time the following working group
-   members provided valuable review and commentary on the document:
+   The following IPR Disclosure relates to this document:
+
+   https://datatracker.ietf.org/ipr/3588/
+
+Appendix G.  Contributors and Acknowledgements
+
+   This document incorporates contributions and comments from a large
+   group of experts.  The editors would especially like to acknowledge
+   the expertise and tireless dedication of the following people, who
+   attended many long meetings and generated millions of bytes of
+   electronic mail and VOIP traffic over the past six years in pursuit
+   of this document:
 
    Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
    (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduade
@@ -9415,25 +9425,19 @@ Appendix F.  Contributors and Acknowledgements
    Oupický, 陳志華 (Abel C.  H.  Chen, Chunghwa Telecom), 林邦曄 (Austin Lin,
    Chunghwa Telecom), Zhao Peiduo (Seventh Sense AI), Phil Hallin
    (Microsoft), Samuel Lee (Microsoft), Alicja Kario (Red Hat), Jean-
-   Pierre Fiset (Crypto4A), Peter Campbell, John Preuß Mattsson, Carl
-   Wallace, Daniel Van Geest (CryptoNext Security), Tim Hudson
-   (OpenSSL), Viktor Dukhovni (OpenSSL), Varun Chatterji (Seventh Sense
-   AI), Mojtaba Bisheh-Niasar and Douglas Stebila (University of
-   Waterloo).
-
-   We wish to acknowledge a few people who have made notable
-   contributions to specific sections of this document.
+   Pierre Fiset (Crypto4A), Varun Chatterji (Seventh Sense AI), Mojtaba
+   Bisheh-Niasar and Douglas Stebila (University of Waterloo).
 
    We especially want to recognize the contributions of Dr. Britta Hale
    who has helped immensely with strengthening the signature combiner
-   construction.  Dr. Hale, along with Peter Campbell and John Preuß
-   Mattsson provided analysis the scheme with respect to EUF-CMA, SUF-
-   CMA and Non-Separability properties.
+   construction, and to Dr. Hale along with Peter C and John Preuß
+   Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA
+   and Non-Separability properties.
 
    We wish to acknowledge particular effort from Carl Wallace and Daniel
-   Van Geest (CryptoNext Security), who have implemented each successive
-   version of the draft over multiple years to provide valuable
-   implementation experience and hackathon testing.
+   Van Geest (CryptoNext Security), who have put in sustained effort
+   over multiple years both reviewing and implementing at the hackathon
+   each iteration of this document.
 
    Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-
    KEM implementations were used to generate the test vectors.
