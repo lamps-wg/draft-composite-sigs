@@ -231,7 +231,6 @@ Editorial changes:
 * Many minor editorial fixes based on comments from the working group.
 * Adjusted the Security Considerations about EUF-CMA and Non-Separability to match the removal of the randomizer.
 * Clarified that the ECDSA public key is raw X9.62 with no OCTET STRING wrapping. Test vectors were already correct.
-* Fixed up clumsy text and typos in section 2.
 
 
 A full review was performed of the encoding of each component:
@@ -265,7 +264,7 @@ Certain jurisdictions are already recommending or mandating that PQC lattice sch
 
 Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: the intention is to provide a stepping-stone off of which ever cryptographic algorithm(s) an organization might have deployed today.
 
-This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms retain some security even if one of their component algorithms is broken. Concrete instantiations of composite ML-DSA algorithms are provided that combine ML-DSA with RSASSA-PKCS1-v1_5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
+This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
 
 Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.
 
@@ -920,7 +919,7 @@ While composite ML-DSA keys and signature values MAY be used raw, the following 
 
 ## Encoding to DER {#sec-encoding-to-der}
 
-The serialization routines presented in {{sec-serialization}} produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's `subjectPublicKey` and `signatureValue` BIT STRING [RFC5280] or a `OneAsymmetricKey.privateKey OCTET STRING` [RFC5958], then the BIT STRING or OCTET STRING contains this raw byte string encoding of the public key.
+The serialization routines presented in {{sec-serialization}} produce raw binary values. When these values are required to be carried within a DER-encoded message format such as an X.509's `subjectPublicKey` and `signatureValue` BIT STRING [RFC5280] or a `OneAsymmetricKey.privateKey OCTET STRING` [RFC5958], then the BIT STRING or OCTET STRING contains this raw byte string output of the appropriate serialization routine from {{sec-serialization}} without further encoding.
 
 When a Composite ML-DSA
 public key appears outside of a `SubjectPublicKeyInfo` type in an
@@ -1959,9 +1958,16 @@ https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
 ~~~
 
 
-# Contributors and Acknowledgements
+# Intellectual Property Considerations
 
-This document represents the results of a many-year effort by the LAMPS working group. Over that time the following working group members provided valuable review and commentary on the document:
+The following IPR Disclosure relates to this document:
+
+https://datatracker.ietf.org/ipr/3588/
+
+
+# Contributors and Acknowledgements
+This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:
+
 
 Serge Mister (Entrust),
 Felipe Ventura (Entrust),
@@ -1989,21 +1995,14 @@ Phil Hallin (Microsoft),
 Samuel Lee (Microsoft),
 Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
-Peter Campbell,
-John Preuß Mattsson,
-Carl Wallace,
-Daniel Van Geest (CryptoNext Security),
-Tim Hudson (OpenSSL),
-Viktor Dukhovni (OpenSSL),
 Varun Chatterji (Seventh Sense AI),
 Mojtaba Bisheh-Niasar and
 Douglas Stebila (University of Waterloo).
 
-We wish to acknowledge a few people who have made notable contributions to specific sections of this document.
 
-We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction. Dr. Hale, along with Peter Campbell and John Preuß Mattsson provided analysis the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
+We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.
 
-We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have implemented each successive version of the draft over multiple years to provide valuable implementation experience and hackathon testing.
+We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.
 
 Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.
 
