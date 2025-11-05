@@ -1232,6 +1232,8 @@ Note to IANA / RPC: these were all early allocated on 2025-10-20, so they should
 
 # Security Considerations {#sec-cons}
 
+As this specification uses ML-DSA as a component of all composite algorithms, all security considerations from {{I-D.ietf-lamps-dilithium-certificates}} apply.
+
 ## Why Hybrids?
 
 In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.
