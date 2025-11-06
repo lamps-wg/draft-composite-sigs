@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 9 May 2026                                              M. Pala
+Expires: 10 May 2026                                             M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         5 November 2025
+                                                         6 November 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -60,7 +60,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 May 2026.
+   This Internet-Draft will expire on 10 May 2026.
 
 Copyright Notice
 
@@ -2226,6 +2226,10 @@ Signature Verification Process:
       -  References: This Document
 
 10.  Security Considerations
+
+   As this specification uses ML-DSA as a component of all composite
+   algorithms, all security considerations from
+   [I-D.ietf-lamps-dilithium-certificates] apply.
 
 10.1.  Why Hybrids?
 
