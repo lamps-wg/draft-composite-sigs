@@ -2383,14 +2383,14 @@ Signature Verification Process:
    both components if the prefix-based mitigation described in
    Section 10.4 is applied.
 
-   When used within X.509, the OID of the signature algorithm is
-   included in the signed object so if one of the component signatures
-   is removed from the Composite ML-DSA signature then the signed-over
-   OID will still indicate the composite algorithm, and this will fail
-   at the X.509 processing layer.  Composite ML-DSA therefore provides a
-   version of SNS for X.509.  The prohibition on key reuse between
-   composite and single-algorithm contexts discussed in Section 10.3
-   further strengthens the non-separability in practice.
+   When used within X.509, the Label representing the signature
+   algorithm is included in the signed object so if one of the component
+   signatures is removed from the Composite ML-DSA signature then the
+   signed-over Label will still indicate the composite algorithm, and
+   this will fail at the X.509 processing layer.  Composite ML-DSA
+   therefore provides a version of SNS for X.509.  The prohibition on
+   key reuse between composite and single-algorithm contexts discussed
+   in Section 10.3 further strengthens the non-separability in practice.
 
 10.3.  Key Reuse
 
