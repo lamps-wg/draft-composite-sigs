@@ -141,7 +141,7 @@ informative:
   RFC8551:
   RFC9180:
   RFC9794:
-  I-D.draft-ietf-lamps-dilithium-certificates-11:
+  RFC9881:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-06:
   Bindel2017: # Not referenced, but I think it's important to included.
     title: "Transitioning to a quantum-resistant public key infrastructure"
@@ -256,7 +256,7 @@ A full review was performed of the encoding of each component:
 The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify both algorithmic weaknesses as well as implementation flaws across all the new implementations.
 
 Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that Traditional cryptographic algorithms will be broken in the future, with the Traditional algorithms remaining strong in the interim, the only uncertainty is around the timing. But there are also some novel challenges.
-For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against CVEs and other implementation flaws in the new implementations.
+For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against security vulnerabilities and other implementation flaws in the new implementations.
 
 Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{RFC9794}}.
 
@@ -332,7 +332,7 @@ In terms of security properties, Composite ML-DSA will be EUF-CMA secure if at l
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}} with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
 
 Composite signature schemes are defined as cryptographic primitives that match the API of a generic signature scheme, which consists of three algorithms:
 
@@ -1232,6 +1232,8 @@ Note to IANA / RPC: these were all early allocated on 2025-10-20, so they should
 
 # Security Considerations {#sec-cons}
 
+As this specification uses ML-DSA as a component of all composite algorithms, all security considerations from [RFC9881] apply.
+
 ## Why Hybrids?
 
 In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.
@@ -1281,7 +1283,7 @@ Strong Non-Separability (SNS) is the stronger notion that an adversary cannot ta
 
 Composite ML-DSA signs a message `M` by passing `M'` as defined in {{sec-label-and-ctx}} to the component signature primitives. Consider an adversary that takes a composite signature `(M, (mldsaSig, tradSig))` and splits it into the component signatures `(M', mldsaSig)` and `(M', tradSig)`. On the traditional side, `(M', tradSig)` will verify correctly, but the static Prefix defined in {{sec-label-and-ctx}} remains as evidence of the original composite. On the ML-DSA side, `(M', mldsaSig)` is signed with ML-DSA's context value equal to the composite algorithm's `Label` so will fail to verify under `ML-DSA.Verify(M', ctx="")`. Consequently, Composite ML-DSA will provide WNS for both components and a limited form of SNS for the ML-DSA component. It can achieve stronger non-separability in practice for both components if the prefix-based mitigation described in {{sec-cons-prefix}} is applied.
 
-When used within X.509, the OID of the signature algorithm is included in the signed object so if one of the component signatures is removed from the Composite ML-DSA signature then the signed-over OID will still indicate the composite algorithm, and this will fail at the X.509 processing layer. Composite ML-DSA therefore provides a version of SNS for X.509. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice.
+When used within X.509, the Label representing the signature algorithm is included in the signed object so if one of the component signatures is removed from the Composite ML-DSA signature then the signed-over Label will still indicate the composite algorithm, and this will fail at the X.509 processing layer. Composite ML-DSA therefore provides a version of SNS for X.509. The prohibition on key reuse between composite and single-algorithm contexts discussed in {{sec-cons-key-reuse}} further strengthens the non-separability in practice.
 
 
 ## Key Reuse {#sec-cons-key-reuse}
