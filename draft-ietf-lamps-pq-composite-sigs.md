@@ -141,7 +141,7 @@ informative:
   RFC8551:
   RFC9180:
   RFC9794:
-  I-D.draft-ietf-lamps-dilithium-certificates-11:
+  RFC9881:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-06:
   Bindel2017: # Not referenced, but I think it's important to included.
     title: "Transitioning to a quantum-resistant public key infrastructure"
@@ -332,7 +332,7 @@ In terms of security properties, Composite ML-DSA will be EUF-CMA secure if at l
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and {{I-D.ietf-lamps-dilithium-certificates}} with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
 
 Composite signature schemes are defined as cryptographic primitives that match the API of a generic signature scheme, which consists of three algorithms:
 
@@ -1232,7 +1232,7 @@ Note to IANA / RPC: these were all early allocated on 2025-10-20, so they should
 
 # Security Considerations {#sec-cons}
 
-As this specification uses ML-DSA as a component of all composite algorithms, all security considerations from {{I-D.ietf-lamps-dilithium-certificates}} apply.
+As this specification uses ML-DSA as a component of all composite algorithms, all security considerations from [RFC9881] apply.
 
 ## Why Hybrids?
 
