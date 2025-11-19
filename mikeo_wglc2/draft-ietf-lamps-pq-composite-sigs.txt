@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 10 May 2026                                             M. Pala
+Expires: 23 May 2026                                             M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         6 November 2025
+                                                        19 November 2025
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -60,7 +60,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 May 2026.
+   This Internet-Draft will expire on 23 May 2026.
 
 Copyright Notice
 
@@ -418,17 +418,17 @@ Table of Contents
 3.  Overview of the Composite ML-DSA Signature Scheme
 
    Composite ML-DSA is a Post-Quantum / Traditional hybrid signature
-   scheme which combines ML-DSA as specified in [FIPS.204] and
-   [I-D.ietf-lamps-dilithium-certificates] with one of RSASSA-PKCS1-v1_5
-   or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve
-   Digital Signature Algorithm ECDSA scheme defined in section 6 of
-   [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410].  The two
-   component signatures are combined into a composite algorithm via a
-   "signature combiner" function which performs pre-hashing and prepends
-   several signature label values to the message prior to passing it to
-   the component algorithms.  Composite ML-DSA achieves weak non-
-   separability as well as several other security properties which are
-   described in the Security Considerations in Section 10.
+   scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881]
+   with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in
+   [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA
+   scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448
+   defined in [RFC8410].  The two component signatures are combined into
+   a composite algorithm via a "signature combiner" function which
+   performs pre-hashing and prepends several signature label values to
+   the message prior to passing it to the component algorithms.
+   Composite ML-DSA achieves weak non-separability as well as several
+   other security properties which are described in the Security
+   Considerations in Section 10.
 
    Composite signature schemes are defined as cryptographic primitives
    that match the API of a generic signature scheme, which consists of
@@ -2228,8 +2228,7 @@ Signature Verification Process:
 10.  Security Considerations
 
    As this specification uses ML-DSA as a component of all composite
-   algorithms, all security considerations from
-   [I-D.ietf-lamps-dilithium-certificates] apply.
+   algorithms, all security considerations from [RFC9881] apply.
 
 10.1.  Why Hybrids?
 
@@ -2848,15 +2847,6 @@ Process:
               market and repealing Directive 1999/93/EC", n.d.,
               <https://eur-lex.europa.eu/eli/reg/2014/910/oj/eng>.
 
-   [I-D.ietf-lamps-dilithium-certificates]
-              Massimo, J., Kampanakis, P., Turner, S., and B.
-              Westerbaan, "Internet X.509 Public Key Infrastructure -
-              Algorithm Identifiers for the Module-Lattice-Based Digital
-              Signature Algorithm (ML-DSA)", Work in Progress, Internet-
-              Draft, draft-ietf-lamps-dilithium-certificates-11, 22 May
-              2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              lamps-dilithium-certificates-11>.
-
    [I-D.ietf-pquip-hybrid-signature-spectrums]
               Bindel, N., Hale, B., Connolly, D., and F. D, "Hybrid
               signature spectrums", Work in Progress, Internet-Draft,
@@ -2900,6 +2890,13 @@ Process:
               Post-Quantum Traditional Hybrid Schemes", RFC 9794,
               DOI 10.17487/RFC9794, June 2025,
               <https://www.rfc-editor.org/info/rfc9794>.
+
+   [RFC9881]  Massimo, J., Kampanakis, P., Turner, S., and B. E.
+              Westerbaan, "Internet X.509 Public Key Infrastructure --
+              Algorithm Identifiers for the Module-Lattice-Based Digital
+              Signature Algorithm (ML-DSA)", RFC 9881,
+              DOI 10.17487/RFC9881, October 2025,
+              <https://www.rfc-editor.org/info/rfc9881>.
 
 Appendix A.  Maximum Key and Signature Sizes
 
