@@ -142,7 +142,7 @@ informative:
   RFC9180:
   RFC9794:
   RFC9881:
-  I-D.draft-ietf-pquip-hybrid-signature-spectrums-06:
+  I-D.draft-ietf-pquip-hybrid-signature-spectrums-07:
   Bindel2017: # Not referenced, but I think it's important to included.
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
@@ -473,7 +473,7 @@ For example, component private keys stored in separate software or hardware modu
 
 ## Sign {#sec-hash-comp-sig-sign}
 
-The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 3 of Section 5.2 of [FIPS.204].
+The `Sign()` algorithm of Composite ML-DSA mirrors the construction of `ML-DSA.Sign(sk, M, ctx)` defined in Algorithm 2 of Section 5.2 of [FIPS.204].
 Composite ML-DSA exposes an API similar to that of ML-DSA, despite the fact that it includes pre-hashing in a similar way to HashML-DSA.
 Internally it uses pure ML-DSA as the component algorithm since there is no advantage to pre-hashing twice.
 
