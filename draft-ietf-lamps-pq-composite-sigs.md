@@ -356,8 +356,6 @@ PH( M ):
 
 Each Composite ML-DSA algorithm has a unique signature label value which is used in constructing the message representative `M'` in the `Composite-ML-DSA.Sign()` ({{sec-hash-comp-sig-sign}}) and `Composite-ML-DSA.Verify()` ({{sec-hash-comp-sig-verify}}). This helps protect against component signature values being removed from the composite and used out of context of X.509, or if the prohibition on reusing key material between a composite and a non-composite, or between two composites is not adhered to.
 
-Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'`. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. The EdDSA component primitive can also expose a `ctx` parameter, but this is not used by Composite ML-DSA.
-
 Within Composite ML-DSA, values of `Label` are fully specified, and runtime-variable `Label` values are not allowed. For authors of follow-on specifications that allow `Label` to be runtime-variable, it should be pre-fixed with the length, `len(Label) || Label` to prevent using this as an injection site that could enable various cryptographic attacks.
 
 
@@ -509,6 +507,8 @@ Signature Generation Process:
 ~~~
 
 Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
+
+Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
 
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this specification so long as it produces the same output and error handling as the process sketched above.
 
