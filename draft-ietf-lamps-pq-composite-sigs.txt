@@ -293,19 +293,24 @@ Table of Contents
    PQ/T Hybrids can allow for deploying Post-Quantum before the PQ
    modules and operational procedures are fully audited and certified.
    This, more than any other requirement, is what motivates the large
-   number of algorithm combinations in this specification: the intention
-   is to provide a stepping-stone off of which ever cryptographic
-   algorithm(s) an organization might have deployed today.
+   number of algorithm combinations in this specification: The intention
+   is to provide a stepping stone from which any cryptographic algorithm
+   an organization has deployed today can evolve or transition.
 
-   This specification defines a specific instantiation of the PQ/T
-   Hybrid paradigm called "composite" where multiple cryptographic
-   algorithms are combined to form a single signature algorithm
-   presenting a single public key and signature value such that it can
-   be treated as a single atomic algorithm at the protocol level; a
-   property referred to as "protocol backwards compatibility" since it
-   can be applied to protocols that are not explicitly hybrid-aware.
+   This specification defines
+
+   1.  a specific instantiation of the PQ/T Hybrid paradigm called
+       "composite" where multiple cryptographic algorithms are combined
+       to form a single signature algorithm presenting a single public
+       key and signature value such that it can be treated as a single
+       atomic algorithm at the protocol level and
+
+   2.  a property referred to as "protocol backwards compatibility"
+       since it can be applied to protocols that are not explicitly
+       hybrid-aware.
+
    Composite algorithms address algorithm strength uncertainty because
-   the composite algorithm remains some security so long as one of its
+   the composite algorithm retains some security so long as one of its
    components remains strong.  Concrete instantiations of composite ML-
    DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5,
    RSASSA-PSS, ECDSA, Ed25519, and Ed448.  Backwards compatibility in
@@ -457,7 +462,7 @@ Table of Contents
    for use by the public functions KeyGen(), Sign(), and Verify().
    These algorithms are inspired by similar algorithms in [RFC9180].
 
-   *  SerializePublicKey(mlkdsaPK, tradPK) -> bytes: Produce a byte
+   *  SerializePublicKey(mldsaPK, tradPK) -> bytes: Produce a byte
       string encoding of the component public keys.
 
    *  DeserializePublicKey(bytes) -> (mldsaPK, tradPK): Parse a byte
