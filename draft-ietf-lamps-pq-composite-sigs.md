@@ -262,9 +262,14 @@ Cautious implementers may opt to combine cryptographic algorithms in such a way 
 
 Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
-Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: the intention is to provide a stepping-stone off of which ever cryptographic algorithm(s) an organization might have deployed today.
+Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The intention is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.
 
-This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level; a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. Composite algorithms address algorithm strength uncertainty because the composite algorithm remains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
+This specification defines
+
+1. a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level and
+2. a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware.
+
+Composite algorithms address algorithm strength uncertainty because the composite algorithm retains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
 
 Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.
 
@@ -347,7 +352,7 @@ Composite signature schemes are defined as cryptographic primitives that match t
 
 The following algorithms are defined for serializing and deserializing component values and are provided as internal functions for use by the public functions KeyGen(), Sign(), and Verify(). These algorithms are inspired by similar algorithms in {{RFC9180}}.
 
-   * `SerializePublicKey(mlkdsaPK, tradPK) -> bytes`: Produce a byte string encoding of the component public keys.
+   * `SerializePublicKey(mldsaPK, tradPK) -> bytes`: Produce a byte string encoding of the component public keys.
 
    * `DeserializePublicKey(bytes) -> (mldsaPK, tradPK)`: Parse a byte string to recover the component public keys.
 
