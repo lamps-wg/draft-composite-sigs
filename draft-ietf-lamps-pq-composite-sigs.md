@@ -197,79 +197,33 @@ informative:
 
 --- abstract
 
-This document defines combinations of ML-DSA [FIPS.204] in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
+This document defines combinations of US NIST ML-DSA in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
 
 <!-- End of Abstract -->
 
 
 --- middle
 
-# Changes since -07 (WGLC)
-
-Interop-affecting changes:
-
-* Version -13 uses the final IANA-assigned OIDs.
-* Version -13 updates the following Labels for consistency. Please update the hard-coded labels in your implementations:
-  * "COMPSIG-MLDSA65-P256-SHA512" -> "COMPSIG-MLDSA65-ECDSA-P256-SHA512"
-  * "COMPSIG-MLDSA65-P384-SHA512" -> "COMPSIG-MLDSA65-ECDSA-P384-SHA512"
-  * "COMPSIG-MLDSA65-BP256-SHA512" -> "COMPSIG-MLDSA65-ECDSA-BP256-SHA512"
-  * "COMPSIG-MLDSA87-P384-SHA512" -> "COMPSIG-MLDSA87-ECDSA-P384-SHA512"
-  * "COMPSIG-MLDSA87-BP384-SHA512" -> "COMPSIG-MLDSA87-ECDSA-BP384-SHA512"
-  * "COMPSIG-MLDSA87-P521-SHA512" -> "COMPSIG-MLDSA87-ECDSA-P521-SHA512"
-* Removed the randomizer, reverting the signature combiner construction to be similar to the HashComposite construction from -05.
-* Fixed the ASN.1 module for the pk-CompositeSignature and sa-CompositeSignature to indicate no ASN.1 wrapping is used. This simply clarifies the intended encoding but could be an interop-affecting change for implementations that built encoders / decoders from the ASN.1 and ended up with a non-intended encoding.
-* Aligned the hash function used for the RSA component to the RSA key size (Thanks Dan!).
-* Changed the OID-based Domain Separators into HPKE-style signature label strings to match draft-irtf-cfrg-concrete-hybrid-kems-00.
-* Updated to new prototype OIDs since it is not binary compatible with the previous release.
-* Dan Van Geest correctly pointed out that in ECPrivateKey (RFC5915), the parameters are not optional. They have been added to the private keys in the test vectors.
-* The Ed25519 and Ed448 private keys had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.
-
-
-Editorial changes:
-
-* Incorporated the feedback from IETF 123, clarifying the pubic, private key and signature encodings.
-* Many minor editorial fixes based on comments from the working group.
-* Adjusted the Security Considerations about EUF-CMA and Non-Separability to match the removal of the randomizer.
-* Clarified that the ECDSA public key is raw X9.62 with no OCTET STRING wrapping. Test vectors were already correct.
-
-
-A full review was performed of the encoding of each component:
-
-* ML-DSA:
-  * pub key, priv key, sig value: Raw, according to FIPS 204. Test vectors appear to match.
-* RSA:
-  * pub key: ASN.1 RSAPublicKey. Test vectors appear to match (manually inspected "id-MLDSA44-RSA2048-PSS-SHA256").
-  * priv key: RSAPrivateKey (CRT). Test vectors appear to match (manually inspected "id-MLDSA44-RSA2048-PSS-SHA256").
-  * sig value: length of sig for "id-MLDSA44-RSA2048-PSS-SHA256" and "id-MLDSA44-RSA2048-PKCS15-SHA256" verified to be 256 bytes, format hard to manually inspect.
-* ECDSA: Inspecting test vectors for "id-MLDSA44-ECDSA-P256-SHA256"
-  * pub key: The wording of the pub key format in Section 2.2 of RFC5480 is extremely confusing in how it would apply outside of a SubjectPublicKeyInfo. The Composite author's interpretation was for it to be raw X9.62, which is what is already in the test vectors: verified to be raw X9.62 with a leading byte of 0x04 (uncompressed). Normative text in Section 5 is incorrect and has been changed.
-  * priv key: This is the ASN.1 structure ECPrivateKey [RFC5915] as intended, however, as Dan Van Geest points out, the `parameters` field, while marked OPTIONAL is actually required by Section 3 of RFC5915. That means the private keys here are invalid. This has been corrected in the test vectors.
-  * sig value: This is an ASN.1 Ecdsa-Sig-Value [RFC3279] as intended.
-* EdDSA:
-  * pub key: 32 byte raw.
-  * priv key: Had been wrapped in OCTET STRING to match CurvePrivateKey (RFC8410). This has been changed to 32/57 byte raw.
-  * sig value: 64 byte raw.
-
-
 # Introduction {#sec-intro}
 
-The advent of quantum computing poses a significant threat to current cryptographic systems. Traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants are vulnerable to quantum attacks. During the transition to post-quantum cryptography (PQC), there is considerable uncertainty regarding the robustness of both existing and new cryptographic algorithms. While we can no longer fully trust traditional cryptography, we also cannot immediately place complete trust in post-quantum replacements until they have undergone extensive scrutiny and real-world testing to uncover and rectify both algorithmic weaknesses as well as implementation flaws across all the new implementations.
-
-Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that Traditional cryptographic algorithms will be broken in the future, with the Traditional algorithms remaining strong in the interim, the only uncertainty is around the timing. But there are also some novel challenges.
+The advent of quantum computing poses a significant threat to current cryptographic systems because traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants will become vulnerable to quantum attacks.
+Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that traditional cryptographic algorithms will be broken in the future, but will remain strong in the interim, the only uncertainty is around the timing. But there are also some novel challenges.
 For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against security vulnerabilities and other implementation flaws in the new implementations.
 
-Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as Post-Quantum/Traditional (PQ/T) Hybrids {{RFC9794}}.
+Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as "Post-Quantum/Traditional (PQ/T) Hybrids" {{RFC9794}}.
 
-Certain jurisdictions are already recommending or mandating that PQC lattice schemes be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
+This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm. The composite algorithm presents a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level. This provides a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware.  The idea of a composite was first presented in {{Bindel2017}}.
+Composite algorithms retain some security even if one of their component algorithms is broken, which is discussed in detail in {{sec-cons}}.
+This specification creates PQ/T Hybrids with ML-DSA, defined in [FIPS.204] as the PQ component.
+Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.
+The full list of algorithms registered by this specification is in {{sec-alg-parms}}.
+Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}.
 
-Another motivation for using PQ/T Hybrids is regulatory compliance; for example, in some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the Traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The intention is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.
+Certain jurisdictions have recommended that ML-DSA be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
-This specification defines
+In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum Cryptography before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The intention is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.
 
-1. a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm presenting a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level and
-2. a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware.
-
-Composite algorithms address algorithm strength uncertainty because the composite algorithm retains some security so long as one of its components remains strong. Concrete instantiations of composite ML-DSA algorithms are provided based on ML-DSA, RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. Backwards compatibility in the sense of upgraded systems continuing to inter-operate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}. The idea of a composite was first presented in {{Bindel2017}}.
+While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
 
 Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.
 
