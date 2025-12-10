@@ -661,7 +661,7 @@ Table of Contents
 4.2.  Sign
 
    The Sign() algorithm of Composite ML-DSA mirrors the construction of
-   ML-DSA.Sign(sk, M, ctx) defined in Algorithm 3 of Section 5.2 of
+   ML-DSA.Sign(sk, M, ctx) defined in Algorithm 2 of Section 5.2 of
    [FIPS.204].  Composite ML-DSA exposes an API similar to that of ML-
    DSA, despite the fact that it includes pre-hashing in a similar way
    to HashML-DSA.  Internally it uses pure ML-DSA as the component
@@ -2851,9 +2851,9 @@ Process:
    [I-D.ietf-pquip-hybrid-signature-spectrums]
               Bindel, N., Hale, B., Connolly, D., and F. D, "Hybrid
               signature spectrums", Work in Progress, Internet-Draft,
-              draft-ietf-pquip-hybrid-signature-spectrums-06, 9 January
+              draft-ietf-pquip-hybrid-signature-spectrums-07, 20 June
               2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              pquip-hybrid-signature-spectrums-06>.
+              pquip-hybrid-signature-spectrums-07>.
 
    [RFC5914]  Housley, R., Ashmore, S., and C. Wallace, "Trust Anchor
               Format", RFC 5914, DOI 10.17487/RFC5914, June 2010,
