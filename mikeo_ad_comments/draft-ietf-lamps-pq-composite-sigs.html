@@ -1055,7 +1055,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 13 June 2026</td>
+<td class="center">Expires 15 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-10" class="published">10 December 2025</time>
+<time datetime="2025-12-12" class="published">12 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-13">13 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-15">15 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 13 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1389,22 +1389,26 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
           specification generally refers to any function which
           has a registered Object Identifier (OID) for
           use within an ASN.1 AlgorithmIdentifier.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
-<p id="section-1.1-4"><strong>COMPOSITE CRYPTIGRAPHIC ELEMENT</strong>: <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as: A
+<p id="section-1.1-4"><strong>Backwards Compatibility</strong>: This specification considers two types of backwards
+          compatibility. "Application Backwards Compatibility" is the usual definition, meaning whether an upgraded and non-upgraded application can successfully establish communication. This specification also defined "Protocol Backwards Compatibility" whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-5"><strong>COMPOSITE CRYPTOGRAPHIC ELEMENT</strong>: <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as: A
           cryptographic element that
           incorporates multiple component cryptographic elements of the same
-          type in a multi-algorithm scheme.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
-<p id="section-1.1-5"><strong>COMPONENT / PRIMITIVE</strong>:
+          type in a multi-algorithm scheme.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+<p id="section-1.1-6"><strong>COMPONENT / PRIMITIVE</strong>:
   The words "component" or "primitive" are used interchangeably
   to refer to an asymmetric cryptographic algorithm that is used internally
   within a composite algorithm. For example this could be an
-  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS".<a href="#section-1.1-5" class="pilcrow">¶</a></p>
-<p id="section-1.1-6"><strong>DER</strong>:
-          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
-<p id="section-1.1-7"><strong>PKI</strong>:
-          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
-<p id="section-1.1-8"><strong>SIGNATURE</strong>:
+  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS".<a href="#section-1.1-6" class="pilcrow">¶</a></p>
+<p id="section-1.1-7"><strong>DER</strong>:
+          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
+<p id="section-1.1-8"><strong>PKI</strong>:
+          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+<p id="section-1.1-9"><strong>Post-Quantum Traditional (PQ/T) hybrid scheme</strong>:
+    A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
+<p id="section-1.1-10"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="notation">
@@ -1439,7 +1443,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
         </h3>
 <p id="section-1.3-1">Composite algorithms, as defined in this specification, follow the definition in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> and should be regarded as a single algorithm that performs a single cryptographic operation typical of a digital signature algorithm. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module. The design intent is that protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span> can treat composite algorithms as they would any other algorithm without the protocol layer to have any "hybrid-awareness". This is a property referred to as "protocol backwards-compatibility".<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <p id="section-1.3-2">Discussion of the specific choices of algorithm pairings can be found in <a href="#sec-rationale" class="auto internal xref">Section 6.2</a>.<a href="#section-1.3-2" class="pilcrow">¶</a></p>
-<p id="section-1.3-3">In terms of security properties, Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a>.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">In terms of security properties, we consider the two security properties EUF-CMA and SUF-CMA, which are treated more rigorously in <a href="#sec-cons-eufcma" class="auto internal xref">Section 9.2.1</a> and <a href="#sec-cons-sufcma" class="auto internal xref">Section 9.2.2</a>. As a simplified summary; Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a>.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1492,7 +1496,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
         <h3 id="name-pre-hashing">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-pre-hashing" class="section-name selfRef">Pre-hashing</a>
         </h3>
-<p id="section-2.1-1">In <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" and "HashML-DSA" respectively. This specification defines a single mode which is similar in construction to HashML-DSA. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">In <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" (<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> section 5.2) and "HashML-DSA" (<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> section 5.4.1) respectively. This specification defines a single mode which is similar in construction to FIPS-204's HashML-DSA. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message <code>M</code>, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple keys. The actual length of the to-be-signed message <code>M'</code> depends on the application context <code>ctx</code> provided at runtime but since <code>ctx</code> has a maximum length of 255 bytes, <code>M'</code> has a fixed maximum length which depends on the output size of the hash function chosen as <code>PH</code>, but can be computed per composite algorithm.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.1-3">This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <p id="section-2.1-4">See <a href="#impl-cons-external-ph" class="auto internal xref">Section 10.4</a> for a discussion of externalizing the pre-hashing step.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
@@ -1554,7 +1558,9 @@ See <a href="#sec-cons-prefix" class="auto internal xref">Section 9.4</a> for mo
         <h3 id="name-key-generation">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-key-generation" class="section-name selfRef">Key Generation</a>
         </h3>
-<p id="section-3.1-1">In order to maintain security properties of the composite, applications that use composite keys MUST always perform fresh key generations of both component keys and MUST NOT reuse existing key material. See <a href="#sec-cons-key-reuse" class="auto internal xref">Section 9.3</a> for a discussion.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">In order to maintain security properties of the composite, this specification
+strictly forbids re-using component key material between composite and
+non-composite keys, or between multiple composite keys. This means that an invocation of <code>Composite-ML-DSA.KeyGen()</code> MUST perform, or otherwise guarantee, fresh generation of the key material for both underlying algorithms and MUST NOT reuse existing key material. See <a href="#sec-cons-key-reuse" class="auto internal xref">Section 9.3</a> for a discussion.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1-2">To generate a new key pair for composite schemes, the <code>KeyGen() -&gt; (pk, sk)</code> function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-threaded, multi-process, or multi-module applications might choose to execute the key generation functions in parallel for better key generation performance or architectural modularity.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1-3">The following describes how to instantiate a <code>KeyGen()</code> function for a given composite algorithm represented by <code>&lt;OID&gt;</code>.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.1-4">
@@ -1795,11 +1801,11 @@ Signature Verification Process:
 <p id="section-4-1">This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 The functions defined in this section are considered internal implementation details and are referenced from within the public API definitions in <a href="#sec-sigs" class="auto internal xref">Section 3</a>.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<span id="name-ml-dsa-sizes"></span><div id="tab-mldsa-sizes">
+<span id="name-ml-dsa-sizes-in-bytes"></span><div id="tab-mldsa-sizes">
 <table class="center" id="table-1">
         <caption>
 <a href="#table-1" class="selfRef">Table 1</a>:
-<a href="#name-ml-dsa-sizes" class="selfRef">ML-DSA Sizes</a>
+<a href="#name-ml-dsa-sizes-in-bytes" class="selfRef">ML-DSA Sizes in bytes</a>
         </caption>
 <thead>
           <tr>
@@ -3479,7 +3485,7 @@ END
         </h3>
 <p id="section-9.1-1">In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2"><strong>Dual-algorithm security</strong>. The general idea is that the data is protected by two algorithms such that an adversary would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a> goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an adversary can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value, and also in the fact that the composite public key could be trusted by the verifier while the component keys in isolation are not, thus requiring the adversary to forge a whole composite signature.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3"><strong>Migration flexibility</strong>. Some PQ/T hybrids exist to provide a sort of "OR" mode where the application can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in backwards compatibility to allow legacy and upgraded applications to co-exist and communicate. The composites presented in this specification do not provide this since they operate in a strict "AND" mode. They do, however, provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC; composites allow them to add an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still an experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in <a href="#sec-fips" class="auto internal xref">Section 10.1</a>.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-3"><strong>Migration flexibility</strong>. Some PQ/T hybrids exist to provide a sort of "OR" mode where the application can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in application backwards compatibility to allow legacy and upgraded applications to co-exist and communicate. The composites presented in this specification do not provide this since they operate in a strict "AND" mode. They do, however, provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC; composites allow them to add an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still an experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in <a href="#sec-fips" class="auto internal xref">Section 10.1</a>.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cons-non-separability">
@@ -3489,7 +3495,7 @@ END
         </h3>
 <p id="section-9.2-1">First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.2-2">The second securtiy model considiration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
-<div id="euf-cma">
+<div id="sec-cons-eufcma">
 <section id="section-9.2.1">
           <h4 id="name-euf-cma">
 <a href="#section-9.2.1" class="section-number selfRef">9.2.1. </a><a href="#name-euf-cma" class="section-name selfRef">EUF-CMA</a>
@@ -3508,7 +3514,7 @@ END
 <p id="section-9.2.1-5">The same properties will hold for X.509 certificates that use Composite ML-DSA: a classical adversary cannot forge a Composite ML-DSA signed certificate if at least one component algorithm is classically EUF-CMA secure, and a quantum adversary cannot forge a Composite ML-DSA signed certificate if ML-DSA remains quantumly EUF-CMA secure.<a href="#section-9.2.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="suf-cma">
+<div id="sec-cons-sufcma">
 <section id="section-9.2.2">
           <h4 id="name-suf-cma">
 <a href="#section-9.2.2" class="section-number selfRef">9.2.2. </a><a href="#name-suf-cma" class="section-name selfRef">SUF-CMA</a>
@@ -3588,8 +3594,8 @@ END
         <h3 id="name-backwards-compatibility">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-backwards-compatibility" class="section-name selfRef">Backwards Compatibility</a>
         </h3>
-<p id="section-10.2-1">The term "backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
-<p id="section-10.2-2">If backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations <span>[<a href="#eIDAS2014" class="cite xref">eIDAS2014</a>]</span>, and publicly trusted code signing <span>[<a href="#codesigningbrsv3.8" class="cite xref">codesigningbrsv3.8</a>]</span>, as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
+<p id="section-10.2-1">The term "application backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-2">If application backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations <span>[<a href="#eIDAS2014" class="cite xref">eIDAS2014</a>]</span>, and publicly trusted code signing <span>[<a href="#codesigningbrsv3.8" class="cite xref">codesigningbrsv3.8</a>]</span>, as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-impl-profile">
