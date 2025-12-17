@@ -3430,6 +3430,10 @@ Appendix E.  Test Vectors
    cases. m is the ASCII string "The quick brown fox jumps over the lazy
    dog."
 
+   For all test vectors, a sample signature is provided computer over an
+   empty ctx string, and also computed over the ctx string "The
+   lethargic, colorless dog sat beneath the energetic, stationary fox.".
+
    Within each test case there are the following values:
 
    *  tcId the name of the algorithm.
@@ -3442,7 +3446,10 @@ Appendix E.  Test Vectors
 
    *  sk_pkcs8 the signature private key in a PKCS#8 object.
 
-   *  s the signature value.
+   *  s the signature value computed over m with an empty ctx string.
+
+   *  sWithContext the signature value computed over m with the provided
+      ctx string.
 
    Implementers should be able to perform the following tests using the
    test vectors below:
