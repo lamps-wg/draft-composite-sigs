@@ -1055,7 +1055,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 15 June 2026</td>
+<td class="center">Expires 20 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-12" class="published">12 December 2025</time>
+<time datetime="2025-12-17" class="published">17 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-15">15 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-20">20 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1389,8 +1389,7 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
           specification generally refers to any function which
           has a registered Object Identifier (OID) for
           use within an ASN.1 AlgorithmIdentifier.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
-<p id="section-1.1-4"><strong>Backwards Compatibility</strong>: This specification considers two types of backwards
-          compatibility. "Application Backwards Compatibility" is the usual definition, meaning whether an upgraded and non-upgraded application can successfully establish communication. This specification also defined "Protocol Backwards Compatibility" whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-4"><strong>Application Backwards Compatibility</strong>: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 <p id="section-1.1-5"><strong>COMPOSITE CRYPTOGRAPHIC ELEMENT</strong>: <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as: A
           cryptographic element that
           incorporates multiple component cryptographic elements of the same
@@ -1406,9 +1405,10 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
           Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
 <p id="section-1.1-9"><strong>Post-Quantum Traditional (PQ/T) hybrid scheme</strong>:
     A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
-<p id="section-1.1-10"><strong>SIGNATURE</strong>:
+<p id="section-1.1-10"><strong>Protocol Backwards Compatibility</strong>: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
+<p id="section-1.1-11"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-1.1-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="notation">
@@ -1682,7 +1682,7 @@ Signature Generation Process:
      calculating the signature over M' according to their algorithm
      specifications.
 
-       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Label )
+       mldsaSig = ML-DSA.Sign( mldsaSK, M', mldsa_ctx=Label )
        tradSig = Trad.Sign( tradSK, M' )
 
   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then
@@ -1698,7 +1698,7 @@ Signature Generation Process:
 </pre><a href="#section-3.2-3" class="pilcrow">¶</a>
 </div>
 <p id="section-3.2-4">Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">Note that there are two different context strings <code>ctx</code> at play: the first is the application context that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code> in Step 2. The second is the <code>ctx</code> that is passed down into the underlying <code>ML-DSA.Sign</code> in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the <code>ctx</code> for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a <code>ctx</code> parameter, but even if present, this is not used by Composite ML-DSA.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">Note that there are two different context strings <code>ctx</code> at play: the first is the application context <code>ctx</code> that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code> in Step 2. The second is the <code>mldsa-ctx</code> that is passed down into the underlying <code>ML-DSA.Sign(sk, M, ctx)</code> as defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 2, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the <code>ctx</code> for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a <code>ctx</code> parameter, but even if present, this is not used by Composite ML-DSA.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 <p id="section-3.2-6">It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this specification so long as it produces the same output and error handling as the process sketched above.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1778,7 +1778,7 @@ Signature Verification Process:
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
-      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Label ) then
+      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, mldsa_ctx=Label ) then
           output "Invalid signature"
 
       if not Trad.Verify( tradPK, M', tradSig ) then
@@ -1789,6 +1789,7 @@ Signature Verification Process:
 </pre><a href="#section-3.3-4" class="pilcrow">¶</a>
 </div>
 <p id="section-3.3-5">Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">Note that there are two different context strings <code>ctx</code> at play: the first is the application context <code>ctx</code> that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code> in Step 3. The second is the <code>mldsa-ctx</code> that is passed down into the underlying <code>ML-DSA.Verify(pk, M, sigma, ctx)</code> as defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 3, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the <code>ctx</code> for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a <code>ctx</code> parameter, but even if present, this is not used by Composite ML-DSA.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
