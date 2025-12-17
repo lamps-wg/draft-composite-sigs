@@ -239,8 +239,7 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
           has a registered Object Identifier (OID) for
           use within an ASN.1 AlgorithmIdentifier.
 
-**Backwards Compatibility**: This specification considers two types of backwards
-          compatibility. "Application Backwards Compatibility" is the usual definition, meaning whether an upgraded and non-upgraded application can successfully establish communication. This specification also defined "Protocol Backwards Compatibility" whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
+**Application Backwards Compatibility**: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.
 
 **COMPOSITE CRYPTOGRAPHIC ELEMENT**: {{RFC9794}} defines composites as: A
           cryptographic element that
@@ -262,6 +261,8 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
 
 **Post-Quantum Traditional (PQ/T) hybrid scheme**:
     A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.
+
+**Protocol Backwards Compatibility**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
 
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
@@ -499,7 +500,7 @@ Signature Generation Process:
      calculating the signature over M' according to their algorithm
      specifications.
 
-       mldsaSig = ML-DSA.Sign( mldsaSK, M', ctx=Label )
+       mldsaSig = ML-DSA.Sign( mldsaSK, M', mldsa_ctx=Label )
        tradSig = Trad.Sign( tradSK, M' )
 
   5. If either ML-DSA.Sign() or Trad.Sign() return an error, then
@@ -516,7 +517,7 @@ Signature Generation Process:
 
 Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
 
-Note that there are two different context strings `ctx` at play: the first is the application context that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `ctx` that is passed down into the underlying `ML-DSA.Sign` in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
+Note that there are two different context strings `ctx` at play: the first is the application context `ctx` that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `mldsa-ctx` that is passed down into the underlying `ML-DSA.Sign(sk, M, ctx)` as defined in [FIPS.204] Algorithm 2, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
 
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this specification so long as it produces the same output and error handling as the process sketched above.
 
@@ -596,7 +597,7 @@ Signature Verification Process:
      algorithm specification.
      If any fail, then the entire signature validation fails.
 
-      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, ctx=Label ) then
+      if not ML-DSA.Verify( mldsaPK, M', mldsaSig, mldsa_ctx=Label ) then
           output "Invalid signature"
 
       if not Trad.Verify( tradPK, M', tradSig ) then
@@ -607,6 +608,8 @@ Signature Verification Process:
 ~~~
 
 Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
+
+Note that there are two different context strings `ctx` at play: the first is the application context `ctx` that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 3. The second is the `mldsa-ctx` that is passed down into the underlying `ML-DSA.Verify(pk, M, sigma, ctx)` as defined in [FIPS.204] Algorithm 3, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
 
 
 # Serialization {#sec-serialization}
