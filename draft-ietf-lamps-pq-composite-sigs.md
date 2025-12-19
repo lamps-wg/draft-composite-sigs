@@ -906,7 +906,7 @@ When any Composite ML-DSA Object Identifier appears within the `SubjectPublicKey
 
 The normal keyUsage rules for signing-type keys from [RFC5280] apply, and are reproduced here for completeness.
 
-For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, any combination of the following values MAY be present and any other values MUST NOT be present:
+For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, at least one of the following values MAY be present and any other values MUST NOT be present:
 
 ~~~
 digitalSignature;
@@ -915,7 +915,7 @@ keyCertSign; and
 cRLSign.
 ~~~
 
-For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:
+For End Entity certificates, at least one of the following values MAY be present and any other values MUST NOT be present:
 
 ~~~
 digitalSignature;
