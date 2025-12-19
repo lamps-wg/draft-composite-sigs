@@ -1623,6 +1623,7 @@ Key Generation Process:
 </div>
 <p id="section-3.1-5">This keygen process make use of the seed-based <code>ML-DSA.KeyGen_internal(𝜉)</code>, which is defined in Algorithm 6 of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>. For FIPS-certification implications, see <a href="#sec-fips" class="auto internal xref">Section 10.1</a>.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 <p id="section-3.1-6">In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see <a href="#sec-cons-key-reuse" class="auto internal xref">Section 9.3</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">Errors produced by the component <code>KeyGen()</code> routines MUST be forwarded on to the calling application.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 <div id="allowed-modifications-to-the-key-generation-process">
 <section id="section-3.1.1">
           <h4 id="name-allowed-modifications-to-th">

@@ -545,6 +545,9 @@ Table of Contents
    For more details on the security considerations around key reuse, see
    Section 9.3.
 
+   Errors produced by the component KeyGen() routines MUST be forwarded
+   on to the calling application.
+
 3.1.1.  Allowed Modifications to the Key Generation Process
 
    Key generation is a process that is entirely internal to a
