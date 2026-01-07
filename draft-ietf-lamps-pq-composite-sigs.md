@@ -902,30 +902,45 @@ Size constraints MAY be enforced, as appropriate as per {{sec-sizetable}}.
 
 ## Key Usage Bits
 
-When any Composite ML-DSA Object Identifier appears within the `SubjectPublicKeyInfo.AlgorithmIdentifier` field of an X.509 certificate [RFC5280], the key usage certificate extension MUST only contain signing-type key usages.
-
-The normal keyUsage rules for signing-type keys from [RFC5280] apply, and are reproduced here for completeness.
-
-For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, at least one of the following values MAY be present and any other values MUST NOT be present:
-
-~~~
-digitalSignature;
-nonRepudiation;
-keyCertSign; and
-cRLSign.
-~~~
-
-For End Entity certificates, at least one of the following values MAY be present and any other values MUST NOT be present:
+The intended application for the key is indicated in the `keyUsage`
+certificate extension; see {{Section 4.2.1.3 of RFC5280}}. If the
+`keyUsage` extension is present in a certificate that includes an OID
+indicating a composite ML-DSA algorithm in the `SubjectPublicKeyInfo`,
+then the subject public key can only be used
+for verifying digital signatures on certificates or CRLs, or those used in an
+entity authentication service, a data origin authentication service, an
+integrity service, and/or a non-repudiation service that protects against
+the signing entity falsely denying some action. This means that the
+`keyUsage` extention MUST have at least one of the following bits set:
 
 ~~~
-digitalSignature;
-nonRepudiation; and
-cRLSign.
+  digitalSignature
+  nonRepudiation
+  keyCertSign
+  cRLSign
 ~~~
+
+ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
+`keyUsage` extention MUST NOT have any of following bits set:
+
+~~~
+   keyEncipherment,
+   dataEncipherment,
+   keyAgreement,
+   encipherOnly, and
+   decipherOnly.
+~~~
+
+Requirements about the `keyUsage` extension bits defined in {{RFC5280}}
+still apply.
+
+
+
 
 Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
 traditional component key supports both signing and encryption,
-the post-quantum algorithms do not and therefore the overall composite algorithm does not. Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.
+the post-quantum algorithms do not and therefore the overall composite algorithm does not.
+Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.
 
 
 ## ASN.1 Definitions {#sec-asn1-defs}
