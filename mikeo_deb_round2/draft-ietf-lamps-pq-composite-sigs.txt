@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 22 June 2026                                            M. Pala
+Expires: 11 July 2026                                            M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        19 December 2025
+                                                          7 January 2026
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,11 +59,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 June 2026.
+   This Internet-Draft will expire on 11 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -393,20 +393,15 @@ Table of Contents
    non-pre-hashed) modes lack support for digesting the message once and
    signing it with multiple different keys.
 
-   Composite ML-DSA takes a design approach which more closely, but not
-   perfectly, mirrors that of HashML-DSA.Sign(sk, M, ctx, PH)
-   (([FIPS.204] Algorithm 2)).  The similarities are that the to-be-
-   signed message representative M' in Composite ML-DSA, defined in
-   Section 3.2, is:
+   Composite ML-DSA takes a design approach which mirrors that of
+   [FIPS.204] Algorithm 2 in that the to-be-signed message
+   representative M' in contains a hash of the message PH( M ) instead
+   of the full message M.
 
    M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 
-   closely mirrors the construction of M' in [FIPS.204] Algorithm 4.
-
-   The main difference between the construction of Composite ML-DSA and
-   HashML-DSA is that while FIPS-204's HashML-DSA allows for any hash
-   function to be used as PH, this specification fixes the choice of
-   hash function for each Composite ML-DSA variant -- see Section 6.
+   which closely mirrors the construction of M' in [FIPS.204] Algorithm
+   4.
 
    Given this design of Composite ML-DSA, it is possible to split the
    pre-hashing step out from the signature generation process -- see
@@ -417,10 +412,6 @@ Table of Contents
    similar to that of HashML-DSA, the ML-DSA component inside the
    composite is "pure" ML-DSA; implementing this specification does not
    require an implementation of HashML-DSA.
-
-   In [FIPS.204] NIST defines separate algorithms for pure and pre-
-   hashed modes of ML-DSA, referred to as "ML-DSA" ([FIPS.204] section
-   5.2) and "HashML-DSA" ([FIPS.204] section 5.4.1) respectively.
 
 2.2.  Prefix, Label and CTX
 
@@ -573,9 +564,10 @@ Table of Contents
    or both component keys from a seed, this process MAY be modified to
    expose an interface of Composite-ML-DSA<OID>.KeyGen(seed) such that
    one component algorithm is generated from the seed and the other from
-   random, or the input seed is cryptohraphically expanded to produce
-   seeds for both components.  Security analysis of such a modified key
-   generation process is outside the scope of this document.
+   random, or the input seed is cryptographically expanded to produce
+   seeds for both components.  Implementation details and security
+   analysis of such a modified key generation process is outside the
+   scope of this document.
 
    Where interoperable private keys are not required, implementations
    MAY choose to use a different private key representation than the one

@@ -25,7 +25,7 @@
     Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.0.2
     platformdirs 4.5.1
@@ -1051,11 +1051,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">December 2025</td>
+<td class="right">January 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 22 June 2026</td>
+<td class="center">Expires 11 July 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-19" class="published">19 December 2025</time>
+<time datetime="2026-01-07" class="published">7 January 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-22">22 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-07-11">11 July 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1139,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1148,7 +1148,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1503,17 +1503,15 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
         </h3>
 <p id="section-2.1-1">The ML-DSA algorithm as specified in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> is not pre-hashed, meaning that the entire to-be-signed message is passed into <code>ML-DSA.Sign(sk, M, ctx)</code> (<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 2).
 While there are some cryptographic advantages to designing a signature algorithm this way, it also has some operational drawbacks; namely the performance and privacy implications of needing to stream the entire to-be-signed message to the signing module or service, which is doubled in the context of a composite since the to-be-signed message needs to be streamed to both underlying component algorithms. Also, "pure" (aka non-pre-hashed) modes lack support for digesting the message once and signing it with multiple different keys.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.1-2">Composite ML-DSA takes a design approach which more closely, but not perfectly, mirrors that of <code>HashML-DSA.Sign(sk, M, ctx, PH)</code> ((<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 2)). The similarities are that the to-be-signed message representative <code>M'</code> in Composite ML-DSA, defined in <a href="#sec-hash-comp-sig-sign" class="auto internal xref">Section 3.2</a>, is:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">Composite ML-DSA takes a design approach which mirrors that of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 2 in that the to-be-signed message representative <code>M'</code> in contains a hash of the message <code>PH( M )</code> instead of the full message <code>M</code>.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.1-3">
 <pre>
 M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 </pre><a href="#section-2.1-3" class="pilcrow">¶</a>
 </div>
-<p id="section-2.1-4">closely mirrors the construction of <code>M'</code> in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 4.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
-<p id="section-2.1-5">The main difference between the construction of Composite ML-DSA and HashML-DSA is that while FIPS-204's HashML-DSA allows for any hash function to be used as PH, this specification fixes the choice of hash function for each Composite ML-DSA variant -- see <a href="#sec-alg-parms" class="auto internal xref">Section 6</a>.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
-<p id="section-2.1-6">Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
-<p id="section-2.1-7">Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.<a href="#section-2.1-7" class="pilcrow">¶</a></p>
-<p id="section-2.1-8">In <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" (<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> section 5.2) and "HashML-DSA" (<span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> section 5.4.1) respectively.<a href="#section-2.1-8" class="pilcrow">¶</a></p>
+<p id="section-2.1-4">which closely mirrors the construction of <code>M'</code> in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 4.<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+<p id="section-2.1-5">Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
+<p id="section-2.1-6">Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.<a href="#section-2.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-label-and-ctx">
@@ -1631,7 +1629,7 @@ Key Generation Process:
           </h4>
 <p id="section-3.1.1-1">Key generation is a process that is entirely internal to a cryptographic module, and as such it is often customized to fit the performance or operational requirements of the module. In cases where the private keys never leave the module or are otherwise not required to interoperate with other cryptographic modules, it is not required for interoperability for the private keys to match the format described in this specification. Therefore, in general, implementations of Composite ML-DSA MAY use an alternate key generation process so long as it generates compatible public keys, and so long as both component keys are freshly-generated and not re-used in a standalone key or within another composite key. Below are some examples of modifications that an implementer MAY make to the key generation process.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2">Implementations MAY modify this process to additionally output the expanded <code>mldsaSK</code> or to make use of <code>ML-DSA.KeyGen_internal(mldsaSeed)</code> as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-3">In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of <code>Composite-ML-DSA&lt;OID&gt;.KeyGen(seed)</code> such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptohraphically expanded to produce seeds for both components. Security analysis of such a modified key generation process is outside the scope of this document.<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-3">In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of <code>Composite-ML-DSA&lt;OID&gt;.KeyGen(seed)</code> such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-4">Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in <a href="#sec-serialize-privkey" class="auto internal xref">Section 4.2</a>. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in <a href="#sec-serialize-privkey" class="auto internal xref">Section 4.2</a><a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
