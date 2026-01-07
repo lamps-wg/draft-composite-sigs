@@ -1029,7 +1029,7 @@ def verifyCert(certder):
   
 
 
-def formatResults(sig, s ):
+def formatResults(sig, s, sWithContext):
 
   jsonTest = {}
   jsonTest['tcId'] = sig.id
@@ -1054,6 +1054,7 @@ def formatResults(sig, s ):
   jsonTest['sk_pkcs8'] = base64.b64encode(der_encode(pki)).decode('ascii')
 
   jsonTest['s'] = base64.b64encode(s).decode('ascii')
+  jsonTest['sWithContext'] = base64.b64encode(sWithContext).decode('ascii')
 
   return jsonTest
 
@@ -1088,8 +1089,11 @@ def output_artifacts_certs_r5(jsonTestVectors):
 # This is the raw message to be signed for the test vectors
 _m = b'The quick brown fox jumps over the lazy dog.'
 
+_ctx = b'The lethargic, colorless dog sat beneath the energetic, stationary fox.'
+
 testVectorOutput = {}
 testVectorOutput['m'] = base64.b64encode(_m).decode('ascii')
+testVectorOutput['ctx'] = base64.b64encode(_ctx).decode('ascii')
 testVectorOutput['tests'] = []
 
 SIZE_TABLE = {}
@@ -1102,7 +1106,10 @@ def doSig(sig, includeInTestVectors=True, includeInAlgParamsTable=True, includeI
   s = sig.sign(_m)
   sig.verify(s, _m)
 
-  jsonResult = formatResults(sig, s)
+  sWithContext = sig.sign(_m, _ctx)
+  sig.verify(sWithContext, _m, _ctx)
+
+  jsonResult = formatResults(sig, s, sWithContext)
 
   if includeInTestVectors:
     testVectorOutput['tests'].append(jsonResult)
