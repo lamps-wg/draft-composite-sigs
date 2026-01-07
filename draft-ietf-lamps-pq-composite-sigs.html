@@ -2130,28 +2130,41 @@ Composite-ML-DSA-PublicKey ::= OCTET STRING
         <h3 id="name-key-usage-bits">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-key-usage-bits" class="section-name selfRef">Key Usage Bits</a>
         </h3>
-<p id="section-5.2-1">When any Composite ML-DSA Object Identifier appears within the <code>SubjectPublicKeyInfo.AlgorithmIdentifier</code> field of an X.509 certificate <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the key usage certificate extension MUST only contain signing-type key usages.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">The normal keyUsage rules for signing-type keys from <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> apply, and are reproduced here for completeness.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<p id="section-5.2-3">For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-1">The intended application for the key is indicated in the <code>keyUsage</code>
+certificate extension; see <span><a href="https://rfc-editor.org/rfc/rfc5280#section-4.2.1.3" class="relref">Section 4.2.1.3</a> of [<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. If the
+<code>keyUsage</code> extension is present in a certificate that includes an OID
+indicating a composite ML-DSA algorithm in the <code>SubjectPublicKeyInfo</code>,
+then the subject public key can only be used
+for verifying digital signatures on certificates or CRLs, or those used in an
+entity authentication service, a data origin authentication service, an
+integrity service, and/or a non-repudiation service that protects against
+the signing entity falsely denying some action. This means that the
+<code>keyUsage</code> extention MUST have at least one of the following bits set:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2-2">
+<pre>
+  digitalSignature
+  nonRepudiation
+  keyCertSign
+  cRLSign
+</pre><a href="#section-5.2-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.2-3">ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
+<code>keyUsage</code> extention MUST NOT have any of following bits set:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-4">
 <pre>
-digitalSignature;
-nonRepudiation;
-keyCertSign; and
-cRLSign.
+   keyEncipherment,
+   dataEncipherment,
+   keyAgreement,
+   encipherOnly, and
+   decipherOnly.
 </pre><a href="#section-5.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-5">For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:<a href="#section-5.2-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.2-6">
-<pre>
-digitalSignature;
-nonRepudiation; and
-cRLSign.
-</pre><a href="#section-5.2-6" class="pilcrow">¶</a>
-</div>
-<p id="section-5.2-7">Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
+<p id="section-5.2-5">Requirements about the <code>keyUsage</code> extension bits defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>
+still apply.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
 traditional component key supports both signing and encryption,
-the post-quantum algorithms do not and therefore the overall composite algorithm does not. Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.<a href="#section-5.2-7" class="pilcrow">¶</a></p>
+the post-quantum algorithms do not and therefore the overall composite algorithm does not.
+Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-asn1-defs">
