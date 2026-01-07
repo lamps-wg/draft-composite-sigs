@@ -143,7 +143,10 @@ informative:
   RFC9794:
   RFC9881:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-07:
-  Bindel2017: # Not referenced, but I think it's important to included.
+  TestVectors:
+    title: "Test vectors for Composite-ML-DSA"
+    target: https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
+  Bindel2017:
     title: "Transitioning to a quantum-resistant public key infrastructure"
     target: "https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22"
     author:
@@ -239,7 +242,7 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
           has a registered Object Identifier (OID) for
           use within an ASN.1 AlgorithmIdentifier.
 
-**Application Backwards Compatibility**: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.
+**APPLICATION BACKWARDS COMPATIBILITY**: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.
 
 **COMPOSITE CRYPTOGRAPHIC ELEMENT**: {{RFC9794}} defines composites as: A
           cryptographic element that
@@ -262,7 +265,7 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
 **Post-Quantum Traditional (PQ/T) hybrid scheme**:
     A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.
 
-**Protocol Backwards Compatibility**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
+**PROTOCOL BACKWARDS COMPATIBILITY**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
 
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
@@ -327,19 +330,26 @@ Full definitions of serialization and deserialization algorithms can be found in
 
 ## Pre-hashing {#sec-prehash}
 
-In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" ([FIPS.204] section 5.2) and "HashML-DSA" ([FIPS.204] section 5.4.1) respectively. This specification defines a single mode which is similar in construction to FIPS-204's HashML-DSA. This design provides a compromised balance between performance and security. Since pre-hashing is done at the composite level, "pure" ML-DSA is used as the underlying ML-DSA primitive.
+The ML-DSA algorithm as specified in [FIPS.204] is not pre-hashed, meaning that the entire to-be-signed message is passed into `ML-DSA.Sign(sk, M, ctx)` ([FIPS.204] Algorithm 2).
+While there are some cryptographic advantages to designing a signature algorithm this way, it also has some operational drawbacks; namely the performance and privacy implications of needing to stream the entire to-be-signed message to the signing module or service, which is doubled in the context of a composite since the to-be-signed message needs to be streamed to both underlying component algorithms. Also, "pure" (aka non-pre-hashed) modes lack support for digesting the message once and signing it with multiple different keys.
 
-The primary design motivation behind pre-hashing is to perform only a single pass over the potentially large input message `M`, compared to passing the full message to both component primitives, and to allow for optimizations in cases such as signing the same message digest with multiple keys. The actual length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+Composite ML-DSA takes a design approach which mirrors that of [FIPS.204] Algorithm 2 in that the to-be-signed message representative `M'` in contains a hash of the message `PH( M )` instead of the full message `M`.
 
-This simplification into a single strongly-pre-hashed algorithm avoids the need for duplicate sets of "Composite-ML-DSA" and "Hash-Composite-ML-DSA" algorithms.
+~~~
+M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
+~~~
 
-See {{impl-cons-external-ph}} for a discussion of externalizing the pre-hashing step.
+which closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
+
+Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.
+
+Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.
 
 
 
 ## Prefix, Label and CTX {#sec-label-and-ctx}
 
-The to-be-signed message representative `M'` is created by concatenating several values, including the pre-hashed message.
+The to-be-signed message representative `M'`, defined in {{sec-hash-comp-sig-sign}} is created by concatenating several values, including the pre-hashed message.
 
 ~~~
 M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
@@ -365,6 +375,8 @@ Each Composite ML-DSA algorithm has a unique signature label value which is used
 
 Within Composite ML-DSA, values of `Label` are fully specified, and runtime-variable `Label` values are not allowed. For authors of follow-on specifications that allow `Label` to be runtime-variable, it should be pre-fixed with the length, `len(Label) || Label` to prevent using this as an injection site that could enable various cryptographic attacks.
 
+The length of the to-be-signed message `M'` depends on the application context `ctx` provided at runtime but since `ctx` has a maximum length of 255 bytes, `M'` has a fixed maximum length which depends on the output size of the hash function chosen as `PH`, but can be computed per composite algorithm.
+
 
 # Composite ML-DSA Functions {#sec-sigs}
 
@@ -374,7 +386,7 @@ This section describes the composite ML-DSA functions needed to instantiate the 
 
 In order to maintain security properties of the composite, this specification
 strictly forbids re-using component key material between composite and
-non-composite keys, or between multiple composite keys. This means that an invocation of `Composite-ML-DSA.KeyGen()` MUST perform, or otherwise guarantee, fresh generation of the key material for both underlying algorithms and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for a discussion.
+non-composite keys, or between multiple composite keys. This means that an invocation of `Composite-ML-DSA.KeyGen()` MUST perform, or otherwise guarantee, fresh generation of the key material for both underlying algorithms and MUST NOT reuse existing key material. See {{sec-cons-key-reuse}} for further discussion of the security implications.
 
 To generate a new key pair for composite schemes, the `KeyGen() -> (pk, sk)` function is used. The KeyGen() function calls the two key generation functions of the component algorithms independently. Multi-threaded, multi-process, or multi-module applications might choose to execute the key generation functions in parallel for better key generation performance or architectural modularity.
 
@@ -422,16 +434,22 @@ Key Generation Process:
 
 ~~~
 
-This keygen routine make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
+This keygen process make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
-Note that this keygen routine outputs a serialized composite key, which contains only the ML-DSA seed. Implementations should feel free to modify this routine to additionally output the expanded `mldsaSK` or to make free use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
 
-The above algorithm MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` if it is desirable to have a deterministic KeyGen that derives both component keys from a shared seed. Details of implementing this variation are not included in this document.
+Errors produced by the component `KeyGen()` routines MUST be forwarded on to the calling application.
 
-Variations in the keygen process above and signature processes below to accommodate particular private key storage mechanisms or alternate interfaces to the underlying cryptographic modules are considered to be conformant to this specification so long as they produce the same output and error handling.
-For example, component private keys stored in separate software or hardware modules where it is not possible to do a joint simultaneous keygen would be considered compliant so long as both keys are freshly generated. It is also possible that the underlying cryptographic module does not expose a `ML-DSA.KeyGen_internal(seed)` that accepts an externally-generated seed, and instead an alternate keygen interface must be used. Note however that cryptographic modules that do not support seed-based ML-DSA key generation will be incapable of importing or exporting composite keys in the standard format since the private key serialization routines defined in {{sec-serialize-privkey}} only support ML-DSA keys as seeds.
+### Allowed Modifications to the Key Generation Process
+
+Key generation is a process that is entirely internal to a cryptographic module, and as such it is often customized to fit the performance or operational requirements of the module. In cases where the private keys never leave the module or are otherwise not required to interoperate with other cryptographic modules, it is not required for interoperability for the private keys to match the format described in this specification. Therefore, in general, implementations of Composite ML-DSA MAY use an alternate key generation process so long as it generates compatible public keys, and so long as both component keys are freshly-generated and not re-used in a standalone key or within another composite key. Below are some examples of modifications that an implementer MAY make to the key generation process.
+
+Implementations MAY modify this process to additionally output the expanded `mldsaSK` or to make use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
+
+In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.
+
+Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in {{sec-serialize-privkey}}. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}
 
 
 ## Sign {#sec-hash-comp-sig-sign}
@@ -902,30 +920,45 @@ Size constraints MAY be enforced, as appropriate as per {{sec-sizetable}}.
 
 ## Key Usage Bits
 
-When any Composite ML-DSA Object Identifier appears within the `SubjectPublicKeyInfo.AlgorithmIdentifier` field of an X.509 certificate [RFC5280], the key usage certificate extension MUST only contain signing-type key usages.
-
-The normal keyUsage rules for signing-type keys from [RFC5280] apply, and are reproduced here for completeness.
-
-For Certification Authority (CA) certificates that carry a Composite ML-DSA public key, any combination of the following values MAY be present and any other values MUST NOT be present:
-
-~~~
-digitalSignature;
-nonRepudiation;
-keyCertSign; and
-cRLSign.
-~~~
-
-For End Entity certificates, any combination of the following values MAY be present and any other values MUST NOT be present:
+The intended application for the key is indicated in the `keyUsage`
+certificate extension; see {{Section 4.2.1.3 of RFC5280}}. If the
+`keyUsage` extension is present in a certificate that includes an OID
+indicating a composite ML-DSA algorithm in the `SubjectPublicKeyInfo`,
+then the subject public key can only be used
+for verifying digital signatures on certificates or CRLs, or those used in an
+entity authentication service, a data origin authentication service, an
+integrity service, and/or a non-repudiation service that protects against
+the signing entity falsely denying some action. This means that the
+`keyUsage` extention MUST have at least one of the following bits set:
 
 ~~~
-digitalSignature;
-nonRepudiation; and
-cRLSign.
+  digitalSignature
+  nonRepudiation
+  keyCertSign
+  cRLSign
 ~~~
+
+ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
+`keyUsage` extention MUST NOT have any of following bits set:
+
+~~~
+   keyEncipherment,
+   dataEncipherment,
+   keyAgreement,
+   encipherOnly, and
+   decipherOnly.
+~~~
+
+Requirements about the `keyUsage` extension bits defined in {{RFC5280}}
+still apply.
+
+
+
 
 Composite ML-DSA keys MUST NOT be used in a "dual usage" mode because even if the
 traditional component key supports both signing and encryption,
-the post-quantum algorithms do not and therefore the overall composite algorithm does not. Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.
+the post-quantum algorithms do not and therefore the overall composite algorithm does not.
+Implementations MUST NOT use one component of the composite for the purposes of digital signature and the other component for the purposes of encryption or key establishment.
 
 
 ## ASN.1 Definitions {#sec-asn1-defs}
@@ -1900,6 +1933,8 @@ The following test vectors are provided in a format similar to the NIST ACVP Kno
 
 The structure is that a global message `m` is signed over in all test cases. `m` is the ASCII string "The quick brown fox jumps over the lazy dog."
 
+For all test vectors, a sample signature is provided computer over an empty `ctx` string, and also computed over the ctx string "The lethargic, colorless dog sat beneath the energetic, stationary fox.".
+
 
 Within each test case there are the following values:
 
@@ -1908,7 +1943,8 @@ Within each test case there are the following values:
 * `x5c` a self-signed X.509 certificate of the public key.
 * `sk` the raw signature private key.
 * `sk_pkcs8` the signature private key in a PKCS#8 object.
-* `s` the signature value.
+* `s` the signature value computed over `m` with an empty `ctx` string.
+* `sWithContext` the signature value computed over `m` with the provided `ctx` string.
 
 Implementers should be able to perform the following tests using the test vectors below:
 
@@ -1918,9 +1954,7 @@ Implementers should be able to perform the following tests using the test vector
 
 Test vectors are provided for each underlying ML-DSA algorithm in isolation for the purposes of debugging.
 
-Due to the length of the test vectors, some readers will prefer to retrieve the non-word-wrapped copy from GitHub. The reference implementation written in python that generated them is also available:
-
-https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
+Due to the length of the test vectors, some readers will prefer to retrieve the non-word-wrapped copy from GitHub {{TestVectors}}. The reference implementation written in python that generated them is also available.
 
 ~~~
 {::include src/testvectors_wrapped.json}
