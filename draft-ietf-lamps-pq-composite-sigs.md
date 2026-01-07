@@ -333,22 +333,17 @@ Full definitions of serialization and deserialization algorithms can be found in
 The ML-DSA algorithm as specified in [FIPS.204] is not pre-hashed, meaning that the entire to-be-signed message is passed into `ML-DSA.Sign(sk, M, ctx)` ([FIPS.204] Algorithm 2).
 While there are some cryptographic advantages to designing a signature algorithm this way, it also has some operational drawbacks; namely the performance and privacy implications of needing to stream the entire to-be-signed message to the signing module or service, which is doubled in the context of a composite since the to-be-signed message needs to be streamed to both underlying component algorithms. Also, "pure" (aka non-pre-hashed) modes lack support for digesting the message once and signing it with multiple different keys.
 
-Composite ML-DSA takes a design approach which more closely, but not perfectly, mirrors that of `HashML-DSA.Sign(sk, M, ctx, PH)` (([FIPS.204] Algorithm 2)). The similarities are that the to-be-signed message representative `M'` in Composite ML-DSA, defined in {{sec-hash-comp-sig-sign}}, is:
+Composite ML-DSA takes a design approach which mirrors that of [FIPS.204] Algorithm 2 in that the to-be-signed message representative `M'` in contains a hash of the message `PH( M )` instead of the full message `M`.
 
 ~~~
 M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 ~~~
 
-closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
-
-The main difference between the construction of Composite ML-DSA and HashML-DSA is that while FIPS-204's HashML-DSA allows for any hash function to be used as PH, this specification fixes the choice of hash function for each Composite ML-DSA variant -- see {{sec-alg-parms}}.
+which closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
 
 Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.
 
 Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.
-
-
-In [FIPS.204] NIST defines separate algorithms for pure and pre-hashed modes of ML-DSA, referred to as "ML-DSA" ([FIPS.204] section 5.2) and "HashML-DSA" ([FIPS.204] section 5.4.1) respectively.
 
 
 
@@ -452,7 +447,7 @@ Key generation is a process that is entirely internal to a cryptographic module,
 
 Implementations MAY modify this process to additionally output the expanded `mldsaSK` or to make use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
 
-In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptohraphically expanded to produce seeds for both components. Security analysis of such a modified key generation process is outside the scope of this document.
+In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.
 
 Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in {{sec-serialize-privkey}}. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}
 
