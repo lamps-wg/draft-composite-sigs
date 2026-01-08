@@ -18,7 +18,7 @@ venue:
   latest: https://lamps-wg.github.io/draft-composite-sigs/draft-ietf-lamps-pq-composite-sigs.html
 
 coding: utf-8
-pi:    # can use array (if all yes) or hash here
+pi:  # can use array (if all yes) or hash here
   toc: yes
   sortrefs:   # defaults to yes
   symrefs: yes
