@@ -1939,7 +1939,7 @@ For all test vectors, a sample signature is provided computer over an empty `ctx
 Within each test case there are the following values:
 
 * `tcId` the name of the algorithm.
-* `pk` the verification public key.
+* `pk` the raw verification public key.
 * `x5c` a self-signed X.509 certificate of the public key.
 * `sk` the raw signature private key.
 * `sk_pkcs8` the signature private key in a PKCS#8 object.
