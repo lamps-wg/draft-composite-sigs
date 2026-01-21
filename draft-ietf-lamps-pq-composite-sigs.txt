@@ -3484,7 +3484,7 @@ Appendix E.  Test Vectors
 
    *  tcId the name of the algorithm.
 
-   *  pk the verification public key.
+   *  pk the raw verification public key.
 
    *  x5c a self-signed X.509 certificate of the public key.
 
