@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 25 July 2026                                            M. Pala
+Expires: 25 August 2026                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                         21 January 2026
+                                                        21 February 2026
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 July 2026.
+   This Internet-Draft will expire on 25 August 2026.
 
 Copyright Notice
 
@@ -107,7 +107,7 @@ Table of Contents
        8.1.2.  Object Identifier Registrations
    9.  Security Considerations
      9.1.  Why Hybrids?
-     9.2.  EUF-CMA, SUF-CMA and non-separability
+     9.2.  EUF-CMA, SUF-CMA and Non-Separability
        9.2.1.  EUF-CMA
        9.2.2.  SUF-CMA
        9.2.3.  Non-separability
@@ -128,8 +128,7 @@ Table of Contents
            Signatures
    Appendix D.  Message Representative Examples
    Appendix E.  Test Vectors
-   Appendix F.  Intellectual Property Considerations
-   Appendix G.  Contributors and Acknowledgements
+   Appendix F.  Contributors and Acknowledgements
    Authors' Addresses
 
 1.  Introduction
@@ -166,10 +165,11 @@ Table of Contents
    presented in [Bindel2017].  Composite algorithms retain some security
    even if one of their component algorithms is broken, which is
    discussed in detail in Section 9.  This specification creates PQ/T
-   Hybrids with ML-DSA, defined in [FIPS.204] as the PQ component.
-   Instantiations of the composite ML-DSA scheme are provided based on
-   ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.  The full
-   list of algorithms registered by this specification is in Section 6.
+   Hybrids with the Module-Lattice-Based Digital Signature Algorithm
+   (ML-DSA), defined in [FIPS.204] as the PQ component.  Instantiations
+   of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS,
+   RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.  The full list of
+   algorithms registered by this specification is in Section 6.
    Backwards compatibility in the sense of upgraded systems continuing
    to interoperate with legacy systems is not directly covered in this
    specification, but is the subject of Section 10.2.
@@ -202,8 +202,10 @@ Table of Contents
    algorithms for common use-cases.
 
    Composite ML-DSA is applicable in PKIX-related applications that
-   would otherwise use ML-DSA and where EUF-CMA-level security is
-   acceptable.
+   would otherwise use ML-DSA and where existential unforgeability (EUF-
+   CMA) security is acceptable, instead of the stronger strong
+   existential unforgeability (SUF-CMA) which Composite ML-DSA does not
+   offer.
 
 1.1.  Conventions and Terminology
 
@@ -239,9 +241,19 @@ Table of Contents
 
    *DER*: Distinguished Encoding Rules as defined in [X.690].
 
+   *ECDSA*: The Elliptic Curve Digital Signature Algorithm defined in
+   [FIPS.186-5].
+
+   *EdDSA, Ed25519 and Ed448*: Edwards-curve Digital Signature Algorithm
+   (EdDSA) defined in [RFC8410] with two parameter sets: Ed25519 and
+   Ed448.
+
+   *ML-DSA*: The Module-Lattice-Based Digital Signature Standard defined
+   in [FIPS.204].
+
    *PKI*: Public Key Infrastructure, as defined in [RFC5280].
 
-   *Post-Quantum Traditional (PQ/T) hybrid scheme*: A multi-algorithm
+   *POST-QUANTUM TRADITIONAL (PQ/T) HYBRID SCHEME*: A multi-algorithm
    scheme where at least one component algorithm is a post-quantum
    algorithm and at least one is a traditional algorithm.
 
@@ -253,6 +265,10 @@ Table of Contents
    make it "hybrid aware", whereas this specification presents as a
    standalone algorithm and thus can take advantage of existing
    cryptographic agility mechanisms.
+
+   *RSA*: The Rivest-Shamir-Adleman cryptosystem, used in this
+   specification as the RSA-PSS (Probabilistic Signature Scheme) defined
+   in [RFC8017].
 
    *SIGNATURE*: A digital cryptographic signature, making no assumptions
    about which algorithm.
@@ -289,7 +305,7 @@ Table of Contents
    signature algorithm.  This generally means that the complexity of
    combining algorithms can and should be handled by the cryptographic
    library or cryptographic module.  The design intent is that protocols
-   such as PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], the CMS
+   such as PKCS#10 [RFC2986], CMP [RFC9810], X.509 [RFC5280], the CMS
    [RFC5652], and the Trust Anchor Format [RFC5914] can treat composite
    algorithms as they would any other algorithm without the protocol
    layer to have any "hybrid-awareness".  This is a property referred to
@@ -299,10 +315,12 @@ Table of Contents
    in Section 6.2.
 
    In terms of security properties, we consider the two security
-   properties EUF-CMA and SUF-CMA, which are treated more rigorously in
-   Section 9.2.1 and Section 9.2.2.  As a simplified summary; Composite
-   ML-DSA will be EUF-CMA secure if at least one of its component
-   algorithms is EUF-CMA secure and the message hash PH is collision
+   properties existential forgery against a chosen message attack (EUF-
+   CMA) and strong unforgeability against a chosen message attack (SUF-
+   CMA), which are treated more rigorously in Section 9.2.1 and
+   Section 9.2.2.  As a simplified summary; Composite ML-DSA will be
+   EUF-CMA secure if at least one of its component algorithms is EUF-CMA
+   secure and the pre-hashed message representative PH is collision
    resistant.  SUF-CMA security of Composite ML-DSA is more complicated.
    While some of the algorithm combinations defined in this
    specification are likely to be SUF-CMA secure against classical
@@ -793,16 +811,9 @@ Signature Verification Process:
    signature verification, there are no timing attacks to consider, so
    this is ok.
 
-   Note that there are two different context strings ctx at play: the
-   first is the application context ctx that is passed in to Composite-
-   ML-DSA.Sign and bound to the to-be-signed message M' in Step 3.  The
-   second is the mldsa-ctx that is passed down into the underlying ML-
-   DSA.Verify(pk, M, sigma, ctx) as defined in [FIPS.204] Algorithm 3,
-   in Step 4 and here Composite ML-DSA itself is the application that we
-   wish to bind and so the per-algorithm Label is used as the ctx for
-   the underlying ML-DSA primitive.  Some implementations of the EdDSA
-   component primitive can also expose a ctx parameter, but even if
-   present, this is not used by Composite ML-DSA.
+   As with Composite-ML-DSA.Sign(), there are two different context
+   strings ctx at play: the application context ctx and the mldsa-ctx
+   which behave the same in verify() as they do in sign().
 
 4.  Serialization
 
@@ -1128,7 +1139,7 @@ Signature Verification Process:
    following sections provide conventions for using them within X.509
    and other PKIX protocols such that Composite ML-DSA can be used as a
    drop-in replacement for existing digital signature algorithms in
-   PKCS#10 [RFC2986], CMP [RFC4210], X.509 [RFC5280], and related
+   PKCS#10 [RFC2986], CMP [RFC9810], X.509 [RFC5280], and related
    protocols.
 
 5.1.  Encoding to DER
@@ -1161,7 +1172,7 @@ Signature Verification Process:
    authentication service, a data origin authentication service, an
    integrity service, and/or a non-repudiation service that protects
    against the signing entity falsely denying some action.  This means
-   that the keyUsage extention MUST have at least one of the following
+   that the keyUsage extension MUST have at least one of the following
    bits set:
 
      digitalSignature
@@ -1170,7 +1181,7 @@ Signature Verification Process:
      cRLSign
 
    ML-DSA subject public keys cannot be used to establish keys or
-   encrypt data, so the keyUsage extention MUST NOT have any of
+   encrypt data, so the keyUsage extension MUST NOT have any of
    following bits set:
 
       keyEncipherment,
@@ -1239,7 +1250,7 @@ Signature Verification Process:
    Use cases that require an interoperable encoding for composite
    private keys will often need to place a composite private key inside
    a OneAsymmetricKey structure defined in [RFC5958], such as when
-   private keys are carried in PKCS #12 [RFC7292], CMP [RFC4210] or CRMF
+   private keys are carried in PKCS #12 [RFC7292], CMP [RFC9810] or CRMF
    [RFC4211].  The definition of OneAsymmetricKey is copied here for
    convenience:
 
@@ -2227,7 +2238,7 @@ Signature Verification Process:
    implementation.  More details of obtaining FIPS certification of a
    composite algorithm can be found in Section 10.1.
 
-9.2.  EUF-CMA, SUF-CMA and non-separability
+9.2.  EUF-CMA, SUF-CMA and Non-Separability
 
    First, a note about the security model under which this analysis is
    performed.  This specification strictly forbids re-using component
@@ -2243,7 +2254,7 @@ Signature Verification Process:
    considered when considering Composite ML-DSA as a general-purpose
    signature primitive that could be used outside of the X.509 setting.
 
-   The second securtiy model considiration is that composites are
+   The second security model consideration is that composites are
    designed to provide value even if one algorithm is broken, even if
    you do not know which.  However, the security properties offered by
    the composite signature can differ based on which algorithm you
@@ -2300,7 +2311,7 @@ Signature Verification Process:
    algorithms to be SUF-CMA secure.  If repeated calls to the signing
    oracle produce two valid message-signature pairs (M, (mldsaSig1,
    tradSig1)) and (M, (mldsaSig2, tradSig2)) for the same message M, but
-   where mldsaSig1 =/= mldsaSig2 and tradSig1 =/= tradSig2, then the
+   where mldsaSig1 != mldsaSig2 and tradSig1 != tradSig2, then the
    adversary can construct a third pair (M, (mldsaSig1, tradSig2)) that
    will also be valid.
 
@@ -2398,9 +2409,9 @@ Signature Verification Process:
    specification, the weakening of security from doing so can be
    mitigated by using an appropriate ctx value, such as ctx=Foobar-dual-
    cert-sig to indicate that this signature belongs to the Foobar
-   protocol where two certificates were used to create a single
-   composite signature.  This specification does not endorse such uses,
-   and per-application security analysis is needed.
+   protocol [RFC3092] where two certificates were used to create a
+   single composite signature.  This specification does not endorse such
+   uses, and per-application security analysis is needed.
 
 9.4.  Use of Prefix for attack mitigation
 
@@ -2419,7 +2430,7 @@ Signature Verification Process:
    Traditionally, a public key or certificate contains a single
    cryptographic algorithm.  If and when an algorithm becomes deprecated
    (for example, RSA-512, or SHA1), the path to deprecating it through
-   policy and removing it from operational environments is, at least is
+   policy and removing it from operational environments is, at least in
    principle, straightforward.
 
    In the composite model this is less obvious since a PQ/T hybrid is
@@ -2528,8 +2539,8 @@ Signature Verification Process:
 
    For applications that do not have any regulatory requirements or
    legacy implementations to consider, it is RECOMMENDED to focus
-   implementation effort on as it provides the best overall balance of
-   performance and security.
+   implementation effort on the following composite algorithm as it
+   provides the best overall balance of performance and security.
 
    id-MLDSA65-ECDSA-P256-SHA512
 
@@ -2668,12 +2679,6 @@ Process:
               (CRL) Profile", RFC 3279, DOI 10.17487/RFC3279, April
               2002, <https://www.rfc-editor.org/info/rfc3279>.
 
-   [RFC4210]  Adams, C., Farrell, S., Kause, T., and T. Mononen,
-              "Internet X.509 Public Key Infrastructure Certificate
-              Management Protocol (CMP)", RFC 4210,
-              DOI 10.17487/RFC4210, September 2005,
-              <https://www.rfc-editor.org/info/rfc4210>.
-
    [RFC4211]  Schaad, J., "Internet X.509 Public Key Infrastructure
               Certificate Request Message Format (CRMF)", RFC 4211,
               DOI 10.17487/RFC4211, September 2005,
@@ -2743,6 +2748,12 @@ Process:
               DOI 10.17487/RFC8410, August 2018,
               <https://www.rfc-editor.org/info/rfc8410>.
 
+   [RFC9810]  Brockhaus, H., von Oheimb, D., Ounsworth, M., and J. Gray,
+              "Internet X.509 Public Key Infrastructure -- Certificate
+              Management Protocol (CMP)", RFC 9810,
+              DOI 10.17487/RFC9810, July 2025,
+              <https://www.rfc-editor.org/info/rfc9810>.
+
    [SEC1]     Certicom Research, "SEC 1: Elliptic Curve Cryptography",
               May 2009, <https://www.secg.org/sec1-v2.pdf>.
 
@@ -2778,12 +2789,6 @@ Process:
               infrastructure", 2017, <https://link.springer.com/
               chapter/10.1007/978-3-319-59879-6_22>.
 
-   [BonehShoup]
-              Boneh, D. and V. Shoup, "A Graduate Course in Applied
-              Cryptography v0.6", January 2023,
-              <https://crypto.stanford.edu/~dabo/cryptobook/
-              BonehShoup_0_6.pdf>.
-
    [BSI2021]  Federal Office for Information Security (BSI), "Quantum-
               safe cryptography - fundamentals, current developments and
               recommendations", October 2021,
@@ -2810,6 +2815,10 @@ Process:
               draft-ietf-pquip-hybrid-signature-spectrums-07, 20 June
               2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
               pquip-hybrid-signature-spectrums-07>.
+
+   [RFC3092]  Eastlake 3rd, D., Manros, C., and E. Raymond, "Etymology
+              of "Foo"", RFC 3092, DOI 10.17487/RFC3092, April 2001,
+              <https://www.rfc-editor.org/info/rfc3092>.
 
    [RFC5914]  Housley, R., Ashmore, S., and C. Wallace, "Trust Anchor
               Format", RFC 5914, DOI 10.17487/RFC5914, June 2010,
@@ -10850,13 +10859,7 @@ Appendix E.  Test Vectors
    ]
    }
 
-Appendix F.  Intellectual Property Considerations
-
-   The following IPR Disclosure relates to this document:
-
-   https://datatracker.ietf.org/ipr/3588/
-
-Appendix G.  Contributors and Acknowledgements
+Appendix F.  Contributors and Acknowledgements
 
    This document incorporates contributions and comments from a large
    group of experts.  The editors would especially like to acknowledge
@@ -10866,7 +10869,7 @@ Appendix G.  Contributors and Acknowledgements
    of this document:
 
    Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
-   (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduade
+   (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduate
    School), Tim Hollebeek (Digicert), Panos Kampanakis (Amazon), Chris
    A.  Wood (Apple), Christopher D.  Wood (Apple), Sophie Schmieg
    (Google), Bas Westerbaan (Cloudflare), Chris Patton (Cloudflare),

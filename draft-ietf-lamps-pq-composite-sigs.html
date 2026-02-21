@@ -32,7 +32,7 @@
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.2.14
+    wcwidth 0.3.0
 -->
 <link href="draft-ietf-lamps-pq-composite-sigs.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -173,7 +173,7 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -181,7 +181,8 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 }
 
 @font-face {
@@ -573,6 +574,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -643,7 +645,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1051,11 +1053,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Composite ML-DSA</td>
-<td class="right">January 2026</td>
+<td class="right">February 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 25 July 2026</td>
+<td class="center">Expires 25 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-01-21" class="published">21 January 2026</time>
+<time datetime="2026-02-21" class="published">21 February 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-07-25">25 July 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-25">25 August 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1139,7 +1141,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 25 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1277,7 +1279,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-why-hybrids" class="internal xref">Why Hybrids?</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-euf-cma-suf-cma-and-non-sep" class="internal xref">EUF-CMA, SUF-CMA and non-separability</a></p>
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-euf-cma-suf-cma-and-non-sep" class="internal xref">EUF-CMA, SUF-CMA and Non-Separability</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.1">
                     <p id="section-toc.1-1.9.2.2.2.1.1"><a href="#section-9.2.1" class="auto internal xref">9.2.1</a>.  <a href="#name-euf-cma" class="internal xref">EUF-CMA</a></p>
@@ -1345,13 +1347,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.16.1"><a href="#appendix-E" class="auto internal xref">Appendix E</a>.  <a href="#name-test-vectors" class="internal xref">Test Vectors</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
-            <p id="section-toc.1-1.17.1"><a href="#appendix-F" class="auto internal xref">Appendix F</a>.  <a href="#name-intellectual-property-consi" class="internal xref">Intellectual Property Considerations</a></p>
+            <p id="section-toc.1-1.17.1"><a href="#appendix-F" class="auto internal xref">Appendix F</a>.  <a href="#name-contributors-and-acknowledg" class="internal xref">Contributors and Acknowledgements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18">
-            <p id="section-toc.1-1.18.1"><a href="#appendix-G" class="auto internal xref">Appendix G</a>.  <a href="#name-contributors-and-acknowledg" class="internal xref">Contributors and Acknowledgements</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.19">
-            <p id="section-toc.1-1.19.1"><a href="#appendix-H" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.18.1"><a href="#appendix-G" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1368,14 +1367,14 @@ For instance, the aggressive migration timelines may require deploying PQC algor
 <p id="section-1-2">Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as "Post-Quantum/Traditional (PQ/T) Hybrids" <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm. The composite algorithm presents a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level. This provides a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. The idea of a composite was first presented in <span>[<a href="#Bindel2017" class="cite xref">Bindel2017</a>]</span>.
 Composite algorithms retain some security even if one of their component algorithms is broken, which is discussed in detail in <a href="#sec-cons" class="auto internal xref">Section 9</a>.
-This specification creates PQ/T Hybrids with ML-DSA, defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> as the PQ component.
+This specification creates PQ/T Hybrids with the Module-Lattice-Based Digital Signature Algorithm (ML-DSA), defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> as the PQ component.
 Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.
 The full list of algorithms registered by this specification is in <a href="#sec-alg-parms" class="auto internal xref">Section 6</a>.
 Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Section 10.2</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Certain jurisdictions have recommended that ML-DSA be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>, <span>[<a href="#ANSSI2024" class="cite xref">ANSSI2024</a>]</span>.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum Cryptography before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The intention is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but <a href="#sec-impl-profile" class="auto internal xref">Section 10.3</a> provides a short-list of recommended composite algorithms for common use-cases.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where EUF-CMA-level security is acceptable.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where existential unforgeability (EUF-CMA) security is acceptable, instead of the stronger strong existential unforgeability (SUF-CMA) which Composite ML-DSA does not offer.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
 <section id="section-1.1">
         <h3 id="name-conventions-and-terminology">
@@ -1406,14 +1405,19 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
   asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS".<a href="#section-1.1-6" class="pilcrow">¶</a></p>
 <p id="section-1.1-7"><strong>DER</strong>:
           Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
-<p id="section-1.1-8"><strong>PKI</strong>:
-          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
-<p id="section-1.1-9"><strong>Post-Quantum Traditional (PQ/T) hybrid scheme</strong>:
-    A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
-<p id="section-1.1-10"><strong>PROTOCOL BACKWARDS COMPATIBILITY</strong>: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
-<p id="section-1.1-11"><strong>SIGNATURE</strong>:
+<p id="section-1.1-8"><strong>ECDSA</strong>: The Elliptic Curve Digital Signature Algorithm defined in <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+<p id="section-1.1-9"><strong>EdDSA, Ed25519 and Ed448</strong>: Edwards-curve Digital Signature Algorithm (EdDSA)
+          defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span> with two parameter sets: Ed25519 and Ed448.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
+<p id="section-1.1-10"><strong>ML-DSA</strong>: The Module-Lattice-Based Digital Signature Standard defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
+<p id="section-1.1-11"><strong>PKI</strong>:
+          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-11" class="pilcrow">¶</a></p>
+<p id="section-1.1-12"><strong>POST-QUANTUM TRADITIONAL (PQ/T) HYBRID SCHEME</strong>:
+    A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-12" class="pilcrow">¶</a></p>
+<p id="section-1.1-13"><strong>PROTOCOL BACKWARDS COMPATIBILITY</strong>: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-13" class="pilcrow">¶</a></p>
+<p id="section-1.1-14"><strong>RSA</strong>: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-1.1-14" class="pilcrow">¶</a></p>
+<p id="section-1.1-15"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-1.1-11" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-1.1-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="notation">
@@ -1446,9 +1450,9 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
         <h3 id="name-composite-design-philosophy">
 <a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-composite-design-philosophy" class="section-name selfRef">Composite Design Philosophy</a>
         </h3>
-<p id="section-1.3-1">Composite algorithms, as defined in this specification, follow the definition in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> and should be regarded as a single algorithm that performs a single cryptographic operation typical of a digital signature algorithm. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module. The design intent is that protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span> can treat composite algorithms as they would any other algorithm without the protocol layer to have any "hybrid-awareness". This is a property referred to as "protocol backwards-compatibility".<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.3-1">Composite algorithms, as defined in this specification, follow the definition in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> and should be regarded as a single algorithm that performs a single cryptographic operation typical of a digital signature algorithm. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module. The design intent is that protocols such as PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC9810" class="cite xref">RFC9810</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, the CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span>, and the Trust Anchor Format <span>[<a href="#RFC5914" class="cite xref">RFC5914</a>]</span> can treat composite algorithms as they would any other algorithm without the protocol layer to have any "hybrid-awareness". This is a property referred to as "protocol backwards-compatibility".<a href="#section-1.3-1" class="pilcrow">¶</a></p>
 <p id="section-1.3-2">Discussion of the specific choices of algorithm pairings can be found in <a href="#sec-rationale" class="auto internal xref">Section 6.2</a>.<a href="#section-1.3-2" class="pilcrow">¶</a></p>
-<p id="section-1.3-3">In terms of security properties, we consider the two security properties EUF-CMA and SUF-CMA, which are treated more rigorously in <a href="#sec-cons-eufcma" class="auto internal xref">Section 9.2.1</a> and <a href="#sec-cons-sufcma" class="auto internal xref">Section 9.2.2</a>. As a simplified summary; Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the message hash PH is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a>.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+<p id="section-1.3-3">In terms of security properties, we consider the two security properties existential forgery against a chosen message attack (EUF-CMA) and strong unforgeability against a chosen message attack (SUF-CMA), which are treated more rigorously in <a href="#sec-cons-eufcma" class="auto internal xref">Section 9.2.1</a> and <a href="#sec-cons-sufcma" class="auto internal xref">Section 9.2.2</a>. As a simplified summary; Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the pre-hashed message representative <code>PH</code> is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a>.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1810,7 +1814,7 @@ Signature Verification Process:
 </pre><a href="#section-3.3-4" class="pilcrow">¶</a>
 </div>
 <p id="section-3.3-5">Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3-6">Note that there are two different context strings <code>ctx</code> at play: the first is the application context <code>ctx</code> that is passed in to <code>Composite-ML-DSA.Sign</code> and bound to the to-be-signed message <code>M'</code> in Step 3. The second is the <code>mldsa-ctx</code> that is passed down into the underlying <code>ML-DSA.Verify(pk, M, sigma, ctx)</code> as defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span> Algorithm 3, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the <code>ctx</code> for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a <code>ctx</code> parameter, but even if present, this is not used by Composite ML-DSA.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">As with <code>Composite-ML-DSA.Sign()</code>, there are two different context strings <code>ctx</code> at play: the application context <code>ctx</code> and the <code>mldsa-ctx</code> which behave the same in <code>verify()</code> as they do in <code>sign()</code>.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2127,7 +2131,7 @@ Deserialization Process:
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-use-within-x509-and-pkix" class="section-name selfRef">Use within X.509 and PKIX</a>
       </h2>
 <p id="section-5-1">The following sections provide processing logic and the ASN.1 modules necessary to use composite ML-DSA within X.509 and PKIX protocols. Use within the Cryptographic Message Syntax (CMS) will be covered in a separate specification.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols such that Composite ML-DSA can be used as a drop-in replacement for existing digital signature algorithms in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and related protocols.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-2">While composite ML-DSA keys and signature values MAY be used raw, the following sections provide conventions for using them within X.509 and other PKIX protocols such that Composite ML-DSA can be used as a drop-in replacement for existing digital signature algorithms in PKCS#10 <span>[<a href="#RFC2986" class="cite xref">RFC2986</a>]</span>, CMP <span>[<a href="#RFC9810" class="cite xref">RFC9810</a>]</span>, X.509 <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and related protocols.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <div id="sec-encoding-to-der">
 <section id="section-5.1">
         <h3 id="name-encoding-to-der">
@@ -2160,7 +2164,7 @@ for verifying digital signatures on certificates or CRLs, or those used in an
 entity authentication service, a data origin authentication service, an
 integrity service, and/or a non-repudiation service that protects against
 the signing entity falsely denying some action. This means that the
-<code>keyUsage</code> extention MUST have at least one of the following bits set:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<code>keyUsage</code> extension MUST have at least one of the following bits set:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-2">
 <pre>
   digitalSignature
@@ -2170,7 +2174,7 @@ the signing entity falsely denying some action. This means that the
 </pre><a href="#section-5.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.2-3">ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
-<code>keyUsage</code> extention MUST NOT have any of following bits set:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<code>keyUsage</code> extension MUST NOT have any of following bits set:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-4">
 <pre>
    keyEncipherment,
@@ -2236,7 +2240,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
 </pre><a href="#section-5.3-5" class="pilcrow">¶</a>
 </div>
 <p id="section-5.3-6">The full set of key types defined by this specification can be found in the ASN.1 Module in <a href="#sec-asn1-module" class="auto internal xref">Section 7</a>.<a href="#section-5.3-6" class="pilcrow">¶</a></p>
-<p id="section-5.3-7">Use cases that require an interoperable encoding for composite private keys will often need to place a composite private key inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC4210" class="cite xref">RFC4210</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-5.3-7" class="pilcrow">¶</a></p>
+<p id="section-5.3-7">Use cases that require an interoperable encoding for composite private keys will often need to place a composite private key inside a <code>OneAsymmetricKey</code> structure defined in <span>[<a href="#RFC5958" class="cite xref">RFC5958</a>]</span>, such as when private keys are carried in PKCS #12 <span>[<a href="#RFC7292" class="cite xref">RFC7292</a>]</span>, CMP <span>[<a href="#RFC9810" class="cite xref">RFC9810</a>]</span> or CRMF <span>[<a href="#RFC4211" class="cite xref">RFC4211</a>]</span>. The definition of <code>OneAsymmetricKey</code> is copied here for convenience:<a href="#section-5.3-7" class="pilcrow">¶</a></p>
 <span id="name-oneasymmetrickey-as-defined"></span><figure id="figure-2">
           <div class="lang-ASN.1 sourcecode" id="section-5.3-8.1">
 <pre>
@@ -3526,10 +3530,10 @@ END
 <div id="sec-cons-non-separability">
 <section id="section-9.2">
         <h3 id="name-euf-cma-suf-cma-and-non-sep">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-euf-cma-suf-cma-and-non-sep" class="section-name selfRef">EUF-CMA, SUF-CMA and non-separability</a>
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-euf-cma-suf-cma-and-non-sep" class="section-name selfRef">EUF-CMA, SUF-CMA and Non-Separability</a>
         </h3>
 <p id="section-9.2-1">First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2">The second securtiy model considiration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">The second security model consideration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
 <div id="sec-cons-eufcma">
 <section id="section-9.2.1">
           <h4 id="name-euf-cma">
@@ -3556,7 +3560,7 @@ END
           </h4>
 <p id="section-9.2.2-1">A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-CMA) if an adversary that has access to a signing oracle cannot create a message-signature pair <code>(M, Sig)</code> that was not an output of a signing oracle query. This is a stronger property than EUF-CMA since the message <code>M</code> does not need to be different. SUF-CMA security is also more complicated for Composite ML-DSA than EUF-CMA.<a href="#section-9.2.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.2.2-2">A SUF-CMA failure in one component algorithm can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to Composite ML-DSA with ECDSA.<a href="#section-9.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-9.2.2-3">Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA secure. If repeated calls to the signing oracle produce two valid message-signature pairs <code>(M, (mldsaSig1, tradSig1))</code> and <code>(M, (mldsaSig2, tradSig2))</code> for the same message <code>M</code>, but where <code>mldsaSig1 =/= mldsaSig2</code> and <code>tradSig1 =/= tradSig2</code>, then the adversary can construct a third pair <code>(M, (mldsaSig1, tradSig2))</code> that will also be valid.<a href="#section-9.2.2-3" class="pilcrow">¶</a></p>
+<p id="section-9.2.2-3">Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA secure. If repeated calls to the signing oracle produce two valid message-signature pairs <code>(M, (mldsaSig1, tradSig1))</code> and <code>(M, (mldsaSig2, tradSig2))</code> for the same message <code>M</code>, but where <code>mldsaSig1 != mldsaSig2</code> and <code>tradSig1 != tradSig2</code>, then the adversary can construct a third pair <code>(M, (mldsaSig1, tradSig2))</code> that will also be valid.<a href="#section-9.2.2-3" class="pilcrow">¶</a></p>
 <p id="section-9.2.2-4">Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and Composite ML-DSA signed X.509 certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.<a href="#section-9.2.2-4" class="pilcrow">¶</a></p>
 <p id="section-9.2.2-5">Consequently, applications where SUF-CMA security is critical SHOULD NOT use Composite ML-DSA.<a href="#section-9.2.2-5" class="pilcrow">¶</a></p>
 </section>
@@ -3583,7 +3587,7 @@ END
 <p id="section-9.3-2">When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ/T hybrid setting.<a href="#section-9.3-2" class="pilcrow">¶</a></p>
 <p id="section-9.3-3">Within the broader context of PQ/T hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in <a href="#sec-cons-non-separability" class="auto internal xref">Section 9.2</a> and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.<a href="#section-9.3-3" class="pilcrow">¶</a></p>
 <p id="section-9.3-4">In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.<a href="#section-9.3-4" class="pilcrow">¶</a></p>
-<p id="section-9.3-5">Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate <code>ctx</code> value, such as <code>ctx=Foobar-dual-cert-sig</code> to indicate that this signature belongs to the Foobar protocol where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.<a href="#section-9.3-5" class="pilcrow">¶</a></p>
+<p id="section-9.3-5">Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate <code>ctx</code> value, such as <code>ctx=Foobar-dual-cert-sig</code> to indicate that this signature belongs to the Foobar protocol <span>[<a href="#RFC3092" class="cite xref">RFC3092</a>]</span> where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.<a href="#section-9.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cons-prefix">
@@ -3599,7 +3603,7 @@ END
         <h3 id="name-policy-for-deprecated-and-a">
 <a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-policy-for-deprecated-and-a" class="section-name selfRef">Policy for Deprecated and Acceptable Algorithms</a>
         </h3>
-<p id="section-9.5-1">Traditionally, a public key or certificate contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), the path to deprecating it through policy and removing it from operational environments is, at least is principle, straightforward.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
+<p id="section-9.5-1">Traditionally, a public key or certificate contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), the path to deprecating it through policy and removing it from operational environments is, at least in principle, straightforward.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
 <p id="section-9.5-2">In the composite model this is less obvious since a PQ/T hybrid is expected to still be considered valid after the traditional component is deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms. In general this should be manageable through policy by removing OIDs for the standalone component algorithms while still allowing OIDs for composite algorithms. However, complications may arise when the composite implementation needs to invoke the cryptographic module for a deprecated component algorithm. In particular, this could lead to complex Cryptographic Bills of Materials that show implementations of deprecated algorithms still present and being used.<a href="#section-9.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3642,7 +3646,7 @@ END
 Each option has been specified because there is a community that has a direct application for it; typically because the traditional component is already deployed in a change-managed environment, or because that specific traditional component is required for regulatory reasons.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
 <p id="section-10.3-2">However, this large number of combinations leads either to fracturing of the ecosystem into non-interoperable sub-groups when different communities choose non-overlapping subsets to support, or on the other hand it leads to spreading development resources too thin when trying to support all options.<a href="#section-10.3-2" class="pilcrow">¶</a></p>
 <p id="section-10.3-3">This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.<a href="#section-10.3-3" class="pilcrow">¶</a></p>
-<p id="section-10.3-4">For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on as it provides the best overall balance of performance and security.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
+<p id="section-10.3-4">For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on the following composite algorithm as it provides the best overall balance of performance and security.<a href="#section-10.3-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-10.3-5">
 <pre>
 id-MLDSA65-ECDSA-P256-SHA512
@@ -3790,10 +3794,6 @@ Process:
         <dd>
 <span class="refAuthor">Bassham, L.</span>, <span class="refAuthor">Polk, W.</span>, and <span class="refAuthor">R. Housley</span>, <span class="refTitle">"Algorithms and Identifiers for the Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 3279</span>, <span class="seriesInfo">DOI 10.17487/RFC3279</span>, <time datetime="2002-04" class="refDate">April 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3279">https://www.rfc-editor.org/info/rfc3279</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC4210">[RFC4210]</dt>
-        <dd>
-<span class="refAuthor">Adams, C.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Kause, T.</span>, and <span class="refAuthor">T. Mononen</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate Management Protocol (CMP)"</span>, <span class="seriesInfo">RFC 4210</span>, <span class="seriesInfo">DOI 10.17487/RFC4210</span>, <time datetime="2005-09" class="refDate">September 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4210">https://www.rfc-editor.org/info/rfc4210</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC4211">[RFC4211]</dt>
         <dd>
 <span class="refAuthor">Schaad, J.</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate Request Message Format (CRMF)"</span>, <span class="seriesInfo">RFC 4211</span>, <span class="seriesInfo">DOI 10.17487/RFC4211</span>, <time datetime="2005-09" class="refDate">September 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4211">https://www.rfc-editor.org/info/rfc4211</a>&gt;</span>. </dd>
@@ -3850,6 +3850,10 @@ Process:
         <dd>
 <span class="refAuthor">Josefsson, S.</span> and <span class="refAuthor">J. Schaad</span>, <span class="refTitle">"Algorithm Identifiers for Ed25519, Ed448, X25519, and X448 for Use in the Internet X.509 Public Key Infrastructure"</span>, <span class="seriesInfo">RFC 8410</span>, <span class="seriesInfo">DOI 10.17487/RFC8410</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8410">https://www.rfc-editor.org/info/rfc8410</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC9810">[RFC9810]</dt>
+        <dd>
+<span class="refAuthor">Brockhaus, H.</span>, <span class="refAuthor">von Oheimb, D.</span>, <span class="refAuthor">Ounsworth, M.</span>, and <span class="refAuthor">J. Gray</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure -- Certificate Management Protocol (CMP)"</span>, <span class="seriesInfo">RFC 9810</span>, <span class="seriesInfo">DOI 10.17487/RFC9810</span>, <time datetime="2025-07" class="refDate">July 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9810">https://www.rfc-editor.org/info/rfc9810</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="SEC1">[SEC1]</dt>
         <dd>
 <span class="refAuthor">Certicom Research</span>, <span class="refTitle">"SEC 1: Elliptic Curve Cryptography"</span>, <time datetime="2009-05" class="refDate">May 2009</time>, <span>&lt;<a href="https://www.secg.org/sec1-v2.pdf">https://www.secg.org/sec1-v2.pdf</a>&gt;</span>. </dd>
@@ -3883,10 +3887,6 @@ Process:
         <dd>
 <span class="refAuthor">Bindel, N.</span>, <span class="refAuthor">Herath, U.</span>, <span class="refAuthor">McKague, M.</span>, and <span class="refAuthor">D. Stebila</span>, <span class="refTitle">"Transitioning to a quantum-resistant public key infrastructure"</span>, <time datetime="2017" class="refDate">2017</time>, <span>&lt;<a href="https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22">https://link.springer.com/chapter/10.1007/978-3-319-59879-6_22</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="BonehShoup">[BonehShoup]</dt>
-        <dd>
-<span class="refAuthor">Boneh, D.</span> and <span class="refAuthor">V. Shoup</span>, <span class="refTitle">"A Graduate Course in Applied Cryptography v0.6"</span>, <time datetime="2023-01" class="refDate">January 2023</time>, <span>&lt;<a href="https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf">https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="BSI2021">[BSI2021]</dt>
         <dd>
 <span class="refAuthor">Federal Office for Information Security (BSI)</span>, <span class="refTitle">"Quantum-safe cryptography - fundamentals, current developments and recommendations"</span>, <time datetime="2021-10" class="refDate">October 2021</time>, <span>&lt;<a href="https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf">https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Brochure/quantum-safe-cryptography.pdf</a>&gt;</span>. </dd>
@@ -3902,6 +3902,10 @@ Process:
 <dt id="I-D.ietf-pquip-hybrid-signature-spectrums">[I-D.ietf-pquip-hybrid-signature-spectrums]</dt>
         <dd>
 <span class="refAuthor">Bindel, N.</span>, <span class="refAuthor">Hale, B.</span>, <span class="refAuthor">Connolly, D.</span>, and <span class="refAuthor">F. D</span>, <span class="refTitle">"Hybrid signature spectrums"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-pquip-hybrid-signature-spectrums-07</span>, <time datetime="2025-06-20" class="refDate">20 June 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-07">https://datatracker.ietf.org/doc/html/draft-ietf-pquip-hybrid-signature-spectrums-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3092">[RFC3092]</dt>
+        <dd>
+<span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refAuthor">Manros, C.</span>, and <span class="refAuthor">E. Raymond</span>, <span class="refTitle">"Etymology of "Foo""</span>, <span class="seriesInfo">RFC 3092</span>, <span class="seriesInfo">DOI 10.17487/RFC3092</span>, <time datetime="2001-04" class="refDate">April 2001</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3092">https://www.rfc-editor.org/info/rfc3092</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC5914">[RFC5914]</dt>
         <dd>
@@ -12171,26 +12175,17 @@ r99OhEFuD9oF8wlPRr7+HdgaYXnT2+AKsu2ptUlfX+FFd"
 </div>
 </section>
 </div>
-<div id="intellectual-property-considerations">
-<section id="appendix-F">
-      <h2 id="name-intellectual-property-consi">
-<a href="#appendix-F" class="section-number selfRef">Appendix F. </a><a href="#name-intellectual-property-consi" class="section-name selfRef">Intellectual Property Considerations</a>
-      </h2>
-<p id="appendix-F-1">The following IPR Disclosure relates to this document:<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<p id="appendix-F-2">https://datatracker.ietf.org/ipr/3588/<a href="#appendix-F-2" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="contributors-and-acknowledgements">
-<section id="appendix-G">
+<section id="appendix-F">
       <h2 id="name-contributors-and-acknowledg">
-<a href="#appendix-G" class="section-number selfRef">Appendix G. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
+<a href="#appendix-F" class="section-number selfRef">Appendix F. </a><a href="#name-contributors-and-acknowledg" class="section-name selfRef">Contributors and Acknowledgements</a>
       </h2>
-<p id="appendix-G-1">This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:<a href="#appendix-G-1" class="pilcrow">¶</a></p>
-<p id="appendix-G-2">Serge Mister (Entrust),
+<p id="appendix-F-1">This document incorporates contributions and comments from a large group of experts. The editors would especially like to acknowledge the expertise and tireless dedication of the following people, who attended many long meetings and generated millions of bytes of electronic mail and VOIP traffic over the past six years in pursuit of this document:<a href="#appendix-F-1" class="pilcrow">¶</a></p>
+<p id="appendix-F-2">Serge Mister (Entrust),
 Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
-Dr. Britta Hale (Naval Postgraduade School),
+Dr. Britta Hale (Naval Postgraduate School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
 Chris A. Wood (Apple),
@@ -12215,16 +12210,16 @@ Alicja Kario (Red Hat),
 Jean-Pierre Fiset (Crypto4A),
 Varun Chatterji (Seventh Sense AI),
 Mojtaba Bisheh-Niasar and
-Douglas Stebila (University of Waterloo).<a href="#appendix-G-2" class="pilcrow">¶</a></p>
-<p id="appendix-G-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.<a href="#appendix-G-3" class="pilcrow">¶</a></p>
-<p id="appendix-G-4">We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.<a href="#appendix-G-4" class="pilcrow">¶</a></p>
-<p id="appendix-G-5">Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.<a href="#appendix-G-5" class="pilcrow">¶</a></p>
-<p id="appendix-G-6">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-G-6" class="pilcrow">¶</a></p>
-<p id="appendix-G-7">Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-G-7" class="pilcrow">¶</a></p>
+Douglas Stebila (University of Waterloo).<a href="#appendix-F-2" class="pilcrow">¶</a></p>
+<p id="appendix-F-3">We especially want to recognize the contributions of Dr. Britta Hale who has helped immensely with strengthening the signature combiner construction, and to Dr. Hale along with Peter C and John Preuß Mattsson with analyzing the scheme with respect to EUF-CMA, SUF-CMA and Non-Separability properties.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
+<p id="appendix-F-4">We wish to acknowledge particular effort from Carl Wallace and Daniel Van Geest (CryptoNext Security), who have put in sustained effort over multiple years both reviewing and implementing at the hackathon each iteration of this document.<a href="#appendix-F-4" class="pilcrow">¶</a></p>
+<p id="appendix-F-5">Thanks to Giacomo Pope (github.com/GiacomoPope) whose ML-DSA and ML-KEM implementations were used to generate the test vectors.<a href="#appendix-F-5" class="pilcrow">¶</a></p>
+<p id="appendix-F-6">We are grateful to all who have given feedback over the years, formally or informally, on mailing lists or in person, including any contributors who may have been inadvertently omitted from this list.<a href="#appendix-F-6" class="pilcrow">¶</a></p>
+<p id="appendix-F-7">Finally, we wish to thank the authors of all the referenced documents upon which this specification was built. "Copying always makes things easier and less error prone" - <span>[<a href="#RFC8411" class="cite xref">RFC8411</a>]</span>.<a href="#appendix-F-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-H">
+<section id="appendix-G">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
