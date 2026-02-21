@@ -266,7 +266,7 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
 
 **PROTOCOL BACKWARDS COMPATIBILITY**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
 
-**RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in [RFC8017]. 
+**RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in [RFC8017].
 
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
