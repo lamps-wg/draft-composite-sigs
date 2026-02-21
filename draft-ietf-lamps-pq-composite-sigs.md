@@ -134,6 +134,7 @@ normative:
 
 
 informative:
+  RFC3092:
   RFC5914:
   RFC7292:
   RFC7296:
@@ -188,16 +189,6 @@ informative:
     author:
      - org: CA/Browser Forum
     target: https://cabforum.org/working-groups/code-signing/documents/
-  BonehShoup:
-    title: "A Graduate Course in Applied Cryptography v0.6"
-    author:
-      - ins: D. Boneh
-        name: Dan Boneh
-      - ins: V. Shoup
-        name: Victor Shoup
-    target: https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf
-    date: Jan. 2023
-
 
 --- abstract
 
@@ -260,6 +251,13 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
 **DER**:
           Distinguished Encoding Rules as defined in [X.690].
 
+**ECDSA**: The Elliptic Curve Digital Signature Algorithm defined in [FIPS.186-5].
+
+**EdDSA, Ed25519 and Ed448**: Edwards-curve Digital Signature Algorithm (EdDSA)
+          defined in [RFC8410] with two parameter sets: Ed25519 and Ed448.
+
+**ML-DSA**: The Module-Lattice-Based Digital Signature Standard defined in [FIPS.204].
+
 **PKI**:
           Public Key Infrastructure, as defined in [RFC5280].
 
@@ -267,6 +265,8 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
     A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.
 
 **PROTOCOL BACKWARDS COMPATIBILITY**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
+
+**RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in [RFC8017]. 
 
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
@@ -1270,7 +1270,7 @@ A signature algorithm is Strongly Unforgeable under Chosen-Message Attack (SUF-C
 
 A SUF-CMA failure in one component algorithm can lead to a SUF-CMA failure in the composite. For example, an ECDSA signature can be trivially modified to produce a different signature that is still valid for the same message and this property passes directly through to Composite ML-DSA with ECDSA.
 
-Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA secure. If repeated calls to the signing oracle produce two valid message-signature pairs `(M, (mldsaSig1, tradSig1))` and `(M, (mldsaSig2, tradSig2))` for the same message `M`, but where `mldsaSig1 =/= mldsaSig2` and `tradSig1 =/= tradSig2`, then the adversary can construct a third pair `(M, (mldsaSig1, tradSig2))` that will also be valid.
+Unfortunately, it is not generally sufficient for both component algorithms to be SUF-CMA secure. If repeated calls to the signing oracle produce two valid message-signature pairs `(M, (mldsaSig1, tradSig1))` and `(M, (mldsaSig2, tradSig2))` for the same message `M`, but where `mldsaSig1 != mldsaSig2` and `tradSig1 != tradSig2`, then the adversary can construct a third pair `(M, (mldsaSig1, tradSig2))` that will also be valid.
 
 Nevertheless, Composite ML-DSA will not be SUF-CMA secure, and Composite ML-DSA signed X.509 certificates will not be strongly unforgeable, against quantum adversaries since a quantum adversary will be able to break the SUF-CMA security of the traditional component.
 
@@ -1297,7 +1297,7 @@ Within the broader context of PQ/T hybrids, we need to consider new attack surfa
 
 In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
-Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
+Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol [RFC3092] where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
 
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
@@ -1306,7 +1306,7 @@ The Prefix value specified in {{sec-label-and-ctx}} allows for cautious implemen
 
 ## Policy for Deprecated and Acceptable Algorithms
 
-Traditionally, a public key or certificate contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), the path to deprecating it through policy and removing it from operational environments is, at least is principle, straightforward.
+Traditionally, a public key or certificate contains a single cryptographic algorithm. If and when an algorithm becomes deprecated (for example, RSA-512, or SHA1), the path to deprecating it through policy and removing it from operational environments is, at least in principle, straightforward.
 
 In the composite model this is less obvious since a PQ/T hybrid is expected to still be considered valid after the traditional component is deprecated for individual use. As such, a single composite public key or certificate may contain a mixture of deprecated and non-deprecated algorithms. In general this should be manageable through policy by removing OIDs for the standalone component algorithms while still allowing OIDs for composite algorithms. However, complications may arise when the composite implementation needs to invoke the cryptographic module for a deprecated component algorithm. In particular, this could lead to complex Cryptographic Bills of Materials that show implementations of deprecated algorithms still present and being used.
 
@@ -1349,7 +1349,7 @@ However, this large number of combinations leads either to fracturing of the eco
 This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
 
 
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on as it provides the best overall balance of performance and security.
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on the following composite algorithm as it provides the best overall balance of performance and security.
 
     id-MLDSA65-ECDSA-P256-SHA512
 
@@ -1960,13 +1960,6 @@ Due to the length of the test vectors, some readers will prefer to retrieve the 
 ~~~
 {::include src/testvectors_wrapped.json}
 ~~~
-
-
-# Intellectual Property Considerations
-
-The following IPR Disclosure relates to this document:
-
-https://datatracker.ietf.org/ipr/3588/
 
 
 # Contributors and Acknowledgements
