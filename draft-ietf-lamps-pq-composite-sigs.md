@@ -930,7 +930,7 @@ for verifying digital signatures on certificates or CRLs, or those used in an
 entity authentication service, a data origin authentication service, an
 integrity service, and/or a non-repudiation service that protects against
 the signing entity falsely denying some action. This means that the
-`keyUsage` extention MUST have at least one of the following bits set:
+`keyUsage` extension MUST have at least one of the following bits set:
 
 ~~~
   digitalSignature
@@ -940,7 +940,7 @@ the signing entity falsely denying some action. This means that the
 ~~~
 
 ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
-`keyUsage` extention MUST NOT have any of following bits set:
+`keyUsage` extension MUST NOT have any of following bits set:
 
 ~~~
    keyEncipherment,
@@ -1244,11 +1244,11 @@ In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm secur
 **Migration flexibility**. Some PQ/T hybrids exist to provide a sort of "OR" mode where the application can choose to use one algorithm or the other or both. The intention is that the PQ/T hybrid mechanism builds in application backwards compatibility to allow legacy and upgraded applications to co-exist and communicate. The composites presented in this specification do not provide this since they operate in a strict "AND" mode. They do, however, provide codebase migration flexibility. Consider that an organization has today a mature, validated, certified, hardened implementation of RSA or ECC; composites allow them to add an ML-DSA implementation which immediately starts providing benefits against long-term document integrity attacks even if that ML-DSA implementation is still an experimental, non-validated, non-certified, non-hardened implementation. More details of obtaining FIPS certification of a composite algorithm can be found in {{sec-fips}}.
 
 
-## EUF-CMA, SUF-CMA and non-separability {#sec-cons-non-separability}
+## EUF-CMA, SUF-CMA and Non-Separability {#sec-cons-non-separability}
 
 First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.
 
-The second securtiy model considiration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.
+The second security model consideration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.
 
 ### EUF-CMA {#sec-cons-eufcma}
 
@@ -1977,7 +1977,7 @@ Serge Mister (Entrust),
 Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
-Dr. Britta Hale (Naval Postgraduade School),
+Dr. Britta Hale (Naval Postgraduate School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
 Chris A. Wood (Apple),
