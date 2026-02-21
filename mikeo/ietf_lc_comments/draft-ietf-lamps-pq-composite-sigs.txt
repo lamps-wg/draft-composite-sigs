@@ -107,7 +107,7 @@ Table of Contents
        8.1.2.  Object Identifier Registrations
    9.  Security Considerations
      9.1.  Why Hybrids?
-     9.2.  EUF-CMA, SUF-CMA and non-separability
+     9.2.  EUF-CMA, SUF-CMA and Non-Separability
        9.2.1.  EUF-CMA
        9.2.2.  SUF-CMA
        9.2.3.  Non-separability
@@ -1159,7 +1159,7 @@ Signature Verification Process:
    authentication service, a data origin authentication service, an
    integrity service, and/or a non-repudiation service that protects
    against the signing entity falsely denying some action.  This means
-   that the keyUsage extention MUST have at least one of the following
+   that the keyUsage extension MUST have at least one of the following
    bits set:
 
      digitalSignature
@@ -1168,7 +1168,7 @@ Signature Verification Process:
      cRLSign
 
    ML-DSA subject public keys cannot be used to establish keys or
-   encrypt data, so the keyUsage extention MUST NOT have any of
+   encrypt data, so the keyUsage extension MUST NOT have any of
    following bits set:
 
       keyEncipherment,
@@ -2225,7 +2225,7 @@ Signature Verification Process:
    implementation.  More details of obtaining FIPS certification of a
    composite algorithm can be found in Section 10.1.
 
-9.2.  EUF-CMA, SUF-CMA and non-separability
+9.2.  EUF-CMA, SUF-CMA and Non-Separability
 
    First, a note about the security model under which this analysis is
    performed.  This specification strictly forbids re-using component
@@ -2241,7 +2241,7 @@ Signature Verification Process:
    considered when considering Composite ML-DSA as a general-purpose
    signature primitive that could be used outside of the X.509 setting.
 
-   The second securtiy model considiration is that composites are
+   The second security model consideration is that composites are
    designed to provide value even if one algorithm is broken, even if
    you do not know which.  However, the security properties offered by
    the composite signature can differ based on which algorithm you
@@ -10864,7 +10864,7 @@ Appendix G.  Contributors and Acknowledgements
    of this document:
 
    Serge Mister (Entrust), Felipe Ventura (Entrust), Richard Kettlewell
-   (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduade
+   (Entrust), Ali Noman (Entrust), Dr. Britta Hale (Naval Postgraduate
    School), Tim Hollebeek (Digicert), Panos Kampanakis (Amazon), Chris
    A.  Wood (Apple), Christopher D.  Wood (Apple), Sophie Schmieg
    (Google), Bas Westerbaan (Cloudflare), Chris Patton (Cloudflare),

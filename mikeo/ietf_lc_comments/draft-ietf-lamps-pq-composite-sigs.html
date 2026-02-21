@@ -1279,7 +1279,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-why-hybrids" class="internal xref">Why Hybrids?</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-euf-cma-suf-cma-and-non-sep" class="internal xref">EUF-CMA, SUF-CMA and non-separability</a></p>
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-euf-cma-suf-cma-and-non-sep" class="internal xref">EUF-CMA, SUF-CMA and Non-Separability</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.1">
                     <p id="section-toc.1-1.9.2.2.2.1.1"><a href="#section-9.2.1" class="auto internal xref">9.2.1</a>.  <a href="#name-euf-cma" class="internal xref">EUF-CMA</a></p>
@@ -2162,7 +2162,7 @@ for verifying digital signatures on certificates or CRLs, or those used in an
 entity authentication service, a data origin authentication service, an
 integrity service, and/or a non-repudiation service that protects against
 the signing entity falsely denying some action. This means that the
-<code>keyUsage</code> extention MUST have at least one of the following bits set:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<code>keyUsage</code> extension MUST have at least one of the following bits set:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-2">
 <pre>
   digitalSignature
@@ -2172,7 +2172,7 @@ the signing entity falsely denying some action. This means that the
 </pre><a href="#section-5.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-5.2-3">ML-DSA subject public keys cannot be used to establish keys or encrypt data, so the
-<code>keyUsage</code> extention MUST NOT have any of following bits set:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<code>keyUsage</code> extension MUST NOT have any of following bits set:<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.2-4">
 <pre>
    keyEncipherment,
@@ -3528,10 +3528,10 @@ END
 <div id="sec-cons-non-separability">
 <section id="section-9.2">
         <h3 id="name-euf-cma-suf-cma-and-non-sep">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-euf-cma-suf-cma-and-non-sep" class="section-name selfRef">EUF-CMA, SUF-CMA and non-separability</a>
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-euf-cma-suf-cma-and-non-sep" class="section-name selfRef">EUF-CMA, SUF-CMA and Non-Separability</a>
         </h3>
 <p id="section-9.2-1">First, a note about the security model under which this analysis is performed. This specification strictly forbids re-using component key material between composite and non-composite keys, or between multiple composite keys. This specification also exists within the X.509 PKI architecture where trust in a public verification key is assumed to be established either directly via a trust store or via a certificate chain. That said, these are both policy mechanisms that are outside the formal definitions of EUF-CMA and SUF-CMA under which a signature primitive must be analysed, therefore this section considers attacks that may be mitigated partially or completely within a strictly-implemented PKI setting, but which need to be considered when considering Composite ML-DSA as a general-purpose signature primitive that could be used outside of the X.509 setting.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2">The second securtiy model considiration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">The second security model consideration is that composites are designed to provide value even if one algorithm is broken, even if you do not know which. However, the security properties offered by the composite signature can differ based on which algorithm you consider to be broken.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
 <div id="sec-cons-eufcma">
 <section id="section-9.2.1">
           <h4 id="name-euf-cma">
@@ -12192,7 +12192,7 @@ r99OhEFuD9oF8wlPRr7+HdgaYXnT2+AKsu2ptUlfX+FFd"
 Felipe Ventura (Entrust),
 Richard Kettlewell (Entrust),
 Ali Noman (Entrust),
-Dr. Britta Hale (Naval Postgraduade School),
+Dr. Britta Hale (Naval Postgraduate School),
 Tim Hollebeek (Digicert),
 Panos Kampanakis (Amazon),
 Chris A. Wood (Apple),
