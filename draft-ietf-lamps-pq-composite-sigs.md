@@ -1349,7 +1349,7 @@ However, this large number of combinations leads either to fracturing of the eco
 This specification does not list any particular composite algorithm as mandatory-to-implement, however organizations that operate within specific application domains are encouraged to define profiles that select a small number of composites appropriate for that application domain.
 
 
-For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on the following composite algorithm as it provides the best overall balance of performance and security.
+For applications that do not have any regulatory requirements or legacy implementations to consider, it is RECOMMENDED to focus implementation effort on the following composite algorithm as it provides the best overall balance of performance and security:
 
     id-MLDSA65-ECDSA-P256-SHA512
 
