@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 25 August 2026                                          M. Pala
+Expires: 29 August 2026                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        21 February 2026
+                                                        25 February 2026
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 August 2026.
+   This Internet-Draft will expire on 29 August 2026.
 
 Copyright Notice
 
@@ -2540,7 +2540,7 @@ Signature Verification Process:
    For applications that do not have any regulatory requirements or
    legacy implementations to consider, it is RECOMMENDED to focus
    implementation effort on the following composite algorithm as it
-   provides the best overall balance of performance and security.
+   provides the best overall balance of performance and security:
 
    id-MLDSA65-ECDSA-P256-SHA512
 
