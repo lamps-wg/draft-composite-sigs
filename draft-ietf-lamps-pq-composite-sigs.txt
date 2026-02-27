@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 29 August 2026                                          M. Pala
+Expires: 31 August 2026                                          M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                        25 February 2026
+                                                        27 February 2026
 
 
       Composite ML-DSA for use in X.509 Public Key Infrastructure
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2026.
+   This Internet-Draft will expire on 31 August 2026.
 
 Copyright Notice
 
@@ -10874,7 +10874,7 @@ Appendix F.  Contributors and Acknowledgements
    A.  Wood (Apple), Christopher D.  Wood (Apple), Sophie Schmieg
    (Google), Bas Westerbaan (Cloudflare), Chris Patton (Cloudflare),
    Deirdre Connolly (SandboxAQ), Richard Kisley (IBM), Piotr Popis
-   (Enigma), François Rousseau, Falko Strenzke, Alexander Ralien
+   (Enigma), François Rousseau, Falko Strenzke, Alexander Railean
    (Siemens), José Ignacio Escribano, Jan Oupický, 陳志華 (Abel C.  H.
    Chen, Chunghwa Telecom), 林邦曄 (Austin Lin, Chunghwa Telecom), Zhao
    Peiduo (Seventh Sense AI), Phil Hallin (Microsoft), Samuel Lee
