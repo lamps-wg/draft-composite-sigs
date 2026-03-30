@@ -534,7 +534,7 @@ Signature Generation Process:
       return s
 ~~~
 
-Note that in step 4 above, both component signature processes are invoked, and no indication is given about which one failed. This SHOULD be done in a timing-invariant way to prevent side-channel attackers from learning which component algorithm failed.
+Note that Step 4 SHOULD be timing-invariant with respect to the component private keys to prevent side-channel attackers from learning information about the component private keys. This requires that the component signature algorithms are implemented such that they do not succeed or fail with timing dependent on their component private keys. On failure there is no benefit to attempting to mask which component failed at the composite level.
 
 Note that there are two different context strings `ctx` at play: the first is the application context `ctx` that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `mldsa-ctx` that is passed down into the underlying `ML-DSA.Sign(sk, M, ctx)` as defined in [FIPS.204] Algorithm 2, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
 
