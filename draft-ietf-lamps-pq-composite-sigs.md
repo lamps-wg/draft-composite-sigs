@@ -192,7 +192,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of US NIST ML-DSA in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
+This document defines combinations of US NIST ML-DSA in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines in certein regions. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
 
 <!-- End of Abstract -->
 
@@ -212,7 +212,7 @@ Composite algorithms retain some security even if one of their component algorit
 This specification creates PQ/T Hybrids with the Module-Lattice-Based Digital Signature Algorithm (ML-DSA), defined in [FIPS.204] as the PQ component.
 Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.
 The full list of algorithms registered by this specification is in {{sec-alg-parms}}.
-Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}.
+Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification. Refer to {{sec-backwards-compat}} for more details.
 
 Certain jurisdictions have recommended that ML-DSA be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
@@ -234,7 +234,8 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
           has a registered Object Identifier (OID) for
           use within an ASN.1 AlgorithmIdentifier.
 
-**APPLICATION BACKWARDS COMPATIBILITY**: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.
+**APPLICATION BACKWARDS COMPATIBILITY**: A property indicating whether an upgraded and non-upgraded
+   application can successfully establish communication.
 
 **COMPOSITE CRYPTOGRAPHIC ELEMENT**: {{RFC9794}} defines composites as: A
           cryptographic element that
@@ -285,6 +286,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
  * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
 
  * `Func<TYPE>()`: represents a function that is parameterized by `<TYPE>` meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.
+ 
+ * `->`: represents the function return type separator with the expected return types on the right side.
 
 
 ## Composite Design Philosophy
@@ -342,9 +345,9 @@ M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 
 which closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
 
-Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.
+Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {{impl-cons-external-ph}} for further discussion and sample algorithms.
 
-Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.
+Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; when implementing this specification the HashML-DSA mode defined in Section 5.4 of [FIPS204] MUST NOT be used. Refer to [RFC9881#section-8.3] for further details.
 
 
 
@@ -440,7 +443,7 @@ This keygen process make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, w
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
 
-Errors produced by the component `KeyGen()` routines MUST be forwarded on to the calling application.
+Errors produced by the component `KeyGen()` routines MUST be passed on to the calling application.
 
 ### Allowed Modifications to the Key Generation Process
 
@@ -1334,7 +1337,7 @@ The authors wish to note that composite algorithms provide a design pattern to p
 
 ## Backwards Compatibility {#sec-backwards-compat}
 
-The term "application backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
+This document explicitly does not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
 
 If application backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
