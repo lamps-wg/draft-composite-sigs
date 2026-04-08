@@ -86,7 +86,7 @@ normative:
   RFC8032:
   #RFC8174: -- does not need to be explicit; added by bcp14 boilerplate
   RFC8410:
-  RFC9810:
+  RFC9881:
   X.690:
       title: "Information technology - ASN.1 encoding Rules: Specification of Basic Encoding Rules (BER), Canonical Encoding Rules (CER) and Distinguished Encoding Rules (DER)"
       date: November 2015
@@ -142,8 +142,8 @@ informative:
   RFC8446:
   RFC8551:
   RFC9180:
+  RFC9810:
   RFC9794:
-  RFC9881:
   I-D.draft-ietf-pquip-hybrid-signature-spectrums-07:
   TestVectors:
     title: "Test vectors for Composite-ML-DSA"
@@ -226,45 +226,58 @@ Composite ML-DSA is applicable in PKIX-related applications that would otherwise
 
 {::boilerplate bcp14+}
 
-This specification is consistent with the terminology defined in {{RFC9794}}. In addition, the following terminology is used throughout this specification:
+This specification is consistent with the terminology defined in {{RFC9794}}.
+Some relevant definitions from {{RFC9794}} are copied here for easier reading.
+In addition, the following terminology is used throughout this specification:
 
 **ALGORITHM**:
-          The usage of the term "algorithm" within this
-          specification generally refers to any function which
-          has a registered Object Identifier (OID) for
-          use within an ASN.1 AlgorithmIdentifier.
+  The usage of the term "algorithm" within this
+  specification generally refers to any function which
+  has a registered Object Identifier (OID) for
+  use within an ASN.1 AlgorithmIdentifier.
 
-**APPLICATION BACKWARDS COMPATIBILITY**: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.
+**APPLICATION BACKWARDS COMPATIBILITY**:
+ A property indicating whether an upgraded and non-upgraded application can successfully establish communication.
 
-**COMPOSITE CRYPTOGRAPHIC ELEMENT**: {{RFC9794}} defines composites as: A
-          cryptographic element that
-          incorporates multiple component cryptographic elements of the same
-          type in a multi-algorithm scheme.
-
-
-**COMPONENT / PRIMITIVE**:
-  The words "component" or "primitive" are used interchangeably
-  to refer to an asymmetric cryptographic algorithm that is used internally
-  within a composite algorithm. For example this could be an
-  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS".
+**COMPOSITE CRYPTOGRAPHIC ELEMENT**: {{RFC9794}} defines composites as:
+    A cryptographic element that incorporates multiple component
+    cryptographic elements of the same type for use in a
+    multi-algorithm scheme, such that the resulting composite
+    cryptographic element is exposed as a singular interface
+    of the same type as the component cryptographic elements.
+    For example this could be an asymmetric algorithm such as
+    "ML-DSA-65" or "RSASSA-PSS".
 
 **DER**:
-          Distinguished Encoding Rules as defined in [X.690].
+  Distinguished Encoding Rules as defined in [X.690].
 
 **ECDSA**: The Elliptic Curve Digital Signature Algorithm defined in [FIPS.186-5].
 
 **EdDSA, Ed25519 and Ed448**: Edwards-curve Digital Signature Algorithm (EdDSA)
-          defined in [RFC8410] with two parameter sets: Ed25519 and Ed448.
+  defined in [RFC8410] with two parameter sets: Ed25519 and Ed448.
 
 **ML-DSA**: The Module-Lattice-Based Digital Signature Standard defined in [FIPS.204].
 
 **PKI**:
-          Public Key Infrastructure, as defined in [RFC5280].
+  Public Key Infrastructure, as defined in [RFC5280].
 
 **POST-QUANTUM TRADITIONAL (PQ/T) HYBRID SCHEME**:
-    A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.
+  {{RFC9794}} defines a PQ/T Hybrid Scheme as:
+  A multi-algorithm scheme where at least one component algorithm
+  is a post-quantum algorithm and at least one is a traditional algorithm.
 
-**PROTOCOL BACKWARDS COMPATIBILITY**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
+**PROTOCOL BACKWARDS COMPATIBILITY**:
+  A property whereby a new feature
+  can be added to a protocol without requiring any changes to the
+  protocol's specification and only minimal changes to its
+  implementations (such as adding new identifiers).
+  Typically this means that the new feature fits within a defined
+  extension point of the protocol instead of requiring a structural
+  change to the protocol.
+  This is notable because many PQ/T Hybrids require modification of
+  the protocol to make it "hybrid aware", whereas this specification
+  presents as a standalone algorithm and thus can take advantage of
+  existing cryptographic agility mechanisms.
 
 **RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in [RFC8017].
 
@@ -283,6 +296,8 @@ The algorithm descriptions use python-like syntax. The following symbols deserve
  * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc. -- is left to the implementer.
 
  * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
+
+ * `func(a) -> b`: represents a function named `func` that takes `a` as input and produces `b`.
 
  * `Func<TYPE>()`: represents a function that is parameterized by `<TYPE>` meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.
 
@@ -342,7 +357,7 @@ M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 
 which closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
 
-Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.
+Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {{impl-cons-external-ph}} for further discussion and sample algorithms.
 
 Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.
 
@@ -439,8 +454,7 @@ This keygen process make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, w
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
-
-Errors produced by the component `KeyGen()` routines MUST be forwarded on to the calling application.
+If one of the component `KeyGen()` routines returns an error, then this error MUST be propagated by the `Composite-ML-DSA.KeyGen()` routine.
 
 ### Allowed Modifications to the Key Generation Process
 
@@ -488,7 +502,7 @@ Implicit inputs mapped from <OID>:
   Label   A signature label which is specific to each composite
           algorithm. Additionally, the composite label is passed
           into the underlying ML-DSA primitive as the ctx.
-          Signature Label values are defined in the 
+          Signature Label values are defined in the
           "Signature Label Values" section below.
 
   PH      The function used to pre-hash M.
@@ -636,7 +650,7 @@ As with `Composite-ML-DSA.Sign()`, there are two different context strings `ctx`
 This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 The functions defined in this section are considered internal implementation details and are referenced from within the public API definitions in {{sec-sigs}}.
 
-Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
+Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table, which is similar to Table 2 from [FIPS.204], but with a different private key representation.
 
 | Algorithm | Public key  | Private key | Signature |
 | --------- | ----------- | ----------- |  -------- |
@@ -654,7 +668,7 @@ While ML-DSA has a single fixed-size representation for each of public key, priv
 
 All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
-Even with fixed encodings for the traditional component, there might be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See {{sec-sizetable}} for a table of maximum sizes for each composite algorithm and further discussion of the reason for variations in these sizes.
+Even with fixed encodings for the traditional component, there might be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeros. See {{sec-sizetable}} for a table of maximum sizes for each composite algorithm and further discussion of the reason for variations in these sizes.
 
 The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.
 
@@ -1040,7 +1054,7 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 As the number of algorithms can be daunting, implementers who wish to implement only a single composite algorithm should see {{sec-impl-profile}} for a discussion of the best algorithm for the most common use cases.
 
-Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings using the obvious ASCII conversions prior to concatenating them with other byte values as described in {{sec-label-and-ctx}}.
+Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings according to their ASCII values prior to concatenating them with other byte values as described in {{sec-label-and-ctx}}.
 
 <!-- Note to authors, this is not auto-generated on build;
      you have to manually re-run the python script and
@@ -1313,7 +1327,7 @@ In the composite model this is less obvious since a PQ/T hybrid is expected to s
 <!-- End of Security Considerations section -->
 
 
-# Implementation Considerations {#sec-imp-considers}
+# Operational Considerations {#sec-imp-considers}
 
 ## FIPS certification {#sec-fips}
 
@@ -1334,7 +1348,7 @@ The authors wish to note that composite algorithms provide a design pattern to p
 
 ## Backwards Compatibility {#sec-backwards-compat}
 
-The term "application backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
+The mechanisms specified in this document explicitly do not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.
 
 If application backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 [RFC8446] and IKEv2 [RFC7296], to non-negotiated asynchronous protocols such as S/MIME signed email [RFC8551], document signing such as in the context of the European eIDAS regulations [eIDAS2014], and publicly trusted code signing [codeSigningBRsv3.8], as well as myriad other standardized and proprietary protocols and applications that leverage CMS [RFC5652] signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.
 
@@ -1435,7 +1449,7 @@ Implicit inputs mapped from <OID>:
   Label   A signature label which is specific to each composite
           algorithm. Additionally, the composite label is passed
           into the underlying ML-DSA primitive as the ctx.
-          Signature Label values are defined in the 
+          Signature Label values are defined in the
           "Signature Label Values" section below.
 
 Process:
@@ -1446,6 +1460,11 @@ Process:
        input into this function.
 ~~~
 
+## Interoperability of legacy algorithms
+
+The legacy component algorithms, particularly RSA and ECDSA can themselves have interoperability issues which will propagate to become interoperability issues in the composite. For example, this specification RECOMMENDS an RSA expenent of 65537, but other values are possible. Similarly, due to the details of DER encoding, keys that happen to have leading zeros could appear to be smaller than the required key size even though they are actually acceptable.
+
+Implementations are encouraged to be lenient when parsing the key material of the legacy algorithm. In particilar, the recommendation is to use existing implementations of the legacy algorithms that already handle all the variation seen in the wild.
 
 <!-- End of Implementation Considerations section -->
 
