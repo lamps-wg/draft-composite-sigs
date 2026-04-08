@@ -454,7 +454,7 @@ This keygen process make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, w
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
-If one of the component `KeyGen()` routines returns an error, then this error MUST be propagated by the `Composite-ML-DSA.KeyGen()` routine.
+If one of the component `KeyGen()` routines returns an error, then the  `Composite-ML-DSA.KeyGen()` routine MUST also return an error.
 
 ### Allowed Modifications to the Key Generation Process
 
