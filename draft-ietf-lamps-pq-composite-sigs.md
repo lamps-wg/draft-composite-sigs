@@ -220,7 +220,7 @@ In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, 
 
 While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
 
-Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where existential unforgeability (EUF-CMA) security is acceptable, instead of the stronger strong existential unforgeability (SUF-CMA) which Composite ML-DSA does not offer.
+Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of existential unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of strong existential unforgeability (SUF-CMA), which Composite ML-DSA does not offer.
 
 ## Conventions and Terminology {#sec-terminology}
 
