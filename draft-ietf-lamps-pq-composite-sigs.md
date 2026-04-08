@@ -347,7 +347,7 @@ Full definitions of serialization and deserialization algorithms can be found in
 ## Pre-hashing {#sec-prehash}
 
 The ML-DSA algorithm as specified in [FIPS.204] is not pre-hashed, meaning that the entire to-be-signed message is passed into `ML-DSA.Sign(sk, M, ctx)` ([FIPS.204] Algorithm 2).
-While there are some cryptographic advantages to designing a signature algorithm this way, it also has some operational drawbacks; namely the performance and privacy implications of needing to stream the entire to-be-signed message to the signing module or service, which is doubled in the context of a composite since the to-be-signed message needs to be streamed to both underlying component algorithms. Also, "pure" (aka non-pre-hashed) modes lack support for digesting the message once and signing it with multiple different keys.
+While there are some cryptographic advantages to designing a signature algorithm this way, it also has some operational drawbacks; namely the performance and privacy implications of needing to stream the entire to-be-signed message to the signing module or service, which is doubled in the context of a composite since the to-be-signed message needs to be streamed to both underlying component algorithms. Also, "pure" (aka not pre-hashed) modes lack support for digesting the message once and then signing the digest with multiple different keys or multiple different context `ctx` values.
 
 Composite ML-DSA takes a design approach which mirrors that of [FIPS.204] Algorithm 2 in that the to-be-signed message representative `M'` in contains a hash of the message `PH( M )` instead of the full message `M`.
 
