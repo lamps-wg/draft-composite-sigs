@@ -418,8 +418,9 @@ Table of Contents
    message to the signing module or service, which is doubled in the
    context of a composite since the to-be-signed message needs to be
    streamed to both underlying component algorithms.  Also, "pure" (aka
-   non-pre-hashed) modes lack support for digesting the message once and
-   signing it with multiple different keys.
+   not pre-hashed) modes lack support for digesting the message once and
+   then signing the digest with multiple different keys or multiple
+   different context ctx values.
 
    Composite ML-DSA takes a design approach which mirrors that of
    [FIPS.204] Algorithm 2 in that the to-be-signed message
