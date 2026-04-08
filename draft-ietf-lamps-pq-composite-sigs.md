@@ -270,7 +270,7 @@ In addition, the following terminology is used throughout this specification:
   A property whereby a new feature
   can be added to a protocol without requiring any changes to the
   protocol's specification and only minimal changes to its
-  implementations (such as adding new identifiers).
+  implementations.
   Typically this means that the new feature fits within a defined
   extension point of the protocol instead of requiring a structural
   change to the protocol.
