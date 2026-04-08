@@ -559,8 +559,8 @@ Table of Contents
    For more details on the security considerations around key reuse, see
    Section 9.3.
 
-   If one of the component KeyGen() routines returns an error, then the
-   Composite-ML-DSA.KeyGen() routine MUST also return an error.
+   If one of the component KeyGen() routines returns an error, then this
+   error MUST be propagated by the Composite-ML-DSA.KeyGen() routine.
 
 3.1.1.  Allowed Modifications to the Key Generation Process
 
