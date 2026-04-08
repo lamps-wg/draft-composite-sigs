@@ -207,10 +207,11 @@ Table of Contents
    list of recommended composite algorithms for common use-cases.
 
    Composite ML-DSA is applicable in PKIX-related applications that
-   would otherwise use ML-DSA and where existential unforgeability (EUF-
-   CMA) security is acceptable, instead of the stronger strong
-   existential unforgeability (SUF-CMA) which Composite ML-DSA does not
-   offer.
+   would otherwise use ML-DSA but where it is acceptable to have a
+   signature primitive with the weaker property of existential
+   unforgeability (EUF-CMA) security is acceptable, instead of the
+   stronger property of strong existential unforgeability (SUF-CMA),
+   which Composite ML-DSA does not offer.
 
 1.1.  Conventions and Terminology
 
