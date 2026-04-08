@@ -986,6 +986,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
          -- VALUE no ASN.1 wrapping --
          PARAMS ARE absent
          PUBLIC-KEYS {publicKeyType}
+         SMIME-CAPS { IDENTIFIED BY id }
       }
 ~~~
 {: #asn1-info-classes title="ASN.1 Object Information Classes for Composite ML-DSA"}
