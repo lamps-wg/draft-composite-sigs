@@ -14,18 +14,21 @@ Expires: 10 October 2026                                         M. Pala
                                                             8 April 2026
 
 
-      Composite ML-DSA for use in X.509 Public Key Infrastructure
+Composite Module-Lattice-Based Digital Signature Algorithm (ML-DSA) for
+                 use in X.509 Public Key Infrastructure
                draft-ietf-lamps-pq-composite-sigs-latest
 
 Abstract
 
-   This document defines combinations of US NIST ML-DSA in hybrid with
-   traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519,
-   and Ed448.  These combinations are tailored to meet regulatory
-   guidelines.  Composite ML-DSA is applicable in applications that uses
-   X.509 or PKIX data structures that accept ML-DSA, but where the
+   This document defines combinations of US NIST Module-Lattice-Based
+   Digital Signature Algorithm (ML-DSA) in hybrid with traditional
+   algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448.
+   These combinations are tailored to meet regulatory guidelines in
+   certain regions.  Composite ML-DSA is applicable in applications that
+   use X.509 or PKIX data structures that accept ML-DSA, but where the
    operator wants extra protection against breaks or catastrophic bugs
-   in ML-DSA, and where EUF-CMA-level security is acceptable.
+   in ML-DSA, and where existential unforgeability (EUF-CMA) level
+   security is acceptable.
 
 About This Document
 
@@ -79,11 +82,11 @@ Table of Contents
 
    1.  Introduction
      1.1.  Conventions and Terminology
-     1.2.  Notation
+     1.2.  Notations
      1.3.  Composite Design Philosophy
    2.  Overview of the Composite ML-DSA Signature Scheme
      2.1.  Pre-hashing
-     2.2.  Prefix, Label and CTX
+     2.2.  Prefix, Label, and CTX
    3.  Composite ML-DSA Functions
      3.1.  Key Generation
        3.1.1.  Allowed Modifications to the Key Generation Process
@@ -136,16 +139,17 @@ Table of Contents
 
    The advent of quantum computing poses a significant threat to current
    cryptographic systems because traditional cryptographic signature
-   algorithms such as RSA, DSA and its elliptic curve variants will
-   become vulnerable to quantum attacks.  Unlike previous migrations
-   between cryptographic algorithms, this migration gives us the
-   foresight that traditional cryptographic algorithms will be broken in
-   the future, but will remain strong in the interim, the only
-   uncertainty is around the timing.  But there are also some novel
-   challenges.  For instance, the aggressive migration timelines may
-   require deploying PQC algorithms before their implementations have
-   been fully hardened or certified, and dual-algorithm data protection
-   may be desirable over a longer time period to hedge against security
+   algorithms such as RSA, DSA, and its elliptic curve variants will
+   become vulnerable to quantum attacks (Section 3 of
+   [I-D.ietf-pquip-pqc-engineers]).  Unlike previous migrations between
+   cryptographic algorithms, this migration gives us the foresight that
+   traditional cryptographic algorithms will be broken in the future,
+   but will remain strong in the interim, the only uncertainty is around
+   the timing.  But there are also some novel challenges.  For instance,
+   the aggressive migration timelines may require deploying Post-Quantum
+   Cryptography (PQC) algorithms before their implementations have been
+   fully hardened or certified, and dual-algorithm data protection may
+   be desirable over a longer time period to hedge against security
    vulnerabilities and other implementation flaws in the new
    implementations.
 
@@ -167,13 +171,13 @@ Table of Contents
    even if one of their component algorithms is broken, which is
    discussed in detail in Section 9.  This specification creates PQ/T
    Hybrids with the Module-Lattice-Based Digital Signature Algorithm
-   (ML-DSA), defined in [FIPS.204] as the PQ component.  Instantiations
-   of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS,
-   RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.  The full list of
-   algorithms registered by this specification is in Section 6.
-   Backwards compatibility in the sense of upgraded systems continuing
-   to interoperate with legacy systems is not directly covered in this
-   specification, but is the subject of Section 10.2.
+   (ML-DSA), defined in [FIPS.204] as the Post-Quantum (PQ) component.
+   Instantiations of the composite ML-DSA scheme are provided based on
+   ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519, and Ed448.  The full
+   list of algorithms registered by this specification is provided in
+   Section 6.  Backwards compatibility in the sense of upgraded systems
+   continuing to interoperate with legacy systems is not directly
+   covered in this specification, but is the subject of Section 10.2.
 
    Certain jurisdictions have recommended that ML-DSA be used
    exclusively within a PQ/T hybrid framework.  The use of a composite
@@ -186,21 +190,21 @@ Table of Contents
    invalidating the existing certification, whereas a full replacement
    of the traditional cryptography would almost certainly incur
    regulatory and compliance delays.  In other words, PQ/T Hybrids can
-   allow for deploying Post-Quantum Cryptography before the PQ modules
-   and operational procedures are fully audited and certified.  This,
-   more than any other requirement, is what motivates the large number
-   of algorithm combinations in this specification: The intention is to
-   provide a stepping stone from which any cryptographic algorithm an
-   organization has deployed today can evolve or transition.
+   allow for deploying PQC before the PQ modules and operational
+   procedures are fully audited and certified.  This, more than any
+   other requirement, is what motivates the large number of algorithm
+   combinations in this specification: The goal is to provide a stepping
+   stone from which any cryptographic algorithm an organization has
+   deployed today can evolve or transition.
 
    While this specification registers a large number of composite
    algorithms, it is expected that organizations will choose to deploy a
    single composite algorithm, or a small number of composite
-   algorithms, that meets the needs of their environment, and very few
-   implementers will need concern themselves with the entire list.  This
-   specification does not specify any mandatory-to-implement algorithms,
-   but Section 10.3 provides a short-list of recommended composite
-   algorithms for common use-cases.
+   algorithms, that meets the needs of their environment and operational
+   constraints, and very few implementers will need concern themselves
+   with the entire list.  This specification does not specify any
+   mandatory-to-implement algorithms, but Section 10.3 provides a short-
+   list of recommended composite algorithms for common use-cases.
 
    Composite ML-DSA is applicable in PKIX-related applications that
    would otherwise use ML-DSA and where existential unforgeability (EUF-
@@ -270,22 +274,22 @@ Table of Contents
    mechanisms.
 
    *RSA*: The Rivest-Shamir-Adleman cryptosystem, used in this
-   specification as the RSA-PSS (Probabilistic Signature Scheme) defined
+   specification as the Probabilistic Signature Scheme (RSA-PSS) defined
    in [RFC8017].
 
    *SIGNATURE*: A digital cryptographic signature, making no assumptions
    about which algorithm.
 
-1.2.  Notation
+1.2.  Notations
 
    The algorithm descriptions use python-like syntax.  The following
    symbols deserve special mention:
 
-   *  || represents concatenation of two byte arrays.
+   *  || represents concatenation of two-byte arrays.
 
    *  [:] represents byte array slicing.
 
-   *  (a, b) represents a pair of values a and b.  Typically this
+   *  (a, b) represents a pair of values a and b.  Typically, this
       indicates that a function returns multiple values; the exact
       conveyance mechanism -- tuple, struct, output parameters, etc. --
       is left to the implementer.
@@ -311,7 +315,8 @@ Table of Contents
    signature algorithm.  This generally means that the complexity of
    combining algorithms can and should be handled by the cryptographic
    library or cryptographic module.  The design intent is that protocols
-   such as PKCS#10 [RFC2986], CMP [RFC9810], X.509 [RFC5280], the CMS
+   such as PKCS#10 [RFC2986], Certificate Management Protocol (CMP)
+   [RFC9810], X.509 [RFC5280], the Cryptographic Message Syntax (CMS)
    [RFC5652], and the Trust Anchor Format [RFC5914] can treat composite
    algorithms as they would any other algorithm without the protocol
    layer to have any "hybrid-awareness".  This is a property referred to
@@ -320,11 +325,11 @@ Table of Contents
    Discussion of the specific choices of algorithm pairings can be found
    in Section 6.2.
 
-   In terms of security properties, we consider the two security
-   properties existential forgery against a chosen message attack (EUF-
-   CMA) and strong unforgeability against a chosen message attack (SUF-
-   CMA), which are treated more rigorously in Section 9.2.1 and
-   Section 9.2.2.  As a simplified summary; Composite ML-DSA will be
+   In terms of security properties, the document considers the two
+   security properties existential forgery against a chosen message
+   attack (EUF-CMA) and strong unforgeability against a chosen message
+   attack (SUF-CMA), which are treated more rigorously in Section 9.2.1
+   and Section 9.2.2.  As a simplified summary, Composite ML-DSA will be
    EUF-CMA secure if at least one of its component algorithms is EUF-CMA
    secure and the pre-hashed message representative PH is collision
    resistant.  SUF-CMA security of Composite ML-DSA is more complicated.
@@ -340,18 +345,17 @@ Table of Contents
 
 2.  Overview of the Composite ML-DSA Signature Scheme
 
-   Composite ML-DSA is a Post-Quantum / Traditional hybrid signature
-   scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881]
-   with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in
-   [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA
-   scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448
-   defined in [RFC8410].  The two component signatures are combined into
-   a composite algorithm via a "signature combiner" function which
-   performs pre-hashing and prepends several signature label values to
-   the message prior to passing it to the component algorithms.
-   Composite ML-DSA achieves weak non-separability as well as several
-   other security properties which are described in the Security
-   Considerations in Section 9.
+   Composite ML-DSA is a PQ/T hybrid signature scheme which combines ML-
+   DSA as specified in [FIPS.204] and [RFC9881] with one of RSASSA-
+   PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the
+   Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in
+   Section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410].
+   The two component signatures are combined into a composite algorithm
+   via a "signature combiner" function which performs pre-hashing and
+   prepends several signature label values to the message prior to
+   passing it to the component algorithms.  Composite ML-DSA achieves
+   weak non-separability as well as several other security properties
+   which are described in the Security Considerations in Section 9.
 
    Composite signature schemes are defined as cryptographic primitives
    that match the API of a generic signature scheme, which consists of
@@ -436,7 +440,7 @@ Table of Contents
    composite is "pure" ML-DSA; implementing this specification does not
    require an implementation of HashML-DSA.
 
-2.2.  Prefix, Label and CTX
+2.2.  Prefix, Label, and CTX
 
    The to-be-signed message representative M', defined in Section 3.2 is
    created by concatenating several values, including the pre-hashed
@@ -548,7 +552,7 @@ Table of Contents
         sk = SerializePrivateKey(mldsaSeed, tradSK)
         return (pk, sk)
 
-   This keygen process make use of the seed-based ML-
+   This keygen process makes use of the seed-based ML-
    DSA.KeyGen_internal(𝜉), which is defined in Algorithm 6 of
    [FIPS.204].  For FIPS-certification implications, see Section 10.1.
 
@@ -559,8 +563,8 @@ Table of Contents
    For more details on the security considerations around key reuse, see
    Section 9.3.
 
-   If one of the component KeyGen() routines returns an error, then this
-   error MUST be propagated by the Composite-ML-DSA.KeyGen() routine.
+   If one of the component KeyGen() routines returns an error, then the
+   Composite-ML-DSA.KeyGen() routine MUST also return an error.
 
 3.1.1.  Allowed Modifications to the Key Generation Process
 
@@ -607,7 +611,7 @@ Table of Contents
    ML-DSA seed, especially when implementing on top of a cryptographic
    module that does not support seeds, it will be impossible to
    reconstruct a compliant seed-based private key as described in
-   Section 4.2
+   Section 4.2.
 
 3.2.  Sign
 
@@ -830,9 +834,9 @@ Signature Verification Process:
    public API definitions in Section 3.
 
    Deserialization is possible because ML-DSA has fixed-length public
-   keys, private keys (seeds), and signature values as shown in the
-   following table, which is similar to Table 2 from [FIPS.204], but
-   with a different private key representation.
+   keys, private keys (seeds), and signature values as shown in Table 1,
+   which is similar to Table 2 from [FIPS.204], but with a different
+   private key representation.
 
            +===========+============+=============+===========+
            | Algorithm | Public key | Private key | Signature |
@@ -854,31 +858,31 @@ Signature Verification Process:
    composite algorithms MUST use the following encodings of the
    underlying components:
 
-   *  *ML-DSA*: MUST be encoded as specified in section 7.2 of
+   *  *ML-DSA*: MUST be encoded as specified in Section 7.2 of
       [FIPS.204], using a 32-byte seed as the private key.  The
       signature and public key format are encoded as specified in
-      section 7.2 of [FIPS.204].
+      Section 7.2 of [FIPS.204].
 
    *  *RSA*: the public key MUST be encoded as RSAPublicKey with the
-      (n,e) public key representation as specified in A.1.1 of [RFC8017]
-      and the private key representation as RSAPrivateKey specified in
-      A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.
-      An RSA signature MUST be encoded as specified in section 8.1.1
-      (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of
-      [RFC8017].
+      (n,e) public key representation as specified in Appendix A.1.1 of
+      [RFC8017] and the private key representation as RSAPrivateKey
+      specified in A.1.2 of [RFC8017] with version 0 and
+      'otherPrimeInfos' absent.  An RSA signature MUST be encoded as
+      specified in Sections 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for
+      RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
 
    *  *ECDSA*: public key MUST be encoded as an uncompressed X9.62
       [X9.62_2005], including the leading byte 0x04 indicating
       uncompressed.  This is consistent with the encoding of ECPoint as
-      specified in section 2.2 of [RFC5480] when no ASN.1 OCTET STRING
+      specified in Section 2.2 of [RFC5480] when no ASN.1 OCTET STRING
       wrapping is present.  A signature MUST be encoded as an Ecdsa-Sig-
-      Value as specified in section 2.2.3 of [RFC3279].  The private key
+      Value as specified in Section 2.2.3 of [RFC3279].  The private key
       MUST be encoded as ECPrivateKey specified in [RFC5915] with the
       'NamedCurve' parameter set to the OID of the curve, but without
       the 'publicKey' field.
 
-   *  *EdDSA*: public key and signature MUST be encoded as per section 3
-      of [RFC8032] and the private key is a 32 or 57 byte raw value for
+   *  *EdDSA*: public key and signature MUST be encoded as per Section 3
+      of [RFC8032] and the private key is a 32- or 57-byte raw value for
       Ed25519 and Ed448 respectively, which can be converted to a
       CurvePrivateKey specified in [RFC8410] by the addition of an OCTET
       STRING wrapper.
@@ -1190,11 +1194,11 @@ Signature Verification Process:
    encrypt data, so the keyUsage extension MUST NOT have any of
    following bits set:
 
-      keyEncipherment,
-      dataEncipherment,
-      keyAgreement,
-      encipherOnly, and
-      decipherOnly.
+      keyEncipherment
+      dataEncipherment
+      keyAgreement
+      encipherOnly
+      decipherOnly
 
    Requirements about the keyUsage extension bits defined in [RFC5280]
    still apply.
@@ -1689,7 +1693,7 @@ Signature Verification Process:
 
    SHA2 is prioritized over SHA3 in order to facilitate implementations
    that do not have easy access to SHA3 outside of the ML-DSA module.
-   However SHAKE256 is used with Ed448 since this is already the
+   However, SHAKE256 is used with Ed448 since this is already the
    recommended hash functions chosen for ED448ph in [RFC8032].
 
    In some cases, multiple hash functions are used within the same
@@ -2207,8 +2211,8 @@ Signature Verification Process:
 9.1.  Why Hybrids?
 
    In broad terms, a PQ/T Hybrid can be used either to provide dual-
-   algorithm security or to provide migration flexibility.  Let's
-   quickly explore both.
+   algorithm security or to provide migration flexibility.  Both are
+   discussed below.
 
    *Dual-algorithm security*. The general idea is that the data is
    protected by two algorithms such that an adversary would need to
@@ -2333,9 +2337,9 @@ Signature Verification Process:
 9.2.3.  Non-separability
 
    Weak Non-Separability (WNS) of a hybrid signature is defined in
-   [I-D.ietf-pquip-hybrid-signature-spectrums] as the guarantee that an
-   adversary cannot simply "remove" one of the component signatures
-   without evidence left behind.
+   Section 1.3.3 of [I-D.ietf-pquip-hybrid-signature-spectrums] as the
+   guarantee that an adversary cannot simply "remove" one of the
+   component signatures without evidence left behind.
 
    Strong Non-Separability (SNS) is the stronger notion that an
    adversary cannot take a hybrid signature and produce a component
@@ -2379,18 +2383,18 @@ Signature Verification Process:
    renewing a certificate, or obtaining both a TLS and S/MIME
    certificate for the same device.  However, in practice key reuse in
    such scenarios is not always catastrophic to security and therefore
-   often tolerated.  However this reasoning does not hold in the PQ/T
-   hybrid setting.
+   often tolerated.  But this reasoning does not hold in the PQ/T hybrid
+   setting.
 
-   Within the broader context of PQ/T hybrids, we need to consider new
-   attack surfaces that arise due to the hybrid constructions that did
-   not exist in single-algorithm contexts.  One of these is key reuse
-   where the component keys within a hybrid are also used by themselves
-   within a single-algorithm context.  For example, it might be tempting
-   for an operator to take an already-deployed RSA key pair and combine
-   it with an ML-DSA key pair to form a hybrid key pair for use in a
-   hybrid algorithm.  Within a hybrid signature context this leads to a
-   class of attacks referred to as "stripping attacks" discussed in
+   Within the broader context of PQ/T hybrids, there are new attack
+   surfaces that arise due to the hybrid constructions that did not
+   exist in single-algorithm contexts.  One of these is key reuse where
+   the component keys within a hybrid are also used by themselves within
+   a single-algorithm context.  For example, it might be tempting for an
+   operator to take an already-deployed RSA key pair and combine it with
+   an ML-DSA key pair to form a hybrid key pair for use in a hybrid
+   algorithm.  Within a hybrid signature context this leads to a class
+   of attacks referred to as "stripping attacks" discussed in
    Section 9.2 and may also open up risks from further cross-protocol
    attacks.  Despite the weak non-separability property offered by the
    composite signature combiner, key reuse MUST be avoided to prevent
@@ -2409,7 +2413,7 @@ Signature Verification Process:
    SHOULD also check both component keys independently to verify that
    the component keys have not been revoked.
 
-   Some application might disregard the requirements of this
+   Some applications might disregard the requirements of this
    specification to not reuse key material between single-algorithm and
    composite contexts.  While doing so is still a violation of this
    specification, the weakening of security from doing so can be
@@ -2492,13 +2496,13 @@ Signature Verification Process:
    Note also that also that Section 3.1 depicts the generation of the
    seed as mldsaSeed = Random(), when implementing this for FIPS
    certification, this MUST be the direct output of a FIPS-approved
-   DRBG.
+   Deterministic Random Bit Generator (DRBG).
 
-   The authors wish to note that composite algorithms provide a design
-   pattern to provide utility in future situations that require care to
-   remain FIPS-compliant, such as future cryptographic migrations as
-   well as bridging across jurisdictions with non-intersecting
-   cryptographic requirements.
+   Note that composite algorithms provide a design pattern to provide
+   utility in future situations that require care to remain FIPS-
+   compliant, such as future cryptographic migrations as well as
+   bridging across jurisdictions with non-intersecting cryptographic
+   requirements.
 
 10.2.  Backwards Compatibility
 
@@ -2548,7 +2552,7 @@ Signature Verification Process:
 
    id-MLDSA65-ECDSA-P256-SHA512
 
-   Below we list a few other recommendations for specific scenarios.
+   Below is listed a few other recommendations for specific scenarios.
 
    In applications that require RSA, it is RECOMMENDED to focus
    implementation effort on:
@@ -2650,10 +2654,8 @@ Signature Verification Process:
    The legacy component algorithms, particularly RSA and ECDSA can
    themselves have interoperability issues which will propagate to
    become interoperability issues in the composite.  For example, this
-   specification RECOMMENDS an RSA expenent of 65537, but other values
-   are possible.  Similarly, due to the details of DER encoding, keys
-   that happen to have leading zeros could appear to be smaller than the
-   required key size even though they are actually acceptable.
+   specification RECOMMENDS an RSA exponent of 65537, but other values
+   are possible.
 
    Implementations are encouraged to be lenient when parsing the key
    material of the legacy algorithm.  In particilar, the recommendation
@@ -2835,6 +2837,14 @@ Signature Verification Process:
               draft-ietf-pquip-hybrid-signature-spectrums-07, 20 June
               2025, <https://datatracker.ietf.org/doc/html/draft-ietf-
               pquip-hybrid-signature-spectrums-07>.
+
+   [I-D.ietf-pquip-pqc-engineers]
+              Banerjee, A., Reddy.K, T., Schoinianakis, D., Hollebeek,
+              T., and M. Ounsworth, "Post-Quantum Cryptography for
+              Engineers", Work in Progress, Internet-Draft, draft-ietf-
+              pquip-pqc-engineers-14, 25 August 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-pquip-
+              pqc-engineers-14>.
 
    [RFC3092]  Eastlake 3rd, D., Manros, C., and E. Raymond, "Etymology
               of "Foo"", RFC 3092, DOI 10.17487/RFC3092, April 2001,
@@ -3105,7 +3115,7 @@ Appendix C.  Component AlgorithmIdentifiers for Public Keys and
 
    AlgorithmIdentifier of Public Key
 
-   Note that we suggest here to use id-RSASSA-PSS
+   Note that it is suggested here to use id-RSASSA-PSS
    (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although
    most implementations also would accept rsaEncryption
    (1.2.840.113549.1.1.1), and some might in fact prefer or require it.
@@ -3461,7 +3471,7 @@ Appendix D.  Message Representative Examples
    for MLDSA65-ECDSA-P256-SHA256 with a context string ctx.
 
    The inputs are similar to the first example with the exception that
-   there is an 8 byte context string 'ctx'.
+   there is an 8-byte context string 'ctx'.
 
    Example of id-MLDSA65-ECDSA-P256-SHA512 construction of M'.
 
