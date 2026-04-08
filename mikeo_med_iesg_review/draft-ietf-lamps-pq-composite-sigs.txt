@@ -261,13 +261,13 @@ Table of Contents
    *PROTOCOL BACKWARDS COMPATIBILITY*: A property whereby a new feature
    can be added to a protocol without requiring any changes to the
    protocol's specification and only minimal changes to its
-   implementations (such as adding new identifiers).  Typically this
-   means that the new feature fits within a defined extension point of
-   the protocol instead of requiring a structural change to the
-   protocol.  This is notable because many PQ/T Hybrids require
-   modification of the protocol to make it "hybrid aware", whereas this
-   specification presents as a standalone algorithm and thus can take
-   advantage of existing cryptographic agility mechanisms.
+   implementations.  Typically this means that the new feature fits
+   within a defined extension point of the protocol instead of requiring
+   a structural change to the protocol.  This is notable because many
+   PQ/T Hybrids require modification of the protocol to make it "hybrid
+   aware", whereas this specification presents as a standalone algorithm
+   and thus can take advantage of existing cryptographic agility
+   mechanisms.
 
    *RSA*: The Rivest-Shamir-Adleman cryptosystem, used in this
    specification as the RSA-PSS (Probabilistic Signature Scheme) defined
@@ -559,8 +559,8 @@ Table of Contents
    For more details on the security considerations around key reuse, see
    Section 9.3.
 
-   If one of the component KeyGen() routines returns an error, then this
-   error MUST be propagated by the Composite-ML-DSA.KeyGen() routine.
+   If one of the component KeyGen() routines returns an error, then the
+   Composite-ML-DSA.KeyGen() routine MUST also return an error.
 
 3.1.1.  Allowed Modifications to the Key Generation Process
 
