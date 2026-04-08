@@ -1,5 +1,5 @@
 ---
-title: Composite ML-DSA for use in X.509 Public Key Infrastructure
+title: Composite Module-Lattice-Based Digital Signature Algorithm (ML-DSA) for use in X.509 Public Key Infrastructure
 abbrev: Composite ML-DSA
 docname: draft-ietf-lamps-pq-composite-sigs-latest
 
@@ -144,7 +144,7 @@ informative:
   RFC9180:
   RFC9794:
   RFC9881:
-  I-D.draft-ietf-pquip-hybrid-signature-spectrums-07:
+  I-D.ietf-pquip-hybrid-signature-spectrums:
   TestVectors:
     title: "Test vectors for Composite-ML-DSA"
     target: https://github.com/lamps-wg/draft-composite-sigs/tree/main/src
@@ -192,7 +192,7 @@ informative:
 
 --- abstract
 
-This document defines combinations of US NIST ML-DSA in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines. Composite ML-DSA is applicable in applications that uses X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where EUF-CMA-level security is acceptable.
+This document defines combinations of US NIST Module-Lattice-Based Digital Signature Algorithm (ML-DSA) in hybrid with traditional algorithms RSASSA-PKCS1-v1.5, RSASSA-PSS, ECDSA, Ed25519, and Ed448. These combinations are tailored to meet regulatory guidelines in certain regions. Composite ML-DSA is applicable in applications that use X.509 or PKIX data structures that accept ML-DSA, but where the operator wants extra protection against breaks or catastrophic bugs in ML-DSA, and where existential unforgeability (EUF-CMA) level security is acceptable.
 
 <!-- End of Abstract -->
 
@@ -201,24 +201,24 @@ This document defines combinations of US NIST ML-DSA in hybrid with traditional 
 
 # Introduction {#sec-intro}
 
-The advent of quantum computing poses a significant threat to current cryptographic systems because traditional cryptographic signature algorithms such as RSA, DSA and its elliptic curve variants will become vulnerable to quantum attacks.
+The advent of quantum computing poses a significant threat to current cryptographic systems because traditional cryptographic signature algorithms such as RSA, DSA, and its elliptic curve variants will become vulnerable to quantum attacks ({{Section 3 of ?I-D.ietf-pquip-pqc-engineers}}).
 Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that traditional cryptographic algorithms will be broken in the future, but will remain strong in the interim, the only uncertainty is around the timing. But there are also some novel challenges.
-For instance, the aggressive migration timelines may require deploying PQC algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against security vulnerabilities and other implementation flaws in the new implementations.
+For instance, the aggressive migration timelines may require deploying Post-Quantum Cryptography (PQC) algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against security vulnerabilities and other implementation flaws in the new implementations.
 
 Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as "Post-Quantum/Traditional (PQ/T) Hybrids" {{RFC9794}}.
 
 This specification defines a specific instantiation of the PQ/T Hybrid paradigm called "composite" where multiple cryptographic algorithms are combined to form a single signature algorithm. The composite algorithm presents a single public key and signature value such that it can be treated as a single atomic algorithm at the protocol level. This provides a property referred to as "protocol backwards compatibility" since it can be applied to protocols that are not explicitly hybrid-aware. The idea of a composite was first presented in {{Bindel2017}}.
 Composite algorithms retain some security even if one of their component algorithms is broken, which is discussed in detail in {{sec-cons}}.
-This specification creates PQ/T Hybrids with the Module-Lattice-Based Digital Signature Algorithm (ML-DSA), defined in [FIPS.204] as the PQ component.
-Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519 and Ed448.
-The full list of algorithms registered by this specification is in {{sec-alg-parms}}.
+This specification creates PQ/T Hybrids with the Module-Lattice-Based Digital Signature Algorithm (ML-DSA), defined in [FIPS.204] as the Post-Quantum (PQ) component.
+Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-PSS, RSA-PKCS#1v1.5, ECDSA, Ed25519, and Ed448.
+The full list of algorithms registered by this specification is provided in {{sec-alg-parms}}.
 Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification, but is the subject of {{sec-backwards-compat}}.
 
 Certain jurisdictions have recommended that ML-DSA be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies [BSI2021], [ANSSI2024].
 
-In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying Post-Quantum Cryptography before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The intention is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.
+In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying PQC before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The goal is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.
 
-While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
+While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
 
 Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA and where existential unforgeability (EUF-CMA) security is acceptable, instead of the stronger strong existential unforgeability (SUF-CMA) which Composite ML-DSA does not offer.
 
@@ -266,40 +266,40 @@ This specification is consistent with the terminology defined in {{RFC9794}}. In
 
 **PROTOCOL BACKWARDS COMPATIBILITY**: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.
 
-**RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the RSA-PSS (Probabilistic Signature Scheme) defined in [RFC8017].
+**RSA**: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the Probabilistic Signature Scheme (RSA-PSS) defined in [RFC8017].
 
 **SIGNATURE**:
           A digital cryptographic signature, making no assumptions
             about which algorithm.
 
 
-## Notation
+## Notations
 The algorithm descriptions use python-like syntax. The following symbols deserve special mention:
 
- * `||` represents concatenation of two byte arrays.
+ * `||` represents concatenation of two-byte arrays.
 
  * `[:]` represents byte array slicing.
 
- * `(a, b)` represents a pair of values `a` and `b`. Typically this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc. -- is left to the implementer.
+ * `(a, b)` represents a pair of values `a` and `b`. Typically, this indicates that a function returns multiple values; the exact conveyance mechanism -- tuple, struct, output parameters, etc. -- is left to the implementer.
 
  * `(a, _)`: represents a pair of values where one -- the second one in this case -- is ignored.
 
- * `Func<TYPE>()`: represents a function that is parameterized by `<TYPE>` meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.
+ * `Func<TYPE>()`: represents a function that is parameterized by `<TYPE>` meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically, this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.
 
 
 ## Composite Design Philosophy
 
-Composite algorithms, as defined in this specification, follow the definition in [RFC9794] and should be regarded as a single algorithm that performs a single cryptographic operation typical of a digital signature algorithm. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module. The design intent is that protocols such as PKCS#10 [RFC2986], CMP [RFC9810], X.509 [RFC5280], the CMS [RFC5652], and the Trust Anchor Format [RFC5914] can treat composite algorithms as they would any other algorithm without the protocol layer to have any "hybrid-awareness". This is a property referred to as "protocol backwards-compatibility".
+Composite algorithms, as defined in this specification, follow the definition in [RFC9794] and should be regarded as a single algorithm that performs a single cryptographic operation typical of a digital signature algorithm. This generally means that the complexity of combining algorithms can and should be handled by the cryptographic library or cryptographic module. The design intent is that protocols such as PKCS#10 [RFC2986], Certificate Management Protocol (CMP) [RFC9810], X.509 [RFC5280], the Cryptographic Message Syntax (CMS) [RFC5652], and the Trust Anchor Format [RFC5914] can treat composite algorithms as they would any other algorithm without the protocol layer to have any "hybrid-awareness". This is a property referred to as "protocol backwards-compatibility".
 
 Discussion of the specific choices of algorithm pairings can be found in {{sec-rationale}}.
 
-In terms of security properties, we consider the two security properties existential forgery against a chosen message attack (EUF-CMA) and strong unforgeability against a chosen message attack (SUF-CMA), which are treated more rigorously in {{sec-cons-eufcma}} and {{sec-cons-sufcma}}. As a simplified summary; Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the pre-hashed message representative `PH` is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in {{sec-cons-non-separability}}.
+In terms of security properties, the document considers the two security properties existential forgery against a chosen message attack (EUF-CMA) and strong unforgeability against a chosen message attack (SUF-CMA), which are treated more rigorously in {{sec-cons-eufcma}} and {{sec-cons-sufcma}}. As a simplified summary, Composite ML-DSA will be EUF-CMA secure if at least one of its component algorithms is EUF-CMA secure and the pre-hashed message representative `PH` is collision resistant. SUF-CMA security of Composite ML-DSA is more complicated. While some of the algorithm combinations defined in this specification are likely to be SUF-CMA secure against classical adversaries, none are SUF-CMA secure against a quantum adversary. This means that replacing an ML-DSA signature with a Composite ML-DSA signature is a reduction in security and should not be used in applications sensitive to the difference between SUF-CMA and EUF-CMA security. Composite ML-DSA is NOT RECOMMENDED for use in applications where it is has not been shown that EUF-CMA is acceptable. Further discussion can be found in {{sec-cons-non-separability}}.
 
 
 
 # Overview of the Composite ML-DSA Signature Scheme {#sec-sig-scheme}
 
-Composite ML-DSA is a Post-Quantum / Traditional hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
+Composite ML-DSA is a PQ/T hybrid signature scheme which combines ML-DSA as specified in [FIPS.204] and [RFC9881] with one of RSASSA-PKCS1-v1_5 or RSASSA-PSS algorithms defined in [RFC8017], the Elliptic Curve Digital Signature Algorithm ECDSA scheme defined in Section 6 of [FIPS.186-5], or Ed25519 / Ed448 defined in [RFC8410]. The two component signatures are combined into a composite algorithm via a "signature combiner" function which performs pre-hashing and prepends several signature label values to the message prior to passing it to the component algorithms. Composite ML-DSA achieves weak non-separability as well as several other security properties which are described in the Security Considerations in {{sec-cons}}.
 
 Composite signature schemes are defined as cryptographic primitives that match the API of a generic signature scheme, which consists of three algorithms:
 
@@ -342,13 +342,13 @@ M' :=  Prefix || Label || len(ctx) || ctx || PH( M )
 
 which closely mirrors the construction of `M'` in [FIPS.204] Algorithm 4.
 
-Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {#impl-cons-external-ph} for further discussion and sample algorithms.
+Given this design of Composite ML-DSA, it is possible to split the pre-hashing step out from the signature generation process -- see {{impl-cons-external-ph}} for further discussion and sample algorithms.
 
 Note that while the overall construction of Composite ML-DSA is similar to that of HashML-DSA, the ML-DSA component inside the composite is "pure" ML-DSA; implementing this specification does not require an implementation of HashML-DSA.
 
 
 
-## Prefix, Label and CTX {#sec-label-and-ctx}
+## Prefix, Label, and CTX {#sec-label-and-ctx}
 
 The to-be-signed message representative `M'`, defined in {{sec-hash-comp-sig-sign}} is created by concatenating several values, including the pre-hashed message.
 
@@ -435,7 +435,7 @@ Key Generation Process:
 
 ~~~
 
-This keygen process make use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
+This keygen process makes use of the seed-based `ML-DSA.KeyGen_internal(𝜉)`, which is defined in Algorithm 6 of [FIPS.204]. For FIPS-certification implications, see {{sec-fips}}.
 
 In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see {{sec-cons-key-reuse}}.
 
@@ -450,7 +450,7 @@ Implementations MAY modify this process to additionally output the expanded `mld
 
 In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.
 
-Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in {{sec-serialize-privkey}}. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}
+Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in {{sec-serialize-privkey}}. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}.
 
 
 ## Sign {#sec-hash-comp-sig-sign}
@@ -636,7 +636,7 @@ As with `Composite-ML-DSA.Sign()`, there are two different context strings `ctx`
 This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 The functions defined in this section are considered internal implementation details and are referenced from within the public API definitions in {{sec-sigs}}.
 
-Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in the following table.
+Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in {{tab-mldsa-sizes}}.
 
 | Algorithm | Public key  | Private key | Signature |
 | --------- | ----------- | ----------- |  -------- |
@@ -647,10 +647,10 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 
 While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, a stand-alone RSA private key can be encoded in Chinese Remainder Theorem form. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
-* **ML-DSA**: MUST be encoded as specified in section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in section 7.2 of [FIPS.204].
-* **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in section 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
-* **ECDSA**: public key MUST be encoded as an uncompressed X9.62 [X9.62–2005], including the leading byte `0x04` indicating uncompressed. This is consistent with the encoding of `ECPoint` as specified in section 2.2 of [RFC5480] when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] with the 'NamedCurve' parameter set to the OID of the curve, but without the 'publicKey' field.
-* **EdDSA**: public key and signature MUST be encoded as per section 3 of [RFC8032] and the private key is a 32 or 57 byte raw value for Ed25519 and Ed448 respectively, which can be converted to a CurvePrivateKey specified in [RFC8410] by the addition of an OCTET STRING wrapper.
+* **ML-DSA**: MUST be encoded as specified in Section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in Section 7.2 of [FIPS.204].
+* **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in Appendix A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in Sections 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
+* **ECDSA**: public key MUST be encoded as an uncompressed X9.62 [X9.62–2005], including the leading byte `0x04` indicating uncompressed. This is consistent with the encoding of `ECPoint` as specified in Section 2.2 of [RFC5480] when no ASN.1 OCTET STRING wrapping is present. A signature MUST be encoded as an `Ecdsa-Sig-Value` as specified in Section 2.2.3 of [RFC3279]. The private key MUST be encoded as ECPrivateKey specified in [RFC5915] with the 'NamedCurve' parameter set to the OID of the curve, but without the 'publicKey' field.
+* **EdDSA**: public key and signature MUST be encoded as per Section 3 of [RFC8032] and the private key is a 32- or 57-byte raw value for Ed25519 and Ed448 respectively, which can be converted to a CurvePrivateKey specified in [RFC8410] by the addition of an OCTET STRING wrapper.
 
 All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in {{sec-encoding-to-der}}.
 
@@ -943,11 +943,11 @@ ML-DSA subject public keys cannot be used to establish keys or encrypt data, so 
 `keyUsage` extension MUST NOT have any of following bits set:
 
 ~~~
-   keyEncipherment,
-   dataEncipherment,
-   keyAgreement,
-   encipherOnly, and
-   decipherOnly.
+   keyEncipherment
+   dataEncipherment
+   keyAgreement
+   encipherOnly
+   decipherOnly
 ~~~
 
 Requirements about the `keyUsage` extension bits defined in {{RFC5280}}
@@ -1089,7 +1089,7 @@ In generating the list of composite algorithms, the idea was to provide composit
 
 The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical adversaries and "qubits of security" against quantum adversaries.
 
-SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
+SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However, SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
 
 In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
 While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
@@ -1237,7 +1237,7 @@ As this specification uses ML-DSA as a component of all composite algorithms, al
 
 ## Why Hybrids?
 
-In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Let's quickly explore both.
+In broad terms, a PQ/T Hybrid can be used either to provide dual-algorithm security or to provide migration flexibility. Both are discussed below.
 
 **Dual-algorithm security**. The general idea is that the data is protected by two algorithms such that an adversary would need to break both in order to compromise the data. As with most of cryptography, this property is easy to state in general terms, but becomes more complicated when expressed in formalisms. {{sec-cons-non-separability}} goes into more detail here. One common counter-argument against PQ/T hybrid signatures is that if an adversary can forge one of the component algorithms, then why attack the hybrid-signed message at all when they could simply forge a completely new message? The answer to this question must be found outside the cryptographic primitives themselves, and instead in policy; once an algorithm is known to be broken it ought to be disallowed for single-algorithm use by cryptographic policy, while hybrids involving that algorithm may continue to be used and to provide value, and also in the fact that the composite public key could be trusted by the verifier while the component keys in isolation are not, thus requiring the adversary to forge a whole composite signature.
 
@@ -1278,7 +1278,7 @@ Consequently, applications where SUF-CMA security is critical SHOULD NOT use Com
 
 ### Non-separability
 
-Weak Non-Separability (WNS) of a hybrid signature is defined in {{I-D.ietf-pquip-hybrid-signature-spectrums}} as the guarantee that an adversary cannot simply "remove" one of the component signatures without evidence left behind.
+Weak Non-Separability (WNS) of a hybrid signature is defined in {{Section 1.3.3 of I-D.ietf-pquip-hybrid-signature-spectrums}} as the guarantee that an adversary cannot simply "remove" one of the component signatures without evidence left behind.
 
 Strong Non-Separability (SNS) is the stronger notion that an adversary cannot take a hybrid signature and produce a component signature, with a potentially different message, that will be accepted by the component verifier.
 
@@ -1291,13 +1291,13 @@ When used within X.509, the Label representing the signature algorithm is includ
 
 While conformance with this specification requires that both components of a composite key MUST be freshly generated, the designers are aware that some implementers may be forced to break this rule due to operational constraints. This section documents the implications of doing so.
 
-When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. However this reasoning does not hold in the PQ/T hybrid setting.
+When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. But this reasoning does not hold in the PQ/T hybrid setting.
 
-Within the broader context of PQ/T hybrids, we need to consider new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
+Within the broader context of PQ/T hybrids, there are new attack surfaces that arise due to the hybrid constructions that did not exist in single-algorithm contexts. One of these is key reuse where the component keys within a hybrid are also used by themselves within a single-algorithm context. For example, it might be tempting for an operator to take an already-deployed RSA key pair and combine it with an ML-DSA key pair to form a hybrid key pair for use in a hybrid algorithm. Within a hybrid signature context this leads to a class of attacks referred to as "stripping attacks" discussed in {{sec-cons-non-separability}} and may also open up risks from further cross-protocol attacks. Despite the weak non-separability property offered by the composite signature combiner, key reuse MUST be avoided to prevent the introduction of EUF-CMA vulnerabilities.
 
 In addition, there is a further implication to key reuse regarding certificate revocation. Upon receiving a new certificate enrolment request, many certification authorities will check if the requested public key has been previously revoked due to key compromise. Often a CA will perform this check by using the public key hash. Therefore, if one, or even both, components of a composite have been previously revoked, the CA may only check the hash of the combined composite key and not find the revocations. Therefore, because the possibility of key reuse exists even though forbidden in this specification, CAs performing revocation checks on a composite key SHOULD also check both component keys independently to verify that the component keys have not been revoked.
 
-Some application might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol [RFC3092] where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
+Some applications might disregard the requirements of this specification to not reuse key material between single-algorithm and composite contexts. While doing so is still a violation of this specification, the weakening of security from doing so can be mitigated by using an appropriate `ctx` value, such as `ctx=Foobar-dual-cert-sig` to indicate that this signature belongs to the Foobar protocol [RFC3092] where two certificates were used to create a single composite signature. This specification does not endorse such uses, and per-application security analysis is needed.
 
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
@@ -1327,9 +1327,9 @@ Implementers seeking FIPS certification of a composite signature algorithm where
 
 The composite algorithm has been designed to treat the underlying primitives as "black-box implementations" and not impose any additional requirements on them that could require an existing implementation of an underlying primitive to run in a mode different from the one under which it was certified. For example, the `KeyGen` defined in {{sec-keygen}} invokes `ML-DSA.KeyGen_internal(seed)` which might not be available in a cryptographic module running in FIPS-mode, but {{sec-keygen}} is only a suggested implementation and the composite KeyGen MAY be implemented using a different available interface for ML-DSA.KeyGen.  However, using an interface which doesn't support a seed will prevent the implementation from encoding the private key according to {{sec-serialize-privkey}}. Another example is pre-hashing; a pre-hash is inherent to RSA, ECDSA, and ML-DSA (&mu;), and composite makes no assumptions or requirements about whether component-specific pre-hashing is done locally as part of the composite, or remotely as part of the component primitive.
 
-Note also that also that {{sec-keygen}} depicts the generation of the seed as `mldsaSeed = Random()`, when implementing this for FIPS certification, this MUST be the direct output of a FIPS-approved DRBG.
+Note also that also that {{sec-keygen}} depicts the generation of the seed as `mldsaSeed = Random()`, when implementing this for FIPS certification, this MUST be the direct output of a FIPS-approved Deterministic Random Bit Generator (DRBG).
 
-The authors wish to note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.
+Note that composite algorithms provide a design pattern to provide utility in future situations that require care to remain FIPS-compliant, such as future cryptographic migrations as well as bridging across jurisdictions with non-intersecting cryptographic requirements.
 
 
 ## Backwards Compatibility {#sec-backwards-compat}
@@ -1353,7 +1353,7 @@ For applications that do not have any regulatory requirements or legacy implemen
 
     id-MLDSA65-ECDSA-P256-SHA512
 
-Below we list a few  other recommendations for specific scenarios.
+Below is listed a few other recommendations for specific scenarios.
 
 In applications that require RSA, it is RECOMMENDED to focus implementation effort on:
 
@@ -1569,7 +1569,7 @@ DER:
 
 AlgorithmIdentifier of Public Key
 
-Note that we suggest here to use id-RSASSA-PSS (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1), and some might in fact prefer or require it.
+Note that it is suggested here to use id-RSASSA-PSS (1.2.840.113549.1.1.10) as the public key OID for RSA-PSS, although most implementations also would accept rsaEncryption (1.2.840.113549.1.1.1), and some might in fact prefer or require it.
 
 ~~~
 ASN.1:
@@ -1921,7 +1921,7 @@ First is an example of constructing the message representative `M'` for MLDSA65-
 
 Second is an example of constructing the message representative `M'` for MLDSA65-ECDSA-P256-SHA256 with a context string `ctx`.
 
-The inputs are similar to the first example with the exception that there is an 8 byte context string 'ctx'.
+The inputs are similar to the first example with the exception that there is an 8-byte context string 'ctx'.
 
 ~~~
 {::include ./src/messageFormatSample_ctx.md}
