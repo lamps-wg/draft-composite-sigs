@@ -640,8 +640,6 @@ Signature Verification Process:
          output "Valid signature"
 ~~~
 
-Note that in step 4 above, the function fails early if the first component fails to verify. Since no private keys are involved in a signature verification, there are no timing attacks to consider, so this is ok.
-
 As with `Composite-ML-DSA.Sign()`, there are two different context strings `ctx` at play: the application context `ctx` and the `mldsa-ctx` which behave the same in `verify()` as they do in `sign()`.
 
 
