@@ -1231,6 +1231,7 @@ Signature Verification Process:
             -- VALUE no ASN.1 wrapping --
             PARAMS ARE absent
             PUBLIC-KEYS {publicKeyType}
+            SMIME-CAPS { IDENTIFIED BY id }
          }
 
       Figure 1: ASN.1 Object Information Classes for Composite ML-DSA
