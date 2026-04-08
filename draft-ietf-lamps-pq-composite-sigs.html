@@ -1304,7 +1304,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-implementation-consideratio" class="internal xref">Implementation Considerations</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-operational-considerations" class="internal xref">Operational Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
                 <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-fips-certification" class="internal xref">FIPS certification</a></p>
@@ -1317,6 +1317,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
                 <p id="section-toc.1-1.10.2.4.1"><a href="#section-10.4" class="auto internal xref">10.4</a>.  <a href="#name-external-pre-hashing" class="internal xref">External Pre-hashing</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
+                <p id="section-toc.1-1.10.2.5.1"><a href="#section-10.5" class="auto internal xref">10.5</a>.  <a href="#name-interoperability-of-legacy-" class="internal xref">Interoperability of legacy algorithms</a></p>
 </li>
             </ul>
 </li>
@@ -1387,37 +1390,52 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.
 These words may also appear in this document in
 lower case as plain English words, absent their normative meanings.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">This specification is consistent with the terminology defined in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>. In addition, the following terminology is used throughout this specification:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">This specification is consistent with the terminology defined in <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span>.
+Some relevant definitions from <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> are copied here for easier reading.
+In addition, the following terminology is used throughout this specification:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <p id="section-1.1-3"><strong>ALGORITHM</strong>:
-          The usage of the term "algorithm" within this
-          specification generally refers to any function which
-          has a registered Object Identifier (OID) for
-          use within an ASN.1 AlgorithmIdentifier.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
-<p id="section-1.1-4"><strong>APPLICATION BACKWARDS COMPATIBILITY</strong>: The usual definition of backwards compatibility, meaning whether an upgraded and non-upgraded application can successfully establish communication.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
-<p id="section-1.1-5"><strong>COMPOSITE CRYPTOGRAPHIC ELEMENT</strong>: <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as: A
-          cryptographic element that
-          incorporates multiple component cryptographic elements of the same
-          type in a multi-algorithm scheme.<a href="#section-1.1-5" class="pilcrow">¶</a></p>
-<p id="section-1.1-6"><strong>COMPONENT / PRIMITIVE</strong>:
-  The words "component" or "primitive" are used interchangeably
-  to refer to an asymmetric cryptographic algorithm that is used internally
-  within a composite algorithm. For example this could be an
-  asymmetric algorithm such as "ML-DSA-65" or "RSASSA-PSS".<a href="#section-1.1-6" class="pilcrow">¶</a></p>
-<p id="section-1.1-7"><strong>DER</strong>:
-          Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
-<p id="section-1.1-8"><strong>ECDSA</strong>: The Elliptic Curve Digital Signature Algorithm defined in <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
-<p id="section-1.1-9"><strong>EdDSA, Ed25519 and Ed448</strong>: Edwards-curve Digital Signature Algorithm (EdDSA)
-          defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span> with two parameter sets: Ed25519 and Ed448.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
-<p id="section-1.1-10"><strong>ML-DSA</strong>: The Module-Lattice-Based Digital Signature Standard defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
-<p id="section-1.1-11"><strong>PKI</strong>:
-          Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-11" class="pilcrow">¶</a></p>
-<p id="section-1.1-12"><strong>POST-QUANTUM TRADITIONAL (PQ/T) HYBRID SCHEME</strong>:
-    A multi-algorithm scheme where at least one component algorithm is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-12" class="pilcrow">¶</a></p>
-<p id="section-1.1-13"><strong>PROTOCOL BACKWARDS COMPATIBILITY</strong>: A property whereby a new feature can be added to a protocol without requiring any changes to the protocol's specification and only minimal changes to its implementations (such as adding new identifiers). This is notable because many PQ/T Hybrids require modification of the protocol to make it "hybrid aware", whereas this specification presents as a standalone algorithm and thus can take advantage of existing cryptographic agility mechanisms.<a href="#section-1.1-13" class="pilcrow">¶</a></p>
-<p id="section-1.1-14"><strong>RSA</strong>: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the Probabilistic Signature Scheme (RSA-PSS) defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-1.1-14" class="pilcrow">¶</a></p>
-<p id="section-1.1-15"><strong>SIGNATURE</strong>:
+  The usage of the term "algorithm" within this
+  specification generally refers to any function which
+  has a registered Object Identifier (OID) for
+  use within an ASN.1 AlgorithmIdentifier.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4"><strong>APPLICATION BACKWARDS COMPATIBILITY</strong>:
+ A property indicating whether an upgraded and non-upgraded application can successfully establish communication.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-5"><strong>COMPOSITE CRYPTOGRAPHIC ELEMENT</strong>: <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines composites as:
+    A cryptographic element that incorporates multiple component
+    cryptographic elements of the same type for use in a
+    multi-algorithm scheme, such that the resulting composite
+    cryptographic element is exposed as a singular interface
+    of the same type as the component cryptographic elements.
+    For example this could be an asymmetric algorithm such as
+    "ML-DSA-65" or "RSASSA-PSS".<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+<p id="section-1.1-6"><strong>DER</strong>:
+  Distinguished Encoding Rules as defined in <span>[<a href="#X.690" class="cite xref">X.690</a>]</span>.<a href="#section-1.1-6" class="pilcrow">¶</a></p>
+<p id="section-1.1-7"><strong>ECDSA</strong>: The Elliptic Curve Digital Signature Algorithm defined in <span>[<a href="#FIPS.186-5" class="cite xref">FIPS.186-5</a>]</span>.<a href="#section-1.1-7" class="pilcrow">¶</a></p>
+<p id="section-1.1-8"><strong>EdDSA, Ed25519 and Ed448</strong>: Edwards-curve Digital Signature Algorithm (EdDSA)
+  defined in <span>[<a href="#RFC8410" class="cite xref">RFC8410</a>]</span> with two parameter sets: Ed25519 and Ed448.<a href="#section-1.1-8" class="pilcrow">¶</a></p>
+<p id="section-1.1-9"><strong>ML-DSA</strong>: The Module-Lattice-Based Digital Signature Standard defined in <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>.<a href="#section-1.1-9" class="pilcrow">¶</a></p>
+<p id="section-1.1-10"><strong>PKI</strong>:
+  Public Key Infrastructure, as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-1.1-10" class="pilcrow">¶</a></p>
+<p id="section-1.1-11"><strong>POST-QUANTUM TRADITIONAL (PQ/T) HYBRID SCHEME</strong>:
+  <span>[<a href="#RFC9794" class="cite xref">RFC9794</a>]</span> defines a PQ/T Hybrid Scheme as:
+  A multi-algorithm scheme where at least one component algorithm
+  is a post-quantum algorithm and at least one is a traditional algorithm.<a href="#section-1.1-11" class="pilcrow">¶</a></p>
+<p id="section-1.1-12"><strong>PROTOCOL BACKWARDS COMPATIBILITY</strong>:
+  A property whereby a new feature
+  can be added to a protocol without requiring any changes to the
+  protocol's specification and only minimal changes to its
+  implementations.
+  Typically this means that the new feature fits within a defined
+  extension point of the protocol instead of requiring a structural
+  change to the protocol.
+  This is notable because many PQ/T Hybrids require modification of
+  the protocol to make it "hybrid aware", whereas this specification
+  presents as a standalone algorithm and thus can take advantage of
+  existing cryptographic agility mechanisms.<a href="#section-1.1-12" class="pilcrow">¶</a></p>
+<p id="section-1.1-13"><strong>RSA</strong>: The Rivest-Shamir-Adleman cryptosystem, used in this specification as the Probabilistic Signature Scheme (RSA-PSS) defined in <span>[<a href="#RFC8017" class="cite xref">RFC8017</a>]</span>.<a href="#section-1.1-13" class="pilcrow">¶</a></p>
+<p id="section-1.1-14"><strong>SIGNATURE</strong>:
           A digital cryptographic signature, making no assumptions
-            about which algorithm.<a href="#section-1.1-15" class="pilcrow">¶</a></p>
+            about which algorithm.<a href="#section-1.1-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="notations">
@@ -1440,7 +1458,10 @@ lower case as plain English words, absent their normative meanings.<a href="#sec
             <p id="section-1.2-2.4.1"><code>(a, _)</code>: represents a pair of values where one -- the second one in this case -- is ignored.<a href="#section-1.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.2-2.5">
-            <p id="section-1.2-2.5.1"><code>Func&lt;TYPE&gt;()</code>: represents a function that is parameterized by <code>&lt;TYPE&gt;</code> meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically, this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.<a href="#section-1.2-2.5.1" class="pilcrow">¶</a></p>
+            <p id="section-1.2-2.5.1"><code>func(a) -&gt; b</code>: represents a function named <code>func</code> that takes <code>a</code> as input and produces <code>b</code>.<a href="#section-1.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.2-2.6">
+            <p id="section-1.2-2.6.1"><code>Func&lt;TYPE&gt;()</code>: represents a function that is parameterized by <code>&lt;TYPE&gt;</code> meaning that the function's implementation will have minor differences depending on the underlying TYPE. Typically this means that a function will need to look up different constants or use different underlying cryptographic primitives depending on which composite algorithm it is implementing.<a href="#section-1.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1625,7 +1646,7 @@ Key Generation Process:
 </div>
 <p id="section-3.1-5">This keygen process makes use of the seed-based <code>ML-DSA.KeyGen_internal(𝜉)</code>, which is defined in Algorithm 6 of <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>. For FIPS-certification implications, see <a href="#sec-fips" class="auto internal xref">Section 10.1</a>.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 <p id="section-3.1-6">In order to ensure fresh keys, the key generation functions MUST be executed for both component algorithms. Compliant parties MUST NOT use, import or export component keys that are used in other contexts, combinations, or by themselves as keys for standalone algorithm use. For more details on the security considerations around key reuse, see <a href="#sec-cons-key-reuse" class="auto internal xref">Section 9.3</a>.<a href="#section-3.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.1-7">Errors produced by the component <code>KeyGen()</code> routines MUST be forwarded on to the calling application.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">If one of the component <code>KeyGen()</code> routines returns an error, then the  <code>Composite-ML-DSA.KeyGen()</code> routine MUST also return an error.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 <div id="allowed-modifications-to-the-key-generation-process">
 <section id="section-3.1.1">
           <h4 id="name-allowed-modifications-to-th">
@@ -1826,7 +1847,7 @@ Signature Verification Process:
       </h2>
 <p id="section-4-1">This section presents routines for serializing and deserializing composite public keys, private keys, and signature values to bytes via simple concatenation of the underlying encodings of the component algorithms.
 The functions defined in this section are considered internal implementation details and are referenced from within the public API definitions in <a href="#sec-sigs" class="auto internal xref">Section 3</a>.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in <a href="#tab-mldsa-sizes" class="auto internal xref">Table 1</a>.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-2">Deserialization is possible because ML-DSA has fixed-length public keys, private keys (seeds), and signature values as shown in <a href="#tab-mldsa-sizes" class="auto internal xref">Table 1</a>, which is similar to Table 2 from <span>[<a href="#FIPS.204" class="cite xref">FIPS.204</a>]</span>, but with a different private key representation.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <span id="name-ml-dsa-sizes-in-bytes"></span><div id="tab-mldsa-sizes">
 <table class="center" id="table-1">
         <caption>
@@ -1879,7 +1900,7 @@ The functions defined in this section are considered internal implementation det
 </li>
       </ul>
 <p id="section-4-6">All ASN.1 objects SHALL be encoded using DER on serialization. For all serialization routines below, when their output values are required to be carried in an ASN.1 structure, they are wrapped as described in <a href="#sec-encoding-to-der" class="auto internal xref">Section 5.1</a>.<a href="#section-4-6" class="pilcrow">¶</a></p>
-<p id="section-4-7">Even with fixed encodings for the traditional component, there might be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeroes. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for a table of maximum sizes for each composite algorithm and further discussion of the reason for variations in these sizes.<a href="#section-4-7" class="pilcrow">¶</a></p>
+<p id="section-4-7">Even with fixed encodings for the traditional component, there might be slight differences in size of the encoded value due to, for example, encoding rules that drop leading zeros. See <a href="#sec-sizetable" class="auto internal xref">Appendix A</a> for a table of maximum sizes for each composite algorithm and further discussion of the reason for variations in these sizes.<a href="#section-4-7" class="pilcrow">¶</a></p>
 <p id="section-4-8">The deserialization routines described below do not check for well-formedness of the cryptographic material they are recovering. It is assumed that underlying cryptographic primitives will catch malformed values and raise an appropriate error.<a href="#section-4-8" class="pilcrow">¶</a></p>
 <div id="sec-serialize-pubkey">
 <section id="section-4.1">
@@ -2279,7 +2300,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
 <p id="section-6-1">This section lists the algorithm identifiers and parameters for all Composite ML-DSA algorithms.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">Full specifications for the referenced algorithms can be found in <a href="#appdx_components" class="auto internal xref">Appendix B</a>.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <p id="section-6-3">As the number of algorithms can be daunting, implementers who wish to implement only a single composite algorithm should see <a href="#sec-impl-profile" class="auto internal xref">Section 10.3</a> for a discussion of the best algorithm for the most common use cases.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings using the obvious ASCII conversions prior to concatenating them with other byte values as described in <a href="#sec-label-and-ctx" class="auto internal xref">Section 2.2</a>.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-4">Labels are represented here as ASCII strings, but implementers MUST convert them to byte strings according to their ASCII values prior to concatenating them with other byte values as described in <a href="#sec-label-and-ctx" class="auto internal xref">Section 2.2</a>.<a href="#section-6-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-6-5.1">
           <p id="section-6-5.1.1">id-MLDSA44-RSA2048-PSS-SHA256<a href="#section-6-5.1.1" class="pilcrow">¶</a></p>
@@ -3612,8 +3633,8 @@ END
 </div>
 <div id="sec-imp-considers">
 <section id="section-10">
-      <h2 id="name-implementation-consideratio">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-implementation-consideratio" class="section-name selfRef">Implementation Considerations</a>
+      <h2 id="name-operational-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-operational-considerations" class="section-name selfRef">Operational Considerations</a>
       </h2>
 <div id="sec-fips">
 <section id="section-10.1">
@@ -3634,7 +3655,7 @@ END
         <h3 id="name-backwards-compatibility">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-backwards-compatibility" class="section-name selfRef">Backwards Compatibility</a>
         </h3>
-<p id="section-10.2-1">The term "application backwards compatibility" is used here to mean that existing systems as they are deployed today can interoperate with the upgraded systems of the future.  This document explicitly does not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.2-1">The mechanisms specified in this document explicitly do not provide application backwards compatibility, only upgraded systems will understand the OIDs defined in this specification.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 <p id="section-10.2-2">If application backwards compatibility is required, then additional mechanisms will be needed.  Migration and interoperability concerns need to be thought about in the context of various types of protocols that make use of X.509 and PKIX with relation to digital signature objects, from online negotiated protocols such as TLS 1.3 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> and IKEv2 <span>[<a href="#RFC7296" class="cite xref">RFC7296</a>]</span>, to non-negotiated asynchronous protocols such as S/MIME signed email <span>[<a href="#RFC8551" class="cite xref">RFC8551</a>]</span>, document signing such as in the context of the European eIDAS regulations <span>[<a href="#eIDAS2014" class="cite xref">eIDAS2014</a>]</span>, and publicly trusted code signing <span>[<a href="#codesigningbrsv3.8" class="cite xref">codesigningbrsv3.8</a>]</span>, as well as myriad other standardized and proprietary protocols and applications that leverage CMS <span>[<a href="#RFC5652" class="cite xref">RFC5652</a>]</span> signed structures.  Composite simplifies the protocol design work because it can be implemented as a signature algorithm that fits into existing systems.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3758,6 +3779,15 @@ Process:
 </div>
 </section>
 </div>
+<div id="interoperability-of-legacy-algorithms">
+<section id="section-10.5">
+        <h3 id="name-interoperability-of-legacy-">
+<a href="#section-10.5" class="section-number selfRef">10.5. </a><a href="#name-interoperability-of-legacy-" class="section-name selfRef">Interoperability of legacy algorithms</a>
+        </h3>
+<p id="section-10.5-1">The legacy component algorithms, particularly RSA and ECDSA can themselves have interoperability issues which will propagate to become interoperability issues in the composite. For example, this specification RECOMMENDS an RSA exponent of 65537, but other values are possible.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
+<p id="section-10.5-2">Implementations are encouraged to be lenient when parsing the key material of the legacy algorithm. In particilar, the recommendation is to use existing implementations of the legacy algorithms that already handle all the variation seen in the wild.<a href="#section-10.5-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -3851,9 +3881,9 @@ Process:
         <dd>
 <span class="refAuthor">Josefsson, S.</span> and <span class="refAuthor">J. Schaad</span>, <span class="refTitle">"Algorithm Identifiers for Ed25519, Ed448, X25519, and X448 for Use in the Internet X.509 Public Key Infrastructure"</span>, <span class="seriesInfo">RFC 8410</span>, <span class="seriesInfo">DOI 10.17487/RFC8410</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8410">https://www.rfc-editor.org/info/rfc8410</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC9810">[RFC9810]</dt>
+<dt id="RFC9881">[RFC9881]</dt>
         <dd>
-<span class="refAuthor">Brockhaus, H.</span>, <span class="refAuthor">von Oheimb, D.</span>, <span class="refAuthor">Ounsworth, M.</span>, and <span class="refAuthor">J. Gray</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure -- Certificate Management Protocol (CMP)"</span>, <span class="seriesInfo">RFC 9810</span>, <span class="seriesInfo">DOI 10.17487/RFC9810</span>, <time datetime="2025-07" class="refDate">July 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9810">https://www.rfc-editor.org/info/rfc9810</a>&gt;</span>. </dd>
+<span class="refAuthor">Massimo, J.</span>, <span class="refAuthor">Kampanakis, P.</span>, <span class="refAuthor">Turner, S.</span>, and <span class="refAuthor">B. E. Westerbaan</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure -- Algorithm Identifiers for the Module-Lattice-Based Digital Signature Algorithm (ML-DSA)"</span>, <span class="seriesInfo">RFC 9881</span>, <span class="seriesInfo">DOI 10.17487/RFC9881</span>, <time datetime="2025-10" class="refDate">October 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9881">https://www.rfc-editor.org/info/rfc9881</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SEC1">[SEC1]</dt>
         <dd>
@@ -3944,9 +3974,9 @@ Process:
         <dd>
 <span class="refAuthor">Driscoll, F.</span>, <span class="refAuthor">Parsons, M.</span>, and <span class="refAuthor">B. Hale</span>, <span class="refTitle">"Terminology for Post-Quantum Traditional Hybrid Schemes"</span>, <span class="seriesInfo">RFC 9794</span>, <span class="seriesInfo">DOI 10.17487/RFC9794</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9794">https://www.rfc-editor.org/info/rfc9794</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC9881">[RFC9881]</dt>
+<dt id="RFC9810">[RFC9810]</dt>
         <dd>
-<span class="refAuthor">Massimo, J.</span>, <span class="refAuthor">Kampanakis, P.</span>, <span class="refAuthor">Turner, S.</span>, and <span class="refAuthor">B. E. Westerbaan</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure -- Algorithm Identifiers for the Module-Lattice-Based Digital Signature Algorithm (ML-DSA)"</span>, <span class="seriesInfo">RFC 9881</span>, <span class="seriesInfo">DOI 10.17487/RFC9881</span>, <time datetime="2025-10" class="refDate">October 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9881">https://www.rfc-editor.org/info/rfc9881</a>&gt;</span>. </dd>
+<span class="refAuthor">Brockhaus, H.</span>, <span class="refAuthor">von Oheimb, D.</span>, <span class="refAuthor">Ounsworth, M.</span>, and <span class="refAuthor">J. Gray</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure -- Certificate Management Protocol (CMP)"</span>, <span class="seriesInfo">RFC 9810</span>, <span class="seriesInfo">DOI 10.17487/RFC9810</span>, <time datetime="2025-07" class="refDate">July 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9810">https://www.rfc-editor.org/info/rfc9810</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="TestVectors">[TestVectors]</dt>
       <dd>
