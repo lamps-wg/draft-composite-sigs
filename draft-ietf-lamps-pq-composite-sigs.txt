@@ -2384,13 +2384,12 @@ Signature Verification Process:
    the component keys have not been revoked.
 
    The risks of key reuse can be somewhat mitigated, but not eliminated,
-   by by using an appropriate ctx value.  For example, an application
-   might use ctx=Foobar-dual-cert-sig to indicate that this signature
-   belongs to the Foobar protocol [RFC3092] where two certificates were
-   used to create a single composite signature.  This specification does
-   not endorse such uses, and per-application security analysis is
-   needed to determine the extent to which this provides mitigation, if
-   any.
+   by using an appropriate ctx value.  For example, an application might
+   use ctx=Foobar-dual-cert-sig to indicate that this signature belongs
+   to the Foobar protocol [RFC3092] where two certificates were used to
+   create a single composite signature.  This specification does not
+   endorse such uses, and per-application security analysis is needed to
+   determine the extent to which this provides mitigation, if any.
 
 9.4.  Use of Prefix for attack mitigation
 
