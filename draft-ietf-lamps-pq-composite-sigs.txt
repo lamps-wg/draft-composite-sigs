@@ -139,12 +139,12 @@ Table of Contents
 
    The advent of quantum computing poses a significant threat to current
    cryptographic systems because traditional cryptographic signature
-   algorithms such as RSA, DSA, and its elliptic curve variants will
+   algorithms such as RSA, DSA, and their elliptic curve variants will
    become vulnerable to quantum attacks (Section 3 of
    [I-D.ietf-pquip-pqc-engineers]).  Unlike previous migrations between
    cryptographic algorithms, this migration gives us the foresight that
    traditional cryptographic algorithms will be broken in the future,
-   but will remain strong in the interim, the only uncertainty is around
+   but will remain strong in the interim; the only uncertainty is around
    the timing.  But there are also some novel challenges.  For instance,
    the aggressive migration timelines may require deploying Post-Quantum
    Cryptography (PQC) algorithms before their implementations have been
@@ -208,9 +208,9 @@ Table of Contents
 
    Composite ML-DSA is applicable in PKIX-related applications that
    would otherwise use ML-DSA but where it is acceptable to have a
-   signature primitive with the weaker property of existential
-   unforgeability (EUF-CMA) security is acceptable, instead of the
-   stronger property of strong existential unforgeability (SUF-CMA),
+   signature primitive with the weaker property of Existential
+   Unforgeability (EUF-CMA) security is acceptable, instead of the
+   stronger property of Strong Existential Unforgeability (SUF-CMA),
    which Composite ML-DSA does not offer.
 
 1.1.  Conventions and Terminology
