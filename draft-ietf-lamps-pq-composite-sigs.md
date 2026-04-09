@@ -460,11 +460,13 @@ If one of the component `KeyGen()` routines returns an error, then the  `Composi
 
 Key generation is a process that is entirely internal to a cryptographic module, and as such it is often customized to fit the performance or operational requirements of the module. In cases where the private keys never leave the module or are otherwise not required to interoperate with other cryptographic modules, it is not required for interoperability for the private keys to match the format described in this specification. Therefore, in general, implementations of Composite ML-DSA MAY use an alternate key generation process so long as it generates compatible public keys, and so long as both component keys are freshly-generated and not re-used in a standalone key or within another composite key. Below are some examples of modifications that an implementer MAY make to the key generation process.
 
-Implementations MAY modify this process to additionally output the expanded `mldsaSK` or to make use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
+The following are some examples of modifications that an implementation could make to the key generation process without affecting interoperability.
 
-In cases where it is desirable to have a deterministic KeyGen of one or both component keys from a seed, this process MAY be modified to expose an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.
+Modifying the process to additionally output the expanded `mldsaSK` or to make use of `ML-DSA.KeyGen_internal(mldsaSeed)` as needed to expand the ML-DSA seed into an expanded key prior to performing a signing operation.
 
-Where interoperable private keys are not required, implementations MAY choose to use a different private key representation than the one given in {{sec-serialize-privkey}}. For example, the component keys MAY be stored in separate cryptographic modules, or MAY be stored in separate PKCS#8 objects, or MAY be stored in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}.
+Modifying the process to have a deterministic KeyGen of one or both component keys from a seed; for example exposing an interface of `Composite-ML-DSA<OID>.KeyGen(seed)` such that one component algorithm is generated from the seed and the other from random, or the input seed is cryptographically expanded to produce seeds for both components. Implementation details and security analysis of such a modified key generation process is outside the scope of this document.
+
+Where interoperable private keys are not required, using a different private key representation than the one given in {{sec-serialize-privkey}}. For example, storing the component keys in separate cryptographic modules, or in separate PKCS#8 objects, or in a format that preserves the ML-DSA expanded key instead of the ML-DSA seed. The required modifications to the key generation process, as well as the signature generation process below,  to support these private key representations are considered compliant with this specification so long as they generate compatible public keys, and so long as both component keys are freshly-generated. Note that when implementing Composite ML-DSA with a private key format that does not preserve the ML-DSA seed, especially when implementing on top of a cryptographic module that does not support seeds, it will be impossible to reconstruct a compliant seed-based private key as described in {{sec-serialize-privkey}}.
 
 
 ## Sign {#sec-hash-comp-sig-sign}
@@ -658,7 +660,7 @@ Deserialization is possible because ML-DSA has fixed-length public keys, private
 | ML-DSA-87 |     2592    |      32     |    4627   |
 {: #tab-mldsa-sizes title="ML-DSA Sizes in bytes"}
 
-While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, a stand-alone RSA private key can be encoded in Chinese Remainder Theorem form. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
+While ML-DSA has a single fixed-size representation for each of public key, private key (seed), and signature, a traditional component algorithm might allow multiple valid encodings. For example, standardized encodings exist for RSA keys as both a single private exponen `d` or in Chinese Remainder Theorem form Section A.1.2 of [RFC8017]. In order to obtain interoperability, composite algorithms MUST use the following encodings of the underlying components:
 
 * **ML-DSA**: MUST be encoded as specified in Section 7.2 of [FIPS.204], using a 32-byte seed as the private key.  The signature and public key format are encoded as specified in Section 7.2 of [FIPS.204].
 * **RSA**: the public key MUST be encoded as RSAPublicKey with the `(n,e)` public key representation as specified in Appendix A.1.1 of [RFC8017] and the private key representation as RSAPrivateKey specified in A.1.2 of [RFC8017] with version 0 and 'otherPrimeInfos' absent.  An RSA signature MUST be encoded as specified in Sections 8.1.1 (for RSASSA-PSS-SIGN) or 8.2.1 (for RSASSA-PCKS1-V1_5-SIGN) of [RFC8017].
@@ -1097,21 +1099,6 @@ When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instant
 {: #rsa-pss-params4096 title="RSASSA-PSS 4096 Parameters"}
 
 
-## Rationale for choices {#sec-rationale}
-
-In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.
-
-The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical adversaries and "qubits of security" against quantum adversaries.
-
-SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However, SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
-
-In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
-While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
-
-
-
-Full specifications for the referenced algorithms can be found in {{appdx_components}}.
-
 <!-- End of Composite Signature Algorithm section -->
 
 
@@ -1303,7 +1290,7 @@ When used within X.509, the Label representing the signature algorithm is includ
 
 ## Key Reuse {#sec-cons-key-reuse}
 
-While conformance with this specification requires that both components of a composite key MUST be freshly generated, the designers are aware that some implementers may be forced to break this rule due to operational constraints. This section documents the implications of doing so.
+While conformance with this specification requires that both components of a composite key MUST be freshly generated, the designers are aware that some implementers may be forced to break this rule due to operational constraints. This section documents the implications of doing so so that the full implications of such a deviation can be considered.
 
 When using single-algorithm cryptography, the best practice is to always generate fresh key material for each purpose, for example when renewing a certificate, or obtaining both a TLS and S/MIME certificate for the same device. However, in practice key reuse in such scenarios is not always catastrophic to security and therefore often tolerated. But this reasoning does not hold in the PQ/T hybrid setting.
 
@@ -1316,7 +1303,7 @@ Some applications might disregard the requirements of this specification to not 
 
 ## Use of Prefix for attack mitigation {#sec-cons-prefix}
 
-The Prefix value specified in {{sec-label-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string. The designers accepted this trade-off.
+The Prefix value specified in {{sec-label-and-ctx}} allows for cautious implementers to wrap their existing Traditional `Verify()` implementations with a guard that looks for messages starting with this string and fail with an error -- i.e. this can act as an extra protection against taking a composite signature and splitting it back into components. However, an implementation that does this will be unable to perform a Traditional signature and verification on a message which happens to start with this string.
 
 ## Policy for Deprecated and Acceptable Algorithms
 
@@ -1328,6 +1315,21 @@ In the composite model this is less obvious since a PQ/T hybrid is expected to s
 
 
 # Operational Considerations {#sec-imp-considers}
+
+## Rationale for choices {#sec-rationale}
+
+In generating the list of composite algorithms, the idea was to provide composite algorithms at various security levels with varying performance characteristics.
+
+The main design consideration in choosing pairings is to prioritize providing pairings of each ML-DSA security level with commonly-deployed traditional algorithms. This supports the design goal of using composites as a stepping stone to efficiently deploy post-quantum on top of existing hardened and certified traditional algorithm implementations. This was prioritized rather than attempting to exactly match the security level of the post-quantum and traditional components -- which in general is difficult to do since there is no academic consensus on how to compare the "bits of security" against classical adversaries and "qubits of security" against quantum adversaries.
+
+SHA2 is prioritized over SHA3 in order to facilitate implementations that do not have easy access to SHA3 outside of the ML-DSA module. However, SHAKE256 is used with Ed448 since this is already the recommended hash functions chosen for ED448ph in [RFC8032].
+
+In some cases, multiple hash functions are used within the same composite algorithm. Consider for example `id-MLDSA65-ECDSA-P256-SHA512` which requires SHA512 as the overall composite pre-hash in order to maintain the security level of ML-DSA-65, but uses SHA256 within the `ecdsa-with-SHA256 with secp256r1` traditional component.
+While this increases the implementation burden of needing to carry multiple hash functions for a single composite algorithm, this aligns with the design goal of choosing commonly-implemented traditional algorithms since `ecdsa-with-SHA256 with secp256r1` is far more common than, for example, `ecdsa-with-SHA512 with secp256r1`.
+
+
+Full specifications for the referenced algorithms can be found in {{appdx_components}}.
+
 
 ## FIPS certification {#sec-fips}
 
