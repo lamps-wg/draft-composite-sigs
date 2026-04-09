@@ -201,8 +201,8 @@ This document defines combinations of US NIST Module-Lattice-Based Digital Signa
 
 # Introduction {#sec-intro}
 
-The advent of quantum computing poses a significant threat to current cryptographic systems because traditional cryptographic signature algorithms such as RSA, DSA, and its elliptic curve variants will become vulnerable to quantum attacks ({{Section 3 of ?I-D.ietf-pquip-pqc-engineers}}).
-Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that traditional cryptographic algorithms will be broken in the future, but will remain strong in the interim, the only uncertainty is around the timing. But there are also some novel challenges.
+The advent of quantum computing poses a significant threat to current cryptographic systems because traditional cryptographic signature algorithms such as RSA, DSA, and their elliptic curve variants will become vulnerable to quantum attacks ({{Section 3 of ?I-D.ietf-pquip-pqc-engineers}}).
+Unlike previous migrations between cryptographic algorithms, this migration gives us the foresight that traditional cryptographic algorithms will be broken in the future, but will remain strong in the interim; the only uncertainty is around the timing. But there are also some novel challenges.
 For instance, the aggressive migration timelines may require deploying Post-Quantum Cryptography (PQC) algorithms before their implementations have been fully hardened or certified, and dual-algorithm data protection may be desirable over a longer time period to hedge against security vulnerabilities and other implementation flaws in the new implementations.
 
 Cautious implementers may opt to combine cryptographic algorithms in such a way that an adversary would need to break all of them simultaneously to compromise the protected data. These mechanisms are referred to as "Post-Quantum/Traditional (PQ/T) Hybrids" {{RFC9794}}.
@@ -220,7 +220,7 @@ In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, 
 
 While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
 
-Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of existential unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of strong existential unforgeability (SUF-CMA), which Composite ML-DSA does not offer.
+Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.
 
 ## Conventions and Terminology {#sec-terminology}
 
