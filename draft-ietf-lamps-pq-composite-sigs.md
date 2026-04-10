@@ -289,7 +289,7 @@ In addition, the following terminology is used throughout this specification:
 ## Notations
 The algorithm descriptions use python-like syntax. The following symbols deserve special mention:
 
- * `||` represents concatenation of two-byte arrays.
+ * `||` represents concatenation of two byte-arrays.
 
  * `[:]` represents byte array slicing.
 
