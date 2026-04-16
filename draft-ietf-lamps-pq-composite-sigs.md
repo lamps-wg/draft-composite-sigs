@@ -505,7 +505,7 @@ Implicit inputs mapped from <OID>:
           algorithm. Additionally, the composite label is passed
           into the underlying ML-DSA primitive as the ctx.
           Signature Label values are defined in the
-          "Signature Label Values" section below.
+          "Algorithm Identifiers and Parameters" section below.
 
   PH      The function used to pre-hash M.
 
@@ -605,7 +605,7 @@ Implicit inputs mapped from <OID>:
           algorithm. Additionally, the composite label is passed
           into the underlying ML-DSA primitive as the ctx.
           Signature Label values are defined in the
-          "Signature Label Values" section below.
+          "Algorithm Identifiers and Parameters" section below.
 
   PH      The function used to pre-hash M.
 
@@ -1462,7 +1462,7 @@ Implicit inputs mapped from <OID>:
           algorithm. Additionally, the composite label is passed
           into the underlying ML-DSA primitive as the ctx.
           Signature Label values are defined in the
-          "Signature Label Values" section below.
+          "Algorithm Identifiers and Parameters" section below.
 
 Process:
 
