@@ -208,9 +208,9 @@ Table of Contents
    Composite ML-DSA is applicable in PKIX-related applications that
    would otherwise use ML-DSA but where it is acceptable to have a
    signature primitive with the weaker property of Existential
-   Unforgeability (EUF-CMA) security is acceptable, instead of the
-   stronger property of Strong Existential Unforgeability (SUF-CMA),
-   which Composite ML-DSA does not offer.
+   Unforgeability (EUF-CMA) security, instead of the stronger property
+   of Strong Existential Unforgeability (SUF-CMA), which Composite ML-
+   DSA does not offer.
 
 1.1.  Conventions and Terminology
 
@@ -285,7 +285,7 @@ Table of Contents
    The algorithm descriptions use python-like syntax.  The following
    symbols deserve special mention:
 
-   *  || represents concatenation of two-byte arrays.
+   *  || represents concatenation of two byte-arrays.
 
    *  [:] represents byte array slicing.
 

@@ -1379,7 +1379,7 @@ Backwards compatibility in the sense of upgraded systems continuing to interoper
 in some situations it might be easier to re-certify an existing product by adding Post-Quantum via a PQ/T Hybrid to an already compliant solution without changing the traditional component, compared with replacing the traditional component.
 Serving this use case, more than any other design requirement, is what motivates the large number of algorithm combinations in this specification: the goal is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but <a href="#sec-impl-profile" class="auto internal xref">Section 10.4</a> provides a short-list of recommended composite algorithms for common use-cases.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
 <section id="section-1.1">
         <h3 id="name-conventions-and-terminology">
@@ -1448,7 +1448,7 @@ In addition, the following terminology is used throughout this specification:<a 
 <p id="section-1.2-1">The algorithm descriptions use python-like syntax. The following symbols deserve special mention:<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.2-2.1">
-            <p id="section-1.2-2.1.1"><code>||</code> represents concatenation of two-byte arrays.<a href="#section-1.2-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-1.2-2.1.1"><code>||</code> represents concatenation of two byte-arrays.<a href="#section-1.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.2-2.2">
             <p id="section-1.2-2.2.1"><code>[:]</code> represents byte array slicing.<a href="#section-1.2-2.2.1" class="pilcrow">¶</a></p>
