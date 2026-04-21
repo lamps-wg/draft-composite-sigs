@@ -558,10 +558,10 @@ In particular, it could leak which component signature algorithm failed.
 In general, it will be extremely difficult for a composite implementation to
 mask timing side-channels of this nature if the component primitives themselves
 are not constant-time including error cases, so in general there is not much to do
-here, but we mention it anyway in case this observation is useful for a high-security
+here, but it is mentioned anyway in case this observation is useful for a high-security
 implementation.
 
-Note that there are two different context strings `ctx` at play: the first is the application context `ctx` that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `mldsa-ctx` that is passed down into the underlying `ML-DSA.Sign(sk, M, ctx)` as defined in [FIPS.204] Algorithm 2, in Step 4 and here Composite ML-DSA itself is the application that we wish to bind and so the per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
+Note that there are two different context strings `ctx` at play: the first is the application context `ctx` that is passed in to `Composite-ML-DSA.Sign` and bound to the to-be-signed message `M'` in Step 2. The second is the `mldsa-ctx` that is passed down into the underlying `ML-DSA.Sign(sk, M, ctx)` as defined in [FIPS.204] Algorithm 2, in Step 4 and here Composite ML-DSA itself is the application that needs to be bound and so the per-algorithm Label is used as the `ctx` for the underlying ML-DSA primitive. Some implementations of the EdDSA component primitive can also expose a `ctx` parameter, but even if present, this is not used by Composite ML-DSA.
 
 It is possible to use component private keys stored in separate software or hardware keystores. Variations in the process to accommodate particular private key storage mechanisms are considered to be conformant to this specification so long as it produces the same output and error handling as the process sketched above.
 
@@ -1345,9 +1345,9 @@ Full specifications for the referenced algorithms can be found in {{appdx_compon
 
 ## FIPS certification {#sec-fips}
 
-The following sections give guidance to implementers wishing to FIPS-certify a composite implementation.
+The following sections give guidance to implementers wishing to certify a composite implementation under the Federal Information Processing Standards (FIPS) program run by US NIST.
 
-This guidance is not authoritative and has not been endorsed by NIST.
+This guidance is not authoritative and has not been endorsed by US NIST.
 
 One of the primary design goals of this specification is for the overall composite algorithm to be able to be considered FIPS-approved even when one of the component algorithms is not.
 
