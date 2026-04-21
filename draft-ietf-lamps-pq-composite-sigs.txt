@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 11 October 2026                                         M. Pala
+Expires: 23 October 2026                                         M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            9 April 2026
+                                                           21 April 2026
 
 
 Composite Module-Lattice-Based Digital Signature Algorithm (ML-DSA) for
@@ -62,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 October 2026.
+   This Internet-Draft will expire on 23 October 2026.
 
 Copyright Notice
 
@@ -185,15 +185,14 @@ Table of Contents
    compatible with (and advocated by) some governments and cybersecurity
    agencies [BSI2021], [ANSSI2024].
 
-   In some situations it might be possible to add Post-Quantum, via a
-   PQ/T Hybrid, to an already audited and compliant solution without
-   invalidating the existing certification, whereas a full replacement
-   of the traditional cryptography would almost certainly incur
-   regulatory and compliance delays.  In other words, PQ/T Hybrids can
-   allow for deploying PQC before the PQ modules and operational
-   procedures are fully audited and certified.  This, more than any
-   other requirement, is what motivates the large number of algorithm
-   combinations in this specification: The goal is to provide a stepping
+   Some implementers show interest in deploying composites for
+   regulatory reasons, for example, in some situations it might be
+   easier to re-certify an existing product by adding Post-Quantum via a
+   PQ/T Hybrid to an already compliant solution without changing the
+   traditional component, compared with replacing the traditional
+   component.  Serving this use case, more than any other design
+   requirement, is what motivates the large number of algorithm
+   combinations in this specification: the goal is to provide a stepping
    stone from which any cryptographic algorithm an organization has
    deployed today can evolve or transition.
 

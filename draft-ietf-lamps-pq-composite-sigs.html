@@ -17,18 +17,18 @@
 
 
     " name="description">
-<meta content="xml2rfc 3.32.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-lamps-pq-composite-sigs-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.32.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.0.2
-    platformdirs 4.9.4
+    platformdirs 4.9.6
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
@@ -1057,7 +1057,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Ounsworth, et al.</td>
-<td class="center">Expires 11 October 2026</td>
+<td class="center">Expires 23 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1070,12 +1070,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-pq-composite-sigs-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-09" class="published">9 April 2026</time>
+<time datetime="2026-04-21" class="published">21 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-11">11 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-23">23 October 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1141,7 +1141,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1375,7 +1375,9 @@ Instantiations of the composite ML-DSA scheme are provided based on ML-DSA, RSA-
 The full list of algorithms registered by this specification is provided in <a href="#sec-alg-parms" class="auto internal xref">Section 6</a>.
 Backwards compatibility in the sense of upgraded systems continuing to interoperate with legacy systems is not directly covered in this specification, but is the subject of <a href="#sec-backwards-compat" class="auto internal xref">Section 10.3</a>.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Certain jurisdictions have recommended that ML-DSA be used exclusively within a PQ/T hybrid framework. The use of a composite scheme provides a straightforward implementation of hybrid solutions compatible with (and advocated by) some governments and cybersecurity agencies <span>[<a href="#BSI2021" class="cite xref">BSI2021</a>]</span>, <span>[<a href="#ANSSI2024" class="cite xref">ANSSI2024</a>]</span>.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">In some situations it might be possible to add Post-Quantum, via a PQ/T Hybrid, to an already audited and compliant solution without invalidating the existing certification, whereas a full replacement of the traditional cryptography would almost certainly incur regulatory and compliance delays. In other words, PQ/T Hybrids can allow for deploying PQC before the PQ modules and operational procedures are fully audited and certified. This, more than any other requirement, is what motivates the large number of algorithm combinations in this specification: The goal is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">Some implementers show interest in deploying composites for regulatory reasons, for example,
+in some situations it might be easier to re-certify an existing product by adding Post-Quantum via a PQ/T Hybrid to an already compliant solution without changing the traditional component, compared with replacing the traditional component.
+Serving this use case, more than any other design requirement, is what motivates the large number of algorithm combinations in this specification: the goal is to provide a stepping stone from which any cryptographic algorithm an organization has deployed today can evolve or transition.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but <a href="#sec-impl-profile" class="auto internal xref">Section 10.4</a> provides a short-list of recommended composite algorithms for common use-cases.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <div id="sec-terminology">
