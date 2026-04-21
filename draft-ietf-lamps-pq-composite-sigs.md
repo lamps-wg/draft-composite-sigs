@@ -222,7 +222,7 @@ Serving this use case, more than any other design requirement, is what motivates
 
 While this specification registers a large number of composite algorithms, it is expected that organizations will choose to deploy a single composite algorithm, or a small number of composite algorithms, that meets the needs of their environment and operational constraints, and very few implementers will need concern themselves with the entire list. This specification does not specify any mandatory-to-implement algorithms, but {{sec-impl-profile}} provides a short-list of recommended composite algorithms for common use-cases.
 
-Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security is acceptable, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.
+Composite ML-DSA is applicable in PKIX-related applications that would otherwise use ML-DSA but where it is acceptable to have a signature primitive with the weaker property of Existential Unforgeability (EUF-CMA) security, instead of the stronger property of Strong Existential Unforgeability (SUF-CMA), which Composite ML-DSA does not offer.
 
 ## Conventions and Terminology {#sec-terminology}
 
@@ -291,7 +291,7 @@ In addition, the following terminology is used throughout this specification:
 ## Notations
 The algorithm descriptions use python-like syntax. The following symbols deserve special mention:
 
- * `||` represents concatenation of two-byte arrays.
+ * `||` represents concatenation of two byte-arrays.
 
  * `[:]` represents byte array slicing.
 
