@@ -942,7 +942,7 @@ environment that uses ASN.1 encoding, it could be encoded as an OCTET
 STRING by using the Composite-ML-DSA-PublicKey type defined below.
 
 
-~~~
+~~~ asn.1
 Composite-ML-DSA-PublicKey ::= OCTET STRING
 ~~~
 
@@ -997,7 +997,7 @@ Composite ML-DSA uses a substantially non-ASN.1 based encoding, as specified in 
 
 The following ASN.1 Information Object Classes are defined to allow for compact definitions of each composite algorithm, leading to a smaller overall ASN.1 module.
 
-~~~ ASN.1
+~~~ asn.1
 pk-CompositeSignature {OBJECT IDENTIFIER:id}
     PUBLIC-KEY ::= {
       IDENTIFIER id
@@ -1022,7 +1022,7 @@ sa-CompositeSignature{OBJECT IDENTIFIER:id,
 
 As an example, the public key and signature algorithm types associated with `id-MLDSA44-ECDSA-P256-SHA256` are defined as:
 
-~~~
+~~~ asn.1
 pk-MLDSA44-ECDSA-P256-SHA256 PUBLIC-KEY ::=
   pk-CompositeSignature{ id-MLDSA44-ECDSA-P256-SHA256 }
 
@@ -1037,7 +1037,7 @@ The full set of key types defined by this specification can be found in the ASN.
 
 Use cases that require an interoperable encoding for composite private keys will often need to place a composite private key inside a `OneAsymmetricKey` structure defined in [RFC5958], such as when private keys are carried in PKCS #12 [RFC7292], CMP [RFC9810] or CRMF [RFC4211]. The definition of `OneAsymmetricKey` is copied here for convenience:
 
-~~~ ASN.1
+~~~ asn.1
  OneAsymmetricKey ::= SEQUENCE {
        version                   Version,
        privateKeyAlgorithm       PrivateKeyAlgorithmIdentifier,
@@ -1120,13 +1120,11 @@ When RSA-PSS is used at the 4096-bit security level, RSASSA-PSS SHALL be instant
 # ASN.1 Module {#sec-asn1-module}
 
 ~~~ asn.1
-
 <CODE STARTS>
 
 {::include Composite-MLDSA-2025.asn}
 
 <CODE ENDS>
-
 ~~~
 
 
