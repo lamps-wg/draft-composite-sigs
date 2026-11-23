@@ -5,13 +5,13 @@
 LAMPS                                                       M. Ounsworth
 Internet-Draft                                                   J. Gray
 Intended status: Standards Track                                 Entrust
-Expires: 17 December 2026                                        M. Pala
+Expires: 27 May 2027                                             M. Pala
                                                              OpenCA Labs
                                                             J. Klaussner
                                                     Bundesdruckerei GmbH
                                                               S. Fluhrer
                                                            Cisco Systems
-                                                            15 June 2026
+                                                        23 November 2026
 
 
 Composite Module-Lattice-Based Digital Signature Algorithm (ML-DSA) for
@@ -62,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 December 2026.
+   This Internet-Draft will expire on 27 May 2027.
 
 Copyright Notice
 
@@ -2812,16 +2812,16 @@ Signature Verification Process:
               Domain Parameters", January 2010,
               <https://www.secg.org/sec2-v2.pdf>.
 
-   [X.690]    ITU-T, "Information technology - ASN.1 encoding Rules:
-              Specification of Basic Encoding Rules (BER), Canonical
-              Encoding Rules (CER) and Distinguished Encoding Rules
-              (DER)", ISO/IEC 8825-1:2015, November 2015.
-
    [X9.62_2005]
               American National Standards Institute, "Public Key
               Cryptography for the Financial Services Industry The
               Elliptic Curve Digital Signature Algorithm (ECDSA)",
               November 2005.
+
+   [X.690]    ITU-T, "Information technology - ASN.1 encoding Rules:
+              Specification of Basic Encoding Rules (BER), Canonical
+              Encoding Rules (CER) and Distinguished Encoding Rules
+              (DER)", ISO/IEC 8825-1:2015, November 2015.
 
 11.2.  Informative References
 
