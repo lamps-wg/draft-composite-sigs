@@ -19,7 +19,7 @@ import textwrap
 from zipfile import ZipFile
 
 from pyasn1.type import univ, tag, namedtype
-from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280
+from pyasn1_alt_modules import rfc4055, rfc5208, rfc5280, rfc5958
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 
@@ -95,9 +95,13 @@ class SIG:
     spki = self.constructSPKI(pkbytes)
     self.pk = load_der_public_key(spki)
 
+  # Loads the private key and derives the public key from it
+  def loadSK(self, skbytes):
+    raise Exception("Not implemented")
+
   def private_key_bytes(self):
     raise Exception("Not implemented")
-    
+
 
 
 class RSA(SIG):
@@ -154,6 +158,13 @@ class RSA(SIG):
   def loadPK(self, pkbytes):
     super().loadPK(pkbytes)
     assert isinstance(self.pk, rsa.RSAPublicKey)
+
+  def loadSK(self, skbytes):
+    sk = serialization.load_der_private_key(skbytes, password=None)
+    if not isinstance(sk, rsa.RSAPrivateKey) or sk.key_size != self.key_size:
+      raise ValueError("Expected an RSA-" + str(self.key_size) + " private key")
+    self.sk = sk
+    self.pk = sk.public_key()
 
 
   def private_key_bytes(self):
@@ -278,8 +289,15 @@ class ECDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.X962,
         format=serialization.PublicFormat.UncompressedPoint)
-        
-  def public_key_max_len(self):  
+
+  def loadSK(self, skbytes):
+    sk = serialization.load_der_private_key(skbytes, password=None)
+    if not isinstance(sk, ec.EllipticCurvePrivateKey) or sk.curve.name != self.curve.name:
+      raise ValueError("Expected an ECDSA " + self.curve.name + " private key")
+    self.sk = sk
+    self.pk = sk.public_key()
+
+  def public_key_max_len(self):
     return (1 + 2 * size_in_bits_to_size_in_bytes(self.curve.key_size), True)
 
   def private_key_bytes(self):
@@ -381,9 +399,13 @@ class EdDSA(SIG):
     return self.pk.public_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PublicFormat.Raw)
-        
+
   def public_key_max_len(self):
     return (len(self.public_key_bytes()), True)
+
+  def loadSK(self, skbytes):
+    self.sk = self.edsda_private_key_class.from_private_bytes(skbytes)
+    self.pk = self.sk.public_key()
 
   def private_key_bytes(self):
     return self.sk.private_bytes(
@@ -443,7 +465,13 @@ class MLDSA(SIG):
   def loadPK(self, pkbytes):
     self.pk = pkbytes
 
-  def private_key_bytes(self):    
+  def loadSK(self, skbytes):
+    if len(skbytes) != 32:
+      raise ValueError("An ML-DSA private key must be the 32-byte seed")
+    self.sk = skbytes
+    self.pk, _ = self.ML_DSA_class.key_derive(self.sk)
+
+  def private_key_bytes(self):
     return self.sk
     
   def private_key_max_len(self):
@@ -494,6 +522,24 @@ class CompositeSig(SIG):
     self.mldsa.loadPK(mldsapub)
     self.tradsig.loadPK(tradpub)
     self.pk = self.serializeKey()
+    # The component parsers accept more than Section 4 allows, such as a
+    # compressed EC point or trailing bytes after an RSAPublicKey. Section 4
+    # defines a single encoding, so the key must re-serialize to its input.
+    if self.pk != pkbytes:
+      raise ValueError("Public key is not encoded as specified in Section 4")
+
+
+  def loadSK(self, skbytes):
+    """
+    sk = mldsaSeed || tradSK (Section 4.2). Derives the public key.
+    """
+    self.mldsa.loadSK(skbytes[:32])
+    self.tradsig.loadSK(skbytes[32:])
+    self.pk = self.serializeKey()
+    # As in loadPK(): for example, an ECPrivateKey with the publicKey field
+    # loads, but Section 4 does not allow it.
+    if self.private_key_bytes() != skbytes:
+      raise ValueError("Private key is not encoded as specified in Section 4")
 
 
   def keyGen(self):
@@ -986,19 +1032,33 @@ def signSigCert(sig):
   return x509.load_der_x509_certificate(der_encode(cert_pyasn1))
 
 
+def loadCert(certder):
+  """
+  Loads an X.509 cert, in DER or PEM.
+  """
+  try:
+    return x509.load_der_x509_certificate(certder)
+  except:
+    try:
+      return x509.load_pem_x509_certificate(certder)
+    except:
+      raise ValueError("Input could not be parsed as a DER or PEM certificate.")
+
+
+def certPublicKeyBytes(x509obj):
+  # python.cryptography.x509 won't give me a raw public key if it doesn't have a class for it.
+  # So let's parse this with pyasn1_alt_modules and pull the pk out that way
+  asn1Certificate, rest = der_decode( x509obj.public_bytes(serialization.Encoding.DER), asn1Spec=rfc5280.Certificate())
+  return asn1Certificate["tbsCertificate"]["subjectPublicKeyInfo"]["subjectPublicKey"].asOctets()
+
+
 def verifyCert(certder):
   """
   Loads and verifies an X.509 cert. Expects the cert in raw DER.
   """
-  try:
-    x509obj = x509.load_der_x509_certificate(certder)
-  except:
-    try:
-      x509obj = x509.load_pem_x509_certificate(certder)
-    except:
-      raise ValueError("Input could not be parsed as a DER or PEM certificate.")
-    
-  OID = univ.ObjectIdentifier(x509obj.signature_algorithm_oid.dotted_string)
+  x509obj = loadCert(certder)
+
+  OID =univ.ObjectIdentifier(x509obj.signature_algorithm_oid.dotted_string)
   OIDname = [key for key, val in OID_TABLE.items() if val == OID]
   if OIDname == []:
    raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
@@ -1013,20 +1073,66 @@ def verifyCert(certder):
     raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
 
 
-  # python.cryptography.x509 won't give me a raw public key if it doesn't have a class for it.
-  # So let's parse this with pyasn1_alt_modules and pull the pk out that way
-  asn1Certificate, rest = der_decode( x509obj.public_bytes(serialization.Encoding.DER), asn1Spec=rfc5280.Certificate())
-  pubkey = asn1Certificate["tbsCertificate"]["subjectPublicKeyInfo"]["subjectPublicKey"].asOctets()
-
-  compAlg.loadPK(pubkey)
+  compAlg.loadPK(certPublicKeyBytes(x509obj))
 
   try:
     compAlg.verify(x509obj.signature, x509obj.tbs_certificate_bytes)
   except InvalidSignature:
     return False
-  
+
   return True
-  
+
+
+def checkPrivateKey(privder, certder):
+  """
+  Checks a composite private key, a DER OneAsymmetricKey, against the cert
+  that holds its public key. Returns (priv, consistent):
+    priv:       the private key is encoded as specified in Sections 4 and 5,
+                and a signature made with it verifies under the cert's key
+    consistent: the public key derived from the private key equals the cert's
+  Raises LookupError if the cert's key is not a composite of this version.
+  """
+  x509obj = loadCert(certder)
+  OID = univ.ObjectIdentifier(x509obj.public_key_algorithm_oid.dotted_string)
+  OIDname = [key for key, val in OID_TABLE.items() if val == OID]
+  if OIDname == [] or not isinstance(getNewInstanceByName(OIDname[0]), CompositeSig):
+    raise LookupError("OID does not represent a composite (at least not of this version of the draft): "+str(OID))
+  OIDname = OIDname[0]
+  certPK = certPublicKeyBytes(x509obj)
+
+  try:
+    oak, rest = der_decode(privder, asn1Spec=rfc5958.OneAsymmetricKey())
+    if rest:
+      raise ValueError("Trailing data after the OneAsymmetricKey")
+    algId = oak['privateKeyAlgorithm']
+    if algId['algorithm'] != OID:
+      raise ValueError("Private key algorithm "+str(algId['algorithm'])+" does not match the cert's "+str(OID))
+    if algId['parameters'].isValue:
+      raise ValueError("Private key AlgorithmIdentifier parameters must be absent (Section 5.3)")
+    sig = getNewInstanceByName(OIDname)
+    sig.loadSK(oak['privateKey'].asOctets())
+    if oak['publicKey'].isValue and oak['publicKey'].asOctets() != sig.public_key_bytes():
+      raise ValueError("OneAsymmetricKey publicKey does not match the private key")
+  except Exception as e:
+    print("\tPrivate key could not be loaded: "+str(e))
+    return (False, False)
+
+  consistent = sig.public_key_bytes() == certPK
+  if not consistent:
+    print("\tThe public key derived from the private key does not match the cert's.")
+
+  m = b'The quick brown fox jumps over the lazy dog.'
+  try:
+    certSig = getNewInstanceByName(OIDname)
+    certSig.loadPK(certPK)
+    certSig.verify(sig.sign(m), m)
+    priv = True
+  except Exception as e:
+    print("\tA signature made with the private key does not verify under the cert's public key: "+repr(e))
+    priv = False
+
+  return (priv, consistent)
+
 
 
 def formatResults(sig, s, sWithContext):

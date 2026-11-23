@@ -59,11 +59,53 @@ for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
       certbytes = f.read()
       res = generate_test_vectors.verifyCert(certbytes)
       print("\tCert passed verification: "+str(res))
-      if res:
-        compatMatrixFile.write(OID+",cert,Y\n")
-      else:
-        compatMatrixFile.write(OID+",cert,N\n")
     except LookupError as e:
       print("Certificate is not signed with a composite (at least not of this version of the draft)")
       print(e)
+      continue
+    except Exception as e:
+      # e.g. a public key not encoded as specified in Section 4
+      print("\tCert failed verification: "+repr(e))
+      res = False
+    if res:
+      compatMatrixFile.write(OID+",cert,Y\n")
+    else:
+      compatMatrixFile.write(OID+",cert,N\n")
+
+
+# Test the private keys against their certs. Section 4 defines one private key
+# form, the seed form, so any other (e.g. <friendlyname>-<oid>_expandedkey_priv.der)
+# is expected to fail to load and is reported as N.
+consistent = {}
+for filename in sorted(glob(tmpdir+'/**/*_priv.der', recursive=True)):
+
+  try:
+    prefix, OID, keyType = re.search(r'(.*-(([0-9]+\.?)*))_(([a-z]+)_)?priv\.der$', filename).group(1, 2, 5)
+  except AttributeError:
+    print("Could not parse this file name, skipping. "+filename)
+    continue
+  keyType = keyType or "priv"
+
+  certFileName = prefix+"_ta.der"
+  if not os.path.isfile(certFileName):
+    print("No cert for this private key, skipping. "+filename)
+    continue
+
+  print("\nProcessing private key "+filename)
+  with open(filename, "rb") as f:
+    privbytes = f.read()
+  with open(certFileName, "rb") as f:
+    certbytes = f.read()
+  try:
+    priv, cons = generate_test_vectors.checkPrivateKey(privbytes, certbytes)
+  except LookupError as e:
+    print(e)
+    continue
+  print("\tPrivate key passed: "+str(priv)+", consistent with the cert: "+str(cons))
+
+  compatMatrixFile.write(OID+","+keyType+","+("Y" if priv else "N")+"\n")
+  consistent[OID] = consistent.get(OID, True) and cons
+
+for OID, cons in consistent.items():
+  compatMatrixFile.write(OID+",consistent,"+("Y" if cons else "N")+"\n")
 
