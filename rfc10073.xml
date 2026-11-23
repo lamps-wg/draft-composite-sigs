@@ -486,7 +486,7 @@ Signature verification process:
       if all succeeded, then
          output "Valid signature"]]></artwork>
         <t>Note that in Step 4 above, the function fails early if the first
-component fails to verify.  This is okay since there are no timing 
+component fails to verify.  This is okay since there are no timing
 attacks to consider as no private keys are involved in a
 signature verification.</t>
         <t>As with <tt>Composite-ML-DSA.Sign()</tt>, there are two different context strings <tt>ctx</tt> at play: the application context <tt>ctx</tt> and the <tt>mldsa_ctx</tt>, which behave the same in <tt>Verify()</tt> as they do in <tt>Sign()</tt>.</t>
@@ -868,7 +868,7 @@ sa-MLDSA44-ECDSA-P256-SHA256 SIGNATURE-ALGORITHM ::=
   ...
   PrivateKey ::= OCTET STRING
                         -- Content varies based on type of key.  The
-                        -- algorithm identifier dictates the format 
+                        -- algorithm identifier dictates the format
                         -- of the key.
 ]]></sourcecode>
         </figure>
@@ -1269,7 +1269,7 @@ pk-CompositeSignature {OBJECT IDENTIFIER:id}
       IDENTIFIER id
       -- KEY no ASN.1 wrapping --
       PARAMS ARE absent
-      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign, 
+      CERT-KEY-USAGE { digitalSignature, nonRepudiation, keyCertSign,
                                                             cRLSign}
       -- PRIVATE-KEY no ASN.1 wrapping --
     }
@@ -1493,7 +1493,7 @@ sa-MLDSA87-RSA3072-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
        id-MLDSA87-RSA3072-PSS-SHA512,
        pk-MLDSA87-RSA3072-PSS-SHA512 }
-     
+
 
 id-MLDSA87-RSA4096-PSS-SHA512 OBJECT IDENTIFIER ::= {
    iso(1) identified-organization(3) dod(6) internet(1) security(5)
@@ -1506,7 +1506,7 @@ sa-MLDSA87-RSA4096-PSS-SHA512 SIGNATURE-ALGORITHM ::=
     sa-CompositeSignature{
        id-MLDSA87-RSA4096-PSS-SHA512,
        pk-MLDSA87-RSA4096-PSS-SHA512 }
-     
+
 
 id-MLDSA87-ECDSA-P521-SHA512 OBJECT IDENTIFIER ::= {
    iso(1) identified-organization(3) dod(6) internet(1) security(5)
