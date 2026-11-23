@@ -59,11 +59,16 @@ for filename in glob(tmpdir+'/**/*_ta.der', recursive=True):
       certbytes = f.read()
       res = generate_test_vectors.verifyCert(certbytes)
       print("\tCert passed verification: "+str(res))
-      if res:
-        compatMatrixFile.write(OID+",cert,Y\n")
-      else:
-        compatMatrixFile.write(OID+",cert,N\n")
     except LookupError as e:
       print("Certificate is not signed with a composite (at least not of this version of the draft)")
       print(e)
+      continue
+    except Exception as e:
+      # e.g. a public key not encoded as specified in Section 4
+      print("\tCert failed verification: "+repr(e))
+      res = False
+    if res:
+      compatMatrixFile.write(OID+",cert,Y\n")
+    else:
+      compatMatrixFile.write(OID+",cert,N\n")
 

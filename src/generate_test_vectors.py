@@ -494,6 +494,11 @@ class CompositeSig(SIG):
     self.mldsa.loadPK(mldsapub)
     self.tradsig.loadPK(tradpub)
     self.pk = self.serializeKey()
+    # The component parsers accept more than Section 4 allows, such as a
+    # compressed EC point or trailing bytes after an RSAPublicKey. Section 4
+    # defines a single encoding, so the key must re-serialize to its input.
+    if self.pk != pkbytes:
+      raise ValueError("Public key is not encoded as specified in Section 4")
 
 
   def keyGen(self):
